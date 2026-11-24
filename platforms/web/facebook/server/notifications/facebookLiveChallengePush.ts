@@ -38,7 +38,10 @@ export async function sendFacebookLiveChallengePush(db: Firestore, delivery: Liv
       // The transport snapshots and hashes its actual body before awaiting this
       // callback. Content or recipient drift must not consume the original work.
       if (scope.operation !== request.operation || scope.requestDigest !== request.requestDigest) return false;
-      claimed = await ledger.claim(request); return claimed;
+      claimed = await ledger.claim(request);
+      if (!claimed) return false;
+      const recipient = await db.doc(`users/${delivery.event.recipientId}`).get();
+      return recipient.exists && recipient.data()?.notificationsEnabled !== false;
     }});
   /** The public Meta docs do not specify an acknowledgement body; preserve uncertainty instead of guessing success. */
   const result = await transport.send({playerId: identity.providerPlayerId, message: body.message, label, payload});

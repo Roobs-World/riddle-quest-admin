@@ -1,10 +1,11 @@
-import {useEffect, useState} from "react";
+import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import type {JestPlatformPort, JestSession} from "../types";
 import {MOCK_NOTIFICATION_COPY, notificationPlayerName, renderNotificationBody, type NotificationCopy} from "./copy";
 import {
   LEGACY_RACE_REMINDER_ID,
   notificationRotationSeed,
   RACE_RESULTS_REMINDER_ID,
+  PLAYER_NOTIFICATION_IDS,
   replaceEngagementReminders,
 } from "./engagement";
 import {captureBrowserException} from "../../../../../src/observability/browserErrorReporter";
@@ -64,9 +65,36 @@ export function useJestNotifications({
 }) {
   /** Provides [copy, set copy] behavior. */
   const [copy, setCopy] = useState<NotificationCopy | null>(fallbackCopy);
+  const owner = useMemo(() => ({active: false, registered: session?.player.registered === true}),
+    [platform, session?.player.playerId, session?.firebaseUid, session?.player.registered]);
+  useLayoutEffect(() => {
+    owner.active = true;
+    return () => {owner.active = false;};
+  }, [owner]);
+  const pending = useRef<Promise<unknown>>(Promise.resolve());
+  const enqueue = useCallback(<Result,>(operation: () => Promise<Result>): Promise<Result> => {
+    const result = pending.current.then(operation);
+    pending.current = result.catch(() => undefined);
+    return result;
+  }, []);
+  const maySchedule = useCallback(() => owner.active && owner.registered && notificationsEnabled(), [notificationsEnabled, owner]);
+  const cancelAllNotifications = useCallback(() => enqueue(async () => {
+    if (!owner.active || !owner.registered) return true;
+    const removed = await withPlatformActivity(() => owner.active && owner.registered ? Promise.all(
+      PLAYER_NOTIFICATION_IDS.map(identifier => platform.removeNotification(identifier)),
+    ) : Promise.resolve([]));
+    return removed.every(result => result.status === "success");
+  }), [enqueue, owner, platform, withPlatformActivity]);
 
   useEffect(() => {
-    if (!session?.player.registered || !notificationsEnabled()) {
+    if (!owner.registered || notificationsEnabled()) return;
+    void cancelAllNotifications().catch(error => {
+      captureBrowserException(error, {component: "jest_notifications", operation: "disable_reminders"});
+    });
+  }, [cancelAllNotifications, notificationsEnabled, owner]);
+
+  useEffect(() => {
+    if (!maySchedule()) {
       setCopy(null);
       return;
     }
@@ -79,11 +107,11 @@ export function useJestNotifications({
         : import("./firebaseCopy").then((module) => module.loadNotificationCopy(locale)),
     )
       .then((loadedCopy) => {
-        if (active && notificationsEnabled()) setCopy(loadedCopy);
+        if (active && maySchedule()) setCopy(loadedCopy);
       })
       .catch((error) => {
         captureBrowserException(error, {component: "jest_notifications", operation: "load_copy"});
-        if (active) {
+        if (active && maySchedule()) {
           setCopy(fallbackCopy);
           trackFunnel("notification_copy_load_failed", {locale});
         }
@@ -91,32 +119,36 @@ export function useJestNotifications({
     return () => {
       active = false;
     };
-  }, [fallbackCopy, locale, mockRuntime, notificationsEnabled, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [fallbackCopy, locale, maySchedule, mockRuntime, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    if (!session?.player.registered || !copy || !notificationsEnabled()) return;
+    if (!session?.player.registered || !copy || !maySchedule()) return;
     /** Provides player name behavior. */
     const playerName = notificationPlayerName(session.profile?.username, playerFallback);
-    void withPlatformActivity(() =>
-      replaceEngagementReminders(
-        platform,
-        {
-          gameTitle,
-          dailyBody: renderNotificationBody(copy.dailyBody, {name: playerName, coins: 75}),
-          streakBody: renderNotificationBody(copy.streakBody, {
-            wins: engagementProgress.wins,
-            streak: engagementProgress.winStreak,
-            coins: 75,
-          }),
-          weeklyBody: renderNotificationBody(copy.weeklyBody, {level: engagementProgress.level, coins: 75}),
-          dailyCta: copy.dailyCta,
-          streakCta: copy.streakCta,
-          weeklyCta: copy.weeklyCta,
-          ...(assetReference ? {assetReference} : {}),
-        },
-        notificationRotationSeed(session.player.playerId),
-      ),
-    )
+    void enqueue(async () => {
+      if (!maySchedule()) return {removed: [], scheduled: []};
+      return withPlatformActivity(() => maySchedule() ?
+        replaceEngagementReminders(
+          platform,
+          {
+            gameTitle,
+            dailyBody: renderNotificationBody(copy.dailyBody, {name: playerName, coins: 75}),
+            streakBody: renderNotificationBody(copy.streakBody, {
+              wins: engagementProgress.wins,
+              streak: engagementProgress.winStreak,
+              coins: 75,
+            }),
+            weeklyBody: renderNotificationBody(copy.weeklyBody, {level: engagementProgress.level, coins: 75}),
+            dailyCta: copy.dailyCta,
+            streakCta: copy.streakCta,
+            weeklyCta: copy.weeklyCta,
+            ...(assetReference ? {assetReference} : {}),
+          },
+          notificationRotationSeed(session.player.playerId),
+          maySchedule,
+        ) : Promise.resolve({removed: [], scheduled: []}),
+      );
+    })
       .then(({removed, scheduled}) => {
         removed.forEach((result, index) => {
           if (result.status !== "success") {
@@ -143,6 +175,8 @@ export function useJestNotifications({
     platform,
     playerFallback,
     notificationsEnabled,
+    maySchedule,
+    enqueue,
     session?.player.playerId,
     session?.player.registered,
     session?.profile?.username,
@@ -151,10 +185,10 @@ export function useJestNotifications({
   ]);
 
   useEffect(() => {
-    if (!session?.player.registered || !copy || !notificationsEnabled()) return;
+    if (!session?.player.registered || !copy || !maySchedule()) return;
     /** Provides schedule race return behavior. */
     const scheduleRaceReturn = (event: Event) => {
-      if (!notificationsEnabled()) return;
+      if (!maySchedule()) return;
       /** Provides detail behavior. */
       const detail = (
         event as CustomEvent<{
@@ -165,43 +199,55 @@ export function useJestNotifications({
       if (!detail?.challengeId) return;
       /** Provides challenge id behavior. */
       const challengeId = detail.challengeId;
-      void withPlatformActivity(async () => {
-        await platform.removeNotification(LEGACY_RACE_REMINDER_ID);
-        return platform.scheduleNotification({
-          identifier: RACE_RESULTS_REMINDER_ID,
-          scheduledInDays: 1,
-          title: `${gameTitle}: ${copy.raceTitle}`,
-          body: copy.raceBody,
-          ctaText: copy.raceCta,
-          priority: "high",
-          ...(await notificationAsset({title: `${gameTitle}: ${copy.raceTitle}`, body: copy.raceBody, ctaText: copy.raceCta}, assetReference)),
-          entryPayload: {
-            campaign: "race_to_10_results_v1",
-            reference: "race_to_10_results_d1_v1",
-            challengeDestination: "inbox",
-            challengeId,
-            notification_template: "race_to_10_results_v1",
-            notification_offset: "D1",
-          },
+      void enqueue(async () => {
+        if (!maySchedule()) return;
+        return withPlatformActivity(async () => {
+          if (!maySchedule()) return;
+          await platform.removeNotification(LEGACY_RACE_REMINDER_ID);
+          const asset = await notificationAsset({title: `${gameTitle}: ${copy.raceTitle}`, body: copy.raceBody, ctaText: copy.raceCta}, assetReference);
+          if (!maySchedule()) return;
+          return platform.scheduleNotification({
+            identifier: RACE_RESULTS_REMINDER_ID,
+            scheduledInDays: 1,
+            title: `${gameTitle}: ${copy.raceTitle}`,
+            body: copy.raceBody,
+            ctaText: copy.raceCta,
+            priority: "high",
+            ...asset,
+            entryPayload: {
+              campaign: "race_to_10_results_v1",
+              reference: "race_to_10_results_d1_v1",
+              challengeDestination: "inbox",
+              challengeId,
+              notification_template: "race_to_10_results_v1",
+              notification_offset: "D1",
+            },
+          });
         });
-      }).then((result) => trackFunnel("race_results_reminder_scheduled", {status: result.status}));
+      }).then(result => {if (result && owner.active) trackFunnel("race_results_reminder_scheduled", {status: result.status});})
+        .catch(error => captureBrowserException(error, {component: "jest_notifications", operation: "schedule_race_reminder"}));
     };
     window.addEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
     return () => window.removeEventListener("riddle-quest:race-challenge-published", scheduleRaceReturn);
-  }, [assetReference, copy, gameTitle, notificationsEnabled, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
+  }, [assetReference, copy, enqueue, gameTitle, maySchedule, owner, platform, session?.player.registered, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    if (!session?.player.registered || !notificationsEnabled() || session.entryIntent.challengeDestination !== "inbox")
+    if (!maySchedule() || session?.entryIntent.challengeDestination !== "inbox")
       return;
-    void withPlatformActivity(() => platform.removeNotification(RACE_RESULTS_REMINDER_ID)).then((result) =>
-      trackFunnel("race_results_reminder_opened", {status: result.status}),
-    );
+    void enqueue(async () => {
+      if (!maySchedule()) return;
+      return withPlatformActivity(() => maySchedule() ? platform.removeNotification(RACE_RESULTS_REMINDER_ID) : Promise.resolve(undefined));
+    }).then(result => {if (result && owner.active) trackFunnel("race_results_reminder_opened", {status: result.status});})
+      .catch(error => captureBrowserException(error, {component: "jest_notifications", operation: "remove_opened_reminder"}));
   }, [
-    notificationsEnabled,
+    enqueue,
+    maySchedule,
+    owner,
     platform,
     session?.entryIntent.challengeDestination,
     session?.player.registered,
     trackFunnel,
     withPlatformActivity,
   ]);
+  return {cancelAllNotifications};
 }

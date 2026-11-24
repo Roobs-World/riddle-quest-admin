@@ -177,3 +177,4 @@ export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./ridd
 
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/api/raceLiveCallables";
 export {setLiveRacePushSubscription, deliverLiveRaceChallengePush} from "./race/notifications/raceLivePushJobs";
+export {setNotificationPreference} from "./notifications/notificationPreferences";

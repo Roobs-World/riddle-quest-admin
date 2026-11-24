@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Nom d’utilisateur du joueur",
     "NOTIFY_PLAYER": "Envoyer un défi",
     "INVITE_QUEUED": "Invitation enregistrée. Les notifications dépendent des réglages du joueur.",
-    "PUSH_ENABLE": "Activer les notifications de défis",
-    "PUSH_DISABLE": "Désactiver les notifications de défis",
-    "PUSH_UNAVAILABLE": "Les notifications du navigateur sont indisponibles ici. Vos invitations apparaîtront toujours en multijoueur.",
     "LIVE_HISTORY_TITLE": "Matchs récents",
     "LIVE_HISTORY_EMPTY": "Aucun match terminé pour le moment."
   }

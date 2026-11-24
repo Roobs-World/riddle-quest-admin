@@ -509,6 +509,10 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("../../races/contracts/index").LiveRaceChallenge[]>(regions.race, "listLiveRaceChallenges");
   /** Locale-bound retained results never include another account or answer-bearing run. */
   const listLiveRaceHistory = httpsCallable<import("../../races/contracts/index").ListLiveRaceHistoryRequest, import("../../races/contracts/index").ListLiveRaceHistoryResponse>(regions.race, "listLiveRaceHistory");
+  /** Saves the authenticated account's master notification preference. */
+  const setNotificationPreference = httpsCallable<{
+    /** Desired global notification setting. */ enabled: boolean;
+  }, {/** Saved account preference. */ enabled: boolean}>(regions.race, "setNotificationPreference");
   /** Stores explicit browser-push consent on the authenticated registered Jest account. */
   const setLiveRacePushSubscription = httpsCallable<{
     /** False revokes the current subscription. */ enabled: boolean;
@@ -561,6 +565,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     listLiveRaceChallenges,
     listLiveRaceHistory,
     setLiveRacePushSubscription,
+    setNotificationPreference,
     updateLiveRace,
   };
 }

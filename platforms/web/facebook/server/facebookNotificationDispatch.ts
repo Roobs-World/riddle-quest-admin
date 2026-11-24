@@ -155,7 +155,7 @@ export function createFacebookNotificationDispatchLedger(
           const acceptedAtMs = permission?.acceptedAt instanceof Timestamp ? permission.acceptedAt.toMillis() : Number.NaN;
           /** Corrupt negative/fractional issuance cannot stand in for a granted prompt. */
           const promptedAtMs = permission?.lastPromptAt instanceof Timestamp ? permission.lastPromptAt.toMillis() : Number.NaN;
-          if (!user.exists || deletion.exists || state.suspended || !isFacebookFeatureEnabled("notifications") ||
+          if (!user.exists || user.data()?.notificationsEnabled === false || deletion.exists || state.suspended || !isFacebookFeatureEnabled("notifications") ||
               permission?.schemaVersion !== 1 || permission.uid !== actor.uid || permission.accepted !== true ||
               !Number.isSafeInteger(acceptedAtMs) || !Number.isSafeInteger(promptedAtMs) || promptedAtMs < 0 ||
               acceptedAtMs > clock || acceptedAtMs < promptedAtMs ||

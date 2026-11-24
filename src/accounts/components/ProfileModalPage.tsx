@@ -1,4 +1,3 @@
-import {LiveRacePushConsent} from "../../races/components/social/LiveRacePushConsent";
 import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
 import {ProfileSubscriptionContext} from "../browser/ProfileSubscriptionContext";
 import chestUrl from "../../../assets/images-web/chest-closed.png";
@@ -276,7 +275,6 @@ export function ProfileModalPage({
           </span>
         </button>
       </div>
-      <LiveRacePushConsent />
       {subscriptionControls}
       {platformRegistered !== false && <div className="profile-danger-zone">
         <button

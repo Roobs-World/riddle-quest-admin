@@ -52,7 +52,9 @@ export async function scheduleEngagementReminders(
     assetReference?: string;
   },
   rotationSeed = 0,
+  maySchedule: () => boolean = () => true,
 ): Promise<PlatformResult<void>[]> {
+  if (!maySchedule()) return [];
   /** Provides common behavior. */
   const common = {
     entryPayload: {
@@ -90,6 +92,7 @@ export async function scheduleEngagementReminders(
 
   return Promise.all(
     ENGAGEMENT_REMINDER_IDS.map((identifier, index) => {
+      if (!maySchedule()) return {status: "unavailable", message: "Notifications disabled"} satisfies PlatformResult<void>;
       /** Provides scheduled in days behavior. */
       const scheduledInDays = index + 1;
       /** Provides variant behavior. */
@@ -127,11 +130,12 @@ export async function replaceEngagementReminders(
   platform: JestPlatformPort,
   copy: Parameters<typeof scheduleEngagementReminders>[1],
   rotationSeed: number,
+  maySchedule: () => boolean = () => true,
 ) {
   /** Removes d. */
   const removed = await removeEngagementReminders(platform);
   /** Provides scheduled behavior. */
-  const scheduled = await scheduleEngagementReminders(platform, copy, rotationSeed);
+  const scheduled = maySchedule() ? await scheduleEngagementReminders(platform, copy, rotationSeed, maySchedule) : [];
   return {removed, scheduled};
 }
 

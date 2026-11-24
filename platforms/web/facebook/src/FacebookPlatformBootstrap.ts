@@ -39,6 +39,7 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
       : {}),
     ...(typeof value.firstMilestoneMarked === "boolean" ? {firstMilestoneMarked: value.firstMilestoneMarked} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
+    ...(typeof value.notificationsEnabled === "boolean" ? {notificationsEnabled: value.notificationsEnabled} : {}),
     ...(value.facebookNotificationPermission === "unknown" ||
     value.facebookNotificationPermission === "declined" ||
     value.facebookNotificationPermission === "accepted"

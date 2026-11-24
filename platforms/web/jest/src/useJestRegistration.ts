@@ -1,6 +1,7 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
   type Dispatch,
@@ -13,6 +14,7 @@ import {captureBrowserException} from "../../../../src/observability/browserErro
 import type {JestBackendPort} from "./backend";
 import {createRegistrationEntryPayload, type RegistrationSource} from "./registrationAttribution";
 import type {JestPlatformPort, JestRegistrationOverlayHandle, JestSession} from "./types";
+import {applyPlayerPreferences} from "../../../../src/settings/browser/playerPreferences";
 /** Records one registration-funnel event with optional low-cardinality context. */
 type TrackFunnel = (eventName: string, params?: Record<string, string | number | boolean>) => void;
 /** Runs an asynchronous operation while the shared platform activity indicator is active. */
@@ -31,6 +33,10 @@ type UseJestRegistrationOptions = {
   setError: Dispatch<SetStateAction<string | null>>;
   /** Authenticates Firebase with a server-issued custom token. */
   authenticateIdentity: (token: string) => Promise<void>;
+  /** Reads canonical notification preference before publishing the registered session. */
+  loadNotificationPreference?: (uid: string) => Promise<boolean | undefined>;
+  /** Retires registration work when the account operation gate closes. */
+  isCurrent?: () => boolean;
   /** Completes cleanup when identity exchange reports a deleted player. */
   completeDeletedPlayerCleanup: (playerSigned: string) => Promise<void>;
   /** Wraps SDK work in the shared platform activity lifecycle. */
@@ -46,6 +52,8 @@ export function useJestRegistration({
   setSession,
   setError,
   authenticateIdentity,
+  loadNotificationPreference,
+  isCurrent = () => true,
   completeDeletedPlayerCleanup,
   withPlatformActivity,
   trackFunnel,
@@ -64,6 +72,11 @@ export function useJestRegistration({
   const sourceRef = useRef<RegistrationSource>("profile");
   /** Holds the automatic prompt until the player finishes the reward sequence. */
   const completionPresentationRef = useRef(new CompletionPresentation());
+  const active = useRef(false);
+  useLayoutEffect(() => {
+    active.current = true;
+    return () => {active.current = false;};
+  }, []);
   /** Provides complete behavior. */
   const complete = useCallback(() => {
     if (completingRef.current) return;
@@ -73,6 +86,8 @@ export function useJestRegistration({
     void withPlatformActivity(async () => {
       /** Provides previous session behavior. */
       const previousSession = sessionRef.current;
+      const ownsSession = () => active.current && isCurrent() && previousSession !== null &&
+        sessionRef.current?.firebaseUid === previousSession.firebaseUid && sessionRef.current?.player.playerId === previousSession.player.playerId;
       /** Provides registered behavior. */
       let registered = false;
       /** Provides completion succeeded behavior. */
@@ -90,7 +105,14 @@ export function useJestRegistration({
             deletedPlayerSigned = signed.playerSigned;
             return;
           }
+          if (!ownsSession()) return;
           await authenticateIdentity(identity.customToken);
+          if (!ownsSession()) return;
+          const enabled = await loadNotificationPreference?.(identity.uid);
+          if (!ownsSession()) return;
+          const storedPreferences = player.playerId === previousSession?.player.playerId
+            ? previousSession.preferences : platform.readPreferences();
+          const preferences = {...storedPreferences, locale: "en", notificationsEnabled: enabled ?? storedPreferences.notificationsEnabled ?? true};
           /** Provides profile behavior. */
           let profile = previousSession?.profile ?? null;
           try {
@@ -98,7 +120,9 @@ export function useJestRegistration({
           } catch (profileError) {
             console.warn("[riddle-quest] Jest profile refresh after registration failed", profileError);
           }
-          setSession((current) => (current ? {...current, firebaseUid: identity.uid, player, profile} : current));
+          if (!ownsSession()) return;
+          applyPlayerPreferences(preferences);
+          setSession((current) => (current ? {...current, firebaseUid: identity.uid, player, profile, preferences} : current));
           trackFunnel("registration_completed", {
             playerContinuity: player.playerId === previousSession?.player.playerId,
             source: sourceRef.current,
@@ -119,6 +143,7 @@ export function useJestRegistration({
           completionSucceeded = true;
         }
       } catch (error) {
+        if (!ownsSession()) return;
         console.warn("[riddle-quest] Jest registration completion failed", error);
         captureBrowserException(error, {component: "jest_registration", operation: "synchronize_registered_identity"});
         trackFunnel("registration_completion_failed", {source: sourceRef.current});
@@ -144,6 +169,8 @@ export function useJestRegistration({
       });
   }, [
     authenticateIdentity,
+    isCurrent,
+    loadNotificationPreference,
     backend,
     completeDeletedPlayerCleanup,
     platform,

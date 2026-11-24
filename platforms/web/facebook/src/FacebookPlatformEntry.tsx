@@ -1,7 +1,6 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {LiveRaceView} from "../../../../src/races/contracts/index";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
-import type {RaceTo10GameProps} from "../../../../src/races/components/recorded/RaceTo10Game.types.ts";
+import type {NotificationSettingsCapability} from "../../../../src/notifications/contracts/notificationSettings";
 import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {getCurrentLocale, tr} from "../../../../src/localization/browser/i18n";
@@ -22,12 +21,12 @@ import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./Faceb
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookCommerceSession";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
-import {FacebookNotificationPromptCoordinator} from "./FacebookNotificationPromptCoordinator";
 import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
 import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletion/LocalAccountDeletionGate";
 import {
   applyPlayerPreferences,
   clearBrowserPlayerState,
+  isPlayerNotificationsEnabled,
   subscribeToPlayerPreferenceChanges,
 } from "../../../../src/settings/browser/playerPreferences";
 import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFacebookPause";
@@ -47,13 +46,6 @@ import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/
 /** Native tournament presentation loads only when Facebook multiplayer opens. */
 const FacebookRaceSurface = lazy(() => import("./FacebookRaceEntry").then(module => ({default: module.FacebookRaceEntry})));
 
-/** Binds one stable Facebook-only result callback without changing shared platform behavior. */
-function createFacebookRaceSurface(onLiveResult: NonNullable<RaceTo10GameProps["onLiveResult"]>) {
-  return function FacebookScopedRaceSurface(props: RaceTo10GameProps) {
-    return <FacebookRaceSurface {...props} onLiveResult={onLiveResult} />;
-  };
-}
-
 /** Describes startup state. */
 type StartupState =
   | {
@@ -72,6 +64,8 @@ type StartupState =
       playerData: PlayerData | null;
       /** Target-owned native sharing, absent when Meta or the server disallows it. */
       referralSharing?: import("../../../../src/sharing/components/ReferralSharingCapability").ReferralSharingCapability;
+      /** Settings owns the authenticated player's global notification preference. */
+      notificationSettings?: NotificationSettingsCapability;
       /** Bounded launch hints; competitive authority remains on the server. */
       launch: ReturnType<typeof facebookLaunchFromEntryData>;
     }
@@ -129,8 +123,6 @@ export function FacebookPlatformEntry() {
   const preferencesRef = useRef<Awaited<ReturnType<PlatformSession["storage"]["readPreferences"]>>>({});
   /** Provides presence ref behavior. */
   const presenceRef = useRef<import("../../../../src/presence/PlatformPresenceSession").PlatformPresenceSession | null>(null);
-  /** Provides notification prompt ref behavior. */
-  const notificationPromptRef = useRef<FacebookNotificationPromptCoordinator | null>(null);
   /** Provides deletion gate ref behavior. */
   const deletionGateRef = useRef(new LocalAccountDeletionGate());
   const analyticsLifetimeRef = useRef(new AbortController());
@@ -190,6 +182,8 @@ export function FacebookPlatformEntry() {
         let notificationsEnabled = false;
         /** Meta-owned subscription capability, composed only after authenticated server gates. */
         let notifications = undefined;
+        /** Settings is the only game surface that can request notification permission. */
+        let notificationSettings: NotificationSettingsCapability | undefined;
         /** Provides referrals enabled behavior. */
         let referralsEnabled = false;
         /** Provides matchmaking enabled behavior. */
@@ -198,9 +192,6 @@ export function FacebookPlatformEntry() {
         let presenceCapabilityEnabled = false;
         /** Provides configuration loaded behavior. */
         let configurationLoaded = false;
-        /** Provides notification lease api behavior. */
-        let notificationLeaseApi:
-          import("./FacebookNotificationPromptCoordinator").FacebookNotificationPromptLease | undefined;
         /** Provides context board api behavior. */
         let contextBoardApi:
           | undefined
@@ -259,10 +250,28 @@ export function FacebookPlatformEntry() {
           }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
-            notifications = createFacebookNotificationCapability(sdk, () => active && deletionGateRef.current.isOpen());
-            notificationLeaseApi = {
-              claim: async () => (await claimFacebookNotificationPermissionPrompt()).data,
-              accept: acceptFacebookNotificationPermissionPrompt,
+            const isCurrent = () => active && deletionGateRef.current.isOpen();
+            const permission = createFacebookNotificationCapability(sdk, isCurrent);
+            notifications = permission;
+            if (permission) notificationSettings = {
+              async setEnabled(enabled) {
+                if (!isCurrent()) return false;
+                return deletionGateRef.current.run(async () => {
+                  const {setNotificationPreference} = await import("../../../../src/platform/firebase/browserClient");
+                  if (!isCurrent()) return false;
+                  if (enabled) {
+                    if (!isPlayerNotificationsEnabled()) return false;
+                    const lease = (await claimFacebookNotificationPermissionPrompt({source: "settings"})).data;
+                    if (!lease.granted || !isCurrent() || !isPlayerNotificationsEnabled()) return false;
+                    const result = await permission.requestPermission();
+                    if (result.status !== "success" || !isCurrent() || !isPlayerNotificationsEnabled()) return false;
+                    await acceptFacebookNotificationPermissionPrompt();
+                    if (!isCurrent() || !isPlayerNotificationsEnabled()) return false;
+                  }
+                  await setNotificationPreference({enabled});
+                  return isCurrent();
+                });
+              },
             };
           }
           referralsEnabled = ageCategory === "13_plus" && clientConfiguration.referralsEnabled;
@@ -334,8 +343,17 @@ export function FacebookPlatformEntry() {
         });
         /** Untrusted entry data can select a destination but cannot supply race results. */
         const launch = facebookLaunchFromEntryData(sdk.getEntryPointData?.());
-        /** Provides restored preferences behavior. */
-        const restoredPreferences = await session.storage.readPreferences();
+        /** The account master preference overrides stale provider storage from another device. */
+        const [storedPreferences, account] = await Promise.all([
+          session.storage.readPreferences(),
+          hostServicesMode === "firebase"
+            ? import("../../../../src/platform/firebase/browserClient").then(({loadUserDocument}) => loadUserDocument(userId))
+            : Promise.resolve(null),
+        ]);
+        const restoredPreferences = {
+          ...storedPreferences,
+          ...(typeof account?.notificationsEnabled === "boolean" ? {notificationsEnabled: account.notificationsEnabled} : {}),
+        };
         if (!active) return;
         /** Provides preferences behavior. */
         const preferences = {...restoredPreferences, ...applyPlayerPreferences(restoredPreferences)};
@@ -427,27 +445,6 @@ export function FacebookPlatformEntry() {
                 ...(tournaments ? {tournaments} : {}),
               },
             };
-        /** Provides notification storage behavior. */
-        const notificationStorage = {
-          readPreferences: () => deletionGateRef.current.run(() => session.storage.readPreferences()),
-          writePreferences: (value: import("../../../../src/platform/contracts/capabilities").PlatformPreferences) =>
-            deletionGateRef.current.run(() => session.storage.writePreferences(value)),
-          readPlayerData: () => deletionGateRef.current.run(() => session.storage.readPlayerData()),
-          writePlayerData: (value: PlayerData) =>
-            deletionGateRef.current.run(() => session.storage.writePlayerData(value)),
-          clear: () => deletionGateRef.current.run(() => session.storage.clear()),
-          flush: () => deletionGateRef.current.run(() => session.storage.flush()),
-        };
-        notificationPromptRef.current =
-          notificationsEnabled && synchronizedSession.capabilities.notifications
-            ? new FacebookNotificationPromptCoordinator(
-                notificationStorage,
-                synchronizedSession.capabilities.notifications,
-                undefined,
-                undefined,
-                notificationLeaseApi,
-              )
-            : null;
         if (!active) return;
         setPresenceAvailable(presenceCapabilityEnabled);
         setPresenceEnabled(presenceCapabilityEnabled && preferences.presenceEnabled === true);
@@ -512,7 +509,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch,
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, notificationSettings, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
@@ -530,7 +527,6 @@ export function FacebookPlatformEntry() {
       unsubscribeContext?.();
       void stopPresence?.();
       presenceRef.current = null;
-      notificationPromptRef.current = null;
     };
   }, []);
 
@@ -628,51 +624,6 @@ export function FacebookPlatformEntry() {
     }
   }, [startup]);
 
-  /** Handles authoritative completion. */
-  const handleAuthoritativeCompletion = useCallback(
-    async (
-      _input: {
-        /** Stores riddle id. */
-        riddleId: string; /** Stores game mode. */
-        /** Stores game mode. */
-        gameMode: import("../../../../src/platform/contracts/hostServices").WebGameMode;
-      },
-      result: import("../../../../src/platform/contracts/hostServices").CompletionResult,
-    ) => {
-      try {
-        await notificationPromptRef.current?.afterAuthoritativeCompletion(result.isCorrect);
-      } catch (error) {
-        captureBrowserException(error, {
-          component: "facebook_notifications",
-          operation: "prompt_after_win",
-        });
-      }
-    },
-    [],
-  );
-
-  /** Handles authoritative race result. */
-  const handleAuthoritativeRaceResult = useCallback(async (result: import("../../../../src/races/contracts/index").RaceOutcome) => {
-    try {
-      await notificationPromptRef.current?.afterAuthoritativeCompletion(result.result === "player_win");
-    } catch (error) {
-      captureBrowserException(error, {
-        component: "facebook_notifications",
-        operation: "prompt_after_race_win",
-      });
-    }
-  }, []);
-
-  /** Live snapshots reach the same leased, age/API-gated consent policy as solo wins. */
-  const handleAuthoritativeLiveRaceResult = useCallback((view: LiveRaceView) => {
-    if (view.phase !== "result" || !deletionGateRef.current.isOpen()) return;
-    void notificationPromptRef.current?.afterAuthoritativeCompletion(view.result === "win").catch(error => {
-      captureBrowserException(error, {component: "facebook_notifications", operation: "prompt_after_live_win"});
-    });
-  }, []);
-  /** The component identity remains stable while the host profile and coins refresh. */
-  const raceSurface = useMemo(() => createFacebookRaceSurface(handleAuthoritativeLiveRaceResult), [handleAuthoritativeLiveRaceResult]);
-
   if (startup.status === "error") {
     return (
       <main className="route-missing">
@@ -700,7 +651,7 @@ export function FacebookPlatformEntry() {
     >
     <PlayerSaveRecoveryLayout recovery={saveRecovery}>
       <PlayHostApp
-        raceSurface={raceSurface}
+        raceSurface={FacebookRaceSurface}
         session={createHostedPlaySession({
           hostServices,
           hostConfigurationWarning,
@@ -711,6 +662,7 @@ export function FacebookPlatformEntry() {
           initialPlayerData: startup.playerData,
           ...startup.launch,
           referralSharing: startup.referralSharing,
+          notificationSettings: startup.notificationSettings,
           onPlayerDataChange: (update) => void writePlayerData(update),
           accountDeletionServiceGate: deletionGateRef.current,
           presenceEnabled,
@@ -721,8 +673,6 @@ export function FacebookPlatformEntry() {
         onAccountDeletionRequested={requestAccountDeletion}
         onAccountDeleted={completeAccountDeletion}
         onResultScreen={showResultInterstitial}
-        onAuthoritativeComplete={handleAuthoritativeCompletion}
-        onAuthoritativeRaceResult={handleAuthoritativeRaceResult}
       />
     </PlayerSaveRecoveryLayout>
     </GoogleAnalyticsConsent>

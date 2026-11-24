@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "プレイヤーのユーザー名",
     "NOTIFY_PLAYER": "チャレンジを送信",
     "INVITE_QUEUED": "招待を保存しました。通知の配信はプレイヤーの通知設定によって異なります。",
-    "PUSH_ENABLE": "チャレンジ通知を有効にする",
-    "PUSH_DISABLE": "チャレンジ通知を無効にする",
-    "PUSH_UNAVAILABLE": "ここではブラウザー通知を利用できません。招待はマルチプレイヤー画面に表示されます。",
     "LIVE_HISTORY_TITLE": "最近の対戦",
     "LIVE_HISTORY_EMPTY": "完了した対戦はまだありません。"
   }

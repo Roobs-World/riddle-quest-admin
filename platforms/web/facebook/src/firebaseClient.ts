@@ -53,14 +53,17 @@ export const grantFacebookRewardedContinue = async (input: Parameters<typeof gra
 };
 
 /** Provides claim facebook notification permission prompt raw behavior. */
-const claimFacebookNotificationPermissionPromptRaw = httpsCallable<Record<string, never>, unknown>(
+const claimFacebookNotificationPermissionPromptRaw = httpsCallable<{
+  /** Explicit Settings requests are independent of automatic prompt cooldowns. */
+  source?: "settings";
+}, unknown>(
   firebaseFunctions,
   "claimFacebookNotificationPermissionPrompt",
 );
 /** Provides claim facebook notification permission prompt behavior. */
-export const claimFacebookNotificationPermissionPrompt = async () => {
+export const claimFacebookNotificationPermissionPrompt = async (input: {source?: "settings"} = {}) => {
   /** Provides result behavior. */
-  const result = await claimFacebookNotificationPermissionPromptRaw({});
+  const result = await claimFacebookNotificationPermissionPromptRaw(input);
   return {...result, data: parseFacebookNotificationPromptClaim(result.data)};
 };
 

@@ -1,5 +1,4 @@
 import {trackEvent} from "../../observability/analytics/events";
-import {PushConsentContext, usePushConsentState} from "../../notifications/components/PushConsentContext";
 import {createContext, useContext, useLayoutEffect, useMemo, type ReactNode} from "react";
 
 /** Result data that a platform may turn into an attributed referral share. */
@@ -51,8 +50,6 @@ export type ReferralSharingCapability = {
   }) => Promise<ReferralShareOutcome>;
   /** The provider can open its invite dialog after an explicitly requested private lobby is reserved. */
   autoOpenLiveRaceInvite?: boolean;
-  /** Explicit self-managed browser-push consent, supplied only by supported target adapters. */
-  setLiveRacePush?: (enabled: boolean) => Promise<boolean>;
   /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */
   shareRace: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
 };
@@ -104,10 +101,8 @@ export function ReferralSharingProvider({
     telemetry.lifetime.active = true;
     return () => {telemetry.lifetime.active = false;};
   }, [telemetry]);
-  /** One acknowledged consent state serves all controls under this target. */
-  const consent = usePushConsentState(capability);
   return <ReferralSharingContext.Provider value={telemetry.capability}>
-    <PushConsentContext.Provider value={consent}>{children}</PushConsentContext.Provider>
+    {children}
   </ReferralSharingContext.Provider>;
 }
 

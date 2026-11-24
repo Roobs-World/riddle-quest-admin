@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Nome de usuário do jogador",
     "NOTIFY_PLAYER": "Enviar desafio",
     "INVITE_QUEUED": "Convite salvo. As notificações dependem das configurações do jogador.",
-    "PUSH_ENABLE": "Ativar notificações de desafios",
-    "PUSH_DISABLE": "Desativar notificações de desafios",
-    "PUSH_UNAVAILABLE": "As notificações do navegador não estão disponíveis aqui. Seus convites continuarão aparecendo no multijogador.",
     "LIVE_HISTORY_TITLE": "Partidas recentes",
     "LIVE_HISTORY_EMPTY": "Ainda não há partidas concluídas."
   }

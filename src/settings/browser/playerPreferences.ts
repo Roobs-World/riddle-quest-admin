@@ -18,6 +18,8 @@ export type PlayerPreferences = {
   reducedMotion?: boolean;
   /** Whether the high-contrast theme override is enabled. */
   highContrast?: boolean;
+  /** Master preference for game reminders and challenge notifications. */
+  notificationsEnabled?: boolean;
   /** Whether the player has completed onboarding. */
   onboardingComplete?: boolean;
 };
@@ -31,6 +33,7 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   soundEnabled: "riddleQuest:soundEnabled",
   reducedMotion: "riddleQuest:reducedMotion",
   highContrast: "riddleQuest:highContrast",
+  notificationsEnabled: "riddleQuest:notificationsEnabled",
   activeRace: "riddleQuest:activeRaceRun",
   raceRecovery: "riddleQuest:raceRecovery",
   raceDraft: "riddleQuest:raceDraft",
@@ -50,6 +53,10 @@ const supportedLocales = new Set<Locale>(LANGUAGE_OPTIONS.map(({code}) => code))
 const preferenceSubscribers = new Set<(change: PlayerPreferenceChange) => void>();
 /** Read-only subscribers observe applied motion preferences without creating provider writes. */
 const motionSubscribers = new Set<() => void>();
+/** All notification paths observe the same applied preference. */
+const notificationSubscribers = new Set<() => void>();
+/** Retains the preference when embedded browser storage is unavailable. */
+let notificationsEnabledOverride: boolean | undefined;
 /** Platform onboarding value that takes precedence over browser fallback state. */
 let onboardingCompleteOverride: boolean | undefined;
 /** Jest installs this dynamically so stale tabs cannot recreate deleted browser state. */
@@ -155,16 +162,49 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
     (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"));
   /** Provides onboarding complete behavior. */
   const onboardingComplete = preferences.onboardingComplete ?? false;
+  const notificationsEnabled = preferences.notificationsEnabled ?? true;
 
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled, String(!muted));
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion, String(reducedMotion));
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.highContrast, String(highContrast));
+  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.notificationsEnabled, String(notificationsEnabled));
+  notificationsEnabledOverride = notificationsEnabled;
+  notificationSubscribers.forEach(subscriber => subscriber());
   onboardingCompleteOverride =
     typeof preferences.onboardingComplete === "boolean" ? preferences.onboardingComplete : undefined;
   setLocale(locale);
   applyAccessibilityPreferences(reducedMotion, highContrast);
-  return {locale, muted, reducedMotion, highContrast, onboardingComplete};
+  return {locale, muted, reducedMotion, highContrast, notificationsEnabled, onboardingComplete};
+}
+
+/** An absent preference keeps game notifications on by default. */
+export function isPlayerNotificationsEnabled(): boolean {
+  return notificationsEnabledOverride ?? readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.notificationsEnabled) ?? true;
+}
+
+/** Settings updates every notification path before provider cleanup begins. */
+export function setPlayerNotificationsEnabled(enabled: boolean): void {
+  if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
+  notificationsEnabledOverride = enabled;
+  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.notificationsEnabled, String(enabled));
+  notificationSubscribers.forEach(subscriber => subscriber());
+  emitPreferenceChange({notificationsEnabled: enabled});
+}
+
+/** Observes local changes and preference changes from another game tab. */
+export function subscribeToPlayerNotifications(subscriber: () => void): () => void {
+  notificationSubscribers.add(subscriber);
+  const onStorage = (event: StorageEvent) => {
+    if (event.key !== null && event.key !== PLAYER_PREFERENCE_STORAGE_KEYS.notificationsEnabled) return;
+    notificationsEnabledOverride = undefined;
+    subscriber();
+  };
+  if (typeof window !== "undefined") window.addEventListener("storage", onStorage);
+  return () => {
+    notificationSubscribers.delete(subscriber);
+    if (typeof window !== "undefined") window.removeEventListener("storage", onStorage);
+  };
 }
 
 /** Persists and applies a locale selected by the player. */
@@ -322,6 +362,8 @@ export function clearBrowserPlayerState(): void {
     failures.push(error);
   } finally {
     onboardingCompleteOverride = undefined;
+    notificationsEnabledOverride = undefined;
+    notificationSubscribers.forEach(subscriber => subscriber());
     /** Provides root behavior. */
     const root = typeof document === "undefined" ? undefined : document.documentElement;
     if (root) {

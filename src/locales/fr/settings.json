@@ -14,6 +14,7 @@
     "LOGOUT_BUTTON": "Déconnexion",
     "LOGOUT_ERROR_MESSAGE": "Impossible de se déconnecter. Veuillez réessayer.",
     "LOGOUT_ERROR_TITLE": "Erreur",
+    "NOTIFICATIONS": "Notifications",
     "SOUND_TOGGLE": "Son",
     "TERMS_BUTTON": "Conditions d'utilisation",
     "TITLE": "Paramètres",

@@ -44,7 +44,8 @@ export async function deliverLiveRacePush(db: Firestore, eventId: string,
     if ((raceProviderScope(event.recipientId) === "android" && (!isAndroidAccountProvider(recipient.data()?.androidProvider) || !isAndroidAccountProvider(creator.data()?.androidProvider))) ||
         !ticket?.privateChallenge || ticket.userId !== event.creatorId || ticket.inviteRecipientId !== event.recipientId ||
         ticket.cancelled || ticket.matchId || event.expiresAtMs !== ticket.createdAtMs + LIVE_RACE_INVITE_MS || nowMs >= event.expiresAtMs ||
-        nowMs > ticket.seenAtMs + 30_000 || !creator.exists || !recipient.exists || deleted.exists || creatorDeleted.exists || blocked.exists || reverse.exists) {
+        nowMs > ticket.seenAtMs + 30_000 || !creator.exists || !recipient.exists || recipient.data()?.notificationsEnabled === false ||
+        deleted.exists || creatorDeleted.exists || blocked.exists || reverse.exists) {
       tx.update(ref, {status: "skipped"}); return null;
     }
     /** Missing browser consent never falls back to sending Jest SDK messages to another user. */

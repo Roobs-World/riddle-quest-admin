@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Tên người dùng của người chơi",
     "NOTIFY_PLAYER": "Gửi thử thách",
     "INVITE_QUEUED": "Đã lưu lời mời. Việc gửi thông báo phụ thuộc vào cài đặt của người chơi.",
-    "PUSH_ENABLE": "Bật thông báo thử thách",
-    "PUSH_DISABLE": "Tắt thông báo thử thách",
-    "PUSH_UNAVAILABLE": "Thông báo trình duyệt không khả dụng ở đây. Lời mời vẫn sẽ xuất hiện trong chế độ nhiều người chơi.",
     "LIVE_HISTORY_TITLE": "Trận đấu gần đây",
     "LIVE_HISTORY_EMPTY": "Chưa có trận đấu nào hoàn thành."
   }

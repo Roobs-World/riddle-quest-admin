@@ -108,6 +108,7 @@ export function resolveFacebookNotificationPromptClaim({
   user,
   lease,
   nowMs,
+  source,
 }: {
   /** Stores uid. */
   uid: string;
@@ -117,6 +118,8 @@ export function resolveFacebookNotificationPromptClaim({
   lease: unknown;
   /** Stores now ms. */
   nowMs: number;
+  /** User-requested Settings permission skips automatic prompt eligibility. */
+  source?: "settings";
 }):
   | {
       /** Stores granted. */
@@ -136,9 +139,10 @@ export function resolveFacebookNotificationPromptClaim({
   ) {
     throw new Error("invalid-facebook-notification-prompt-request");
   }
-  if (!hasAuthoritativeWin(user)) return {granted: false};
+  if (source !== "settings" && !hasAuthoritativeWin(user)) return {granted: false};
   /** Parses d lease. */
   const parsedLease = parseLease(lease, uid);
+  if (source === "settings") return {granted: true, claimedAtMs: nowMs};
   if (parsedLease?.accepted) return {granted: false};
   if (
     parsedLease &&
@@ -149,17 +153,20 @@ export function resolveFacebookNotificationPromptClaim({
   return {granted: true, claimedAtMs: nowMs};
 }
 
-/** Atomically grants at most one prompt attempt per player per seven-day window. */
+/** Claims explicit Settings consent or an eligible automatic permission attempt. */
 export async function claimFacebookNotificationPrompt(
   uid: string,
   {
     db = getFirestore(),
     nowMs = Date.now(),
+    source,
   }: {
     /** Stores db. */
     db?: Firestore; /** Stores now ms. */
     /** Stores now ms. */
     nowMs?: number;
+    /** Explicit Settings permission request. */
+    source?: "settings";
   } = {},
 ): Promise<
   | {
@@ -187,6 +194,7 @@ export async function claimFacebookNotificationPrompt(
       user: userSnapshot.data(),
       lease: leaseSnapshot.exists ? leaseSnapshot.data() : undefined,
       nowMs,
+      source,
     });
     if (decision.granted) {
       transaction.set(

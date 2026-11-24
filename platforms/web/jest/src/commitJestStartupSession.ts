@@ -57,6 +57,7 @@ export async function commitJestStartupSession({
         prepareSession?.(englishSession, "en") ?? englishSession,
       ]);
       if (!isActive() || !gate.isOpen()) return;
+      applyPlayerPreferences(readySession.preferences);
       /** The same target player may have a newer unsaved checkpoint from the retiring guest/session visit. */
       const playerData = enablePlayerStateWrites(readySession.playerData, readySession.player.playerId);
       /** Preserve the authority-hydrated session while installing the reconciled client checkpoint. */

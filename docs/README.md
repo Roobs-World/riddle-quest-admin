@@ -25,6 +25,8 @@ The background Sentry worker has its own [runbook](sentry-worker/README.md) and 
 
 Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
 
+The Settings notification toggle and provider delivery rules are documented in [Notification settings](common/notifications/README.md).
+
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 
 ## Documentation placement

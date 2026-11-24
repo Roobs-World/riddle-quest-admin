@@ -93,6 +93,8 @@ export type PlatformPreferences = {
   reducedMotion?: boolean;
   /** Player-selected high-contrast accessibility preference. */
   highContrast?: boolean;
+  /** Master preference for game reminders and challenge notifications; absent means on. */
+  notificationsEnabled?: boolean;
   /** Indicates that the shared first-run onboarding flow has completed. */
   onboardingComplete?: boolean;
   /** Unix epoch milliseconds of the latest dismissed registration prompt. */

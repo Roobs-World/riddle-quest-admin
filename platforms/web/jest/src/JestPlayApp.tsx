@@ -3,7 +3,7 @@ import {ProfileSubscriptionContext} from "../../../../src/accounts/browser/Profi
 import {completionPresentationKey} from "../../../../src/gameplay/session/completion/completionPresentation";
 import {ProviderProfileContext} from "../../../../src/accounts/components/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../../../../src/commerce/browser/ShopSubscriptionContext";
-import {Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
@@ -19,8 +19,6 @@ import type {JestSession} from "./types";
 import {tr, useLocale} from "../../../../src/localization/browser/i18n";
 import {MockJestPlatform} from "./MockJestPlatform";
 import {recordAuthoritativeCompletion, shouldPromptGuestRegistration} from "./milestone";
-import {useJestNotifications} from "./notifications/useJestNotifications";
-import type {NotificationCopy} from "./notifications/copy";
 import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
@@ -60,6 +58,11 @@ import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
 import {hasLiveRaceLobby} from "../../../../src/races/browser/storage/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
+import type {NotificationSettingsCapability} from "../../../../src/notifications/contracts/notificationSettings";
+
+/** Notification delivery loads after the playable session mounts. */
+const JestNotifications = lazy(() => import("./notifications/JestNotifications")
+  .then(module => ({default: module.JestNotifications})));
 
 /** Account-management controls load when Profile or Settings first renders them. */
 const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
@@ -215,35 +218,31 @@ export function JestPlayApp() {
   const accountDeletionQuiesced = useAccountDeletionQuiescence(notificationOperationGate);
   const analyticsLifetimeRef = useRef(new AbortController());
   const isAnalyticsSessionCurrent = useCallback(() => notificationOperationGate.isOpen(), [notificationOperationGate]);
-  /** Bundled locale copy keeps the Jest notification lifecycle independent of remote configuration availability. */
-  const notificationFallbackCopy = useMemo<NotificationCopy>(
-    () => ({
-      dailyBody: tr("WebPortal.NOTIFICATION_DAILY_BODY"),
-      dailyCta: tr("WebPortal.NOTIFICATION_DAILY_CTA"),
-      streakBody: tr("WebPortal.NOTIFICATION_STREAK_BODY"),
-      streakCta: tr("WebPortal.NOTIFICATION_STREAK_CTA"),
-      weeklyBody: tr("WebPortal.NOTIFICATION_WEEKLY_BODY"),
-      weeklyCta: tr("WebPortal.NOTIFICATION_WEEKLY_CTA"),
-      raceTitle: tr("RaceTo10.TITLE"),
-      raceBody: tr("RaceTo10.RESULTS_NOTIFICATION_BODY"),
-      raceCta: tr("RaceTo10.CHECK_RESULTS"),
-    }),
-    [locale],
-  );
-  useJestNotifications({
-    locale,
-    mockRuntime,
-    session,
-    engagementProgress,
-    gameTitle: tr("WebPortal.JEST_APP_TITLE"),
-    playerFallback: tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK"),
-    fallbackCopy: notificationFallbackCopy,
-    assetReference: import.meta.env.VITE_JEST_NOTIFICATION_ASSET_REFERENCE || undefined,
-    platform,
-    notificationsEnabled: notificationOperationGate.isOpen,
-    withPlatformActivity: notificationOperationGate.run,
-    trackFunnel,
-  });
+  const notificationsDelegate = useMemo(() => {
+    let active = false;
+    let current: NotificationSettingsCapability | null = null;
+    const waiting = new Set<(capability: NotificationSettingsCapability | null) => void>();
+    const resolveWaiting = (capability: NotificationSettingsCapability | null) => {
+      waiting.forEach(resolve => resolve(capability)); waiting.clear();
+    };
+    return {
+      async setEnabled(enabled: boolean) {
+        if (!active) return false;
+        const capability = current ?? await new Promise<NotificationSettingsCapability | null>(resolve => waiting.add(resolve));
+        return active && capability ? capability.setEnabled(enabled) : false;
+      },
+      install(capability: NotificationSettingsCapability) {
+        current = capability; if (active) resolveWaiting(capability);
+        return () => {if (current === capability) current = null;};
+      },
+      activate() {active = true; if (current) resolveWaiting(current);},
+      retire() {active = false; current = null; resolveWaiting(null);},
+    };
+  }, [platform, session?.firebaseUid, session?.player.playerId, session?.player.registered]);
+  useLayoutEffect(() => {
+    notificationsDelegate.activate();
+    return () => notificationsDelegate.retire();
+  }, [notificationsDelegate]);
   /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({
     locale,
@@ -422,7 +421,10 @@ export function JestPlayApp() {
               }, profileData);
               if (active && notificationOperationGate.isOpen())
                 startupRiddles.preloadClassic(preparedLocale, profile.classicIndex ?? 1);
-              return {...readySession, playerData: {...readySession.playerData,
+              return {...readySession,
+                preferences: {...readySession.preferences,
+                  ...(typeof profileData.notificationsEnabled === "boolean" ? {notificationsEnabled: profileData.notificationsEnabled} : {})},
+                playerData: {...readySession.playerData,
                 schemaVersion: 1, updatedAt: Date.now(), profile}};
             },
             enablePlayerStateWrites: playerStateWrites.enable,
@@ -511,6 +513,13 @@ export function JestPlayApp() {
     setSession,
     setError,
     authenticateIdentity: authenticateJestIdentity,
+    loadNotificationPreference: authHarness || mockRuntime ? undefined : async uid => {
+      const {loadUserDocument} = await import("../../../../src/platform/firebase/browserClient");
+      const user = await loadUserDocument(uid);
+      if (!user) throw new Error("jest-registered-profile-unavailable");
+      return typeof user.notificationsEnabled === "boolean" ? user.notificationsEnabled : undefined;
+    },
+    isCurrent: notificationOperationGate.isOpen,
     completeDeletedPlayerCleanup: completeTombstonedPlayerCleanup,
     withPlatformActivity,
     trackFunnel,
@@ -621,6 +630,9 @@ export function JestPlayApp() {
   }
   return (
     <>
+      <Suspense fallback={null}><JestNotifications locale={locale} mockRuntime={mockRuntime} authHarness={authHarness}
+        session={session} sessionRef={sessionRef} engagementProgress={engagementProgress} platform={platform}
+        trackFunnel={trackFunnel} gate={notificationOperationGate} install={notificationsDelegate.install} /></Suspense>
       {registrationFailure ? (
         <div
           className="play-alert game-shell-alert"
@@ -675,6 +687,7 @@ export function JestPlayApp() {
               onTogglePresence: togglePresence,
               onPresenceStateChange: setPresenceState,
               referralSharing,
+              notificationSettings: notificationsDelegate,
             })}
             onPlayable={() => markJestPlayable(platform)}
             onStartupUnavailable={() => markJestPlayable(platform)}

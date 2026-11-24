@@ -139,6 +139,8 @@ export const listLiveRaceChallenges = gameFunctions.listLiveRaceChallenges;
 export const listLiveRaceHistory = gameFunctions.listLiveRaceHistory;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
 export const setLiveRacePushSubscription = gameFunctions.setLiveRacePushSubscription;
+/** Saves the authenticated account's master notification preference. */
+export const setNotificationPreference = gameFunctions.setNotificationPreference;
 
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
 export const updateLiveRace = gameFunctions.updateLiveRace;

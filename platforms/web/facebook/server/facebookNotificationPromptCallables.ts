@@ -9,6 +9,8 @@ import {isFacebookFirebaseUid} from "./facebookSecurity";
 
 /** Validates the empty request data shape. */
 const EmptyRequestSchema = z.object({}).strict();
+/** Settings consent requests do not depend on a completed riddle. */
+const ClaimRequestSchema = z.object({source: z.literal("settings").optional()}).strict();
 /** Validates the claim response data shape. */
 const ClaimResponseSchema = z.discriminatedUnion("granted", [
   z.object({granted: z.literal(false)}).strict(),
@@ -35,10 +37,10 @@ export const claimFacebookNotificationPermissionPrompt = onCallWithSentry(
   async (request: CallableRequest<unknown>) => {
     /** Provides uid behavior. */
     const uid = requireFacebookNotifications(request);
-    validateCallableRequest(EmptyRequestSchema, request.data, "claimFacebookNotificationPermissionPrompt");
+    const input = validateCallableRequest(ClaimRequestSchema, request.data, "claimFacebookNotificationPermissionPrompt");
     return validateCallableResponse(
       ClaimResponseSchema,
-      await claimFacebookNotificationPrompt(uid),
+      await (input.source ? claimFacebookNotificationPrompt(uid, {source: input.source}) : claimFacebookNotificationPrompt(uid)),
       "claimFacebookNotificationPermissionPrompt",
     );
   },

@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Nazwa użytkownika gracza",
     "NOTIFY_PLAYER": "Wyślij wyzwanie",
     "INVITE_QUEUED": "Zaproszenie zapisane. Powiadomienia zależą od ustawień gracza.",
-    "PUSH_ENABLE": "Włącz powiadomienia o wyzwaniach",
-    "PUSH_DISABLE": "Wyłącz powiadomienia o wyzwaniach",
-    "PUSH_UNAVAILABLE": "Powiadomienia przeglądarki są tu niedostępne. Zaproszenia nadal będą widoczne w trybie wieloosobowym.",
     "LIVE_HISTORY_TITLE": "Ostatnie mecze",
     "LIVE_HISTORY_EMPTY": "Nie ma jeszcze ukończonych meczów."
   }

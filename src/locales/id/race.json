@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Nama pengguna pemain",
     "NOTIFY_PLAYER": "Kirim tantangan",
     "INVITE_QUEUED": "Undangan disimpan. Pengiriman notifikasi bergantung pada pengaturan pemain.",
-    "PUSH_ENABLE": "Aktifkan notifikasi tantangan",
-    "PUSH_DISABLE": "Nonaktifkan notifikasi tantangan",
-    "PUSH_UNAVAILABLE": "Notifikasi browser tidak tersedia di sini. Undangan Anda tetap muncul di multipemain.",
     "LIVE_HISTORY_TITLE": "Pertandingan terbaru",
     "LIVE_HISTORY_EMPTY": "Belum ada pertandingan yang selesai."
   }

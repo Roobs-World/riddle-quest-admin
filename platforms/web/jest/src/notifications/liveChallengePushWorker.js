@@ -5,8 +5,14 @@ self.addEventListener("push", event => {
   if (data?.kind !== "liveChallenge" || !/^live_[a-f0-9]{64}$/.test(data.challengeId) ||
       !Number.isSafeInteger(Number(data.expiresAtMs)) || Number(data.expiresAtMs) <= Date.now() ||
       typeof data.title !== "string" || data.title.length > 200 || typeof data.body !== "string" || data.body.length > 2000) return;
-  event.waitUntil(self.registration.showNotification(data.title, {body: data.body, tag: data.challengeId,
-    data: {challengeId: data.challengeId, expiresAtMs: Number(data.expiresAtMs)}}));
+  event.waitUntil((async () => {
+    const cache = await caches.open("riddleQuest:jestNotificationPreferences:v1");
+    const saved = await cache.match(new URL("/riddle-quest-notification-preference", self.location.origin));
+    const preference = saved ? await saved.json() : null;
+    if (preference?.enabled !== true || typeof data.accountId !== "string" || preference.owner !== data.accountId) return;
+    await self.registration.showNotification(data.title, {body: data.body, tag: data.challengeId,
+      data: {challengeId: data.challengeId, expiresAtMs: Number(data.expiresAtMs)}});
+  })());
 });
 self.addEventListener("notificationclick", event => {
   event.notification.close();

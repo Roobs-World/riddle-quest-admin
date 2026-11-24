@@ -123,9 +123,6 @@
     "PLAYER_USERNAME": "Player username",
     "NOTIFY_PLAYER": "Send challenge",
     "INVITE_QUEUED": "Invitation saved. Push delivery depends on the player’s notification settings.",
-    "PUSH_ENABLE": "Enable challenge notifications",
-    "PUSH_DISABLE": "Disable challenge notifications",
-    "PUSH_UNAVAILABLE": "Browser notifications are unavailable here. Your invitations will still appear in multiplayer.",
     "LIVE_HISTORY_TITLE": "Recent matches",
     "LIVE_HISTORY_EMPTY": "No completed matches yet."
   }

@@ -49,6 +49,7 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(typeof value.muted === "boolean" ? {muted: value.muted} : {}),
     ...(typeof value.reducedMotion === "boolean" ? {reducedMotion: value.reducedMotion} : {}),
     ...(typeof value.highContrast === "boolean" ? {highContrast: value.highContrast} : {}),
+    ...(typeof value.notificationsEnabled === "boolean" ? {notificationsEnabled: value.notificationsEnabled} : {}),
     ...(typeof value.onboardingComplete === "boolean" ? {onboardingComplete: value.onboardingComplete} : {}),
     ...(typeof value.firstMilestoneMarked === "boolean" ? {firstMilestoneMarked: value.firstMilestoneMarked} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
@@ -61,6 +62,7 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
   ...(preferences.muted === undefined ? {} : {muted: preferences.muted}),
   ...(preferences.reducedMotion === undefined ? {} : {reducedMotion: preferences.reducedMotion}),
   ...(preferences.highContrast === undefined ? {} : {highContrast: preferences.highContrast}),
+  ...(preferences.notificationsEnabled === undefined ? {} : {notificationsEnabled: preferences.notificationsEnabled}),
   ...(preferences.onboardingComplete === undefined ? {} : {onboardingComplete: preferences.onboardingComplete}),
 });
 

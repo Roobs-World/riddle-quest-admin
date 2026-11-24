@@ -363,11 +363,6 @@ export function useJestSharing({
             shareRace,
             shareLiveRace,
             autoOpenLiveRaceInvite: true,
-            /** Guests cannot register a server-owned push subscription. */
-            ...(session.player.registered ? {setLiveRacePush: async (enabled: boolean) => {
-              try {return await (await import("../notifications/liveChallengePush")).setJestLiveChallengePush(enabled);}
-              catch {return false;}
-            }} : {}),
           }
         : null,
     [session, shareInvite, shareRace, shareResult, shareLiveRace],

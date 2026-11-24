@@ -43,6 +43,8 @@ export const setLiveRacePushSubscription = onCallWithSentry("setLiveRacePushSubs
       const [user, deleted, current] = await Promise.all([tx.get(db.doc(`users/${uid}`)), tx.get(getJestAccountDeletionRef(db, uid)), tx.get(ref)]);
       assertJestAccountActive(deleted);
       if (!user.exists) throw new HttpsError("not-found", "Account unavailable.");
+      if (input.enabled && user.data()?.notificationsEnabled === false)
+        throw new HttpsError("failed-precondition", "Game notifications are disabled.");
       /** Previous browser instance ownership key. */
       const oldTokenHash = current.data()?.tokenHash;
       /** Previous browser token owner, read before writes. */
@@ -77,10 +79,14 @@ export const deliverLiveRaceChallengePush = onDocumentCreated({document: "liveRa
       });
       if (process.env.JEST_CHALLENGE_PUSH_ENABLED !== "1" || !delivery.token) return "skipped";
       /** Consent rechecked immediately before contacting Firebase Messaging. */
-      const subscription = await db.doc(`users/${delivery.event.recipientId}/livePushSubscriptions/current`).get();
-      if (subscription.data()?.enabled !== true || subscription.data()?.token !== delivery.token) return "skipped";
+      const [subscription, recipient] = await Promise.all([
+        db.doc(`users/${delivery.event.recipientId}/livePushSubscriptions/current`).get(),
+        db.doc(`users/${delivery.event.recipientId}`).get(),
+      ]);
+      if (!recipient.exists || recipient.data()?.notificationsEnabled === false ||
+          subscription.data()?.enabled !== true || subscription.data()?.token !== delivery.token) return "skipped";
       try {
-        await getMessaging().send({token: delivery.token, data: {kind: "liveChallenge", challengeId: delivery.event.challengeId,
+        await getMessaging().send({token: delivery.token, data: {kind: "liveChallenge", accountId: delivery.event.recipientId, challengeId: delivery.event.challengeId,
           title: delivery.title, body: delivery.body, expiresAtMs: String(delivery.event.expiresAtMs)},
         webpush: {headers: {TTL: String(Math.max(0, Math.floor((delivery.event.expiresAtMs - Date.now()) / 1000)))}}});
         return "submitted";

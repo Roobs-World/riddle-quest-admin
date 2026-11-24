@@ -14,6 +14,7 @@ import type {PlayerData} from "../../platform/contracts/capabilities";
 import {createHostedPlayCommandModule, getHostNoticeMessage, type HostOperationName} from "../../platform/bridge/browser/hostMessageHandlers";
 import {safeBrowserStorageGet} from "../../settings/browser/playerPreferences";
 import {ReferralSharingProvider} from "../../sharing/components/ReferralSharingCapability";
+import {NotificationSettingsProvider} from "../../notifications/components/NotificationSettingsContext";
 import {useHostOperations} from "../../gameplay/hooks/browser/useHostOperations";
 import {useHostRiddleLifecycle} from "../../gameplay/hooks/browser/useHostRiddleLifecycle";
 import {useHostRaceCoordination} from "../../races/hooks/useHostRaceCoordination";
@@ -50,6 +51,7 @@ export function PlayHostApp({
     raceLocalePolicy,
     onPresenceStateChange,
     referralSharing,
+    notificationSettings,
   },
   raceSurface,
   onPlayable,
@@ -432,6 +434,7 @@ export function PlayHostApp({
 
   return (
     <ReferralSharingProvider key={authSnapshot.user?.uid ?? "guest"} capability={referralSharing}>
+      <NotificationSettingsProvider capability={notificationSettings}>
       <div className="play-game-shell">
         {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
         <GameFrameApp
@@ -471,6 +474,7 @@ export function PlayHostApp({
           />
         ) : null}
       </div>
+      </NotificationSettingsProvider>
     </ReferralSharingProvider>
   );
 }

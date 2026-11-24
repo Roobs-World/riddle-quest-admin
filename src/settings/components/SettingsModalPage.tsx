@@ -1,4 +1,4 @@
-import {LiveRacePushConsent} from "../../races/components/social/LiveRacePushConsent";
+import {NotificationSettings} from "../../notifications/components/NotificationSettings";
 import {AnalyticsConsentControls} from "../../observability/analytics/AnalyticsConsentControls";
 import {useContext, useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale} from "../../content/catalog/bundledContent";
@@ -69,7 +69,7 @@ export function SettingsModalPage({
         <span>{youtubeText(accessibilityLocale, "highContrast")}</span>
         <strong>{highContrast ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
-      <LiveRacePushConsent />
+      <NotificationSettings />
       <AnalyticsConsentControls />
       {!isJestWebTarget && <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
