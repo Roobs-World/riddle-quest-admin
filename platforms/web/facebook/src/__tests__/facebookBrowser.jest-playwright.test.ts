@@ -346,6 +346,36 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         notificationAccepted = true;
         return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {accepted: true}})});
       });
+      const enrollmentPair = "d".repeat(64);
+      let enrollmentRequests = 0;
+      let enrollmentComplete = false;
+      const notificationPreferences: boolean[] = [];
+      await successPage.route("**/setNotificationPreference", async route => {
+        const input = JSON.parse(route.request().postData() ?? "{}");
+        expect(typeof input.data?.enabled).toBe("boolean");
+        const headers = await route.request().allHeaders();
+        expect(headers.authorization).toBe(`Bearer ${firebaseIdToken}`);
+        expect(headers["x-firebase-appcheck"]).toBe(appCheckToken);
+        notificationPreferences.push(input.data.enabled);
+        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {enabled: input.data.enabled}})});
+      });
+      await successPage.route("**/getNotificationEnrollmentStatus", async route => {
+        const input = JSON.parse(route.request().postData() ?? "{}");
+        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
+          registeredDevices: enrollmentComplete ? 1 : 0,
+          enrollmentComplete: enrollmentComplete && input.data?.pairingCode === enrollmentPair,
+        }})});
+      });
+      await successPage.route("**/createNotificationEnrollment", async route => {
+        enrollmentRequests += 1;
+        expect(notificationPreferences.at(-1)).toBe(true);
+        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
+          url: `https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`, expiresAtMs: Date.now() + 600_000,
+        }})});
+      });
+      await successPage.context().route("https://riddle-quest-admin.vercel.app/push/**", route => route.fulfill({
+        status: 200, contentType: "text/html", body: "<!doctype html><html lang=\"en\"><head><title>Device enrollment fixture</title></head><body>Connect this device</body></html>",
+      }));
       await successPage.addInitScript(() => {
         window.__facebookEvents = [];
         window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
@@ -674,8 +704,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
       const notificationCopy = getHostedNotificationCopy("fr");
       await settings.getByRole("status").first().waitFor();
-      expect((await settings.getByRole("status").allTextContents()).some(message =>
-        message === notificationCopy.notConfigured || message === notificationCopy.unavailable)).toBe(true);
+      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.permissionRequired);
+      expect(enrollmentRequests).toBe(0);
       await notificationToggle.click();
       await settings.locator('button[aria-busy="false"][aria-pressed="false"]').waitFor();
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("false");
@@ -684,8 +714,26 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
       expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("true");
-      expect((await settings.getByRole("status").allTextContents()).some(message =>
-        message === notificationCopy.notConfigured || message === notificationCopy.unavailable)).toBe(true);
+      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.permissionRequired);
+      expect(notificationPreferences).toEqual([false, true]);
+      const enrollmentWindow = successPage.waitForEvent("popup");
+      await settings.getByRole("button", {name: notificationCopy.allowNotifications, exact: true}).click();
+      const popup = await enrollmentWindow;
+      await popup.waitForURL(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
+      expect(enrollmentRequests).toBe(1);
+      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
+      const pairHash = await successPage.evaluate(async code => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)))].map(value => value.toString(16).padStart(2, "0")).join(""), enrollmentPair);
+      await popup.evaluate(() => window.opener.postMessage({kind: "riddle-quest-notification-enrolled", pairHash: "0".repeat(64)}, "*"));
+      expect(popup.isClosed()).toBe(false);
+      enrollmentComplete = true;
+      const enrollmentClosed = popup.waitForEvent("close");
+      await popup.evaluate(hash => window.opener.postMessage({kind: "riddle-quest-notification-enrolled", pairHash: hash}, "*"), pairHash);
+      await enrollmentClosed;
+      await successPage.bringToFront();
+      await successPage.evaluate(() => window.dispatchEvent(new Event("focus")));
+      await settings.getByRole("button", {name: notificationCopy.allowNotifications, exact: true}).waitFor({state: "detached"});
+      expect(popup.isClosed()).toBe(true);
+      expect(successRequests.some(url => url.includes("accounts.google.com"))).toBe(false);
       expect(notificationClaims).toBe(0);
       expect(notificationAccepted).toBe(false);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);

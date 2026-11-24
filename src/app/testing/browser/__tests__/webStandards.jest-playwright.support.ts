@@ -9,7 +9,7 @@ import type {Page} from "@playwright/test";
 /** Validates the actual React DOM, including SVG and ARIA, with the pinned local Nu checker. */
 export async function expectConformingHtml(page: Page, state: string): Promise<void> {
   /** Portal workspace containing the pinned validator. */
-  const packageRoot = path.resolve(__dirname, "../../../../web/..");
+  const packageRoot = path.resolve(__dirname, "../../../../..");
   /** Optional retained evidence directory supplied by the verification run. */
   const retained = process.env.W3C_REPORT_DIR;
   /** Per-run temporary directory when the caller does not retain HTML snapshots. */
@@ -20,7 +20,7 @@ export async function expectConformingHtml(page: Page, state: string): Promise<v
   try {
     await writeFile(document, await page.content());
     if (retained) await page.screenshot({path: document.replace(/\.html$/, ".png")});
-    execFileSync(process.execPath, [path.join(packageRoot, "scripts/validate-w3c.mjs"), document], {
+    execFileSync(process.execPath, [path.join(packageRoot, "scripts/web/validate-w3c.mjs"), document], {
       cwd: packageRoot, encoding: "utf8", timeout: 35_000,
     });
   } finally {
