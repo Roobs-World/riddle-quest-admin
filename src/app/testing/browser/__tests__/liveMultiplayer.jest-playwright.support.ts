@@ -103,10 +103,11 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     await page.locator(".race-error").waitFor();
     expect(await page.locator(".race-error").innerText()).not.toContain("private provider diagnostic");
     await page.locator(".race-error button").click();
-    await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
+    await page.locator(".friend-lobby-seat:first-child").getByText(`${target}Solver`, {exact: true}).waitFor();
     expect(joins).toHaveLength(2);
     expect(joins[1]).toEqual(joins[0]);
-    expect(joins[0]).toMatchObject({locale, categoryId: "mixed"});
+    expect(joins[0]).toMatchObject({locale, categoryId: "mixed", requiresReady: true});
+    expect(await page.locator(".friend-lobby-play").isDisabled()).toBe(true);
     failPoll = true;
     await page.locator(".race-error").waitFor();
     failPoll = false;
@@ -115,7 +116,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     expect(joins).toHaveLength(2);
     startsAtMs = Date.now() + 5_000;
     await page.locator('[data-analytics-screen="multiplayer_live_countdown"]').waitFor();
-    await page.locator(".live-race-rival").getByText("LiveRival", {exact: true}).waitFor();
+    await page.locator(".friend-lobby-seat:last-child").getByText("LiveRival", {exact: true}).waitFor();
     expect(Number(await page.locator(".live-race-search-wheel[data-phase=countdown]").getAttribute("aria-valuenow"))).toBeGreaterThan(0);
     expect(Number(await page.locator(".live-race-search-wheel[data-phase=countdown]").getAttribute("aria-valuenow"))).toBeLessThanOrEqual(100);
     // Hold the matched fixture while testing safety so viewport assertions do not race the countdown.
@@ -141,10 +142,10 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
       expect(bounds).not.toBeNull();
       expect(bounds!.x).toBeGreaterThanOrEqual(0);
       expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(width + 1);
-      /** Expanded controls must follow the rival, without flex shrink or inherited recorded-row layout. */
+      /** Expanded controls follow the shared lobby without overlapping its seats or actions. */
       const safety = await page.locator(".live-race-safety").boundingBox();
-      /** Real rival identity bounds catch overlap even when the dialog itself fits. */
-      const rival = await page.locator(".live-race-rival").boundingBox();
+      /** Lobby bounds catch overlap even when the dialog itself fits. */
+      const rival = await page.locator(".friend-lobby").boundingBox();
       expect(safety!.y).toBeGreaterThanOrEqual(rival!.y + rival!.height);
       for (const selector of ["summary", ".live-race-block", "select", ".live-race-report"]) {
         /** Browser control bounds verify horizontal fit and usable touch targets. */
@@ -173,7 +174,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
     expect(updates.every(input => input.ticketId === "b".repeat(64))).toBe(true);
     startsAtMs = null;
     await page.locator(".live-race-start").click();
-    await page.locator(".live-race-self").getByText(`${target}Solver`, {exact: true}).waitFor();
+    await page.locator(".friend-lobby-seat:first-child").getByText(`${target}Solver`, {exact: true}).waitFor();
     expect(joins).toHaveLength(3);
     expect(await page.locator(".live-race-safety").count()).toBe(0);
     expect(joins[2].requestId).not.toBe(joins[0].requestId);

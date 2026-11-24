@@ -1,6 +1,6 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
-import {LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/races/contracts/index.js";
+import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
@@ -40,12 +40,99 @@ afterAll(async () => {await clear(); await db.terminate();});
 /** Starts an authenticated resumable public search with a bounded bot fallback. */
 const join = (userId: string, requestId: string, nowMs = NOW) => joinLiveRaceForUser(userId,
   {locale: "en", categoryId: "history", requestId, waitForPlayer: true, retirementAware: true}, {db, nowMs});
-/** Polls or leaves the supplied owned seat at a controlled server time. */
-const update = (userId: string, view: LiveRaceView, nowMs: number, action: "poll" | "leave" = "poll", requestId = `update-${nowMs}`) =>
+/** Explicit-start clients reserve an opponent before accepting the shared countdown. */
+const joinReady = (userId: string, requestId: string, nowMs = NOW) => joinLiveRaceForUser(userId,
+  {locale: "en", categoryId: "history", requestId, waitForPlayer: true, requiresReady: true, retirementAware: true}, {db, nowMs});
+/** Polls, readies or leaves the supplied owned seat at a controlled server time. */
+const update = (userId: string, view: LiveRaceView, nowMs: number, action: "poll" | "ready" | "leave" = "poll", requestId = `update-${nowMs}`) =>
   updateLiveRaceForUser(userId, {ticketId: view.ticketId, action, requestId}, {db, nowMs});
 /** Attempts exact recovery of the original public player-wait ticket. */
 const resume = (userId: string, view: LiveRaceView, requestId: string, nowMs: number) => joinLiveRaceForUser(userId,
   {locale: "en", categoryId: "history", waitForPlayer: true, resumeTicketId: view.ticketId, requestId, retirementAware: true}, {db, nowMs});
+
+it("waits for both Play game commands before starting a human match or revealing a question", async () => {
+  const first = await joinReady(A, "ready-human-first");
+  expect(first).toMatchObject({phase: "searching", ready: false, opponent: null, startsAtMs: null, run: null});
+  await expect(update(A, first, NOW + 500, "ready", "ready-before-opponent")).rejects.toMatchObject({code: "failed-precondition"});
+  const second = await joinReady(B, "ready-human-second", NOW + 1000);
+  expect(second).toMatchObject({phase: "searching", ready: false, opponent: {displayName: "Alice", bot: false}, startsAtMs: null, run: null});
+  expect(await update(A, first, NOW + 1500)).toMatchObject({phase: "searching", ready: false,
+    opponent: {displayName: "Bob", bot: false}, startsAtMs: null, run: null});
+  expect(await update(A, first, NOW + 2000, "ready", "ready-first-command")).toMatchObject({
+    phase: "searching", ready: true, startsAtMs: null, run: null,
+  });
+  expect(await update(B, second, NOW + 20_000)).toMatchObject({phase: "searching", ready: false, startsAtMs: null, run: null});
+  const starting = await update(B, second, NOW + 21_000, "ready", "ready-second-command");
+  expect(starting).toMatchObject({phase: "countdown", ready: true, startsAtMs: NOW + 21_000 + LIVE_RACE_COUNTDOWN_MS,
+    run: {currentRiddle: null}});
+  expect(await update(A, first, NOW + 22_000, "ready", "ready-first-command")).toMatchObject({
+    phase: "countdown", ready: true, startsAtMs: starting.startsAtMs,
+  });
+  expect(await update(B, second, NOW + 23_000, "ready", "ready-second-command")).toMatchObject({
+    phase: "countdown", startsAtMs: starting.startsAtMs,
+  });
+  const racing = await update(A, first, NOW + 21_000 + LIVE_RACE_COUNTDOWN_MS);
+  expect(racing.phase).toBe("racing");
+  expect(racing.run?.currentRiddle?.riddleId).toEqual(expect.stringMatching(/^history-/));
+});
+
+it("keeps a legacy opponent automatically ready without requiring its client to send a new command", async () => {
+  const first = await joinReady(A, "ready-modern-first");
+  const legacy = await join(B, "ready-legacy-second", NOW + 1000);
+  expect(legacy).toMatchObject({phase: "searching", startsAtMs: null, run: null, opponent: {bot: false}});
+  expect(legacy.ready).toBeUndefined();
+  const starting = await update(A, first, NOW + 2000, "ready", "modern-with-legacy-ready");
+  expect(starting).toMatchObject({phase: "countdown", ready: true, startsAtMs: NOW + 2000 + LIVE_RACE_COUNTDOWN_MS});
+  const recoveredLegacy = await update(B, legacy, NOW + 3000);
+  expect(recoveredLegacy).toMatchObject({phase: "countdown", startsAtMs: starting.startsAtMs});
+  expect(recoveredLegacy.ready).toBeUndefined();
+});
+
+it("seats the bot after searching but gives it no progress until Play game starts the countdown", async () => {
+  const first = await joinReady(A, "ready-bot-search");
+  const fallback = await update(A, first, NOW + LIVE_RACE_WAIT_MS);
+  expect(fallback).toMatchObject({phase: "searching", ready: false, startsAtMs: null, run: null,
+    opponent: {bot: true, correctCount: 0}});
+  expect(await update(A, first, NOW + 100_000)).toMatchObject({phase: "searching", startsAtMs: null, run: null,
+    opponent: {bot: true, correctCount: 0}});
+  const starting = await update(A, first, NOW + 101_000, "ready", "ready-for-bot-command");
+  expect(starting).toMatchObject({phase: "countdown", ready: true, startsAtMs: NOW + 101_000 + LIVE_RACE_COUNTDOWN_MS,
+    opponent: {bot: true, correctCount: 0}, run: {currentRiddle: null}});
+  expect(await update(A, first, NOW + 101_000 + LIVE_RACE_COUNTDOWN_MS + 12_000)).toMatchObject({phase: "racing",
+    opponent: {bot: true, correctCount: 1}});
+});
+
+it("closes a matched lobby before Play game without awarding either player a win", async () => {
+  const first = await joinReady(A, "ready-leave-first");
+  const second = await joinReady(B, "ready-leave-second", NOW + 1000);
+  expect(await update(B, second, NOW + 20_000, "leave", "leave-before-ready")).toMatchObject({
+    phase: "result", result: "tie", rewardCoins: 0, run: null,
+  });
+  expect(await update(A, first, NOW + 21_000)).toMatchObject({phase: "result", result: "tie", rewardCoins: 0, run: null});
+  for (const userId of [A, B]) {
+    const profile = (await db.doc(`users/${userId}`).get()).data()!;
+    expect(profile.coins).toBe(100);
+    expect(profile.stats?.multiplayerGamesPlayed ?? 0).toBe(0);
+    expect(profile.stats?.multiplayerWins ?? 0).toBe(0);
+    expect(profile.unlockedAchievements ?? []).toEqual([]);
+  }
+});
+
+it("expires a readiness wait without starting or rewarding the reserved bot", async () => {
+  const first = await joinReady(A, "ready-expiring-bot");
+  const matchedAtMs = NOW + LIVE_RACE_WAIT_MS;
+  const fallback = await update(A, first, matchedAtMs);
+  const expiresAtMs = matchedAtMs + LIVE_RACE_INVITE_MS;
+  expect(fallback.searchEndsAtMs).toBe(expiresAtMs);
+  expect(await update(A, first, expiresAtMs - 1)).toMatchObject({phase: "searching", ready: false,
+    opponent: {bot: true, correctCount: 0}, startsAtMs: null, run: null});
+  expect(await update(A, first, expiresAtMs, "ready", "ready-at-expired-boundary")).toMatchObject({
+    phase: "result", result: "tie", rewardCoins: 0, startsAtMs: null, run: null,
+  });
+  const profile = (await db.doc(`users/${A}`).get()).data()!;
+  expect(profile.coins).toBe(100);
+  expect(profile.stats?.multiplayerGamesPlayed ?? 0).toBe(0);
+});
 
 it("pairs a real player before the six-second public fallback deadline", async () => {
   /** Both modern and legacy public seats use the short authoritative search window. */

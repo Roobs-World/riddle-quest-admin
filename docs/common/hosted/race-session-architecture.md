@@ -86,6 +86,14 @@ Waiting clients use bounded exponential backoff with jitter, pause refreshes whi
 
 `cancelRaceInvite` is creator-only and requires a target-bound idempotency receipt. It retains claim/publication facts and revokes future invitation entry. It does not modify already-issued run snapshots or scored history. Cancelling a provider share dialog for a reusable public challenge remains independent of invitation cancellation.
 
+## Live lobby readiness
+
+`LiveRaceGame` uses the same two-seat lobby for friend invitations, public matches and AI opponents. The Play game button stays disabled until the server supplies an opponent. Pressing it sends an idempotent `ready` command and displays Connecting while delivery, the other player's readiness and the shared countdown complete. Native invitation delivery remains separate, with Retry available after dismissal or lobby recovery.
+
+Web joins and rematches opt in with `requiresReady: true`. Matched seats remain in `searching` with an opponent, `startsAtMs: null` and no run until every required human seat is ready. Bots and legacy seats are ready automatically. The last readiness acknowledgement schedules both runs at the same server-owned five-second start boundary. Waiting expires after 15 minutes; expiry or leaving before the start grants no rewards. Recovery preserves the original readiness and deadline.
+
+Deploy the updated live-race backend before releasing these clients. Older clients retain automatic starts for legacy seats. Recovering a seat created with `requiresReady` needs a refreshed client that understands readiness; cached older clients reject the added readiness field in their strict response schema.
+
 ## Target adapters and rollout
 
 Firebase targets expose the additive entry and cancellation callables. Reddit exposes entry through its same-origin Devvit gateway and continues to omit unsupported reservation/cancellation capabilities. YouTube, Netflix and Yahoo remain self-contained and exclude multiplayer/provider SDKs.

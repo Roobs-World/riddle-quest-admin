@@ -118,13 +118,13 @@ try {
   await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   await page.screenshot({path:path.join(output,`rank-catalogue-${viewport.width}.png`)});
   await page.goto(`${origin}/?mode=live`);
-  await page.locator('.live-race-self [data-avatar-rank="questLegend"]').waitFor();
-  await page.locator('.live-race-rival [data-avatar-rank="cipherKnight"]').waitFor();
+  await page.locator('.friend-lobby-seat:first-child [data-avatar-rank="questLegend"]').waitFor();
+  await page.locator('.friend-lobby-seat:last-child [data-avatar-rank="cipherKnight"]').waitFor();
   await page.screenshot({path:path.join(output,`live-${viewport.width}.png`)});
   for(const level of [1,10,19,28,35]) {
    await page.evaluate(level=>window.setLiveRank(level),level);
-   await page.locator(`.live-race-self [data-avatar-rank="${ranks[level-1][1]}"]`).waitFor();
-   assert.equal(await page.locator('.live-race-self .ranked-avatar').getAttribute('data-avatar-material'),expectedMaterial(level));
+   await page.locator(`.friend-lobby-seat:first-child [data-avatar-rank="${ranks[level-1][1]}"]`).waitFor();
+   assert.equal(await page.locator('.friend-lobby-seat:first-child .ranked-avatar').getAttribute('data-avatar-material'),expectedMaterial(level));
   }
   assert.deepEqual(errors,[]);await page.close();
  }

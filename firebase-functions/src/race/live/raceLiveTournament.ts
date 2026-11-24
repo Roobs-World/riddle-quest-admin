@@ -60,7 +60,7 @@ export async function readProviderLiveTournamentRun(
   // Validate that binding here before applying the common scoring/deck validator.
   /** Live countdown metadata is separated before applying the shared run validator. */
   const {readinessAcceptedAtMs, ...record} = stored;
-  if (!Number.isSafeInteger(match.startsAtMs) || match.startsAtMs <= 0 ||
+  if (match.startsAtMs === null || !Number.isSafeInteger(match.startsAtMs) || match.startsAtMs <= 0 ||
     readinessAcceptedAtMs !== match.startsAtMs - LIVE_RACE_COUNTDOWN_MS) {
     throw new HttpsError("data-loss", "Tournament live countdown binding is invalid.");
   }

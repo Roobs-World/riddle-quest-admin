@@ -26,6 +26,8 @@ export const LiveRaceChallengeIdSchema = z.string().regex(/^live_[a-f0-9]{64}$/)
 export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
   requestId: z.string().min(8).max(160), createChallenge: z.boolean().optional(),
   waitForPlayer: z.literal(true).optional(),
+  /** This seat waits for an explicit Play game command after its opponent joins. */
+  requiresReady: z.literal(true).optional(),
   /** Reload recovery addresses an existing public seat without creating a replacement. */
   resumeTicketId: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   /** Modern clients durably retire this join intent rather than an unconditionally shared ticket. */
@@ -43,7 +45,7 @@ export const JoinLiveRaceSchema = z.object({locale: RaceLocaleSchema, categoryId
   .refine(input => !input.rematchOfTicketId || !(input.createChallenge || input.challengeId));
 /** Commands identify an owned seat and never supply scores or clock values. */
 export const UpdateLiveRaceSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
-  action: z.enum(["poll", "guess", "hint", "skip", "leave"]), requestId: z.string().min(8).max(160),
+  action: z.enum(["poll", "ready", "guess", "hint", "skip", "leave"]), requestId: z.string().min(8).max(160),
   riddleId: z.string().min(1).max(160).optional(), guess: RaceGuessTextSchema.optional()}).strict()
   .refine(input => input.action !== "guess" || Boolean(input.guess && input.riddleId))
   .refine(input => !["hint", "skip"].includes(input.action) || Boolean(input.riddleId));
@@ -55,6 +57,8 @@ export const LiveRacePlayerSchema = z.object({displayName: z.string().min(1).max
 /** Answer-free, viewer-specific live state. */
 export const LiveRaceViewSchema = z.object({ticketId: z.string().regex(/^[a-f0-9]{64}$/),
   waitForPlayer: z.literal(true).optional(),
+  /** Present only for explicit-start seats; confirmed by the authority, never by a share dialog. */
+  ready: z.boolean().optional(),
   phase: z.enum(["searching", "countdown", "racing", "result", "cancelled"]),
   serverNowMs: z.number().int().nonnegative(), searchEndsAtMs: z.number().int().nonnegative(),
   startsAtMs: z.number().int().nonnegative().nullable(), player: LiveRacePlayerSchema,
@@ -101,7 +105,7 @@ export type LiveRaceCapability = {
   /** Retires an original join intent without cancelling a newer journey's recovered seat. */
   retireJoin?(input: RetireLiveRaceJoin): Promise<RetireLiveRaceJoinResponse>;
   /** Creates or recovers a private rematch without accepting a rival account identifier. */
-  rematch?(input: Pick<JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
+  rematch?(input: Pick<JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId" | "requiresReady"> & {
     /** Caller-owned retained terminal seat. */ rematchOfTicketId: string;
   }): Promise<LiveRaceView>;
   /** Reads only the authenticated account's retained terminal seats in the selected language. */

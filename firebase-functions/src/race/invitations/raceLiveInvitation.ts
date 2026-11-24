@@ -3,14 +3,14 @@ import {androidReferralPlayPatch} from "../../../../platforms/native/android/ser
 import {publishLiveRaceSignals} from "../live/raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebookLiveContextSelection} from "../../../../platforms/web/facebook/server/race/facebookLiveContextBinding";
-import {LIVE_RACE_INVITE_MS, LIVE_RACE_COUNTDOWN_MS, LiveRaceChallengeSchema,
+import {LIVE_RACE_INVITE_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {assertAndroidRaceAccount} from "../../../../platforms/native/android/server/race/androidRaceAccount";
 import {requestDocumentId, stripUndefined, type Firestore} from "../raceSetupService";
-import {liveOperationAtMs, liveRaceSearchEndsAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "../live/raceLiveState";
+import {createLiveMatch, expireLiveMatchReadiness, liveOperationAtMs, liveRaceSearchEndsAtMs, liveRun, liveView, type LiveMatch, type LiveTicket} from "../live/raceLiveState";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "../runs/raceDeckCompatibility";
 import {readLiveJoinIntent, claimLiveJoinIntent} from "./raceLiveJoinIntent";
 import {isLiveRaceRetained} from "../live/raceLiveQueue";
@@ -146,7 +146,10 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       transaction.update(snapshot.ref, {seenAtMs: nowMs, "player.level": creatorPlayer.level});
       if (existing) {
         existing.players[0] = {...existing.players[0], level: creatorPlayer.level};
-        transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {observedAtMs: nowMs, players: existing.players});
+        if (expireLiveMatchReadiness(existing, nowMs)) {
+          transaction.set(db.doc(`liveRaceMatches/${creator.matchId}`), {...stripUndefined(existing), expiresAt: snapshot.data()!.expiresAt});
+          publishLiveRaceSignals(db, transaction, existing.tickets, snapshot.data()!.expiresAt);
+        } else transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {observedAtMs: nowMs, players: existing.players});
       }
       claimLiveJoinIntent(transaction, intent, snapshot.ref, nowMs);
       return liveView(creatorId, creator, existing, nowMs);
@@ -167,7 +170,10 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       own.player.level = getProfileLevel(owner.data());
       existing.players[0] = {...existing.players[0], level: creatorPlayer.level};
       existing.players[1] = {...existing.players[1], level: own.player.level};
-      if (existing.winner === undefined) {
+      if (expireLiveMatchReadiness(existing, nowMs)) {
+        transaction.set(db.doc(`liveRaceMatches/${creator.matchId}`), {...stripUndefined(existing), expiresAt: snapshot.data()!.expiresAt});
+        publishLiveRaceSignals(db, transaction, existing.tickets, snapshot.data()!.expiresAt);
+      } else if (existing.winner === undefined) {
         transaction.update(snapshot.ref, {"player.level": creatorPlayer.level});
         transaction.update(ownSnapshot.ref, {"player.level": own.player.level});
         transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {players: existing.players});
@@ -209,13 +215,13 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
       level: getProfileLevel(data),
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
-    /** Both seats receive the creator's immutable deck and the same five-second countdown. */
-    const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
-    /** Private match uses the existing authoritative scoring and settlement lifecycle. */
-    const match: LiveMatch = {tickets: [creatorId, ownId], participantIds: [creator.userId, userId], startsAtMs, observedAtMs: nowMs, players: [creatorPlayer, player],
-      runs: [liveRun(creator.run, creator.userId, creatorId, startsAtMs), liveRun(creator.run, userId, ownId, startsAtMs)]};
+    /** Both seats share the creator's immutable deck and explicitly ready before scheduling. */
+    const match = createLiveMatch({tickets: [creatorId, ownId], participantIds: [creator.userId, userId], nowMs,
+      readySeats: [!creator.requiresReady, !input.requiresReady], players: [creatorPlayer, player],
+      runs: [liveRun(creator.run, creator.userId, creatorId), liveRun(creator.run, userId, ownId)]});
     /** Recipient seat does not expose the creator's share handle as its own invitation. */
     const own: LiveTicket = {userId, pool: creator.pool, player, ...(facebookContext ? {facebookContext} : {}),
+      ...(input.requiresReady ? {requiresReady: true} : {}),
       createdAtMs: nowMs, seenAtMs: nowMs, matchId: creatorId, run: match.runs[1]};
     /** Reuse the creator's retention policy for both seats. */
     const expiresAt = snapshot.data()!.expiresAt;

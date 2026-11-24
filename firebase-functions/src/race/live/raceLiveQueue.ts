@@ -1,4 +1,3 @@
-import {LIVE_RACE_COUNTDOWN_MS} from "../../../../src/races/contracts/index.js";
 import {getProfileLevel} from "../../profile/profileLevel";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
@@ -6,7 +5,7 @@ import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "../runs/raceDeckCompatibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "../raceSetupService";
-import {liveRaceSearchEndsAtMs, liveRun, type LiveMatch, type LiveTicket} from "./raceLiveState";
+import {createLiveMatch, liveRaceSearchEndsAtMs, liveRun, type LiveMatch, type LiveTicket} from "./raceLiveState";
 
 /** Maximum time since a lobby heartbeat before an opponent becomes ineligible. */
 const LOBBY_LEASE_MS = 10_000;
@@ -109,13 +108,13 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
   let match: LiveMatch | undefined;
   if (opponent) {
     opponent.ticket.player.level = getProfileLevel(facts.get(`users/${opponent.ticket.userId}`)?.data());
-    /** Shared countdown start after both seats' latest observed clocks. */
-    const startsAtMs = Math.max(nowMs, ticket.seenAtMs, opponent.ticket.seenAtMs) + LIVE_RACE_COUNTDOWN_MS;
+    /** Pairing cannot precede either seat's latest server observation. */
+    const pairedAtMs = Math.max(nowMs, ticket.seenAtMs, opponent.ticket.seenAtMs);
     ticket.matchId = opponent.snapshot.id;
-    match = {tickets: [opponent.snapshot.id, ticketId], participantIds: [opponent.ticket.userId, ticket.userId],
-      startsAtMs, observedAtMs: startsAtMs - LIVE_RACE_COUNTDOWN_MS, players: [opponent.ticket.player, ticket.player],
-      runs: [liveRun(opponent.ticket.run, opponent.ticket.userId, opponent.snapshot.id, startsAtMs),
-        liveRun(opponent.ticket.run, ticket.userId, ticketId, startsAtMs)]};
+    match = createLiveMatch({tickets: [opponent.snapshot.id, ticketId], participantIds: [opponent.ticket.userId, ticket.userId],
+      nowMs: pairedAtMs, readySeats: [!opponent.ticket.requiresReady, !ticket.requiresReady], players: [opponent.ticket.player, ticket.player],
+      runs: [liveRun(opponent.ticket.run, opponent.ticket.userId, opponent.snapshot.id),
+        liveRun(opponent.ticket.run, ticket.userId, ticketId)]});
   }
   /** Retention deadline limited by the earlier expiring participant ticket. */
   const matchExpiresAt = opponent ? admin.firestore.Timestamp.fromMillis(Math.min(expiresAt.toMillis(),

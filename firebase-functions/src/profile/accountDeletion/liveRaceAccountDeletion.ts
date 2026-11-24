@@ -84,7 +84,7 @@ async function anonymizeLiveMatch(ref: FirebaseFirestore.DocumentReference, user
       /** Seat run supplies neutral clock and rule metadata after identity removal. */
       const run = match.runs[seat];
       match.runs[seat] = liveRun({riddles: [], locale: run.locale, categoryId: run.categoryId,
-        contentVersion: run.contentVersion}, DELETED_LIVE_RACE_USER_ID, run.runId, match.startsAtMs);
+        contentVersion: run.contentVersion}, DELETED_LIVE_RACE_USER_ID, run.runId, match.startsAtMs ?? 0);
       match.players[seat] = {displayName: "Riddle Quest player", avatarUrl: null, level: 1, bot: false, correctCount: 0};
     });
     match.deletedSeats = deletedSeats;
@@ -100,12 +100,11 @@ async function anonymizeLiveMatch(ref: FirebaseFirestore.DocumentReference, user
     // orphaned legacy roots use the accepted match start, never deletion time.
     /** Existing retention deadline must survive cleanup without extension. */
     const expiresAt = snapshot.data()!.expiresAt ?? creator.data()?.expiresAt;
-    if (!expiresAt && (!Number.isSafeInteger(match.startsAtMs) || match.startsAtMs <= 0))
+    if (!expiresAt && (match.startsAtMs === null || !Number.isSafeInteger(match.startsAtMs) || match.startsAtMs <= 0))
       throw new HttpsError("data-loss", "Stored live deletion retention clock is invalid.");
-    tx.set(ref, stripUndefined({...match, expiresAt: expiresAt ??
-      admin.firestore.Timestamp.fromMillis(match.startsAtMs + 7 * 86_400_000)}));
-    publishLiveRaceSignals(db, tx, match.tickets.filter((_, seat) => !deletedSeats[seat]), expiresAt ??
-      admin.firestore.Timestamp.fromMillis(match.startsAtMs + 7 * 86_400_000));
+    const retention = expiresAt ?? admin.firestore.Timestamp.fromMillis((match.startsAtMs ?? 0) + 7 * 86_400_000);
+    tx.set(ref, stripUndefined({...match, expiresAt: retention}));
+    publishLiveRaceSignals(db, tx, match.tickets.filter((_, seat) => !deletedSeats[seat]), retention);
     return {tickets: ticketIds, changed: true};
   });
   if (outcome.changed) await clearLiveMatchRequests(ref);

@@ -4,6 +4,7 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLi
 import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
 import {liveJoinIntentRef} from "../../race/invitations/raceLiveJoinIntent";
 import {requestDocumentId} from "../../race/raceSetupService";
+import {LIVE_RACE_COUNTDOWN_MS} from "../../../../src/races/contracts/index.js";
 
 /** Authenticated fixture identities share one provider. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -43,6 +44,28 @@ const accept = (userId: string, challengeId: string, nowMs = NOW + 1000, request
 const resume = (challengeId: string, nowMs = NOW + 1000, requestId = "creator-link-resume") =>
   joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId, challengeId,
     retirementAware: true, expectedOwnerId: A}, {db, nowMs});
+
+it("keeps an accepted friend invitation in the lobby until both players press Play game", async () => {
+  const creator = await joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "ready-private-creator",
+    createChallenge: true, requiresReady: true}, {db, nowMs: NOW});
+  const challengeId = `live_${creator.ticketId}`;
+  const recipient = await joinLiveRaceForUser(B, {locale: "en", categoryId: "history", requestId: "ready-private-recipient",
+    challengeId, requiresReady: true}, {db, nowMs: NOW + 1000});
+  expect(recipient).toMatchObject({phase: "searching", ready: false, startsAtMs: null, run: null,
+    opponent: {displayName: "Alice", bot: false}});
+  expect(await updateLiveRaceForUser(A, {ticketId: creator.ticketId, action: "ready", requestId: "ready-private-first"},
+    {db, nowMs: NOW + 2000})).toMatchObject({phase: "searching", ready: true, startsAtMs: null, run: null});
+  const recovered = await joinLiveRaceForUser(A, {locale: "en", categoryId: "history", requestId: "ready-private-reload",
+    challengeId, requiresReady: true}, {db, nowMs: NOW + 20_000});
+  expect(recovered).toMatchObject({ticketId: creator.ticketId, phase: "searching", ready: true,
+    startsAtMs: null, run: null, opponent: {displayName: "Bob", bot: false}});
+  const starting = await updateLiveRaceForUser(B, {ticketId: recipient.ticketId, action: "ready", requestId: "ready-private-second"},
+    {db, nowMs: NOW + 21_000});
+  expect(starting).toMatchObject({phase: "countdown", ready: true, startsAtMs: NOW + 21_000 + LIVE_RACE_COUNTDOWN_MS,
+    run: {currentRiddle: null}});
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(2);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
 
 it("previews without joining and reserves exactly one rival in the original lobby", async () => {
   /** Repeated publication retains one private seat. */

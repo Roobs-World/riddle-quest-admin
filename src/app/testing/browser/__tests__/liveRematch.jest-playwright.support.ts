@@ -93,12 +93,12 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     expect(await page.locator(".race-error").innerText()).not.toContain("private rematch diagnostic");
     await page.locator(".race-error button").click();
     await ownedSeat.waitFor();
-    expect(await page.locator(".friend-lobby-count").innerText()).toBe("1/2");
-    expect(await page.locator(".live-race-lobby").count()).toBe(0);
+    expect(await page.locator('.friend-lobby-seat[data-occupied="true"]').count()).toBe(1);
+    expect(await page.locator(".friend-lobby-play").isDisabled()).toBe(true);
     expect(joins[0]).toEqual(joins[1]);
     // Facebook's trusted gameplay harness uses the existing synthetic host account; native provider identity is tested separately.
     expect(joins[0]).toEqual({locale, categoryId: "history", rematchOfTicketId: "d".repeat(64), requestId: expect.any(String),
-      retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
+      requiresReady: true, retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
       ...(target === "Facebook" ? {facebookContextId} : {})});
     expect(await page.locator(".live-race-invite-share").count()).toBe(0);
     complete = true;
@@ -121,10 +121,11 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     expect(accepts).toHaveLength(0); expect(previewReads).toBe(0);
     await page.locator(".live-race-invitation button").click();
     await ownedSeat.waitFor();
-    expect(await page.locator(".friend-lobby-count").innerText()).toBe("2/2");
+    expect(await page.locator('.friend-lobby-seat[data-occupied="true"]').count()).toBe(2);
+    expect(await page.locator(".friend-lobby-play").getAttribute("aria-busy")).toBe("true");
     expect(await page.locator(".friend-lobby").getAttribute("data-state")).toBe("starting");
     expect(accepts).toEqual([{locale, categoryId: "history", challengeId: incomingId, requestId: expect.any(String),
-      retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
+      requiresReady: true, retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
       ...(target === "Facebook" ? {facebookContextId} : {})}]);
     inbox = false;
     await page.locator(".race-close").click();

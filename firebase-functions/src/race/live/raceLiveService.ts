@@ -5,7 +5,7 @@ import {publishLiveRaceSignals} from "./raceLiveSignals";
 import {acceptLiveRaceChallengeForUser} from "../invitations/raceLiveInvitation";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WIN_COINS, RACE_RULES,
+import {LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, assertJestAccountActive} from "../../shared/accountDeletion";
@@ -14,7 +14,7 @@ import {assertAndroidRaceAccount} from "../../../../platforms/native/android/ser
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "../runs/raceEngine";
 import {applyActionRateLimit, buildDeterministicRaceDeck, loadEligibleContent,
   requestDocumentId, stripUndefined, prepareRaceAchievementEvent, type Firestore} from "../raceSetupService";
-import {liveRun, liveView, liveOperationAtMs, liveRaceSearchEndsAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
+import {createLiveMatch, expireLiveMatchReadiness, scheduleReadyLiveMatch, liveRun, liveView, liveOperationAtMs, liveRaceSearchEndsAtMs, advanceLiveBot, type LiveTicket, type LiveMatch} from "./raceLiveState";
 import {isFacebookFirebaseUid} from "../../../../platforms/web/facebook/server/facebookSecurity";
 import {pendingRaceDelivery} from "../delivery/raceDeliveryFailures";
 import {facebookLiveRaceReferralEventId} from "../../../../platforms/web/facebook/server/facebookLiveRaceReferralDelivery";
@@ -110,7 +110,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         if (receipt.exists) assertFacebookLiveContextSelection(ticket.facebookContext, contextKey);
         if (receipt.exists && (Boolean(ticket.privateChallenge) !== privateEntry ||
           ticket.rematchOfTicketId !== input.rematchOfTicketId || ticket.pool !== pool ||
-          Boolean(ticket.waitForPlayer) !== Boolean(input.waitForPlayer)))
+          Boolean(ticket.waitForPlayer) !== Boolean(input.waitForPlayer) || Boolean(ticket.requiresReady) !== Boolean(input.requiresReady)))
           throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
         /** Provides match behavior. */
         const matchSnapshot = ticket.matchId ? await transaction.get(db.doc(`liveRaceMatches/${ticket.matchId}`)) : undefined;
@@ -144,6 +144,11 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
               throw new HttpsError("failed-precondition", "Finish the current live race first.");
             if (ticket.pool !== pool || Boolean(ticket.waitForPlayer) !== Boolean(input.waitForPlayer) && !recoverLegacyPublic)
               throw new HttpsError("failed-precondition", "Finish the current live race first.");
+            if (matchSnapshot && match && expireLiveMatchReadiness(match, recoveryNowMs)) {
+              transaction.set(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(match), expiresAt: matchSnapshot.data()!.expiresAt});
+              publishLiveRaceSignals(db, transaction, match.tickets, old.data()!.expiresAt);
+              return liveView(id, ticket, match, recoveryNowMs);
+            }
             /** Reconnect observations preserve the original seat, deck and countdown. */
             const observedAtMs = recoveryNowMs;
             if (ticket.cancelled || match?.winner !== undefined) return liveView(id, ticket, match, observedAtMs);
@@ -180,6 +185,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     /** Provides ticket behavior. */
     const ticket: LiveTicket = {userId, pool, player, ...(privateEntry ? {privateChallenge: true} : {}),
       ...(input.waitForPlayer ? {waitForPlayer: true} : {}),
+      ...(input.requiresReady ? {requiresReady: true} : {}),
       ...(facebookContext ? {facebookContext} : {}),
       ...(rematch ? {rematchOfTicketId: input.rematchOfTicketId, inviteRecipientId: rematch.recipientId} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
@@ -379,11 +385,9 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   if (!match && !ticket.privateChallenge && nowMs >= liveRaceSearchEndsAtMs(ticket)) {
     assertLiveRaceDeckCompatible(ticket.run);
     ticket.matchId = input.ticketId;
-    /** Provides starts at ms behavior. */
-    const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
-    match = {tickets: [input.ticketId, null], participantIds: [userId], startsAtMs, observedAtMs: nowMs,
+    match = createLiveMatch({tickets: [input.ticketId, null], participantIds: [userId], nowMs, readySeats: [!ticket.requiresReady, true],
       players: [ticket.player, {displayName: `Guest_${input.ticketId.slice(0, 6).toUpperCase()}`, avatarUrl: null, bot: true, correctCount: 0}],
-      runs: [liveRun(ticket.run, userId, input.ticketId, startsAtMs), liveRun(ticket.run, "bot", `${input.ticketId}-bot`, startsAtMs)]};
+      runs: [liveRun(ticket.run, userId, input.ticketId), liveRun(ticket.run, "bot", `${input.ticketId}-bot`)]});
     matchChanged = true;
   }
   if (!match) {
@@ -393,7 +397,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     return liveView(input.ticketId, ticket, undefined, nowMs);
   }
   // Persist the first shared start observation once; subsequent unchanged polls remain read-only.
-  if (match.winner === undefined && nowMs >= match.startsAtMs && (match.observedAtMs ?? 0) < match.startsAtMs)
+  if (match.startsAtMs !== null && match.winner === undefined && nowMs >= match.startsAtMs && (match.observedAtMs ?? 0) < match.startsAtMs)
     matchChanged = true;
   /** Provides seat behavior. */
   const seat = match.tickets[0] === input.ticketId ? 0 : match.tickets[1] === input.ticketId ? 1 : -1;
@@ -429,6 +433,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     match.players[1 - seat] = {...match.players[1 - seat], displayName: "Riddle Quest player", avatarUrl: null, level: 1};
     if (match.winner === undefined) match.winner = null;
   }
+  matchChanged = expireLiveMatchReadiness(match, nowMs) || matchChanged;
   matchChanged = advanceLiveBot(match, nowMs) || matchChanged;
   matchChanged = settleLiveFinish(match, nowMs) || matchChanged;
   /** Whether this invocation accepted a state-changing command that needs a receipt. */
@@ -439,13 +444,21 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       if (match.runs[seat].status !== "completed") {
         acceptedCommand = true;
         matchChanged = true;
-        match.winner = nowMs < match.startsAtMs ? null : 1 - seat;
+        match.winner = match.startsAtMs === null || nowMs < match.startsAtMs ? null : 1 - seat;
+      }
+    }
+    else if (input.action === "ready") {
+      acceptedCommand = true;
+      if (match.startsAtMs === null && match.readySeats && !match.readySeats[seat]) {
+        match.readySeats[seat] = true;
+        scheduleReadyLiveMatch(match, nowMs);
+        matchChanged = true;
       }
     }
     else {
       acceptedCommand = true;
       matchChanged = true;
-      if (nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
+      if (match.startsAtMs === null || nowMs < match.startsAtMs) throw new HttpsError("failed-precondition", "Match has not started.");
       /** Provides run behavior. */
       const run = applyActionRateLimit(refreshRaceRun(match.runs[seat], nowMs), userId, nowMs);
       // Scoring uses the existing hint/guess rules, without an opponent recording.
@@ -489,7 +502,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     const [participants, winnerSource] = await Promise.all([participantsRead, winnerSourceRead]);
     /** Both seats share the one-time terminal receipt, including losses and draws. */
     const profileUpdates = new Map<FirebaseFirestore.DocumentSnapshot, Record<string, unknown>>();
-    if (nowMs >= match.startsAtMs) for (const [seat, profile] of participants.entries()) {
+    if (match.startsAtMs !== null && nowMs >= match.startsAtMs) for (const [seat, profile] of participants.entries()) {
       if (!profile || !match.runs[seat]!.events.some(event => event.type === "correct")) continue;
       /** Persisted account counters supply the authoritative achievement baseline. */
       const data = profile.data()!;

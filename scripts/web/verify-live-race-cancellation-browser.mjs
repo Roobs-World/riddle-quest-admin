@@ -68,7 +68,7 @@ try {
       await page.screenshot({path: path.join(output, `${scenario.name}-${viewport.width}.png`), fullPage: true});
       assert.ok(text.includes(scenario.message), `Cancelled lobby must explain its terminal state; observed ${JSON.stringify(text)}`);
       assert.equal(await page.getByRole("status").innerText(), scenario.message);
-      assert.equal(await page.locator(".live-race-lobby,.race-error,.race-gameplay").count(), 0);
+      assert.equal(await page.locator('.friend-lobby:not([data-state="expired"]),.race-error,.race-gameplay').count(), 0);
       if (scenario.screen === "invitation_unavailable") {
         await page.waitForTimeout(9500);
         assert.deepEqual(await page.evaluate(() => window.transportCalls), ["join", "challenge"], "Definitively unavailable invitation must stop automatic joins without creating or leaving a seat");

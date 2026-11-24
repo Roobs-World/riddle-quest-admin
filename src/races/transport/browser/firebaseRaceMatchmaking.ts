@@ -26,7 +26,7 @@ export function createFirebaseRaceMatchmaking(
     },
     ...(options.liveRematch ? {
       /** The existing authenticated join reserves the original private opponent server-side. */
-      async rematch(input: Pick<import("../../contracts/index").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId"> & {
+      async rematch(input: Pick<import("../../contracts/index").JoinLiveRace, "locale" | "categoryId" | "requestId" | "retirementAware" | "expectedOwnerId" | "requiresReady"> & {
         /** Caller-owned terminal seat. */ rematchOfTicketId: string;
       }) {
         /** Untrusted callable replies pass the existing strict live projection schema. */

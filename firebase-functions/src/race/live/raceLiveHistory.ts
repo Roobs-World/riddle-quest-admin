@@ -56,7 +56,7 @@ export async function listLiveRaceHistoryForUser(userId: string, request: ListLi
         !Number.isFinite(match.expiresAt.toMillis()) || nowMs >= match.expiresAt.toMillis()) return null;
       /** Exactly one seat must remain bound to this owned ticket and private run. */
       const seat = match.tickets.indexOf(row.id), rivalSeat = 1 - seat;
-      if (seat < 0 || match.deletedSeats?.[seat] || match.runs[seat]?.userId !== userId || match.runs[seat]?.runId !== row.id ||
+      if (match.startsAtMs === null || seat < 0 || match.deletedSeats?.[seat] || match.runs[seat]?.userId !== userId || match.runs[seat]?.runId !== row.id ||
         match.runs[seat]?.locale !== input.locale || match.runs[seat]?.categoryId !== ticket.run.categoryId ||
         match.runs[seat]?.startedAtMs !== match.startsAtMs || match.players[seat]?.bot !== false ||
         !Number.isSafeInteger(match.startsAtMs) || match.startsAtMs < 0 || match.startsAtMs > nowMs) return null;

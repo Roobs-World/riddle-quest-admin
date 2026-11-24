@@ -142,14 +142,15 @@ try {
       await (direction==='public-friend'?start:challenge).click();
       await page.waitForFunction(()=>window.probe.joins.length===1);
       if(scenario==='pending-join')await page.waitForFunction(()=>Boolean(window.releaseJoin));
-      else await page.waitForFunction(()=>Boolean(document.querySelector('.live-race-self strong,.friend-lobby-seat[data-occupied="true"]')));
+      else await page.locator('.friend-lobby-seat[data-occupied="true"]').waitFor();
       if(method==='click')await page.locator('.race-close').click();else await page.keyboard.press('Escape');
       if(['pending-join','pending-retirement','retry-retirement'].includes(scenario)){
         await page.waitForFunction(()=>Boolean(window.releaseRetirement));
         assert.equal(await start.isVisible(),false,'A new lobby cannot open before retirement confirmation');
         assert.equal(await page.getByText('Quitting…',{exact:true}).isVisible(),true,'Close shows its pending status');
         assert.equal(await page.locator('.race-error').count(),0,'An in-progress close is not a race failure');
-        assert.equal(await page.locator('.friend-lobby-actions button').count(),0,'Closing cannot send a new friend invitation');
+        assert.equal(await page.locator('.friend-lobby-play').isDisabled(),true,'Closing cannot ready a retired lobby');
+        assert.equal(await page.locator('.live-race-invite-share button').count(),0,'Closing cannot send a new friend invitation');
         await page.evaluate(()=>window.releaseRetirement());
       }else if(scenario==='terminal-retirement'){
         await page.locator('.race-error').waitFor();
@@ -160,8 +161,9 @@ try {
       await (direction==='public-friend'?challenge:start).click();
       await page.waitForFunction(()=>window.probe.joins.length===2);
       if(direction==='public-friend'){
-        await page.locator('.friend-lobby[data-state="waiting"] .friend-lobby-count').waitFor();
-        assert.equal(await challenge.isVisible(),true,'The first friend entry opens its invitation controls');
+        await page.locator('.friend-lobby[data-state="waiting"]').waitFor();
+        assert.equal(await page.locator('.friend-lobby-play').innerText(),'Play game');
+        assert.equal(await page.locator('.friend-lobby-play').isDisabled(),true,'Friend entry waits for its opponent');
         assert.equal(await page.locator('.race-error').count(),0,'The first friend entry has no race failure');
         await page.evaluate(()=>window.pairReplacement());
       }
@@ -185,7 +187,8 @@ try {
       await page.waitForFunction(()=>window.authority().records[1].correct===1);
       assert.deepEqual(await page.evaluate(()=>window.probe.grants),[]);
       assert.deepEqual(await page.evaluate(()=>window.probe.errors),[]);
-      assert.deepEqual(await page.evaluate(()=>window.probe.shares),[],'No native invitation was sent');
+      const expectedShares=direction==='public-friend'?[{challengeId:'live_'+'b'.repeat(64)}]:scenario==='pending-join'?[]:[{challengeId:'live_'+'a'.repeat(64)}];
+      assert.deepEqual(await page.evaluate(()=>window.probe.shares),expectedShares,'Only the committed friend lobby opens its invitation once');
       assert.equal(await page.evaluate(()=>window.probe.outerCloses),0);
       row.passed=true;row.retirements=probe.retirements.length;
       await page.screenshot({path:path.join(output,`${scenario}-${direction}-${method}-${width}.png`)});
@@ -204,8 +207,9 @@ try {
       assert.equal(await page.locator('.race-error').count(),0,'A healthy16-second cold join must not fail at10seconds');
       assert.equal(await page.locator('.friend-lobby').getAttribute('data-state'),'loading');
       await page.evaluate(()=>window.releaseJoin());
-      await page.locator('.friend-lobby[data-state="waiting"] .friend-lobby-count').waitFor();
-      assert.equal(await page.getByRole('button',{name:'Challenge a friend',exact:true}).isVisible(),true);
+      await page.locator('.friend-lobby[data-state="waiting"]').waitFor();
+      assert.equal(await page.locator('.friend-lobby-play').innerText(),'Play game');
+      assert.equal(await page.locator('.friend-lobby-play').isDisabled(),true);
       assert.equal(await page.evaluate(()=>window.probe.joins.length),1,'Cold entry needs no Retry');
       assert.deepEqual(await page.evaluate(()=>window.probe.errors),[]);
       row.passed=true;

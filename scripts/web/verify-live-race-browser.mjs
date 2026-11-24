@@ -57,14 +57,14 @@ function state(user) {
  const ticket=tickets.get(user), opponent=[...tickets.values()].find(item=>item.user!==user);
  const now=Date.now(), phase=winner!==null?'result':started?(now<started?'countdown':'racing'):'searching';
  const identity=item=>({displayName:item.user,avatarUrl:baseUrl+'/avatar.svg',bot:false,correctCount:item.count});
- const rival=opponent?identity(opponent):bot?{displayName:botName,avatarUrl:null,bot:true,correctCount:1}:null;
+ const rival=opponent?identity(opponent):bot?{displayName:botName,avatarUrl:null,bot:true,correctCount:started&&now>=started?1:0}:null;
  const run=started?{runId:ticket.id,role:'creator',status:phase==='result'?'completed':phase==='countdown'?'scheduled':'active',
  serverNowMs:now,startsAtMs:started,categoryId:ticket.categoryId,locale:'en',rules:RACE_RULES,correctCount:ticket.count,
  wallElapsedMs:Math.max(0,now-started),totalPenaltyMs:0,adjustedElapsedMs:Math.max(0,now-started),events:[],
  currentRiddle:phase!=='racing'?null:{riddleId:'q'+ticket.count,text:'A four-letter browser test answer',answerLength:4,position:ticket.count,
  guessesUsed:0,guessesRemaining:5,hintAvailable:true,revealedLetters:[],confirmedGuesses:[]},
  opponent:rival?{displayName:rival.displayName,avatarUrl:rival.avatarUrl,adjustedFinishMs:300000,events:[]}:undefined}:null;
- return {ticketId:ticket.id,phase,serverNowMs:now,searchEndsAtMs:ticket.created+60000,startsAtMs:started,player:identity(ticket),opponent:rival,run,
+ return {ticketId:ticket.id,phase,ready:ticket.ready,waitForPlayer:true,serverNowMs:now,searchEndsAtMs:ticket.created+60000,startsAtMs:started,player:identity(ticket),opponent:rival,run,
  result:winner===null?null:winner===user?'win':'loss',rewardCoins:winner===user?50:0,...(winner===user?{newCoins:150}:{})};
 }
 try {
@@ -87,15 +87,17 @@ try {
     let body='';for await(const chunk of request) body+=chunk; const input=JSON.parse(body);
     if(authority){const result=await authority.call(url.pathname.endsWith("join")?"join":"update",input);response.setHeader("Content-Type","application/json");response.end(JSON.stringify(result));return;}
     if(url.pathname==='/live/join' && !tickets.has(input.user)) {
-     tickets.set(input.user,{user:input.user,id:(input.user==='Alice'?'a':'b').repeat(64),count:0,created:Date.now(),categoryId:input.categoryId});
-     if(tickets.size===2) {started=Date.now()+5000;broadcast();}
+     tickets.set(input.user,{user:input.user,id:(input.user==='Alice'?'a':'b').repeat(64),ready:false,count:0,created:Date.now(),categoryId:input.categoryId});
+     if(tickets.size===2) broadcast();
     }
     const ticket=tickets.get(input.user);
-    if(input.action==='guess' && winner===null && Date.now()>=started && input.guess==='test') {
+    if(input.action==='ready') {ticket.ready=true;broadcast();}
+    if(input.action==='guess' && winner===null && started!==null && Date.now()>=started && input.guess==='test') {
      ticket.count++;lastGuessCommittedAt=Date.now(); if(ticket.count===10) winner=input.user;broadcast();
     }
     if(input.action==='leave') tickets.delete(input.user);
-    if(!started && ticket?.created+60000<=Date.now()){bot=true;started=Date.now()+5000;}
+    if(!started && ticket?.created+60000<=Date.now())bot=true;
+    if(!started && (tickets.size===2||bot) && [...tickets.values()].every(item=>item.ready)){started=Date.now()+5000;broadcast();}
     response.setHeader('Content-Type','application/json');response.end(JSON.stringify(state(input.user)));return;
    }
    const file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);
@@ -123,22 +125,31 @@ try {
   assert.equal(await a.getByText('Recorded head-to-head',{exact:true}).count(),0);
   await a.getByRole('button',{name:'History People, events, and eras from the past',exact:true}).click();
   assert.equal(await a.getByRole('button',{name:'History People, events, and eras from the past',exact:true}).getAttribute('aria-pressed'),'true');
-  assert.equal(await a.locator('.live-race-lobby').count(),0,'Category selection must not start a recorded or live run');
+  assert.equal(await a.locator('.friend-lobby').count(),0,'Category selection must not start a recorded or live run');
   await a.screenshot({path:path.join(output,`pvp-only-intro-${viewport.width}.png`),fullPage:true});
   await a.getByRole('button',{name:'Start PvP match',exact:true}).click();
-  await a.locator('.live-race-self strong').waitFor();assert.equal(await a.locator('.live-race-self strong').innerText(),'Alice');
-  if(authority){await a.locator('.live-race-self .live-race-avatar').waitFor();assert.equal(await a.locator('.live-race-self img').count(),0,'Unavailable player avatar must show a stable placeholder');}
-  assert.equal(await a.locator('.live-race-rival strong').count(),0);assert.match(await a.locator('.live-race-status').innerText(),/Finding opponent/);
-  const geometry=await a.evaluate(()=>{const lobby=document.querySelector('.live-race-lobby').getBoundingClientRect();const self=document.querySelector('.live-race-self').getBoundingClientRect();const status=document.querySelector('.live-race-status').getBoundingClientRect();return {lobby,self,status};});
-  assert.ok(geometry.self.y<geometry.status.y);assert.ok(Math.abs(geometry.status.x+geometry.status.width/2-(geometry.lobby.x+geometry.lobby.width/2))<2);
-  assert.ok(Math.abs(geometry.status.y+geometry.status.height/2-(geometry.lobby.y+geometry.lobby.height/2))<2,'Search status occupies the vertical center of the lobby');
-  assert.ok(geometry.lobby.y+geometry.lobby.height>viewport.height-50,'Lobby fills the available screen height');
+  await a.locator('.friend-lobby-seat:first-child strong').waitFor();assert.equal(await a.locator('.friend-lobby-seat:first-child strong').innerText(),'Alice');
+  if(authority){await a.locator('.friend-lobby-seat:first-child .live-race-avatar').waitFor();assert.equal(await a.locator('.friend-lobby-seat:first-child img').count(),0,'Unavailable player avatar must show a stable placeholder');}
+  assert.equal(await a.locator('.friend-lobby-seat:last-child strong').count(),0);assert.match(await a.locator('.friend-lobby-status').innerText(),/Finding opponent/);
+  assert.equal(await a.locator('.friend-lobby-play').isDisabled(),true);
+  assert.equal(await a.locator('.friend-lobby-play').innerText(),'Play game');
+  const geometry=await a.evaluate(()=>{const lobby=document.querySelector('.friend-lobby').getBoundingClientRect();const self=document.querySelector('.friend-lobby-seat:first-child').getBoundingClientRect();const rival=document.querySelector('.friend-lobby-seat:last-child').getBoundingClientRect();const status=document.querySelector('.friend-lobby-status').getBoundingClientRect();return {lobby,self,rival,status};});
+  assert.ok(Math.abs(geometry.self.y-geometry.rival.y)<2,'Both player seats share the same row');
+  assert.ok(geometry.self.right<=geometry.rival.x+1,'The two seats do not overlap');
+  assert.ok(geometry.status.y>=geometry.self.bottom,'Status follows both seats');
+  assert.ok(Math.abs(geometry.status.x+geometry.status.width/2-(geometry.lobby.x+geometry.lobby.width/2))<2);
+  assert.ok(geometry.lobby.x>=0&&geometry.lobby.right<=viewport.width,'Lobby fits the viewport');
   await a.screenshot({path:path.join(output,`searching-${viewport.width}.png`),fullPage:true});
   await b.goto(baseUrl+'/?user=Bob');await b.getByRole('button',{name:'History People, events, and eras from the past',exact:true}).click();await b.getByRole('button',{name:'Start PvP match',exact:true}).click();
+  await a.locator('.friend-lobby-seat:last-child strong').waitFor();assert.equal(await a.locator('.friend-lobby-seat:last-child strong').innerText(),'Bob');
+  assert.equal(await b.locator('.friend-lobby-seat:last-child strong').innerText(),'Alice');
+  if(authority)await b.locator('.friend-lobby-seat:last-child .live-race-avatar').waitFor();
+  await a.getByRole('button',{name:'Play game',exact:true}).click();
+  await a.locator('.friend-lobby-play[aria-busy="true"]').waitFor();
+  assert.equal(await a.locator('.friend-lobby-play').innerText(),'Connecting');
+  assert.equal(await a.locator('.race-gameplay').count(),0,'One ready player cannot start a human race');
+  await b.getByRole('button',{name:'Play game',exact:true}).click();
   await b.locator('.live-race-search-wheel[data-phase=countdown]').waitFor();assert.equal(await b.locator('.live-race-search-wheel[data-phase=countdown]').innerText(),'');
-  await a.locator('.live-race-rival strong').waitFor();assert.equal(await a.locator('.live-race-rival strong').innerText(),'Bob');
-  assert.equal(await b.locator('.live-race-rival strong').innerText(),'Alice');
-  if(authority)await b.locator('.live-race-rival .live-race-avatar').waitFor();
   if(authority)for(const page of [a,b])assert.equal(await page.evaluate(()=>window.liveSnapshots.filter(view=>view.phase==='countdown').every(view=>view.run.currentRiddle===null)),true,'Neither player may inspect the first riddle during countdown');
   await a.screenshot({path:path.join(output,`countdown-${viewport.width}.png`),fullPage:true});
   await a.locator('.race-gameplay .guess-board').waitFor({timeout:15000});await b.locator('.race-gameplay .guess-board').waitFor({timeout:15000});
@@ -324,22 +335,27 @@ try {
   await context.close();
  }
  reset();await authority?.reset();const context=await browser.newContext({viewport:{width:390,height:844}});const page=await context.newPage();await page.goto(baseUrl+'/?user=Alice');
- await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.live-race-self strong').waitFor();
+ await page.getByRole('button',{name:'Start PvP match',exact:true}).click();await page.locator('.friend-lobby-seat:first-child strong').waitFor();
  if(authority){
   await page.waitForFunction(()=>window.liveSnapshots.at(-1)?.phase==='searching');
   const ticketId=await page.evaluate(()=>window.liveSnapshots.at(-1).ticketId);
   await authority.expireSearch('Alice',61000);
   await page.evaluate(()=>window.dispatchEvent(new Event('online')));
-  await page.waitForFunction(()=>{const view=window.liveSnapshots.at(-1);return view?.phase==='searching'&&view.serverNowMs-(view.searchEndsAtMs-900000)>=60000;});
-  assert.deepEqual(await page.evaluate(()=>{const view=window.liveSnapshots.at(-1);return {ticketId:view.ticketId,phase:view.phase,waitForPlayer:view.waitForPlayer,opponent:view.opponent};}),
-   {ticketId,phase:'searching',waitForPlayer:true,opponent:null});
-  assert.equal(await page.locator('.live-race-rival strong,.race-gameplay').count(),0);
-  await page.screenshot({path:path.join(output,'public-human-wait-390.png'),fullPage:true});
+  await page.waitForFunction(()=>{const view=window.liveSnapshots.at(-1);return view?.phase==='searching'&&view.opponent?.bot===true;});
+  assert.deepEqual(await page.evaluate(()=>{const view=window.liveSnapshots.at(-1);return {ticketId:view.ticketId,phase:view.phase,waitForPlayer:view.waitForPlayer,ready:view.ready,startsAtMs:view.startsAtMs,run:view.run,opponentCorrect:view.opponent.correctCount};}),
+   {ticketId,phase:'searching',waitForPlayer:true,ready:false,startsAtMs:null,run:null,opponentCorrect:0});
+  assert.equal(await page.locator('.race-gameplay').count(),0);
+  await page.screenshot({path:path.join(output,'public-bot-ready-390.png'),fullPage:true});
+  await page.getByRole('button',{name:'Play game',exact:true}).click();
+  await page.locator('.live-race-search-wheel[data-phase=countdown]').waitFor();
+  assert.equal(await page.locator('.friend-lobby-play').innerText(),'Connecting');
  }else{
   tickets.get('Alice').created=Date.now()-60000;
-  await page.locator('.live-race-rival strong').waitFor();assert.equal(await page.locator('.live-race-rival strong').innerText(),'Opponent');
+  await page.locator('.friend-lobby-seat:last-child strong').waitFor();assert.equal(await page.locator('.friend-lobby-seat:last-child strong').innerText(),'Opponent');
   const assertNeutralOpponent=async()=>assert.doesNotMatch(await page.locator('.race-screen').innerText(),/\bbot\b|🤖/i);
   await assertNeutralOpponent();
+  await page.getByRole('button',{name:'Play game',exact:true}).click();
+  await page.locator('.live-race-search-wheel[data-phase=countdown]').waitFor();
   await page.screenshot({path:path.join(output,'opponent-countdown-390.png'),fullPage:true});
   await page.locator('.race-gameplay').waitFor({timeout:15000});
   assert.match(await page.locator('.race-scoreboard').innerText(),/Opponent/);await assertNeutralOpponent();
@@ -354,8 +370,9 @@ try {
   reset();botName='Guest_ABC123';
   const guestContext=await browser.newContext({viewport:{width:390,height:844}}),guest=await guestContext.newPage();
   await guest.goto(baseUrl+'/?user=Alice');await guest.getByRole('button',{name:'Start PvP match',exact:true}).click();
-  await guest.locator('.live-race-self strong').waitFor();tickets.get('Alice').created=Date.now()-60000;
-  await guest.locator('.live-race-rival strong').waitFor();assert.equal(await guest.locator('.live-race-rival strong').innerText(),'Guest_ABC123');
+  await guest.locator('.friend-lobby-seat:first-child strong').waitFor();tickets.get('Alice').created=Date.now()-60000;
+  await guest.locator('.friend-lobby-seat:last-child strong').waitFor();assert.equal(await guest.locator('.friend-lobby-seat:last-child strong').innerText(),'Guest_ABC123');
+  await guest.getByRole('button',{name:'Play game',exact:true}).click();
   await guest.locator('.race-gameplay').waitFor({timeout:15000});assert.match(await guest.locator('.race-scoreboard').innerText(),/Guest_ABC123/);
   for(let index=0;index<10;index++){await solve(guest);if(index<9)await guest.waitForFunction(count=>window.liveSnapshots.at(-1).player.correctCount===count,index+1);}
   await guest.locator('.live-race-victory').waitFor();assert.match(await guest.locator('.race-result-score').innerText(),/Guest_ABC123/);
@@ -368,6 +385,6 @@ try {
  assert.equal(await unavailable.getByRole('button',{name:'Start PvP match',exact:true}).isDisabled(),true);
  assert.deepEqual(await unavailable.evaluate(()=>[...new Set(window.bridgeCalls)]),['game:listRaceCategories']);await unavailable.close();
  console.log('Retired links, category selection, PvP-only return navigation and missing live capability passed.');
- console.log(authority?'Public human waiting retained its exact seat without a bot after the legacy deadline at 390px.':'Synthetic bot fallback UI passed at 390px; server deadline advanced through the injected transport.');
+ console.log(authority?'Public search retained its exact seat and waited for Play game after the bot joined at 390px.':'Synthetic bot fallback waited for Play game at 390px; server deadline advanced through the injected transport.');
  await writeFile(path.join(output,'polling-latency.json'),JSON.stringify({transport:'injected local HTTP authority; not production latency',pushEnabled:push,samples:latency},null,2));
 }finally{await browser?.close();await authority?.clear();for(const stream of streams.values())stream.end();streams.clear();if(server){server.closeAllConnections();await new Promise(resolve=>server.close(resolve));}await rm(scratch,{recursive:true,force:true});}

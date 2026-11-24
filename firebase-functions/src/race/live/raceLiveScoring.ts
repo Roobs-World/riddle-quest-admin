@@ -10,7 +10,7 @@ export function liveFinishMs(run: RaceRunRecord): number | undefined {
 
 /** Settles only once the rival finishes or can no longer beat the best penalty-adjusted finish. */
 export function settleLiveFinish(match: LiveMatch, nowMs: number): boolean {
-  if (match.winner !== undefined) return false;
+  if (match.startsAtMs === null || match.winner !== undefined) return false;
   /** Fixed scores stay independent of later polls and the rival's active clock. */
   const finishes = match.runs.map(liveFinishMs);
   if (finishes[0] !== undefined && finishes[1] !== undefined) {

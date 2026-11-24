@@ -46,22 +46,31 @@ try{
  for(const locale of ['en','ar'])for(const mode of ['searching','private','countdown']){
   const page=await browser.newPage({viewport:{width:390,height:844}});const errors=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto(base+'/?mode='+mode+'&locale='+locale);
-  if(mode==='private'){
-   await page.locator('.live-race-status p').waitFor();
+  await page.locator('.friend-lobby').waitFor();
+  assert.equal(await page.locator('.friend-lobby-count').count(),0);
+  if(mode==='private'||mode==='searching'){
+   await page.locator('.friend-lobby-status p').waitFor();
    assert.equal(await page.locator('.live-race-search-wheel').count(),0);
-   assert.equal(await page.locator('.live-race-status p').innerText(),await page.evaluate(()=>window.expectedCopy('RaceTo10.LIVE_FRIEND_WAIT')));
+   assert.equal(await page.locator('.friend-lobby-status p').innerText(),await page.evaluate(mode=>window.expectedCopy(mode==='private'?'RaceTo10.LIVE_FRIEND_WAIT':'RaceTo10.LIVE_FINDING'),mode));
+   assert.equal(await page.locator('.friend-lobby-play').isDisabled(),true);
+   assert.equal(await page.locator('.friend-lobby-play').innerText(),await page.evaluate(()=>window.expectedCopy('RaceTo10.PLAY_GAME')));
+   const seats=await page.locator('.friend-lobby-seat').evaluateAll(nodes=>nodes.map(node=>{const box=node.getBoundingClientRect();return {y:box.y,right:box.right,width:box.width};}));
+   assert.equal(seats.length,2);assert.ok(Math.abs(seats[0].y-seats[1].y)<2,'Both lobby seats share one row');
+   assert.ok(seats.every(seat=>seat.width>0&&seat.right<=390),'Both lobby seats fit the viewport');
+   await page.screenshot({path:path.join(evidence,locale+'-'+mode+'.png')});
   }else{
    const wheel=page.locator('.live-race-search-wheel');await wheel.waitFor();
-   assert.equal(await wheel.innerText(),'');assert.equal(await page.locator('.live-race-status p').count(),0);
+   assert.equal(await wheel.innerText(),'');
+   assert.equal(await page.locator('.friend-lobby-status p').innerText(),await page.evaluate(()=>window.expectedCopy('RaceTo10.LIVE_STARTING')));
+   assert.equal(await page.locator('.friend-lobby-play').getAttribute('aria-busy'),'true');
    assert.equal(await wheel.getAttribute('data-phase'),mode);
    const before=Number(await wheel.getAttribute('aria-valuenow'));
-   if(mode==='searching')assert.ok(before>=49&&before<=70,'resumed search must start near its server-owned halfway point of the short bot-fallback window');
    await page.waitForTimeout(1200);
    const after=Number(await wheel.getAttribute('aria-valuenow'));assert.ok(after>before,'ring must fill as real time passes');
    await page.emulateMedia({reducedMotion:'reduce'});assert.equal(await page.locator('.live-race-search-fill').evaluate(el=>getComputedStyle(el).transitionProperty),'none');
    await page.screenshot({path:path.join(evidence,locale+'-'+mode+'.png')});
   }
-  assert.deepEqual(errors,[]);cases.push({locale,mode,numberFree:mode!=='private'});await page.close();
+  assert.deepEqual(errors,[]);cases.push({locale,mode,numberFree:true});await page.close();
  }
  for(const viewport of [{width:320,height:568},{width:390,height:844},{width:424,height:661},{width:1280,height:900}])for(const locale of ['en','ar'])for(const long of [false,true]){
   const page=await browser.newPage({viewport});const errors=[];page.on('pageerror',e=>errors.push(e.message));
