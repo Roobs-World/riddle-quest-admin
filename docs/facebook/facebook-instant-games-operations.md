@@ -241,7 +241,7 @@ The process environment takes precedence over the root `.env`; stdin is a fallba
 
 This command verifies the clean source and archive, creates the immutable handoff and retry barrier, then transmits those exact bytes. It uses Graph API v24.0 for the upload session and selects `gg_graph_api` for `GG` tokens or `fb_game_bundle` for `EAA` tokens. Requests have bounded timeouts and no automatic retries. It records only response hashes, HTTP status and validated bundle metadata in the private `remote-upload-SHA.json` receipt.
 
-Failed responses also retain sanitized provider error codes and a fixed reason category when available. Raw provider messages, response bodies, tokens and session identifiers are excluded. These diagnostics identify Meta's rejection without inferring its cause from HTTP 403 alone.
+Failed responses also retain sanitized provider error codes and a fixed reason category when available, including bounded nested `debug_info.message` errors returned by Meta's upload service. Receipts record the response byte count, allowlisted media type and body format. Non-JSON text is classified in memory. Raw provider messages, response bodies, tokens and session identifiers are excluded. These diagnostics identify Meta's rejection without inferring its cause from HTTP 403 alone.
 
 Use the current SHA-256 printed by preflight. Rebuilding can change the ZIP fingerprint even when the credential and command name are unchanged. An explicitly selected older hash remains blocked; the CLI reports the current gated hash rather than silently uploading different bytes. `release:facebook` prepares the manual dashboard handoff; remote transmission remains the separate `facebook:draft upload` subcommand.
 

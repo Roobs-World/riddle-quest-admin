@@ -12,6 +12,14 @@ const providerExceptionTypes = new Set([
   "FacebookApiException",
   "InvalidRequestException",
   "PermissionException",
+  "ProcessingFailedError",
+]);
+const responseMediaTypes = new Set([
+  "application/json",
+  "application/problem+json",
+  "application/octet-stream",
+  "text/plain",
+  "text/html",
 ]);
 
 /** Contains only fixed diagnostics and response fingerprints, without provider payloads or credentials. */
@@ -57,25 +65,50 @@ function providerFailureReason(message) {
 }
 
 /** Copies only bounded public error metadata into the private attempt receipt. */
-function safeProviderError(payload) {
-  const envelope = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
-  const error = envelope.error;
-  const details = error && typeof error === "object" && !Array.isArray(error) ? error : envelope;
-  const message = (typeof error === "string" ? error :
-    typeof details.message === "string" ? details.message :
-      typeof details.error_msg === "string" ? details.error_msg : "").slice(0, 4096);
+function safeProviderError(payload, fallbackText = "") {
+  const pending = [{value: payload, jsonDepth: 0}];
+  const envelopes = [];
+  const messages = [];
+  for (let index = 0; index < pending.length && index < 8; index += 1) {
+    const {value, jsonDepth} = pending[index];
+    if (!value || typeof value !== "object" || Array.isArray(value)) continue;
+    envelopes.push(value);
+    for (const key of ["error", "debug_info", "message", "error_msg", "error_description", "title", "detail"]) {
+      const part = value[key];
+      if (typeof part === "string") {
+        const text = part.slice(0, 4096);
+        messages.push(text);
+        if (jsonDepth < 2 && /^\s*\{/u.test(text)) {
+          try {
+            pending.push({value: JSON.parse(text), jsonDepth: jsonDepth + 1});
+          } catch {
+            // Truncated or non-JSON messages are still classified without retaining them.
+          }
+        }
+      } else if (key === "error" || key === "debug_info") {
+        pending.push({value: part, jsonDepth});
+      }
+    }
+  }
+  if (typeof payload === "string") messages.push(payload.slice(0, 4096));
+  if (fallbackText) messages.push(fallbackText.slice(0, 4096));
+  const message = messages.join(" ").slice(0, 32_768).replace(/\s+/gu, " ");
   const diagnostic = {reason: providerFailureReason(message)};
-  const code = details.code ?? details.error_code;
-  const subcode = details.error_subcode;
-  if (Number.isInteger(code) && code >= 0 && code <= 2_147_483_647) diagnostic.code = code;
-  if (Number.isInteger(subcode) && subcode >= 0 && subcode <= 2_147_483_647) diagnostic.subcode = subcode;
-  if (providerExceptionTypes.has(details.type)) diagnostic.type = details.type;
+  for (const details of envelopes.reverse()) {
+    const code = details.code ?? details.error_code;
+    const subcode = details.error_subcode;
+    if (diagnostic.code === undefined && Number.isInteger(code) && code >= 0 && code <= 2_147_483_647) diagnostic.code = code;
+    if (diagnostic.subcode === undefined && Number.isInteger(subcode) && subcode >= 0 && subcode <= 2_147_483_647) diagnostic.subcode = subcode;
+    if (diagnostic.type === undefined && providerExceptionTypes.has(details.type)) diagnostic.type = details.type;
+  }
   return diagnostic;
 }
 
 /** Reads a bounded response while retaining only a digest and safe error metadata. */
 async function readResponse(response, stage, stages) {
   const entry = {stage, httpStatus: response.status};
+  const mediaType = (response.headers.get("content-type") ?? "").slice(0, 512).split(";", 1)[0].trim().toLowerCase();
+  entry.responseMediaType = responseMediaTypes.has(mediaType) ? mediaType : mediaType ? "other" : "missing";
   stages.push(entry);
   const chunks = [];
   let length = 0;
@@ -99,19 +132,25 @@ async function readResponse(response, stage, stages) {
     reader?.releaseLock();
   }
   const contents = Buffer.concat(chunks, length);
+  entry.responseBytes = length;
   entry.responseSha256 = sha256(contents);
+  const text = contents.toString("utf8");
   let payload;
   let parsed = false;
   try {
-    payload = JSON.parse(contents.toString("utf8"));
+    payload = JSON.parse(text);
     parsed = true;
   } catch {
     // An error response need not be JSON; its body still stays out of diagnostics.
   }
+  entry.responseBodyFormat = length === 0 ? "empty" : parsed ?
+    Array.isArray(payload) ? "json-array" : payload !== null && typeof payload === "object" ? "json-object" : "json-scalar" :
+    mediaType === "text/html" || /^\s*(?:<!doctype\s+html\b|<html\b)/iu.test(text.slice(0, 4096)) ? "html" :
+      /[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(text.slice(0, 4096)) ? "binary" : "text";
   const providerError = payload && typeof payload === "object" && !Array.isArray(payload) &&
     Object.hasOwn(payload, "error");
   if (!response.ok || providerError) {
-    entry.providerError = safeProviderError(payload);
+    entry.providerError = safeProviderError(payload, parsed ? "" : text);
     throw new FacebookUploadError("Facebook rejected the upload request. Reconcile the retained attempt before retrying.", stage, stages);
   }
   if (!parsed) {
