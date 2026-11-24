@@ -134,6 +134,7 @@ export function useHostRiddleLifecycle({
     /** Account whose board is visible. */ userId: string | undefined;
     /** Account visit generation. */ accountGeneration: number | undefined;
     /** Content language. */ locale: string;
+    /** Private issued identities distinguish a new board from its recovery reads. */ viewed: Set<string>;
   } | null>(null);
   /** Stable content ownership excludes ordinary balance and presentation updates. */
   const preparationScope = useMemo(() => ({userId, accountGeneration, locale, services, canUsePreparedQuestions}),
@@ -206,7 +207,7 @@ export function useHostRiddleLifecycle({
     /** A provider swap within the same account visit keeps the visible board; its reads still retire above. */
     const board = boardScopeRef.current;
     if (!board || board.userId !== userId || board.accountGeneration !== accountGeneration || board.locale !== locale) {
-      boardScopeRef.current = {userId, accountGeneration, locale};
+      boardScopeRef.current = {userId, accountGeneration, locale, viewed: new Set()};
       loadedRef.current = false;
       classicIndexRef.current = profile?.classicIndex;
       setStartupComplete(false);
@@ -287,6 +288,7 @@ export function useHostRiddleLifecycle({
       /** The admitting context owns both the first load and any completed-Daily fallback. */
       const contextSignal = contextAbortRef.current!.signal;
       if (contextSignal.aborted) return false;
+      const startedAt = performance.now();
       /** Supersession releases loading activity without cancelling admitted provider work. */
       const delivery = new AbortController();
       deliveryRef.current?.abort();
@@ -298,12 +300,24 @@ export function useHostRiddleLifecycle({
       const ownsDelivery = () => contextScopeRef.current === contextScope && contextVersion === contextVersionRef.current &&
         deliveryRef.current === delivery && !delivery.signal.aborted;
       /** Ordinary and Daily-fallback successes publish the same correlated authoritative snapshot. */
-      const acceptRiddle = (riddle: Awaited<ReturnType<HostServices["loadRiddle"]>>) => {
+      const acceptRiddle = (riddle: Awaited<ReturnType<HostServices["loadRiddle"]>>, source: "prepared" | "provider" | "authoritative" | "daily_fallback") => {
         loadedRef.current = true;
         deliveredRiddleRef.current = riddle;
         deliveredScopeRef.current = preparationScope;
         postToGame({type: "host:riddleLoaded", requestId, payload: {riddle, profile: profileRef.current}});
         postOperation(requestId, "loadRiddle", true, {riddleId: riddle.riddleId});
+        const viewed = boardScopeRef.current?.viewed;
+        if (!viewed) return;
+        const identity = JSON.stringify([riddle.riddleId, riddle.sessionToken]);
+        const repeated = viewed.has(identity);
+        viewed.add(identity);
+        trackEvent(repeated ? "level_resumed" : "level_start", {
+          game_mode: riddle.gameMode,
+          level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
+          level_number: riddle.index, locale: input.locale,
+          resumed: repeated || riddle.attemptsUsed > 0 || Boolean(riddle.revealedHints?.length),
+          load_duration_ms: Math.max(0, Math.round(performance.now() - startedAt)), load_source: source,
+        });
       };
       /** Complete pending load outcome. */
       const pending = (async () => {
@@ -329,12 +343,7 @@ export function useHostRiddleLifecycle({
             ? await riddleLoadDeadline(services.loadRiddle(input, delivery.signal), delivery.signal)
             : await withActivity(() => riddleLoadDeadline(services.loadRiddle(input, delivery.signal), delivery.signal)));
           if (!ownsDelivery()) return false;
-          acceptRiddle(riddle);
-          trackEvent("level_start", {
-            game_mode: riddle.gameMode,
-            level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
-            level_number: riddle.index,
-          });
+          acceptRiddle(riddle, ready ? "prepared" : input.authoritative ? "authoritative" : "provider");
           setNotice(configurationWarning);
           setStartupComplete(true);
           setStartupUnavailable(false);
@@ -360,14 +369,11 @@ export function useHostRiddleLifecycle({
                 gameMode: "classic", locale: input.locale, classicIndex: classicIndexRef.current,
               }, delivery.signal), delivery.signal));
               if (!ownsDelivery()) return false;
-              acceptRiddle(riddle);
+              acceptRiddle(riddle, "daily_fallback");
               setStartupComplete(true);
               setStartupUnavailable(false);
               // Completion is an expected launch decision, not a failure notice.
               setNotice(configurationWarning);
-              trackEvent("level_start", {game_mode: riddle.gameMode,
-                level_name: riddle.index === undefined ? riddle.gameMode : `${riddle.gameMode}_${riddle.index}`,
-                level_number: riddle.index});
               onPlayable?.();
               return true;
             } catch (fallbackError) {

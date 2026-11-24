@@ -46,9 +46,23 @@ export function withLiveRaceAnalytics(provider: LiveRaceCapability, isActive: ()
     return accepted;
   };
   const perform = async <Result>(action: string, operation: () => Promise<Result>): Promise<Result> => {
-    try {return await operation();} catch (error) {
+    const now = () => {
+      try {return typeof performance === "undefined" ? Date.now() : performance.now();}
+      catch {return Date.now();}
+    };
+    const startedAt = now();
+    let success = false;
+    try {
+      const result = await operation();
+      success = true;
+      return result;
+    } catch (error) {
       if (action !== "poll" && isActive()) trackEvent("action_failed", {action: `live_race_${action}`});
       throw error;
+    } finally {
+      if (action !== "poll" && isActive()) trackEvent("operation_timing", {
+        operation: `live_race_${action}`, success, duration_ms: Math.min(3_600_000, Math.max(0, Math.round(now() - startedAt))),
+      });
     }
   };
   return {

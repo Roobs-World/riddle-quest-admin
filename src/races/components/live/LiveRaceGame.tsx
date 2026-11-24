@@ -82,7 +82,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const [now, setNow] = useState(() => Date.now());
   /** Starts gameplay when the shared authoritative countdown reaches zero. */
   const phase = view?.phase === "countdown" && view.startsAtMs !== null && now >= view.startsAtMs ? "racing" : view?.phase;
-  useEffect(() => {trackScreen(`multiplayer_live_${phase ?? "connecting"}`);}, [phase]);
+  useEffect(() => {trackScreen(`multiplayer_live_${phase ?? "connecting"}`, {game_mode: "race", play_surface: "online"});}, [phase]);
   /** Server-owned help waits disable actions while preserving answer drafting. */
   /** Receipt anchor advances server time independently of device wall-clock changes. */
   const [clockAnchor] = useState(() => ({current: {serverNowMs: Date.now(), receivedAtMs: performance.now()}}));

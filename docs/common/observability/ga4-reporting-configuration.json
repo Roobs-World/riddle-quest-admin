@@ -1,0 +1,357 @@
+{
+  "property": "properties/545194073",
+  "status": "prepared_not_applied",
+  "customDimensions": [
+    {
+      "parameterName": "platform",
+      "displayName": "Platform",
+      "description": "Game distribution target.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "game_locale",
+      "displayName": "Game locale",
+      "description": "Supported language selected in the game.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "game_mode",
+      "displayName": "Game mode",
+      "description": "Classic, Daily challenge or live race.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "play_surface",
+      "displayName": "Play surface",
+      "description": "Hosted online route or separate native offline route.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "app_release",
+      "displayName": "App release",
+      "description": "Immutable web release label when supplied by the release command.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "analytics_version",
+      "displayName": "Analytics version",
+      "description": "Version of the consent-owned metrics collector.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "screen_name",
+      "displayName": "Game screen",
+      "description": "Screen label on custom game_screen_engagement events.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "load_source",
+      "displayName": "Puzzle load source",
+      "description": "Prepared, provider, authoritative or Daily fallback load.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "timing_scope",
+      "displayName": "Puzzle timing scope",
+      "description": "Observed start, resumed, unobserved or ambiguous timing.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "operation",
+      "displayName": "Operation",
+      "description": "Bounded game or race operation name.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "action",
+      "displayName": "Action",
+      "description": "Bounded player action name.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "status",
+      "displayName": "Outcome status",
+      "description": "Confirmed, cancelled, failed, pending or not applied outcome.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "result",
+      "displayName": "Game result",
+      "description": "Authority or local game result classification.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "success",
+      "displayName": "Success",
+      "description": "Success flag, encoded as zero or one.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "resumed",
+      "displayName": "Resumed puzzle",
+      "description": "Whether this observation resumed an existing puzzle.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "source",
+      "displayName": "Reward source",
+      "description": "Approved currency or reward origin.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "product_id",
+      "displayName": "Product",
+      "description": "Public game product identifier.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "category_id",
+      "displayName": "Puzzle category",
+      "description": "Approved public content category.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "difficulty",
+      "displayName": "Puzzle difficulty",
+      "description": "Bundled content difficulty band.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "content_version",
+      "displayName": "Content version",
+      "description": "Bundled content release identifier.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "network_state",
+      "displayName": "Browser network state",
+      "description": "Browser-reported connectivity, not proof the game server is reachable.",
+      "scope": "EVENT"
+    },
+    {
+      "parameterName": "reason",
+      "displayName": "Summary or outcome reason",
+      "description": "Bounded checkpoint or failure classification.",
+      "scope": "EVENT"
+    }
+  ],
+  "customMetrics": [
+    {
+      "parameterName": "foreground_ms",
+      "displayName": "Foreground time",
+      "description": "Foreground observation duration. Filter by event name to avoid adding overlapping screen and session totals.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "load_duration_ms",
+      "displayName": "Puzzle load time",
+      "description": "Elapsed time for an accepted browser puzzle load.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "duration_ms",
+      "displayName": "Operation duration",
+      "description": "Elapsed action or checkout time, including provider and save waits; not active playing time.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "observed_attempts",
+      "displayName": "Observed attempts",
+      "description": "Accepted attempts seen in this post-consent puzzle observation.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "observed_hints",
+      "displayName": "Observed hints",
+      "description": "Hints accepted during this post-consent puzzle observation.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "observed_continues",
+      "displayName": "Observed continues",
+      "description": "Continues accepted during this post-consent puzzle observation.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "word_length",
+      "displayName": "Puzzle length",
+      "description": "Visible answer-slot count, without answer text.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "long_task_count",
+      "displayName": "Long task count",
+      "description": "Observed foreground browser long tasks in this summary interval.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "long_task_total_ms",
+      "displayName": "Long task total time",
+      "description": "Sum of observed foreground long task durations in this interval.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "long_task_max_ms",
+      "displayName": "Longest task",
+      "description": "Largest observed foreground long task in this interval.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "observed_input_event_count",
+      "displayName": "Slow input entries",
+      "description": "Count of observed Event Timing entries. This does not count all clicks or keys.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "observed_input_max_ms",
+      "displayName": "Longest observed input",
+      "description": "Largest observed Event Timing duration. This is not the INP web vital.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "dns_ms",
+      "displayName": "DNS duration",
+      "description": "Current document navigation DNS duration, where exposed by the browser.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "connect_ms",
+      "displayName": "Connection duration",
+      "description": "Current document navigation connection duration.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "response_wait_ms",
+      "displayName": "Response wait",
+      "description": "Current document request-to-response-start duration.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "dom_ready_ms",
+      "displayName": "DOM ready duration",
+      "description": "Current document navigation-to-DOM-ready duration.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "page_load_ms",
+      "displayName": "Page load duration",
+      "description": "Current document navigation-to-load duration.",
+      "scope": "EVENT",
+      "measurementUnit": "MILLISECONDS"
+    },
+    {
+      "parameterName": "document_bytes",
+      "displayName": "Document bytes",
+      "description": "Encoded document body bytes exposed by Navigation Timing, not total game transfer.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "screen_views",
+      "displayName": "Observed screen views",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "levels_started",
+      "displayName": "Puzzle starts",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "levels_completed",
+      "displayName": "Puzzle completions",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "correct_attempts",
+      "displayName": "Correct attempts",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "incorrect_attempts",
+      "displayName": "Incorrect attempts",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "hints_used",
+      "displayName": "Hints used",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "continues_used",
+      "displayName": "Continues used",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "skips_used",
+      "displayName": "Puzzles skipped",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "races_started",
+      "displayName": "Race starts",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "races_completed",
+      "displayName": "Race completions",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "checkouts_started",
+      "displayName": "Checkout starts",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "purchase_confirmations",
+      "displayName": "Purchase confirmations",
+      "description": "Confirmed checkout outcomes; stable web receipts deduplicate locally. Use standard GA purchase metrics for revenue.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    },
+    {
+      "parameterName": "operation_failures",
+      "displayName": "Operation failures",
+      "description": "Interval count on game_session_summary; filter to that event when aggregating.",
+      "scope": "EVENT",
+      "measurementUnit": "STANDARD"
+    }
+  ]
+}

@@ -25,7 +25,7 @@ The owner's Firebase console screenshot supplied on 24 November 2026 identifies 
 | Android | `16378518116` | Native Firebase app `1:329028367192:android:4c0af717dd9c0db1b7eb2d` |
 | Facebook | `15543205796` | Web measurement ID `G-1YZP6C2H4V` |
 | Jest | `15241797219` | Web measurement ID `G-7CWWGNE52Q` |
-| Yahoo | `15809641012` | Existing registration only; candidate collection remains disabled |
+| Yahoo | `15809641012` | Registered measurement ID `G-FCX82P3TWT`; candidate collection remains disabled |
 
 Numeric property and stream IDs identify reporting resources. They do not replace web measurement IDs or the Android Firebase app ID in the collection configuration. Google's [data stream reference](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1beta/properties.dataStreams) defines these separate fields. A registered stream does not authorize analytics in a restricted target or prove receipt of events.
 
@@ -58,6 +58,32 @@ Shared event names and parameter names are bounded to 40 characters, strings to 
 
 Shared provider events carry `platform`, `screen_class` and `schema_version: 1`. Provider-specific capabilities retain their existing funnel event names. Request, completion and paid-action receipts suppress repeated successful deliveries inside the active owner. GA purchase transaction identifiers support deduplication across receipt recovery.
 
+### Expanded collection
+
+The consent-owned collector adds `analytics_version: 2`. It preserves the verified per-platform measurement IDs, which were reread from Firebase on 24 November 2026. Separate streams provide platform breakdowns within the same property; assigning multiple platforms to one stream does not add analytical coverage.
+
+| Data | Events and fields | Interpretation |
+| --- | --- | --- |
+| Session engagement | `game_session_started`, `game_session_resumed`, `game_session_summary` | Summaries contain foreground milliseconds and interval counts for screens, attempts, puzzle/race starts and completions, help, checkout outcomes and failures. |
+| Screen engagement | `game_screen_engagement`, `screen_name`, `game_mode`, `play_surface`, `foreground_ms` | Foreground dwell segments, flushed on a view change, backgrounding, page hide and each 60-second foreground interval. Idle foreground time is included. |
+| Puzzle journeys | `level_start`, `level_resumed`, `level_end`, `riddle_skipped`, `level_replaced` | Private issued identities prevent recovery reads inflating browser starts. Completed observations include attempt/help counts and observed foreground journey time where correlation is sound. |
+| Timing quality | `timing_scope`, `resumed` | `observed_start` and `resumed` describe the observed segment. `unobserved` omits duration. Overlapping unresolved rounds use `ambiguous` and suppress inferred durations for that mode until a new collector owns collection. |
+| Load and action latency | `load_duration_ms`, `load_source`, native `game_load_result`, `operation_timing`, checkout/restore `duration_ms` | Request/load latency includes provider and save waits. It is distinct from foreground journey time. Polling is excluded from live-race action timings. |
+| Content and progression | `game_locale`, native offline `content_version`, `category_id`, `difficulty`, `word_length` | Approved language and content classifications. Word length is the visible slot count, never the answer text. Available metadata depends on the platform's content contract. |
+| Browser performance | `browser_navigation_timing`, `browser_performance_summary` | Numeric document load phases and observed foreground long-task/Event Timing aggregates. No resource URLs, DOM labels or typed values. Observed input durations are not a computed INP web vital. |
+| Acquisition | Validated `utm_source`, `utm_medium`, `utm_campaign`, `utm_id`, `utm_content` map to standard GA campaign fields | Read only after consent and before first tag configuration. Values must be bounded campaign codes. Raw queries, referrers, search terms and ad-click identifiers remain excluded. Provider-only attribution stays in the provider's existing funnels. |
+| Cohorts | `platform`, `game_locale`, `play_surface`, `app_release`, `network_state` | Web release labels use the release configuration; native app version remains an automatic Firebase dimension. Browser network state is its reported status, not a server reachability check. |
+
+Counters in `game_session_summary` are deltas since the previous checkpoint, so summing that event is meaningful. Do not sum foreground milliseconds across session summaries, screen engagement and puzzle outcomes together, because they measure overlapping intervals. Puzzle foreground journey time includes foreground navigation/help between the observed start and outcome. It is not active solving time. Timing and counters begin only after a consented destination connects; revocation silently discards the final unfinished segment.
+
+`purchase_confirmations` deduplicates stable web receipt identifiers locally within the observation window. Native checkout responses and web confirmations without stable receipt identity count outcomes, not unique financial transactions. Use GA's standard purchase/revenue metrics for financial reporting. Offline native actions must change an accepted save revision before they emit success or currency/progression events.
+
+The implementation leaves automatic `first_open`, `first_visit`, `session_start`, engagement, device and app-version reporting to Google. It does not manually duplicate these reserved events or Play purchase revenue. Users remain analytics browser/app instances; the property does not establish a deduplicated count of global game accounts across platforms.
+
+The [prepared reporting configuration](ga4-reporting-configuration.json) contains 22 event-scoped dimensions and 31 event-scoped metrics for property `545194073`. These are proposed definition bodies, not evidence of installed console definitions. Reuse any existing definitions by parameter name instead of creating duplicates. Use built-in GA dimensions for standard campaigns, device/app information and screen views.
+
+For event-level history outside GA reports, Google's [BigQuery export](https://developers.google.com/analytics/bigquery/overview) supports raw event export. No export, paid resource or retention change was enabled. The available browser was signed out of Analytics, so property definitions, retention and export settings remain unapplied/unverified. A signed-in property administrator must apply the reviewed configuration and confirm property settings. Google documents the [dimension](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1beta/properties.customDimensions) and [metric](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1beta/properties.customMetrics) definition fields.
+
 ## Operations
 
 1. Build the selected target. Web values are compiled into its artifact. Android requires its normal public production hosted config and registered Android Firebase app.
@@ -78,3 +104,9 @@ Android debug assembly, release resource/manifest generation, a production Metro
 No game, browser or device test harness was run, and no artifact was uploaded or deployed. An attempted `pnpm check:security` invoked its bundled braces regression tests unintentionally and stopped on an existing assertion expecting `patches/braces@3.0.3.patch` instead of the configured `config/security-patches/braces@3.0.3.patch`. That unrelated assertion was left unchanged; the direct analytics/security configuration audit passed. Live GA ingestion and actual property settings remain unverified.
 
 The requested follow-up on 24 November 2026 fixed the stale assertion by reading the patch path from the workspace configuration. The related image-size guard now checks both patch directories. The full `pnpm check:security` command passes, including the installed dependency probes and configuration/CI audits. No game artifacts needed rebuilding for this scripts-only correction.
+
+### Expanded collection verification
+
+All seven production web builds and their artifact audits passed after the expanded collectors were added. Jest's entry-resource audit reports 576,679 bytes against its unchanged 576,716.8-byte limit. Shared/Android types, locale completeness, source boundaries, direct security configuration and whitespace checks passed. No additional automated game tests or browser/device harnesses were run. The Analytics console check was read-only and reached sign-in.
+
+The final native release AAB is 48,442,322 bytes with SHA-256 `17916da4c0759fe853c890b020641003a033e851e8de82f3328764ebab0de6a9`. Its compiled Hermes bundle contains the final session, screen engagement, purchase confirmation and timing-scope fields. The Gradle bundle task now tracks shared `src` and selected hosted configuration inputs, so a shared collector edit cannot reuse a stale bundle. No build was uploaded, activated or deployed. GA ingestion, property reporting definitions, retention and export remain unverified/unapplied.

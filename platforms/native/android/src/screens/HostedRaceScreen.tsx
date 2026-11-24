@@ -1,4 +1,4 @@
-import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
+import {trackEvent, trackScreen} from "../../../../../src/observability/analytics/eventsRuntime";
 import {withLiveRaceAnalytics} from "../../../../../src/races/analytics/liveRaceAnalytics";
 import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/races/contracts/index";
 import {createFirebaseLiveTransport} from "../../../../../src/races/transport/firebaseLiveTransport";
@@ -80,6 +80,10 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
   useEffect(() => {if (state.closed) onBack();}, [state.closed, onBack]);
   /** Answer-free canonical projection displayed for this owned seat. */
   const view = state.view;
+  const analyticsPhase = state.closed ? null : view?.phase ?? (state.recovering ? "recovering" : "intro");
+  useEffect(() => {
+    if (analyticsPhase) trackScreen(`multiplayer_live_${analyticsPhase}`, {play_surface: "online", game_mode: "race"});
+  }, [analyticsPhase]);
   /** A successful join or authoritative expired preview finishes the pending entry only. */
   const entryHandled = useRef(false);
   useEffect(() => {

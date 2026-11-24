@@ -1,4 +1,6 @@
 import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
+import {SOLO_COIN_COSTS} from "../../../../../src/progression/economy/rewardRules";
+import {startAndroidAnalyticsTiming} from "../analytics/androidAnalytics";
 import type {BridgeRiddle} from "../../../../../src/platform/bridge/messages";
 import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "../../../../../src/platform/contracts/hostServices";
 import {createInitialGameSession, gameSessionReducer} from "../../../../../src/gameplay/session/gameSession";
@@ -278,10 +280,20 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
   const loadedRounds = useRef(new Set<string>());
   const completedRounds = useRef(new Set<string>());
   const deliveredGuesses = useRef(new Set<string>());
+  const deliveredHelp = useRef(new Set<string>());
+  const recordHelp = useCallback((riddle: BridgeRiddle, kind: "hint" | "continue" | "skip", cost: number, index?: number) => {
+    if (!mounted.current) return;
+    const receipt = JSON.stringify([riddle.riddleId, riddle.sessionToken, kind, index ?? null]);
+    if (deliveredHelp.current.has(receipt)) return;
+    deliveredHelp.current.add(receipt);
+    trackEvent(kind === "skip" ? "riddle_skipped" : `${kind}_used`, {game_mode: riddle.gameMode, play_surface: "online", cost});
+    trackEvent("spend_virtual_currency", {virtual_currency_name: "coins", item_name: kind, value: cost, game_mode: riddle.gameMode, play_surface: "online"});
+  }, []);
   /** Loads the current puzzle for the mode. */
   const load = useCallback(() => {
     /** Load generation that owns the response. */
     const token = ++generation.current;
+    const timing = startAndroidAnalyticsTiming();
     setState({kind: "loading"});
     void services
       .loadRiddle({gameMode: mode, locale, authoritative: mode === "classic"})
@@ -289,6 +301,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         /** Journal left by an interrupted session on this question. */
         const recorded = await recover(riddle);
         if (!mounted.current || token !== generation.current) return;
+        trackEvent("game_load_result", {game_mode: mode, play_surface: "online", status: "success", ...timing()});
         hintsRef.current = recoveredHints(riddle);
         draftRef.current = (recorded?.draft ?? []).map((letter, index) => (hintsRef.current.has(index) ? "" : letter));
         /** Letters as restored. */
@@ -315,13 +328,13 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         const roundKey = `${riddle.riddleId}:${riddle.sessionToken ?? ""}`;
         if (!loadedRounds.current.has(roundKey)) {
           loadedRounds.current.add(roundKey);
-          trackEvent("level_start", {game_mode: mode, play_surface: "online", resumed: riddle.attemptsUsed > 0});
+          trackEvent("level_start", {game_mode: mode, play_surface: "online", resumed: riddle.attemptsUsed > 0, word_length: riddle.answerLength, puzzle_index: riddle.index});
         }
         if (pendingRef.current) redeliverRef.current();
       })
       .catch((error: unknown) => {
         if (!mounted.current || token !== generation.current) return;
-        trackEvent("game_load_failed", {game_mode: mode, play_surface: "online"});
+        trackEvent("game_load_failed", {game_mode: mode, play_surface: "online", reason: errorCode(error) === "daily-completed" ? "daily-completed" : "load-failed", ...timing()});
         setState({kind: "unavailable", code: errorCode(error) === "daily-completed" ? "daily-completed" : "load-failed"});
       });
   }, [locale, mode, recover, services]);
@@ -329,16 +342,25 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
 
   /** Runs one server operation against the active riddle with busy and notice bookkeeping. */
   const operate = useCallback(
-    (action: string, operation: (riddle: BridgeRiddle, rows: readonly HostedGuessRow[]) => Promise<void>) => {
+    (action: string, operation: (riddle: BridgeRiddle, rows: readonly HostedGuessRow[]) => Promise<void | false>) => {
       setState((current) => {
         if (current.kind !== "playing" || busyRef.current) return current;
         busyRef.current = true;
         /** Generation that owns the operation. */
         const token = generation.current;
+        const ownerId = accountRef.current.user?.uid;
+        const timing = startAndroidAnalyticsTiming();
+        const owned = () => mounted.current && accountRef.current.user?.uid === ownerId;
         trackEvent("game_action_requested", {action, game_mode: mode, play_surface: "online"});
         void operation(current.riddle, current.rows)
+          .then(applied => {
+            if (owned()) trackEvent("operation_timing", {operation: `game_${action}`, game_mode: mode, play_surface: "online", status: applied === false ? "not_applied" : "success", ...timing()});
+          })
           .catch((error: unknown) => {
-            trackEvent("game_action_failed", {action, game_mode: mode, play_surface: "online"});
+            if (owned()) {
+              trackEvent("operation_timing", {operation: `game_${action}`, game_mode: mode, play_surface: "online", status: "failed", ...timing()});
+              trackEvent("game_action_failed", {action, game_mode: mode, play_surface: "online", reason: noticeFor(error)});
+            }
             if (mounted.current && token === generation.current) {
               setState((latest) => (latest.kind === "playing" ? {...latest, notice: noticeFor(error)} : latest));
             }
@@ -398,7 +420,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         const letters = project(draftRef.current, hintsRef.current, riddle.answerLength);
         if (!pendingRef.current && letters.some((letter) => !letter)) {
           setState((latest) => (latest.kind === "playing" ? {...latest, notice: "answer-incomplete"} : latest));
-          return;
+          return false;
         }
         /** Replay-safe id for a new delivery. */
         const requestId = createHostedRequestId("guess");
@@ -444,6 +466,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         }
         record(riddle);
         publish(riddle, nextRows, {attempts: result.attempts, awaitingContinue: result.canContinue === true});
+        return undefined;
       }),
     [complete, operate, publish, record, services],
   );
@@ -490,12 +513,13 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
             requestId: createHostedRequestId("hint"),
             currentAttempt: project(draftRef.current, hintsRef.current, riddle.answerLength),
           });
-          if (!hint) return;
-          trackEvent("hint_used", {game_mode: riddle.gameMode, play_surface: "online"});
+          if (!hint) return false;
+          recordHelp(riddle, "hint", hint.coinsCost, hint.index);
           hintsRef.current = new Map(hintsRef.current).set(hint.index, hint.revealedLetter);
           if (slotRef.current === hint.index) slotRef.current = firstEditable(project(draftRef.current, hintsRef.current, riddle.answerLength), hintsRef.current);
           record(riddle);
           publish(riddle, rows);
+          return undefined;
         }),
       buyContinue: () =>
         operate("continue", async (riddle, rows) => {
@@ -506,19 +530,21 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
             sessionToken: riddle.sessionToken,
             requestId: createHostedRequestId("continue"),
           });
-          trackEvent("continue_used", {game_mode: riddle.gameMode, play_surface: "online"});
+          recordHelp(riddle, "continue", SOLO_COIN_COSTS.continue);
           publish(riddle, rows, {awaitingContinue: false, hasUsedContinue: true});
         }),
       finish: () => operate("finish", (riddle, rows) => complete(riddle, rows)),
       skip: () =>
         operate("skip", async (riddle) => {
-          await services.skipRiddle({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken, requestId: createHostedRequestId("skip")});
-          trackEvent("riddle_skipped", {game_mode: riddle.gameMode, play_surface: "online"});
+          const result = await services.skipRiddle({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken, requestId: createHostedRequestId("skip")});
+          if (result.success) recordHelp(riddle, "skip", result.costDeducted);
           forget();
           load();
+          if (!result.success) return false;
+          return undefined;
         }),
       next: load,
     }),
-    [account, complete, edit, forget, load, locale, operate, publish, record, services, state, submit],
+    [account, complete, edit, forget, load, locale, operate, publish, record, recordHelp, services, state, submit],
   );
 }

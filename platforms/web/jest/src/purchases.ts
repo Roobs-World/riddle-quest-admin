@@ -128,32 +128,13 @@ export class JestPurchaseCoordinator {
     playerId: string,
     initialPage?: IncompletePurchasePage,
   ): Promise<PlatformResult<number>> {
-    /** Provides count behavior. */
-    let count = 0;
-    for (let page = 0; page < 100; page += 1) {
-      /** Provides result behavior. */
-      const result =
-        page === 0 && initialPage
-          ? ({status: "success", value: initialPage} as const)
-          : await this.platform.getIncompletePurchases();
+    if (!initialPage) {
+      const result = await this.platform.getIncompletePurchases();
       if (result.status !== "success") return result;
-      for (const purchase of result.value.purchases) {
-        try {
-          await this.backend.grantPurchase(result.value.purchasesSigned, playerId, purchase.purchaseToken);
-        } catch (error) {
-          captureBrowserException(error, {component: "jest_purchases", operation: "reconcile_purchase"});
-          return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
-        }
-        /** Completes d. */
-        const completed = await this.platform.completePurchase(purchase.purchaseToken);
-        if (completed.status !== "success") return completed;
-        count += 1;
-      }
-      if (!result.value.hasMore) return {status: "success", value: count};
+      initialPage = result.value;
     }
-    /** Reports queue exhaustion at its origin, as SDK and grant failures are reported. */
-    const error = new Error("Incomplete purchase pagination exceeded safety limit");
-    captureBrowserException(error, {component: "jest_purchases", operation: "reconcile_pagination"});
-    return {status: "terminal-failure", message: error.message};
+    if (initialPage.purchases.length === 0 && !initialPage.hasMore) return {status: "success", value: 0};
+    const {reconcileJestPurchases} = await import("./purchaseReconciliation");
+    return reconcileJestPurchases({platform: this.platform, backend: this.backend, playerId, initialPage});
   }
 }

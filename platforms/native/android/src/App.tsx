@@ -10,7 +10,7 @@ import {createHostedFirebaseClient} from "./hosted/firebaseClient";
 import {createAndroidHostServices} from "./hosted/hostedServices";
 import {createAndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {hostedConfig} from "./hosted/hostedConfig";
-import {initializeAndroidAnalytics} from "./analytics/androidAnalytics";
+import {initializeAndroidAnalytics, setAndroidAnalyticsLocale} from "./analytics/androidAnalytics";
 import {configureAnalyticsContext, trackEvent} from "../../../../src/observability/analytics/eventsRuntime";
 import {AppState} from "react-native";
 /** Root component registered with React Native. */
@@ -40,6 +40,7 @@ export function App() {
   /** Records the resolved locale for the services. */
   const onLocaleResolved = useCallback((locale: YouTubeLocale) => {
     localeRef.current = locale;
+    setAndroidAnalyticsLocale(locale);
   }, []);
   return (
     <SafeAreaProvider>

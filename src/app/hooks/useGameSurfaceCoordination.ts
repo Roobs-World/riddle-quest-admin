@@ -118,7 +118,7 @@ export function useGameSurfaceCoordination({
           : session.riddle
             ? `game_${session.gameMode}`
             : "game_loading";
-    trackScreen(screen, {game_mode: session.gameMode});
+    trackScreen(screen, {game_mode: raceOpen ? "race" : session.gameMode});
   }, [guidanceActive, raceOpen, session.gameMode, session.modal, session.riddle]);
 
   useEffect(() => {

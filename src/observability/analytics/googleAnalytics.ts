@@ -1,5 +1,8 @@
 import {isBrowserTelemetryRuntimeAllowed} from "../telemetryRuntime";
-import {configureAnalytics, setAnalyticsCollectionEnabled, type AnalyticsValue, type SanitizedAnalyticsParams} from "./eventsRuntime";
+import {firebaseEnvironment} from "../../platform/firebase/browserEnvironment";
+import {configureAnalytics, currentAnalyticsScreen, sanitizeAnalyticsParams, setAnalyticsCollectionEnabled, type AnalyticsParams, type AnalyticsValue, type SanitizedAnalyticsParams} from "./eventsRuntime";
+import {createAnalyticsSession} from "./analyticsSession";
+import {installBrowserAnalyticsInsights} from "./browserInsights";
 
 let stopActive: (() => void) | null = null;
 type GoogleTag = {send(...args: unknown[]): void; ready: Promise<void>; configured: boolean};
@@ -9,6 +12,20 @@ const googleParams = (params: SanitizedAnalyticsParams) => Object.fromEntries(Ob
   .map(([key, value]) => [key, Array.isArray(value)
     ? value.map(item => Object.fromEntries(Object.entries(item).map(([name, itemValue]) => [name, googleValue(itemValue)])))
     : googleValue(value)]));
+
+/** Only explicit campaign codes are read after consent; raw query strings never leave the page. */
+const campaignParams = (): AnalyticsParams => {
+  const query = new URLSearchParams(window.location.search);
+  const params: AnalyticsParams = {};
+  for (const [source, destination] of [
+    ["utm_source", "campaign_source"], ["utm_medium", "campaign_medium"], ["utm_campaign", "campaign_name"],
+    ["utm_id", "campaign_id"], ["utm_content", "campaign_content"],
+  ]) {
+    const value = query.get(source);
+    if (value && /^[a-zA-Z0-9._~-]{1,80}$/.test(value)) params[destination] = value;
+  }
+  return params;
+};
 
 /** Reuse the loaded tag so renewed consent cannot install automatic listeners twice. */
 const getTag = (measurementId: string): GoogleTag => {
@@ -68,10 +85,14 @@ export async function initializeGoogleAnalytics({measurementId, isCurrent = () =
   const denied = {analytics_storage: "denied", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied"};
   let disconnect = () => {};
   let cancelLoading = () => {};
+  let stopInsights = () => {};
+  let session: ReturnType<typeof createAnalyticsSession> | null = null;
   const stop = () => {
     if (!active) return;
     active = false;
     if (stopActive !== stop) return;
+    stopInsights();
+    session?.dispose();
     Reflect.set(window, `ga-disable-${measurementId}`, true);
     tag.send("consent", "update", denied);
     disconnect();
@@ -92,7 +113,7 @@ export async function initializeGoogleAnalytics({measurementId, isCurrent = () =
     tag.send("consent", "update", {...denied, analytics_storage: "granted"});
     const page = {page_location: `${window.location.origin}/`, page_referrer: "", page_title: "Riddle Quest"};
     if (!tag.configured) {
-      tag.send("set", page);
+      tag.send("set", {...page, ...campaignParams()});
       tag.send("config", measurementId, {
         ...page,
         send_page_view: false,
@@ -106,10 +127,22 @@ export async function initializeGoogleAnalytics({measurementId, isCurrent = () =
       });
       tag.configured = true;
     }
-    disconnect = configureAnalytics((eventName: string, params: SanitizedAnalyticsParams) => {
+    const send = (eventName: string, params: SanitizedAnalyticsParams) => {
       if (!active || !isCurrent()) { stop(); return; }
-      tag.send("event", eventName, {...googleParams(params), ...page, send_to: measurementId});
+      tag.send("event", eventName, {...googleParams(sanitizeAnalyticsParams({...params, platform: firebaseEnvironment.platformTarget ?? "unknown",
+        game_locale: document.documentElement.lang || "en", app_release: firebaseEnvironment.sentryRelease ?? "unversioned",
+        play_surface: typeof params.play_surface === "string" ? params.play_surface : "online",
+        network_state: navigator.onLine ? "reported_online" : "reported_offline",
+        schema_version: 1, analytics_version: 2})), ...page, send_to: measurementId});
+    };
+    session = createAnalyticsSession({send, now: () => performance.now(), foreground: document.visibilityState !== "hidden",
+      initialScreen: currentAnalyticsScreen(), context: {play_surface: "online"}});
+    const ownedSession = session;
+    disconnect = configureAnalytics((name, params) => {
+      if (!active || !isCurrent()) { stop(); return; }
+      ownedSession.record(name, params);
     });
+    stopInsights = installBrowserAnalyticsInsights({session: ownedSession, track: send, isCurrent: () => active && isCurrent()});
   } catch {
     stop();
   }

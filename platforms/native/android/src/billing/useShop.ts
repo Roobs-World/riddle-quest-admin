@@ -1,4 +1,5 @@
 import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
+import {startAndroidAnalyticsTiming} from "../analytics/androidAnalytics";
 import {useCallback, useEffect, useRef, useState} from "react";
 import type {AndroidCommerce} from "./androidCommerce";
 import {ANDROID_COIN_PACKS, ANDROID_PREMIUM_SUBSCRIPTIONS, type CoinPack} from "./catalog";
@@ -167,12 +168,13 @@ export function useShop({billing, commerce, accountUid, onAccountChanged}: ShopO
     (product: PlayProduct) => {
       if (!commerce) return;
       run(product.productId, async () => {
+        const timing = startAndroidAnalyticsTiming();
         trackEvent("checkout_requested", {product_id: product.productId, product_type: product.type});
         /** Settled checkout. */
         let outcome;
         try {outcome = await commerce.checkout(product, accountUid);}
-        catch (error) {trackEvent("checkout_result", {product_id: product.productId, status: "failed"}); throw error;}
-        trackEvent("checkout_result", {product_id: product.productId, status: outcome.kind});
+        catch (error) {trackEvent("checkout_result", {product_id: product.productId, product_type: product.type, status: "failed", ...timing()}); throw error;}
+        trackEvent("checkout_result", {product_id: product.productId, product_type: product.type, status: outcome.kind, ...timing()});
         if (outcome.kind === "cancelled") return null;
         if (outcome.kind === "pending") return {kind: "pending"};
         onAccountChanged();
@@ -189,12 +191,13 @@ export function useShop({billing, commerce, accountUid, onAccountChanged}: ShopO
   const restore = useCallback(() => {
     if (!commerce) return;
     run("restore", async () => {
+      const timing = startAndroidAnalyticsTiming();
       trackEvent("purchase_restore_requested");
       /** Restored state. */
       let restored;
       try {restored = await commerce.restore();}
-      catch (error) {trackEvent("purchase_restore_result", {status: "failed"}); throw error;}
-      trackEvent("purchase_restore_result", {status: restored.failedPurchases > 0 ? "partial" : "success", coins_awarded: restored.coinsAwarded});
+      catch (error) {trackEvent("purchase_restore_result", {status: "failed", ...timing()}); throw error;}
+      trackEvent("purchase_restore_result", {status: restored.failedPurchases > 0 ? "partial" : "success", coins_awarded: restored.coinsAwarded, ...timing()});
       if (mounted.current) setActiveSkus(restored.activeSkus);
       onAccountChanged();
       if (restored.failedPurchases > 0) return {kind: "failed"};

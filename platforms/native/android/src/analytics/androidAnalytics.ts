@@ -1,6 +1,8 @@
-import {NativeModules} from "react-native";
+import {AppState, NativeModules} from "react-native";
 import {useSyncExternalStore} from "react";
-import {configureAnalytics, setAnalyticsCollectionEnabled, trackEvent, type SanitizedAnalyticsParams} from "../../../../../src/observability/analytics/eventsRuntime";
+import {configureAnalytics, currentAnalyticsScreen, setAnalyticsCollectionEnabled, trackEvent, type SanitizedAnalyticsParams} from "../../../../../src/observability/analytics/eventsRuntime";
+import {createAnalyticsSession} from "../../../../../src/observability/analytics/analyticsSession";
+import type {YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import type {HostedConfig} from "../hosted/hostedConfig";
 
 type NativeAnalytics = {
@@ -21,10 +23,43 @@ let initialization: Promise<void> | null = null;
 let failedChoice: boolean | null = null;
 const listeners = new Set<() => void>();
 const publish = (next: AnalyticsPreference) => {state = next; listeners.forEach(listener => listener());};
-const destination = (name: string, params: SanitizedAnalyticsParams) => native?.logEvent(name, params).then(() => undefined);
+let gameLocale: YouTubeLocale | null = null;
+let session: ReturnType<typeof createAnalyticsSession> | null = null;
+let stopSession = () => {};
+const now = () => performance.now();
+const destination = (name: string, params: SanitizedAnalyticsParams) => native?.logEvent(name,
+  {platform: "android", schema_version: 1, analytics_version: 2, ...(gameLocale ? {game_locale: gameLocale} : {}), ...params}).then(() => undefined);
+
+/** Supported game language is separate from the SDK's automatic device-language dimension. */
+export const setAndroidAnalyticsLocale = (locale: YouTubeLocale) => {gameLocale = locale;};
+
+/** A duration never includes an action begun before consent or across a consent replacement. */
+export const startAndroidAnalyticsTiming = () => {
+  const owner = session;
+  const started = now();
+  return () => owner && session === owner ? {duration_ms: Math.min(3_600_000, Math.max(0, Math.round(now() - started)))} : {};
+};
+
 const connect = (enabled: boolean) => {
+  stopSession();
   setAnalyticsCollectionEnabled(enabled);
-  if (enabled) configureAnalytics(destination);
+  if (!enabled) return;
+  const owned = createAnalyticsSession({send: destination, now, initialScreen: currentAnalyticsScreen(),
+    foreground: AppState.currentState === "active",
+    context: {platform: "android", screen_class: "RiddleQuestAndroid", schema_version: 1, analytics_version: 2}});
+  session = owned;
+  const disconnect = configureAnalytics(owned.record);
+  const lifecycle = AppState.addEventListener("change", value => owned.setForeground(value === "active"));
+  const timer = setInterval(() => owned.checkpoint("interval"), 60_000);
+  stopSession = () => {
+    if (session !== owned) return;
+    session = null;
+    clearInterval(timer);
+    lifecycle.remove();
+    owned.dispose();
+    disconnect();
+    stopSession = () => {};
+  };
 };
 
 /** Native app-private consent is separate from authentication and notification preferences. */
@@ -39,7 +74,7 @@ export function initializeAndroidAnalytics(config: HostedConfig): Promise<void> 
     projectId: config.firebase.projectId, senderId: config.firebase.messagingSenderId, collectionAllowed: !__DEV__ && !config.emulators}).then(enabled => {
     connect(enabled === true);
     publish({enabled: enabled === true, available: typeof enabled === "boolean", busy: false, failed: false});
-  }, () => {publish({enabled: false, available: false, busy: false, failed: true});});
+  }, () => {connect(false); publish({enabled: false, available: false, busy: false, failed: true});});
   return initialization;
 }
 

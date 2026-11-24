@@ -85,7 +85,8 @@ function ReadySoloApp({runtime, sdk, online}: ReadySoloAppProps) {
   /** Active puzzle state. */
   const active = snapshot.save.activeGame;
   const analyticsScreen = snapshot.lastResult ? "offline_result" : active ? `offline_game_${active.mode}` : `offline_${screen}`;
-  useEffect(() => {trackScreen(analyticsScreen, {play_surface: "offline"});}, [analyticsScreen]);
+  const analyticsMode = active?.mode ?? snapshot.lastResult?.mode;
+  useEffect(() => {trackScreen(analyticsScreen, {play_surface: "offline", game_mode: analyticsMode === "daily" ? "challenge" : analyticsMode});}, [analyticsScreen, analyticsMode]);
   const resumed = useRef(false);
   useEffect(() => {
     if (resumed.current) return;

@@ -170,8 +170,9 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
     };
   }, [onLocaleResolved, sdk]);
   const analyticsScreen = surface === "offline" ? null : !locale ? "loading" : account.state.kind !== "ready" ? "connect" :
-    typeof route === "string" ? route : "hosted" in route ? `game_${route.hosted}` : "race" in route ? "race" : "referrals";
-  useEffect(() => {if (analyticsScreen) trackScreen(analyticsScreen, {play_surface: "online"});}, [analyticsScreen]);
+    typeof route === "string" ? route : "hosted" in route ? `game_${route.hosted}` : "race" in route ? null : "referrals";
+  const analyticsMode = typeof route !== "string" && "hosted" in route ? route.hosted : undefined;
+  useEffect(() => {if (analyticsScreen) trackScreen(analyticsScreen, {play_surface: "online", game_mode: analyticsMode});}, [analyticsScreen, analyticsMode]);
   useEffect(() => {trackEvent("play_surface_selected", {play_surface: surface});}, [surface]);
   if (!locale) return <LoadingScreen paused={false} />;
   if (surface === "offline") {

@@ -92,6 +92,12 @@ if (nativeFirebaseAppId != null && !(nativeFirebaseAppId ==~ /1:[0-9]+:android:[
 }
 def analyticsDeactivated = hostedBuildConfig.emulators != null || nativeFirebaseAppId == null
 
+// Metro imports shared game source and JSON config outside the bundle task's default source inputs.
+tasks.withType(com.facebook.react.tasks.BundleHermesCTask).configureEach {
+    inputs.dir(file("../../../../../src")).withPropertyName("sharedGameSources").withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(hostedConfigFile).withPropertyName("hostedRuntimeConfig").withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
