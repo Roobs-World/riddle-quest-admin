@@ -72,13 +72,13 @@
   "verificationMethod": "Authenticated MCP metadata queries and Supabase advisors; no application records read",
   "managerBuild": "production Vercel frontend and six API functions built with zero TypeScript diagnostics; browser boundary audit passed",
   "automatedTestsRun": false,
-  "websiteDeployed": false,
+  "websiteDeployed": true,
   "notificationsSent": false,
   "pending": [
     "Full Google sign-in and post-login redirect verification",
     "Approved operator membership after Google sign-in",
     "Push transport credentials and scheduler setup",
-    "Authorized website deployment and live delivery acceptance"
+    "Live push delivery acceptance"
   ],
   "submittedSqlMatchesLocalMigrations": true,
   "googleAuthorizationStart": {
@@ -97,12 +97,18 @@
   },
   "productionWebsite": {
     "origin": "https://riddle-quest-admin.vercel.app",
-    "status": 404,
-    "productionDeploymentPresent": false
+    "status": 200,
+    "productionDeploymentPresent": true,
+    "deploymentId": "dpl_Gzfea2mX1TRRv1TGhwVWbfJjju1E",
+    "deploymentUrl": "https://riddle-quest-admin-qgho98cnf.vercel.app",
+    "readyState": "READY",
+    "sourceCommit": "351d9c1bd",
+    "scriptStatus": 200,
+    "unsignedManagementApiStatus": 401
   },
   "productionBuild": {
     "target": "production",
-    "published": false,
+    "published": true,
     "apiFunctions": 6,
     "typeScriptDiagnostics": 0,
     "packageManager": "Corepack with pnpm@12.21.0 and frozen shared lockfile",
