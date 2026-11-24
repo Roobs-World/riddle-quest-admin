@@ -11,6 +11,8 @@ const errorMessages: Record<string, string> = {
   "campaign-platform-not-admitted": "This platform is no longer available. Refresh the audience list.",
   "campaign-not-found": "This notification is no longer available. Refresh the list.",
   "notification-service-unavailable": "The push service is unavailable. Your draft is safe; please try again.",
+  "operator-authentication-unavailable": "The server could not verify your sign-in. Please try again shortly. Signing out is not required.",
+  "operator-membership-unavailable": "The server could not check workspace access. Please try again shortly.",
 };
 
 class WorkspaceAccessError extends Error {}

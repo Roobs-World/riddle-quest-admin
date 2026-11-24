@@ -114,5 +114,17 @@
     "typeScriptDiagnostics": 0,
     "packageManager": "Corepack with pnpm@12.21.0 and frozen shared lockfile",
     "supabaseAuthDependency": "2.119.2"
+  },
+  "loginInvestigation": {
+    "googlePkceExchangesSucceeded": true,
+    "approvedAccountSessionPresent": true,
+    "operatorMembershipStillActive": true,
+    "sessionErrorClassificationDeployed": true,
+    "providerMessagesAndCredentialsLogged": false,
+    "unsupportedBearerLengthLimitRemoved": true,
+    "invalidCredentialRejectionVerified": true,
+    "signedInWorkspaceAccessVerified": false,
+    "deploymentId": "dpl_Ds7AfRFunREatECHMRgZ2QvMMcWR",
+    "deploymentUrl": "https://riddle-quest-admin-cgrmxhv4q.vercel.app"
   }
 }

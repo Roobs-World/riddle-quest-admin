@@ -14,7 +14,7 @@ export function header(request: ApiRequest, name: string): string {
 }
 
 export function bearer(request: ApiRequest): string {
-  const match = /^Bearer ([^\s]{1,4096})$/u.exec(header(request, "authorization"));
+  const match = /^Bearer ([^\s]+)$/u.exec(header(request, "authorization"));
   return match?.[1] ?? "";
 }
 
@@ -71,7 +71,15 @@ export async function requireOperator(request: ApiRequest, deadline: Deadline): 
   try {
     const database = notificationDatabase(deadline);
     const {data, error} = await database.auth.getUser(token);
-    if (error || !data.user) throw new ApiError(401, "operator-authentication-invalid");
+    if (error) {
+      // Log only bounded SDK classifications, never credentials or provider messages.
+      const code = error.code && /^[a-z_]{1,80}$/u.test(error.code) ? error.code : "unclassified";
+      console.warn(JSON.stringify({event: "operator-authentication-rejected", code, status: error.status ?? null}));
+      if (["bad_jwt", "session_not_found", "session_expired", "user_not_found", "user_banned", "no_authorization"].includes(code))
+        throw new ApiError(401, "operator-authentication-invalid");
+      throw new ApiError(503, "operator-authentication-unavailable");
+    }
+    if (!data.user) throw new ApiError(401, "operator-authentication-invalid");
     const operator = await database.from("notification_operators").select("user_id").eq("user_id", data.user.id).maybeSingle();
     if (operator.error) throw new ApiError(503, "operator-membership-unavailable");
     if (!operator.data) throw new ApiError(403, "operator-access-denied");
