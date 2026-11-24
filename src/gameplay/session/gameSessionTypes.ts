@@ -74,6 +74,7 @@ export type GameSessionState = {
   } | null;
   /** Serializable snapshot of the deterministic game engine. */ engineSnapshot: GameEngineSnapshot | null;
   /** Modal currently presented above the game. */ modal: GameModal;
+  /** Profile destination retained while its shop or purchase animation is open. */ shopReturnModal: "profile" | null;
   /** Indicates whether game audio is muted. */ muted: boolean;
   /** Transient player-facing status or error message. */ notice: string | null;
   /** Rewards returned by the most recent authoritative completion. */

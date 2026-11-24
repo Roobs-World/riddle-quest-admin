@@ -46,6 +46,7 @@ export const createInitialGameSession = (): GameSessionState => ({
   pendingHintState: null,
   engineSnapshot: null,
   modal: null,
+  shopReturnModal: null,
   // The game must never start in the muted state. The mute control persists
   // changes after startup through setPlayerMuted.
   muted: false,
@@ -881,7 +882,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         },
         completionAcknowledged: false,
       };
-    case "openModal":
+    case "openModal": {
       // A delayed fifth-guess acknowledgement must not reopen a consumed Continue offer.
       if (action.modal === "continue" && state.engineSnapshot?.hasUsedContinue) return state;
       if (state.guessPending &&
@@ -889,15 +890,21 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
           (action.modal === "skip" && state.gameMode === "challenge"))) {
         return state;
       }
+      const shopReturnModal = action.modal === "shop"
+        ? state.modal === "profile" ? "profile" : state.modal === "shop" ? state.shopReturnModal : null
+        : null;
       return action.modal === "leaderboard"
-        ? {...state, modal: action.modal, leaderboardLoading: true, leaderboardLoadError: false}
-        : {...state, modal: action.modal};
+        ? {...state, modal: action.modal, shopReturnModal, leaderboardLoading: true, leaderboardLoadError: false}
+        : {...state, modal: action.modal, shopReturnModal};
+    }
     case "closeModal":
       return {
         ...state,
         // Commerce dismissal does not decide an unresolved paid-continue boundary.
-        modal: state.riddle && !state.lastOutcome && state.engineSnapshot?.attemptsUsed === 5 &&
+        modal: (state.modal === "shop" || state.modal === "reward") && state.shopReturnModal
+          ? state.shopReturnModal : state.riddle && !state.lastOutcome && state.engineSnapshot?.attemptsUsed === 5 &&
           !state.engineSnapshot.hasUsedContinue && !state.engineSnapshot.gameOver ? "continue" : null,
+        shopReturnModal: null,
         auxiliaryFanfare: state.modal === "reward" ? null : state.auxiliaryFanfare,
       };
     case "setNotice":
@@ -917,8 +924,10 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
 /** Advances input ordering without using wall clocks or presentation-only renders. */
 export const gameSessionReducer = (state: GameSessionState, action: GameSessionAction): GameSessionState => {
   /** Rejected actions and presentation updates keep their existing input revision. */
-  const next = reduceGameSession(state, action);
+  let next = reduceGameSession(state, action);
   if (next === state) return state;
+  if (next.shopReturnModal && next.modal !== "shop" && next.modal !== "reward")
+    next = {...next, shopReturnModal: null};
   if ((action.type === "restoreSession" || action.type === "restoreQueuedGuesses") && action.draftRevision)
     return {...next, draftRevision: action.draftRevision};
   if (action.type !== "typeLetter" && action.type !== "backspace" && action.type !== "selectSlot") return next;
