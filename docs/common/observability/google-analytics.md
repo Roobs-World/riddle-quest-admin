@@ -16,6 +16,19 @@ Updated 24 November 2026. This describes the source implementation. A local buil
 
 The GA IDs above were read from the existing Firebase registrations. They are public configuration, not secrets. Each web target loads its own `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID`. Android initializes the native default Firebase app from its existing Android registration and checks compatibility with the notification bridge. Gradle generates the native Firebase string resources, including `google_app_id`, from the same selected public hosted config as Metro. These resources are required by the Android measurement SDK; manual Firebase options alone do not configure it. It does not import Firebase browser analytics.
 
+### Property and stream inventory
+
+The owner's Firebase console screenshot supplied on 24 November 2026 identifies property `riddle-quest-ec2b2`, property ID `545194073`, with these streams:
+
+| Platform | Numeric stream ID | Collection configuration |
+| --- | --- | --- |
+| Android | `16378518116` | Native Firebase app `1:329028367192:android:4c0af717dd9c0db1b7eb2d` |
+| Facebook | `15543205796` | Web measurement ID `G-1YZP6C2H4V` |
+| Jest | `15241797219` | Web measurement ID `G-7CWWGNE52Q` |
+| Yahoo | `15809641012` | Existing registration only; candidate collection remains disabled |
+
+Numeric property and stream IDs identify reporting resources. They do not replace web measurement IDs or the Android Firebase app ID in the collection configuration. Google's [data stream reference](https://developers.google.com/analytics/devguides/config/admin/v1/rest/v1beta/properties.dataStreams) defines these separate fields. A registered stream does not authorize analytics in a restricted target or prove receipt of events.
+
 ## Consent and payloads
 
 Web consent is affirmative, off by default and stored separately for each target. Withdrawal disconnects the external sink, discards initialization events, disables the Google tag, cancels pending initialization and removes GA cookies. Cross-tab storage changes apply the same withdrawal. Local development and trusted browser fixtures do not load the Google tag. The current screen is sent when a consented destination connects; actions before opt-in are discarded.
