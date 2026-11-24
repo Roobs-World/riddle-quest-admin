@@ -1,4 +1,4 @@
-import {liveRaceDeliveryDeadline, liveRaceCommandRejected, LIVE_RACE_POLL_DEADLINE_MS, LIVE_RACE_COMMAND_DEADLINE_MS} from "../liveRaceDeliveryDeadline";
+import {liveRaceDeliveryDeadline, liveRaceCommandRejected, LiveRaceDeliveryTimeout, LIVE_RACE_POLL_DEADLINE_MS, LIVE_RACE_SEARCH_DEADLINE_MS, LIVE_RACE_COMMAND_DEADLINE_MS} from "../liveRaceDeliveryDeadline";
 
 /** Deferred adapter exposes transport settlement independently of browser deadlines. */
 const deferred = () => {
@@ -19,6 +19,25 @@ describe("live PvP delivery deadlines", () => {
     const result = expect(liveRaceDeliveryDeadline(new Promise<string>(() => {}), poll)).rejects.toThrow("timed out");
     await jest.advanceTimersByTimeAsync(poll ? LIVE_RACE_POLL_DEADLINE_MS : LIVE_RACE_COMMAND_DEADLINE_MS);
     await result;
+    expect(jest.getTimerCount()).toBe(0);
+  });
+  it("allows a searching observation past the racing deadline and bounds its recovery wait", async () => {
+    /** The authoritative search can remain pending beyond the racing observation budget. */
+    const request = deferred();
+    /** Searching explicitly selects the longer polling budget. */
+    const delivery = liveRaceDeliveryDeadline(request.promise, true, undefined, undefined, undefined, LIVE_RACE_SEARCH_DEADLINE_MS);
+    /** Public promise settlement remains pending until the selected search deadline. */
+    let outcome = "pending";
+    void delivery.then(() => {outcome = "accepted";}, () => {outcome = "expired";});
+    /** Timeout classification is observable before recovery begins another delivery. */
+    const expired = expect(delivery).rejects.toThrow(LiveRaceDeliveryTimeout);
+    await jest.advanceTimersByTimeAsync(2_000);
+    expect(outcome).toBe("pending");
+    await jest.advanceTimersByTimeAsync(7_999);
+    expect(outcome).toBe("pending");
+    await jest.advanceTimersByTimeAsync(1);
+    await expired;
+    expect(outcome).toBe("expired");
     expect(jest.getTimerCount()).toBe(0);
   });
   it("accepts a timely response and removes its deadline", async () => {

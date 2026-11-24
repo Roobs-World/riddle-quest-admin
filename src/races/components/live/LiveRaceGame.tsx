@@ -6,8 +6,9 @@ import {LIVE_RACE_POLL_TICK_MS} from "../../live/liveRacePolling";
 import {LiveRaceInviteShare} from "../invitations/LiveRaceInviteShare";
 import {LiveRaceFriendLobby} from "../invitations/LiveRaceFriendLobby";
 import {LiveRaceSearchWheel} from "../lobby/LiveRaceSearchWheel";
+import {LiveRaceSearchLoader} from "../lobby/LiveRaceSearchLoader";
 import {estimatedRaceServerNow} from "../../presentation/raceCountdown";
-import {LIVE_RACE_JOIN_DEADLINE_MS, liveRaceDeliveryDeadline, liveRaceCommandRejected, confirmUnavailableLiveInvitation} from "../../live/liveRaceDeliveryDeadline";
+import {LIVE_RACE_JOIN_DEADLINE_MS, LIVE_RACE_SEARCH_DEADLINE_MS, LiveRaceDeliveryTimeout, liveRaceDeliveryDeadline, liveRaceCommandRejected, confirmUnavailableLiveInvitation} from "../../live/liveRaceDeliveryDeadline";
 import {createLiveRaceRetirement} from "../../live/liveRaceRetirement";
 import {liveRacePollInterval} from "../../live/liveRacePolling";
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
@@ -195,7 +196,8 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     if (!active.current || closed.current || invitationUnavailableRef.current || ["result", "cancelled"].includes(viewRef.current?.phase ?? "") ||
       inFlight.current && (!inFlight.current.poll || !command)) return;
     /** Receipt ownership prevents a superseded poll from replacing an accepted answer. */
-    const delivery = {poll: Boolean(viewRef.current && !command)};
+    const delivery = {poll: Boolean(viewRef.current && !command),
+      searching: !command && viewRef.current?.phase === "searching" && !viewRef.current.challengeId};
     /** All deliveries share the mounted journey's local cancellation boundary. */
     const lifetime = waitOwner.current ??= new AbortController();
     /** Definitively rejected commands reconcile against the current authoritative question. */
@@ -255,6 +257,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       deliveryFailures.current = 0;
       nextDeliveryAt.current = 0;
       setError(false);
+      reschedulePoll();
       if (closeRequested.current && (command?.action === "leave" || ["result", "cancelled"].includes(result.phase))) {
         closed.current = true;
         pending.current = null;
@@ -271,9 +274,10 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         : transport.join({locale, categoryId, requestId: requestId.current, ...(transport.retireJoin ? {retirementAware: true, ...(ownerId ? {expectedOwnerId: ownerId} : {})} : {}), ...(createChallenge ? {createChallenge: true} : {}), ...(challengeId ? {challengeId} : {}), ...(!createChallenge && !challengeId ? {waitForPlayer: true, ...(resumeTicketId ? {resumeTicketId} : {})} : {})}) :
         transport.update(command ?? {ticketId: viewRef.current.ticketId, action: "poll", requestId: createRequestId("live-poll")}),
         Boolean(viewRef.current && !command), late => {
-          // Owned late commands can recover before retry; polls remain superseded observations.
-          if (closed.current || !active.current || !delivery.poll && pending.current === command) void accept(late).catch(() => undefined);
-        }, lifetime.signal, !viewRef.current ? LIVE_RACE_JOIN_DEADLINE_MS : undefined);
+          if (closed.current || !active.current || (!delivery.poll || delivery.searching) && pending.current === command)
+            void accept(late).catch(() => undefined);
+        }, lifetime.signal, !viewRef.current ? LIVE_RACE_JOIN_DEADLINE_MS : undefined,
+        delivery.searching ? LIVE_RACE_SEARCH_DEADLINE_MS : undefined);
       await accept(result);
     } catch (failure) {
       if (inFlight.current === delivery && active.current && !closed.current) {
@@ -312,7 +316,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
         }
         deliveryFailures.current += 1;
         nextDeliveryAt.current = performance.now() + Math.min(8000, 1000 * 2 ** Math.min(deliveryFailures.current, 3));
-        setError(true);
+        setError(!(delivery.searching && failure instanceof LiveRaceDeliveryTimeout && deliveryFailures.current === 1));
       }
     }
     finally {
@@ -574,10 +578,11 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       </LiveRaceFriendLobby>}
     {!friendLobby && !invitationUnavailable && (!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
       <div className="live-race-self">{shownView ? <LiveRaceIdentity player={shownView.player} /> : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
-      <div className="live-race-status" role="status" aria-live="polite">
-        <h2>{tr(shownView?.phase === "countdown" ? "RaceTo10.LIVE_STARTING" : "RaceTo10.LIVE_FINDING")}</h2>
-        {shownView?.phase === "countdown" ? <LiveRaceSearchWheel endsAtMs={shownView.startsAtMs ?? undefined} now={now} starting /> :
-          <LiveRaceSearchWheel endsAtMs={shownView?.searchEndsAtMs} now={now} waitForPlayer={shownView?.waitForPlayer} />}
+      <div className="live-race-status">
+        {shownView?.phase === "countdown" ? <div role="status" aria-live="polite">
+          <h2>{tr("RaceTo10.LIVE_STARTING")}</h2>
+          <LiveRaceSearchWheel endsAtMs={shownView.startsAtMs ?? undefined} now={now} starting />
+        </div> : <LiveRaceSearchLoader />}
       </div>
       <div className="live-race-rival">{shownView?.opponent && <LiveRaceIdentity player={shownView.opponent} />}</div>
     </div>}

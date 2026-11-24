@@ -6,7 +6,7 @@ import {
 import {livePresentationKey} from "./livePresentation";
 import {createRequestId} from "../../gameplay/session/requestIds";
 import {createLiveRaceDraft, editLiveRaceDraft, reconcileLiveRaceDraft, rejectLiveRaceDraft, type LiveRaceDraft} from "../drafts/liveRaceDraft";
-import {liveRaceCommandRejected, liveRaceDeliveryDeadline, LIVE_RACE_JOIN_DEADLINE_MS} from "./liveRaceDeliveryDeadline";
+import {liveRaceCommandRejected, liveRaceDeliveryDeadline, LiveRaceDeliveryTimeout, LIVE_RACE_JOIN_DEADLINE_MS, LIVE_RACE_SEARCH_DEADLINE_MS} from "./liveRaceDeliveryDeadline";
 import {liveRacePollInterval} from "./liveRacePolling";
 import {createLiveRaceRetirement} from "./liveRaceRetirement";
 import {createLiveRaceDraftStorage} from "../drafts/liveRaceDraftStorage";
@@ -73,6 +73,8 @@ export class LiveRaceController {
   private pendingDraft: LiveRaceDraft | null = null;
   /** Latest transport owner, so superseded polls cannot replace commands. */
   private delivery: object | null = null;
+  /** A timed-out public search receipt remains usable until another delivery takes ownership. */
+  private latestDelivery: object | null = null;
   /** Allows a player command to supersede an outstanding read. */
   private deliveryPoll = false;
   /** Latest accepted server time and its monotonic receipt timestamp. */
@@ -269,6 +271,7 @@ export class LiveRaceController {
   /** Owns one bounded join, command or poll and its eventual authority receipt. */
   private async deliver(poll = false): Promise<void> {
     if (!this.active || this.state.closed || this.delivery || !this.join) return;
+    const join = this.join;
     /** Canonical seat captured when this transport delivery is admitted. */
     const view = this.state.view;
     if (poll && (!view || ["result", "cancelled"].includes(view.phase))) return;
@@ -278,12 +281,15 @@ export class LiveRaceController {
     const owner = {};
     /** Read-only deliveries may yield to an interactive command. */
     const observing = Boolean(view && !this.pending);
+    const searching = observing && view?.phase === "searching" && !view.challengeId;
     this.delivery = owner;
+    this.latestDelivery = owner;
     this.deliveryPoll = observing;
     this.patch({busy: !observing, error: false});
     /** Validates and publishes only the latest owned authority response. */
     const accept = (raw: unknown) => {
-      if (!this.active || this.state.closed || this.delivery !== owner) return;
+      if (!this.active || this.state.closed || this.latestDelivery !== owner || this.join !== join ||
+        this.delivery !== owner && !searching) return;
       /** Projection parsed through the strict shared live schema. */
       const next = LiveRaceViewSchema.parse(raw);
       this.apply(next);
@@ -291,11 +297,13 @@ export class LiveRaceController {
       if (!view?.run?.currentRiddle && next.run?.currentRiddle) void this.restoreDraft(next).then(() => this.saveDraft());
       else this.saveDraft();
       this.failures = 0;
+      if (this.delivery !== owner) this.nextPoll = this.clock() + liveRacePollInterval(next, this.visible);
     };
     try {
       /** Authenticated request selected without accepting client scores or clocks. */
       const response = command ? this.options.transport.update(command) : this.options.transport.join(this.join);
-      accept(await liveRaceDeliveryDeadline(response, observing, accept, this.abort.signal, view ? undefined : LIVE_RACE_JOIN_DEADLINE_MS));
+      accept(await liveRaceDeliveryDeadline(response, observing, accept, this.abort.signal,
+        view ? undefined : LIVE_RACE_JOIN_DEADLINE_MS, searching ? LIVE_RACE_SEARCH_DEADLINE_MS : undefined));
     } catch (error) {
       if (this.active && this.delivery === owner) {
         if (command && liveRaceCommandRejected(error)) {
@@ -303,7 +311,7 @@ export class LiveRaceController {
           this.pending = null; this.pendingDraft = null; this.patch({requiresRefresh: true});
         }
         this.failures++;
-        this.patch({error: true});
+        this.patch({error: !(searching && error instanceof LiveRaceDeliveryTimeout && this.failures === 1)});
       }
     } finally {
       if (this.delivery === owner) {
@@ -391,6 +399,7 @@ export class LiveRaceController {
   /** Retires the original join, including a request whose receipt is still in flight. */
   async close(): Promise<void> {
     if (this.state.recovering) return;
+    this.latestDelivery = null;
     this.patch({busy: true, quitConfirmation: false});
     /** Authoritative retirement acknowledgement required before navigation closes. */
     const confirmed = !this.retire || await this.retire(this.state.view, {retry: true});
@@ -399,5 +408,5 @@ export class LiveRaceController {
     this.patch({busy: false, closed: true});
   }
   /** Releases local delivery waits; process/background recovery retains its original server seat. */
-  dispose(): void {this.active = false; this.lifecycle++; this.lobbyRevision++; this.abort.abort(); this.delivery = null; this.listeners.clear();}
+  dispose(): void {this.active = false; this.lifecycle++; this.lobbyRevision++; this.abort.abort(); this.delivery = null; this.latestDelivery = null; this.listeners.clear();}
 }

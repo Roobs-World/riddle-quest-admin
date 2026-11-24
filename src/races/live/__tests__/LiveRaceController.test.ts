@@ -1,6 +1,7 @@
 import {describe, expect, it, jest} from "@jest/globals";
 import {LiveRaceViewSchema, RACE_RULES, type ListRaceCategoriesResponse, type LiveRaceCapability, type LiveRaceView, type JoinLiveRace, type UpdateLiveRace} from "../../contracts/index";
 import {LiveRaceController, type LiveRaceStorage} from "../LiveRaceController";
+import {LIVE_RACE_POLL_DEADLINE_MS, LIVE_RACE_SEARCH_DEADLINE_MS} from "../liveRaceDeliveryDeadline";
 import {liveRaceInvitationUrl, parseLiveRaceInvitationUrl} from "../../../../platforms/native/android/src/entries/invitations";
 
 /** Stable account lifetime distinct from opaque live ticket identities. */
@@ -43,6 +44,94 @@ function setup(options: {
 }
 /** Drains receipt and optional storage microtasks without advancing server time. */
 async function settle() {for (let i = 0; i < 20; i++) await Promise.resolve();}
+
+const searchingView = (): LiveRaceView => ({...view(), phase: "searching", waitForPlayer: true,
+  startsAtMs: null, opponent: null, run: null});
+
+describe("public opponent search delivery", () => {
+  it("accepts a cold search poll after the racing deadline without showing an error", async () => {
+    jest.useFakeTimers();
+    let release: (value: LiveRaceView) => void = () => undefined;
+    const response = new Promise<LiveRaceView>(resolve => {release = resolve;});
+    const fixture = setup({join: async () => searchingView(), update: async () => response});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      await jest.advanceTimersByTimeAsync(1000); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_POLL_DEADLINE_MS + 1);
+      expect(fixture.controller.getSnapshot().error).toBe(false);
+      expect(fixture.update).toHaveBeenCalledTimes(1);
+      release(view()); await settle();
+      expect(fixture.controller.getSnapshot().view?.phase).toBe("racing");
+      expect(fixture.controller.getSnapshot().error).toBe(false);
+    } finally {fixture.controller.dispose(); jest.useRealTimers();}
+  });
+
+  it("keeps the first timeout on the loader and accepts its receipt before a replacement request", async () => {
+    jest.useFakeTimers();
+    let release: (value: LiveRaceView) => void = () => undefined;
+    const response = new Promise<LiveRaceView>(resolve => {release = resolve;});
+    const fixture = setup({join: async () => searchingView(), update: async () => response});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      await jest.advanceTimersByTimeAsync(1000); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_SEARCH_DEADLINE_MS);
+      expect(fixture.controller.getSnapshot().error).toBe(false);
+      release(view()); await settle();
+      expect(fixture.controller.getSnapshot().view?.phase).toBe("racing");
+      expect(fixture.update).toHaveBeenCalledTimes(1);
+    } finally {fixture.controller.dispose(); jest.useRealTimers();}
+  });
+
+  it("ignores a late search receipt after a newer observation owns the seat", async () => {
+    jest.useFakeTimers();
+    let release: (value: LiveRaceView) => void = () => undefined;
+    const response = new Promise<LiveRaceView>(resolve => {release = resolve;});
+    let updates = 0;
+    const fixture = setup({join: async () => searchingView(), update: async () => ++updates === 1 ? response : view()});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      await jest.advanceTimersByTimeAsync(1000); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_SEARCH_DEADLINE_MS + 2000); fixture.controller.tick(); await settle();
+      expect(fixture.controller.getSnapshot().view?.phase).toBe("racing");
+      release({...searchingView(), serverNowMs: 20_000}); await settle();
+      expect(fixture.controller.getSnapshot().view?.phase).toBe("racing");
+      expect(fixture.update).toHaveBeenCalledTimes(2);
+    } finally {fixture.controller.dispose(); jest.useRealTimers();}
+  });
+
+  it("shows a recovery error after repeated public search timeouts", async () => {
+    jest.useFakeTimers();
+    const fixture = setup({join: async () => searchingView(), update: async () => new Promise<LiveRaceView>(() => {})});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      await jest.advanceTimersByTimeAsync(1000); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_SEARCH_DEADLINE_MS + 2000); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_SEARCH_DEADLINE_MS);
+      expect(fixture.controller.getSnapshot().error).toBe(true);
+      expect(fixture.update).toHaveBeenCalledTimes(2);
+    } finally {fixture.controller.dispose(); jest.useRealTimers();}
+  });
+
+  it("shows a genuine rejected search request immediately", async () => {
+    const fixture = setup({join: async () => searchingView(), update: async () => {throw new Error("offline");}});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      fixture.controller.retry(); await settle();
+      expect(fixture.controller.getSnapshot().error).toBe(true);
+    } finally {fixture.controller.dispose();}
+  });
+
+  it("retains the short deadline once racing starts", async () => {
+    jest.useFakeTimers();
+    const fixture = setup({update: async () => new Promise<LiveRaceView>(() => {})});
+    try {
+      await fixture.controller.start(); await fixture.controller.play();
+      await jest.advanceTimersByTimeAsync(500); fixture.controller.tick();
+      await jest.advanceTimersByTimeAsync(LIVE_RACE_POLL_DEADLINE_MS);
+      expect(fixture.controller.getSnapshot().error).toBe(true);
+    } finally {fixture.controller.dispose(); jest.useRealTimers();}
+  });
+});
 
 describe("native-independent live multiplayer", () => {
   it("previews a shared invitation without occupying a seat until acceptance", async () => {

@@ -2,10 +2,21 @@ import {LiveRaceChallengeSchema, type LiveRaceCapability} from "../contracts/ind
 
 /** Background polling must not hold an interactive player command indefinitely. */
 export const LIVE_RACE_POLL_DEADLINE_MS = 2_000;
+/** Matchmaking observations may cold start before an opponent is assigned. */
+export const LIVE_RACE_SEARCH_DEADLINE_MS = 10_000;
 /** Accepted mutations retain a longer transport budget before bounded retry. */
 export const LIVE_RACE_COMMAND_DEADLINE_MS = 10_000;
 /** Joining can include a cold Functions preflight and immutable deck preparation. */
 export const LIVE_RACE_JOIN_DEADLINE_MS = 30_000;
+
+/** Local delivery expiry can recover independently of a rejected server request. */
+export class LiveRaceDeliveryTimeout extends Error {
+  /** Keeps the existing diagnostic while exposing a typed recovery signal. */
+  constructor() {
+    super("Live race delivery timed out");
+    this.name = "LiveRaceDeliveryTimeout";
+  }
+}
 
 /** Only definitive authority rejections permit retiring an unaccepted player command. */
 export function liveRaceCommandRejected(error: unknown): boolean {
@@ -28,7 +39,9 @@ export async function confirmUnavailableLiveInvitation(failure: unknown, challen
 export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
   onLateResult?: (value: T) => void, signal?: AbortSignal,
   /** Entry may opt into its bounded cold-start budget without slowing polls or player commands. */
-  commandDeadlineMs = LIVE_RACE_COMMAND_DEADLINE_MS): Promise<T> {
+  commandDeadlineMs = LIVE_RACE_COMMAND_DEADLINE_MS,
+  /** Searching may allow cold-start delivery while racing retains its short observation budget. */
+  pollDeadlineMs = LIVE_RACE_POLL_DEADLINE_MS): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     /** A late receipt uses the caller's ownership policy after this wait has expired. */
     let expired = false;
@@ -59,7 +72,7 @@ export function liveRaceDeliveryDeadline<T>(delivery: Promise<T>, poll: boolean,
     timer = setTimeout(() => {
       expired = true;
       cleanup();
-      reject(new Error("Live race delivery timed out"));
-    }, poll ? LIVE_RACE_POLL_DEADLINE_MS : commandDeadlineMs);
+      reject(new LiveRaceDeliveryTimeout());
+    }, poll ? pollDeadlineMs : commandDeadlineMs);
   });
 }
