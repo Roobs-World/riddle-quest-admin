@@ -513,13 +513,6 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   const setNotificationPreference = httpsCallable<{
     /** Desired global notification setting. */ enabled: boolean;
   }, {/** Saved account preference. */ enabled: boolean}>(regions.race, "setNotificationPreference");
-  /** Stores explicit browser-push consent on the authenticated registered Jest account. */
-  const setLiveRacePushSubscription = httpsCallable<{
-    /** False revokes the current subscription. */ enabled: boolean;
-    /** Opaque browser instance token; never a recipient identity. */ token?: string;
-  }, {/** Committed preference. */ /** Stores enabled. */
-  /** Stores enabled. */
-  enabled: boolean}>(regions.race, "setLiveRacePushSubscription");
   return {
     createYahooStripeCheckout,
     confirmYahooStripeCheckout,
@@ -564,7 +557,6 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     sendLiveRaceChallenge,
     listLiveRaceChallenges,
     listLiveRaceHistory,
-    setLiveRacePushSubscription,
     setNotificationPreference,
     updateLiveRace,
   };

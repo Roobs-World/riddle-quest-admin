@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Tham gia cùng {name} trong cùng sảnh chơi nhiều người của Riddle Quest.",
     "PLAYER_USERNAME": "Tên người dùng của người chơi",
     "NOTIFY_PLAYER": "Gửi thử thách",
-    "INVITE_QUEUED": "Đã lưu lời mời. Việc gửi thông báo phụ thuộc vào cài đặt của người chơi.",
+    "INVITE_QUEUED": "Đã lưu lời mời. Lời mời sẽ xuất hiện trong hộp thư nhiều người chơi của người chơi đó.",
     "LIVE_HISTORY_TITLE": "Trận đấu gần đây",
     "LIVE_HISTORY_EMPTY": "Chưa có trận đấu nào hoàn thành."
   }

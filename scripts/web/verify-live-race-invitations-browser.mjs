@@ -135,7 +135,7 @@ try {
       await recipient.waitForFunction(() => window.commands.some(command => command.action === "inbox"));
       assert.equal(await recipient.locator(".live-race-invitation").count(), 0);
       await sender.getByRole("button", {name: "Send challenge", exact: true}).click();
-      await sender.getByText("Invitation saved. Push delivery depends on the player’s notification settings.", {exact: true}).waitFor();
+      await sender.getByText("Invitation saved. It will appear in the player’s multiplayer inbox.", {exact: true}).waitFor();
       await recipient.evaluate(() => window.dispatchEvent(new Event("focus")));
       await recipient.getByRole("button", {name: "Accept challenge", exact: true}).waitFor();
       assert.equal(await recipient.locator(".live-race-invitation").count(), 1);

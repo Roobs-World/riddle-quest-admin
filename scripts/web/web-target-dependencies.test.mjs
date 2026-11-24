@@ -45,6 +45,16 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
       '/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), /undeclared runtime/u);
   }
   assert.equal(runtimePackage('/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), '@firebase/app');
+  for (const target of ['jest', 'facebook']) for (const module of [
+    '/node_modules/.pnpm/@firebase+messaging@1/node_modules/@firebase/messaging/dist/index.esm.js',
+    '/node_modules/@firebase/messaging-compat/dist/index.esm.js',
+    '/node_modules/firebase/messaging/dist/esm/index.esm.js',
+    '/node_modules/firebase/compat/messaging/dist/esm/index.esm.js',
+  ]) assert.throws(() => assertTargetDependency(target, module), /(?:Jest SDK|Facebook API), not Firebase Cloud Messaging/u);
+  for (const target of ['jest', 'facebook']) for (const product of ['auth', 'firestore', 'database']) {
+    assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/firebase/${product}/dist/esm/index.esm.js`));
+    assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/@firebase/${product}/dist/index.esm.js`));
+  }
 });
 
 test('Firestore TypeScript runtime helpers remain limited to Firebase-backed targets', () => {

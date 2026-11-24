@@ -127,7 +127,6 @@ describe("Firebase browser adapter", () => {
       "listLiveRaceChallenges",
       "listLiveRaceHistory",
       "setNotificationPreference",
-      "setLiveRacePushSubscription",
     ]);
   });
 
@@ -224,7 +223,6 @@ describe("Firebase environment variants", () => {
       "listLiveRaceChallenges",
       "listLiveRaceHistory",
       "setNotificationPreference",
-      "setLiveRacePushSubscription",
     ];
     for (const [instance, name] of mockHttpsCallable.mock.calls) {
       expect(instance).toMatchObject({region: multiplayerCalls.includes(name) ? "europe-west1" : "europe-west2"});

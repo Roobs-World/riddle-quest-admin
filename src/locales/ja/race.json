@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Riddle Questで{name}と同じマルチプレイロビーに参加しよう。",
     "PLAYER_USERNAME": "プレイヤーのユーザー名",
     "NOTIFY_PLAYER": "チャレンジを送信",
-    "INVITE_QUEUED": "招待を保存しました。通知の配信はプレイヤーの通知設定によって異なります。",
+    "INVITE_QUEUED": "招待を保存しました。相手のマルチプレイヤーの受信ボックスに表示されます。",
     "LIVE_HISTORY_TITLE": "最近の対戦",
     "LIVE_HISTORY_EMPTY": "完了した対戦はまだありません。"
   }

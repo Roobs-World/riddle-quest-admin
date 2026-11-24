@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Spiele mit {name} in derselben Mehrspieler-Lobby in Riddle Quest.",
     "PLAYER_USERNAME": "Benutzername des Spielers",
     "NOTIFY_PLAYER": "Herausforderung senden",
-    "INVITE_QUEUED": "Einladung gespeichert. Push-Benachrichtigungen hängen von den Einstellungen des Spielers ab.",
+    "INVITE_QUEUED": "Einladung gespeichert. Sie erscheint im Mehrspieler-Posteingang des Spielers.",
     "LIVE_HISTORY_TITLE": "Letzte Spiele",
     "LIVE_HISTORY_EMPTY": "Noch keine abgeschlossenen Spiele."
   }

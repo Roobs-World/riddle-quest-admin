@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Bergabunglah dengan {name} di lobi multipemain yang sama di Riddle Quest.",
     "PLAYER_USERNAME": "Nama pengguna pemain",
     "NOTIFY_PLAYER": "Kirim tantangan",
-    "INVITE_QUEUED": "Undangan disimpan. Pengiriman notifikasi bergantung pada pengaturan pemain.",
+    "INVITE_QUEUED": "Undangan disimpan. Undangan akan muncul di kotak masuk multipemain pemain tersebut.",
     "LIVE_HISTORY_TITLE": "Pertandingan terbaru",
     "LIVE_HISTORY_EMPTY": "Belum ada pertandingan yang selesai."
   }

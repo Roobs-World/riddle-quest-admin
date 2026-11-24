@@ -18,6 +18,8 @@ if (artifactBytes > maximumArtifactBytes) {
 const inspectable = files.filter((file) => /\.(?:html|js|css|json|map)$/i.test(file));
 const content = (await Promise.all(inspectable.map((file) => readFile(file, "utf8")))).join("\n");
 const forbidden = [
+  ["Browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u],
+  ["Firebase Cloud Messaging", /\b(?:fcmregistrations|fcm)\.googleapis\.com\b|messaging\/(?:unsupported-browser|permission-blocked|token-subscribe-failed)|\b(?:setLiveRacePushSubscription|liveChallengePushWorker)\b/u],
   ["Direct parent-window messaging", /\b(?:parent|top)\s*\.\s*postMessage\s*\(/],
   [
     "YouTube Playables integration",

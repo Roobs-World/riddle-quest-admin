@@ -32,6 +32,10 @@ export function assertTargetDependency(target: string, id: string): void {
   }
   /** Provides name behavior. */
   const name = runtimePackage(id);
+  if ((target === "jest" || target === "facebook") && (name === "@firebase/messaging" || name === "@firebase/messaging-compat" ||
+      /\/node_modules\/firebase\/(?:compat\/)?messaging(?:\/|\?|$)/u.test(portable))) {
+    throw new Error(`${target} notifications must use ${target === "jest" ? "the Jest SDK" : "the Facebook API"}, not Firebase Cloud Messaging: ${id}`);
+  }
   if (
     name &&
     !allowed.some((pattern) =>

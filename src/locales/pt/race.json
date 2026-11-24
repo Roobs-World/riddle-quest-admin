@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Junte-se a {name} na mesma sala multijogador de Riddle Quest.",
     "PLAYER_USERNAME": "Nome de usuário do jogador",
     "NOTIFY_PLAYER": "Enviar desafio",
-    "INVITE_QUEUED": "Convite salvo. As notificações dependem das configurações do jogador.",
+    "INVITE_QUEUED": "Convite salvo. Ele aparecerá na caixa de entrada multijogador do jogador.",
     "LIVE_HISTORY_TITLE": "Partidas recentes",
     "LIVE_HISTORY_EMPTY": "Ainda não há partidas concluídas."
   }

@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Doe mee met {name} in dezelfde multiplayerlobby in Riddle Quest.",
     "PLAYER_USERNAME": "Gebruikersnaam van speler",
     "NOTIFY_PLAYER": "Uitdaging sturen",
-    "INVITE_QUEUED": "Uitnodiging opgeslagen. Pushmeldingen hangen af van de instellingen van de speler.",
+    "INVITE_QUEUED": "Uitnodiging opgeslagen. Deze verschijnt in de multiplayer-inbox van de speler.",
     "LIVE_HISTORY_TITLE": "Recente wedstrijden",
     "LIVE_HISTORY_EMPTY": "Nog geen voltooide wedstrijden."
   }

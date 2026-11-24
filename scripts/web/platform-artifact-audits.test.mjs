@@ -181,7 +181,7 @@ test("the Web Target config resolves one isolated build profile for every releas
       outDir: path.join(repositoryDirectory, "builds/jest"),
       htmlEntry: "/platforms/web/jest/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
-      artifactPlugin: "riddle-quest-jest-challenge-push-worker",
+      artifactPlugin: "riddle-quest-jest-firebase-script-policy",
     },
     facebook: {
       outDir: path.join(repositoryDirectory, "builds/facebook"),
@@ -253,27 +253,6 @@ test("the Web Target config resolves one isolated build profile for every releas
   const youtube = createWebTargetViteConfig({command: "build", mode: "youtube", environment: {}});
   assert.equal(youtube.publicDir, false);
   assert.deepEqual(youtube.build.modulePreload, {polyfill: false});
-});
-
-test("every target config retains the Jest worker boundary guard", async () => {
-  const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  const workerImport = "virtual:jest-live-challenge-push-worker-url";
-  for (const command of ["build", "serve"]) {
-    for (const mode of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
-      const config = createWebTargetViteConfig({command, mode, environment: {}});
-      const guards = config.plugins.flat(Infinity).filter(
-        plugin => plugin?.name === "riddle-quest-jest-challenge-push-worker",
-      );
-      assert.equal(guards.length, 1, `${mode}/${command} must retain exactly one worker boundary guard`);
-      const guard = guards[0];
-      assert.equal(guard.resolveId("unrelated-module"), null);
-      if (mode === "jest") {
-        assert.equal(guard.resolveId(workerImport), "\0virtual:jest-live-challenge-push-worker-url");
-      } else {
-        assert.throws(() => guard.resolveId(workerImport), /cannot emit the Jest notification worker/u);
-      }
-    }
-  }
 });
 
 test("the private HTML adapter emits host filenames with artifact-root-relative URLs", async () => {
@@ -627,10 +606,25 @@ for (const platform of ["netflix", "yahoo"]) {
   });
 }
 
-test("Jest audit accepts its fixture and rejects Facebook contamination", async () => {
+test("Jest audit accepts Firebase account services and rejects browser push, FCM and Facebook", async () => {
   await withFixture("jest", async (directory) => {
+    await writeFile(path.join(directory, "app.js"), 'console.log("grindheadgames@gmail.com", "firebase/auth", "firebase/firestore", "@firebase/messaging", "@firebase/messaging-compat");\n');
     const clean = runAudit(jestAudit, directory);
     assert.equal(clean.status, 0, clean.stderr);
+    for (const browserPush of [
+      'Notification.requestPermission();',
+      'registration.showNotification("Challenge");',
+      'new PushManager();',
+      'self.addEventListener("push", () => {});',
+      'import("firebase/messaging");',
+      'fetch("https://fcmregistrations.googleapis.com/v1/projects/example");',
+      'setLiveRacePushSubscription({enabled: true});',
+    ]) {
+      await writeFile(path.join(directory, "app.js"), browserPush);
+      const rejected = runAudit(jestAudit, directory);
+      assert.notEqual(rejected.status, 0, browserPush);
+      assert.match(rejected.stderr, /Browser push notifications|Firebase Cloud Messaging/);
+    }
     await writeFile(path.join(directory, "app.js"), "window.FBInstant.initializeAsync();\n");
     const contaminated = runAudit(jestAudit, directory);
     assert.notEqual(contaminated.status, 0);

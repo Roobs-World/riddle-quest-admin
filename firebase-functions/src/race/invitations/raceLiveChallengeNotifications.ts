@@ -18,7 +18,7 @@ export type LiveChallengePushEvent = {
   /** One irreversible attempt avoids duplicate pushes after ambiguous transport failures. */ status: "queued" | "sending" | "submitted" | "unconfirmed" | "skipped";
 };
 
-/** Atomically reserves the recipient, inbox entry and one notification event for an owned private lobby. */
+/** Saves one invitation receipt and queues delivery only for supported platform APIs. */
 export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string,
   input: {
     /** Server-owned lobby. */
@@ -81,7 +81,8 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
     tx.set(db.doc(`users/${recipientId}/liveRaceInvitations/${seat.id}`), {challengeId: input.challengeId,
       createdAtMs: nowMs, expiresAt: Timestamp.fromMillis(expiresAtMs)});
     tx.create(eventRef, {challengeId: input.challengeId, creatorId: userId, recipientId, expiresAtMs,
-      status: "queued", createdAtMs: nowMs, expiresAt: Timestamp.fromMillis(expiresAtMs + 86_400_000)} satisfies LiveChallengePushEvent & Record<string, unknown>);
+      status: raceProviderScope(userId) === "jest" ? "skipped" : "queued", createdAtMs: nowMs,
+      expiresAt: Timestamp.fromMillis(expiresAtMs + 86_400_000)} satisfies LiveChallengePushEvent & Record<string, unknown>);
     return {status: "queued" as const};
   });
 }

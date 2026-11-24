@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Join {name} in the same multiplayer lobby in Riddle Quest.",
     "PLAYER_USERNAME": "Player username",
     "NOTIFY_PLAYER": "Send challenge",
-    "INVITE_QUEUED": "Invitation saved. Push delivery depends on the player’s notification settings.",
+    "INVITE_QUEUED": "Invitation saved. It will appear in the player’s multiplayer inbox.",
     "LIVE_HISTORY_TITLE": "Recent matches",
     "LIVE_HISTORY_EMPTY": "No completed matches yet."
   }

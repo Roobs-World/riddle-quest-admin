@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Riddle Quest'te {name} ile aynı çok oyunculu lobiye katıl.",
     "PLAYER_USERNAME": "Oyuncunun kullanıcı adı",
     "NOTIFY_PLAYER": "Meydan okuma gönder",
-    "INVITE_QUEUED": "Davet kaydedildi. Bildirimlerin iletilmesi oyuncunun bildirim ayarlarına bağlıdır.",
+    "INVITE_QUEUED": "Davet kaydedildi. Oyuncunun çok oyunculu gelen kutusunda görünecek.",
     "LIVE_HISTORY_TITLE": "Son maçlar",
     "LIVE_HISTORY_EMPTY": "Henüz tamamlanmış maç yok."
   }

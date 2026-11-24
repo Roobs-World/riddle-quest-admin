@@ -122,7 +122,7 @@
     "LIVE_INVITE_MESSAGE": "Dołącz do {name} w tym samym lobby wieloosobowym w Riddle Quest.",
     "PLAYER_USERNAME": "Nazwa użytkownika gracza",
     "NOTIFY_PLAYER": "Wyślij wyzwanie",
-    "INVITE_QUEUED": "Zaproszenie zapisane. Powiadomienia zależą od ustawień gracza.",
+    "INVITE_QUEUED": "Zaproszenie zapisane. Pojawi się w skrzynce odbiorczej gracza w trybie wieloosobowym.",
     "LIVE_HISTORY_TITLE": "Ostatnie mecze",
     "LIVE_HISTORY_EMPTY": "Nie ma jeszcze ukończonych meczów."
   }

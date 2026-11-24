@@ -56,23 +56,6 @@ export function useJestSharing({
   /** Game-owned display name included in the invitation text. */
   const inviterName = session?.profile?.username ?? tr("WebPortal.NOTIFICATION_PLAYER_FALLBACK");
   useEffect(() => {
-    if (!session?.player.registered || !("serviceWorker" in navigator)) return;
-    /** Worker clicks refresh pending notices without accepting or interrupting an existing match. */
-    const receive = (event: MessageEvent<unknown>) => {
-      /** Validated data carries only a destination hint; the server owns acceptance authority. */
-      const data = event.data as {
-        /** Fixed worker event. */
-        kind?: unknown;
-        /** Opaque invitation. */
-        challengeId?: unknown;
-      };
-      if (data?.kind === "liveChallenge" && typeof data.challengeId === "string" && /^live_[a-f0-9]{64}$/.test(data.challengeId))
-        window.dispatchEvent(new Event("riddle-quest:live-race-inbox-changed"));
-    };
-    navigator.serviceWorker.addEventListener("message", receive);
-    return () => navigator.serviceWorker.removeEventListener("message", receive);
-  }, [session?.player.registered]);
-  useEffect(() => {
     if (!session) return;
     platform.setScreenshotProvider(sizeCheckedScreenshotProvider(captureGameScreenshot));
     return () => platform.setScreenshotProvider(null);

@@ -68,7 +68,6 @@
     "test:jest-deployed:playwright": "PORTAL_DEPLOYED_TESTS=1 jest --config jest.config.cjs --selectProjects interface --runInBand platforms/web/jest/src/__tests__/deployedJest.jest-playwright.test.ts",
     "test:race:live:invitations:browser": "pnpm build:shared && node scripts/web/verify-live-race-invitations-browser.mjs",
     "test:challenge-notifications:browser": "node scripts/web/verify-challenge-notification-toggle-browser.mjs",
-    "test:challenge-push:browser": "node platforms/web/jest/scripts/verify-closed-game-challenge-push-browser.mjs",
     "test:live-question-input:browser": "pnpm build:shared && node scripts/web/verify-live-question-input-browser.mjs && LIVE_QUESTION_REACT_MODE=production node scripts/web/verify-live-question-input-browser.mjs",
     "test:live-reconnect-input:browser": "pnpm build:shared && node scripts/web/verify-live-reconnect-input-browser.mjs && LIVE_DRAFT_REACT_MODE=production node scripts/web/verify-live-reconnect-input-browser.mjs",
     "test:race:live:browser": "pnpm build:shared && node scripts/web/verify-live-race-browser.mjs && pnpm test:live-search-close:browser",

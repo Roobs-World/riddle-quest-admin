@@ -1,7 +1,6 @@
 import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/build/jestArtifactPlugins.ts";
 import {redditArtifactPlugin} from "../../../platforms/web/reddit/build/redditArtifactPlugin.ts";
 import {facebookArtifactPlugin} from "../../../platforms/web/facebook/build/facebookArtifactPlugin.ts";
-import {jestChallengePushWorkerPlugin} from "../../../platforms/web/jest/build/jestChallengePushWorkerPlugin.ts";
 import {webBuildFacts} from "../../release/release-registry.mjs";
 import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
@@ -528,7 +527,6 @@ export function createWebTargetViteConfig({
   const plugins: PluginOption[] = [
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile, targetRoot),
-    jestChallengePushWorkerPlugin(profile.id, command),
     webTargetDependencyPlugin(profile.id),
     ...(profile.id === "jest" ? [jestShaderIndentationPlugin(), jestFirebaseScriptPolicyPlugin()] : []),
     react(),

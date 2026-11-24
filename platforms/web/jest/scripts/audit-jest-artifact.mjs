@@ -34,6 +34,8 @@ const consoleManifest = JSON.parse(await readFile(
   "utf8",
 ));
 const forbidden = [
+  ["Browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u],
+  ["Firebase Cloud Messaging", /(?:\bfrom\s*|\bimport\s*(?:\(\s*)?|\brequire\s*\(\s*)["'`](?:firebase|@firebase)\/(?:compat\/)?messaging(?:-compat)?(?:\/|["'`])|\b(?:fcmregistrations|fcm)\.googleapis\.com\b|messaging\/(?:unsupported-browser|permission-blocked|token-subscribe-failed)|\b(?:setLiveRacePushSubscription|liveChallengePushWorker)\b/u],
   [
     "YouTube Playables integration",
     /www\.youtube\.com\/game_api\/v1|\bytgame\b|youtube-sdk-unavailable|youtube-content-envelope-invalid|youtube-content-manifest\.json/i,
@@ -144,5 +146,5 @@ if (initialResourceBytes > maximumInitialResourceBytes) {
 console.log(
   `Jest artifact audit passed: ${files.length} files, ${(artifactBytes / 1024 / 1024).toFixed(2)} MB, ` +
   `${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, relative entry paths, ` +
-  "consent-controlled analytics; no native modules, external auth/ads, install copy, secrets, source maps, or missing entry assets",
+  "consent-controlled analytics; Jest SDK notifications only; no native modules, browser push/FCM, external auth/ads, install copy, secrets, source maps, or missing entry assets",
 );
