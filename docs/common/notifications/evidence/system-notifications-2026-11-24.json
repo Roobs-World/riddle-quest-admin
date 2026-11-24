@@ -1,0 +1,51 @@
+{
+  "date": "2026-11-24",
+  "requirement": "Game platforms enroll player devices; the notification manager authors, schedules and sends notifications to the device notification tray.",
+  "managerRelease": {
+    "sourceCommit": "2e18916ed43fee9f77396f6b31317bd831a9e0d4",
+    "deploymentId": "dpl_9f5w34qdEX3VRRkpSZuRhkVhPAMk",
+    "origin": "https://riddle-quest-admin.vercel.app",
+    "immutableUrl": "https://riddle-quest-admin-o6s23ktai.vercel.app",
+    "status": "READY",
+    "verifiedAt": "2026-11-24T23:36:31Z",
+    "notificationIcon": "/push/icon.png",
+    "manifestName": "Riddle Quest",
+    "workerSha256": "0f77254913926c284ef0a05127bf185340d25d665670d68824abfc147d329544",
+    "manifestSha256": "2ecfd78d34f8551c344eb2cd0e5eafa35e2964fe1cbefaaeec121d834330bbc7",
+    "liveStaticAssetsMatchBuild": true,
+    "unsignedManagementRoutesHttpStatus": 401,
+    "privateFirebaseConfigurationHttpStatus": 200,
+    "deploymentErrorLogEntries": 0,
+    "rollbackDeploymentId": "dpl_3JeNGBgnqiQZycGzLcbpWLCzQYLA"
+  },
+  "enrollmentAudit": {
+    "checkedAt": "2026-11-24T23:32:21Z",
+    "windowStart": "2026-11-24T22:32:21Z",
+    "firebaseDeviceRecords": 0,
+    "firebaseEndpointRecords": 0,
+    "firebasePairingRecords": 0,
+    "devicesUpdatedInWindow": 0,
+    "pairingsCreatedInWindow": 0,
+    "pairingsConsumedInWindow": 0,
+    "managerActiveInstallations": 0,
+    "rawAccountOrSubscriptionDataRead": false,
+    "interpretation": "No surviving registered device or recent pairing request was observed. This does not establish which UI action the player took."
+  },
+  "clientAudit": {
+    "returningJestAndFacebookPlayersAlreadyReceiveWelcomeSignup": true,
+    "permissionPopupReservedBeforeFirstAwait": true,
+    "signupFailurePreviouslyHidWelcomeAction": true,
+    "signupFailureNowRetainsTranslatedErrorAndRetry": true,
+    "signupFailureFixRelease": "Source prepared; game client release pending",
+    "newTranslatedStrings": 0
+  },
+  "deliveryConstraints": {
+    "devicePermissionRequired": true,
+    "historicalLoginCannotCreateMissingSubscription": true,
+    "browserAndOsControlFinalAppearance": true,
+    "redditEnrollmentAdapterReleased": false,
+    "youtubeNetflixAndGameSnacksEnrollmentProhibitedByCurrentTargetPolicy": true
+  },
+  "deviceDisplayVerified": false,
+  "testsAndBrowserHarnessesRun": false
+}

@@ -4,10 +4,10 @@ import {useNotificationSettings} from "./NotificationSettingsContext";
 
 export function NotificationEnrollmentPrompt() {
   const notifications = useNotificationSettings();
-  if (!notifications?.enabled || notifications.delivery !== "permission-required") return null;
+  if (!notifications?.enabled || (notifications.delivery !== "permission-required" && notifications.delivery !== "save-failed")) return null;
   const copy = getHostedNotificationCopy(getCurrentLocale());
   return <div className="notification-enrollment-prompt">
-    <p>{copy.permissionRequired}</p>
+    <p role="status">{notifications.delivery === "save-failed" ? copy.saveFailed : copy.permissionRequired}</p>
     <button type="button" className="play-secondary" disabled={notifications.busy}
       onClick={() => {void notifications.requestPermission();}}>{copy.allowNotifications}</button>
   </div>;

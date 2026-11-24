@@ -4,6 +4,8 @@ One hosted notification service owns campaign content, scheduling, the queue and
 
 Game platforms enroll player devices and maintain consent. The notification manager sends every campaign to the eligible registered devices in its selected audience. Selecting all platforms includes every supported enrolled transport; it does not turn historical account profiles into device registrations. Browser delivery uses system notifications through `ServiceWorkerRegistration.showNotification`, with the Riddle Quest icon. The installed web app is named Riddle Quest. The browser and operating system control the final layout and source attribution. Android uses its native notification receiver through FCM.
 
+The [system notification release record](evidence/system-notifications-2026-11-24.json) records the live branding update, signup failure correction and remaining device-verification limit.
+
 | Client | Default device adapter |
 | --- | --- |
 | Android React Native app | Native FCM through the authenticated game backend |
