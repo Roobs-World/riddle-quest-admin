@@ -439,6 +439,9 @@ importers:
 
   notification-manager:
     dependencies:
+      '@supabase/auth-js':
+        specifier: 2.119.2
+        version: 2.119.2
       '@supabase/supabase-js':
         specifier: 2.119.2
         version: 2.119.2(@opentelemetry/api@1.10.0)

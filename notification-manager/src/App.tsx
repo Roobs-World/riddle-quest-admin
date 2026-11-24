@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {User} from "@supabase/supabase-js";
+import type {User} from "@supabase/auth-js";
 import {createManagementApi} from "./api";
 import {Calendar} from "./Calendar";
 import {campaignStatus, CampaignDetails, CampaignList} from "./CampaignList";

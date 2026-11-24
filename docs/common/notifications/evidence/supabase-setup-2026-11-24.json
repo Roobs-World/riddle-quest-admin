@@ -70,15 +70,42 @@
     }
   },
   "verificationMethod": "Authenticated MCP metadata queries and Supabase advisors; no application records read",
-  "managerBuild": "passed with type checking and browser boundary audit",
+  "managerBuild": "production Vercel frontend and six API functions built with zero TypeScript diagnostics; browser boundary audit passed",
   "automatedTestsRun": false,
   "websiteDeployed": false,
   "notificationsSent": false,
   "pending": [
-    "Google OAuth provider credentials and exact redirect configuration",
+    "Full Google sign-in and post-login redirect verification",
     "Approved operator membership after Google sign-in",
     "Push transport credentials and scheduler setup",
     "Authorized website deployment and live delivery acceptance"
   ],
-  "submittedSqlMatchesLocalMigrations": true
+  "submittedSqlMatchesLocalMigrations": true,
+  "googleAuthorizationStart": {
+    "settingsStatus": 200,
+    "googleEnabled": true,
+    "authorizeStatus": 302,
+    "providerHost": "accounts.google.com",
+    "callback": "https://vqyjgcqyudqonfhgymoy.supabase.co/auth/v1/callback",
+    "clientIdConfigured": true,
+    "completeSignInVerified": false
+  },
+  "operatorMembership": {
+    "approvedAccountSpecified": true,
+    "qualifyingGoogleUsers": 0,
+    "granted": false
+  },
+  "productionWebsite": {
+    "origin": "https://riddle-quest-admin.vercel.app",
+    "status": 404,
+    "productionDeploymentPresent": false
+  },
+  "productionBuild": {
+    "target": "production",
+    "published": false,
+    "apiFunctions": 6,
+    "typeScriptDiagnostics": 0,
+    "packageManager": "Corepack with pnpm@12.21.0 and frozen shared lockfile",
+    "supabaseAuthDependency": "2.119.2"
+  }
 }

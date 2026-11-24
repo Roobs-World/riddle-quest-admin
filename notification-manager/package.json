@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "engines": {"node": "24.x"},
+  "engines": {
+    "node": "24.x"
+  },
   "packageManager": "pnpm@12.21.0",
   "scripts": {
     "dev": "vite --config vite.config.ts",
@@ -11,6 +13,7 @@
     "build": "pnpm check:types && vite build --config vite.config.ts"
   },
   "dependencies": {
+    "@supabase/auth-js": "2.119.2",
     "@supabase/supabase-js": "2.119.2",
     "react": "19.3.1",
     "react-dom": "19.3.1",

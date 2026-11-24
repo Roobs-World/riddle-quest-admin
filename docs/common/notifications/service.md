@@ -30,7 +30,9 @@ The Supabase project is named `riddle-quest-notifications`. Its Marketplace inst
 
 Database setup completed on November 24, 2026. Migration `20261124055801_notification_service` created six notification tables with RLS and twenty service-role-only, SECURITY INVOKER RPC functions. The public `notification-images` bucket accepts PNG, JPEG and WebP files up to 2 MB. Migration `20261124060208_notification_trigger_permissions` removed browser execution grants from Supabase's existing RLS event-trigger helper while preserving the helper and enabled trigger. Follow-up security and performance advisors reported zero warnings or errors. Informational findings reflect the deliberately inaccessible service tables and indexes in the empty database. See the [setup evidence](evidence/supabase-setup-2026-11-24.json).
 
-Google provider configuration, the first operator membership and the push scheduler remain pending. The database setup did not deploy the website, create user accounts or send notifications.
+Google sign-in is enabled. On November 24, 2026, the public Auth settings endpoint confirmed the provider is active, and an authorization request returned HTTP 302 to `accounts.google.com` with the expected Supabase callback and a configured client ID. This verifies the start of the flow; the complete Google sign-in and post-login redirect still need verification after deployment.
+
+The approved administrator account has not yet completed a verified Google sign-in, so no operator membership was granted. The first operator membership and push scheduler remain pending. The production website currently returns a Vercel 404 because it has no production deployment. Database setup did not deploy the website, create user accounts or send notifications.
 
 1. Use the notification service's connected Supabase project. The game's existing account database stays separate.
 2. The initial schema is already applied to this project. For future changes, edit the declarative schema files selected by `notification-manager/supabase/config.toml`, generate and review an incremental migration, then apply it once. Follow [Supabase's declarative schema workflow](https://supabase.com/docs/guides/local-development/declarative-database-schemas). Do not replay the raw CREATE statements against the existing database.
@@ -55,7 +57,7 @@ Supabase manages the operator sign-in session. Google OAuth requires a Web appli
 
 Create or select a Web application client in [Google Cloud](https://console.cloud.google.com/auth/clients?project=riddle-quest-ec2b2), then enter its client ID and secret directly in the [Supabase Google provider settings](https://supabase.com/dashboard/project/vqyjgcqyudqonfhgymoy/auth/providers?provider=Google) and enable Google. Keep the secret out of chat, source files and browser build variables. Site URL and redirect entries are configured separately in [Supabase URL Configuration](https://supabase.com/dashboard/project/vqyjgcqyudqonfhgymoy/auth/url-configuration). Keep existing redirects needed by other approved environments. See [Google OAuth setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
 
-The authenticated MCP connection does not establish a Supabase dashboard browser session and does not expose an Auth provider configuration tool. The available browser runs headlessly and is signed out. Provider configuration needs a signed-in dashboard session and the Google OAuth client credentials. Do not enable a provider with placeholder credentials.
+The authenticated MCP connection does not establish a Supabase dashboard browser session and does not expose an Auth provider configuration tool. The available browser runs headlessly. Enter or update provider credentials directly in the signed-in Supabase dashboard. Do not use placeholder credentials.
 
 ### Initial migration provenance
 
@@ -70,6 +72,12 @@ Authenticate the client separately: use `codex mcp login supabase` for Codex, or
 ## Vercel setup
 
 The Vercel project is [riddle-quest-admin](https://vercel.com/craig-beswethericks-projects-d44935d2/riddle-quest-admin), project ID `prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz` in team `team_Q3bXo2jPBKdjs3tuoKLtqUe2`. Its Root Directory is `notification-manager`, with Node.js 24 and access to workspace files outside that root. The checked-in `vercel.json` selects Vite, `pnpm build`, `dist` and 60-second API Functions. Automatic Git deployments are disabled; source pushes do not authorize a deployment or production release.
+
+Installation runs `corepack pnpm install --frozen-lockfile`, using the repository's pinned pnpm version and shared lockfile. The manager directly pins `@supabase/auth-js` to the SDK's matching version because Vercel's TypeScript host does not resolve pnpm's transitive symlink paths like the standard compiler. Without that direct dependency, its API build loses the inherited `auth.getUser` type despite the project type check passing. Keep the versions aligned when upgrading Supabase.
+
+The production frontend and all six API Functions were built locally with Vercel CLI on November 24, 2026, with no TypeScript diagnostics. The reviewed output is under the ignored `.vercel/output` folder. Creating that output does not deploy it. After explicit deployment authorization, use a production prebuilt deployment from the linked checkout so the release uses the reviewed output and production environment.
+
+The checkout now uses `Roobs-World/riddle-quest-admin`, while Vercel's existing Git connection still references `Grindhead/riddle-quest`. A manual release must use the reviewed current checkout or its prebuilt output rather than silently building the older Git source. Updating the Git connection is a separate configuration action; keep automatic deployments disabled.
 
 The build reads the standard `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` pair supplied by the [Supabase Marketplace integration](https://supabase.com/docs/guides/integrations/vercel-marketplace). Only these two validated public values enter the browser bundle. It also accepts the integration's `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` pair when the standard pair is absent. No broad public environment prefix is enabled.
 
