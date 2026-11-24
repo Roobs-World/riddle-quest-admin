@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-24",
+  "appId": "1748953042991569",
+  "authorization": "User requested repeated diagnosis and controlled upload attempts until Meta accepts a new bundle, followed by a live build request.",
+  "premiseUnderInvestigation": "HTTP 403 alone does not identify token validity, upload authorization or transport compatibility as the cause.",
+  "documentation": [
+    "https://developers.facebook.com/documentation/games/launch/upload-bundle",
+    "https://developers.facebook.com/documentation/instagram-platform/content-publishing/resumable-uploads",
+    "https://developers.facebook.com/documentation/games/whats-new/changelog/"
+  ],
+  "readOnlyFindings": {
+    "metaMcpWorking": true,
+    "metaMcpPermission": "read",
+    "userAppRole": "admin",
+    "appRestrictionReported": false,
+    "appSecretProofRequired": false,
+    "serverIpAllowlistConfigured": false,
+    "exportedUploadTokenPresent": false,
+    "actualCredentialSource": "root .env",
+    "metadataSessionHttpStatus": 200,
+    "sessionUrlPreserved": true,
+    "signedUploadSessionGetHttpStatus": 200,
+    "signedUploadSessionOffset": 0,
+    "metadataProbeGameBytesTransmitted": 0,
+    "sessionGetLimitation": "Observed diagnostic only; the Games guide does not document this status operation."
+  },
+  "diagnosticUpload": {
+    "sourceCommit": "4e9a9d750b2a5c34a7ced970d2dd54b6f8ce4399",
+    "archiveSha256": "0bdfa8f4375b3a6d3d2da108577e9e60bdf976b491e0e593a312d29abf5b8ef6",
+    "archiveBytes": 2897859,
+    "archiveEntries": 417,
+    "artifactAuditPassed": true,
+    "sourceClean": true,
+    "testsRun": false,
+    "recordedAt": "2026-11-24T12:03:09.511Z",
+    "sessionHttpStatus": 200,
+    "archiveHttpStatus": 403,
+    "responseBytes": 136,
+    "responseMediaType": "application/json",
+    "responseBodyFormat": "json-object",
+    "responseSha256": "e99de958c47a2d98e7007a5abf1fc0867f074f27ed230cbaaa9ae7e8f1f830cc",
+    "providerError": {"reason": "provider-rejected", "type": "ProcessingFailedError"},
+    "binaryAttempts": 1,
+    "providerAcceptance": false,
+    "inventoryVersionsBeforeAfterAndConfirmed": [6, 5, 4, 3, 2, 1],
+    "confirmationAt": "2026-11-24T12:04:16.808Z",
+    "finalBarrierStatus": "reconciled-absent"
+  },
+  "nextControlledVariable": "Match curl --data-binary's application/x-www-form-urlencoded Content-Type; this is not established as the rejection cause.",
+  "rawResponsesRetained": false,
+  "credentialsExposed": false,
+  "productionChanged": false
+}

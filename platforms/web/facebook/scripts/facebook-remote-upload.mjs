@@ -235,6 +235,7 @@ export async function uploadFacebookArchive({contents, archiveSha256, token}) {
       Offset: "0",
       "X-Entity-Length": String(archive.length),
       "Content-Length": String(archive.length),
+      "Content-Type": "application/x-www-form-urlencoded",
       type: "BUNDLE",
       comment: `Non-production draft sha256 ${archiveSha256}`,
       name: filename,
