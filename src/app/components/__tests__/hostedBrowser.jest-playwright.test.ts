@@ -780,8 +780,8 @@ describeBrowser("standalone Jest browser game", () => {
       await page.waitForFunction(() => document.querySelector(".game-modal")?.contains(document.activeElement));
       await expectAccessible(page, "profile");
       await expectModalCentered(page);
-      for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /treasure/i]) {
-        expect(await page.getByRole("button", {name}).isVisible()).toBe(true);
+      for (const name of [/statistics/i, /achievements/i, /ranks/i, /leaderboard/i, /buy coins/i]) {
+        expect(await page.locator(".modal-profile").getByRole("button", {name}).isVisible()).toBe(true);
       }
       await page.getByRole("button", {name: /^statistics$/i}).click();
       await page.locator(".modal-statistics").waitFor();
@@ -793,9 +793,9 @@ describeBrowser("standalone Jest browser game", () => {
         .first()
         .click();
       await page.locator(".modal-profile").waitFor();
-      await page.getByRole("button", {name: /treasure/i}).click();
-      await page.locator(".modal-treasure").waitFor();
-      await expectAccessible(page, "treasure");
+      await page.locator(".modal-profile").getByRole("button", {name: /buy coins/i}).click();
+      await page.locator(".modal-shop").waitFor();
+      await expectAccessible(page, "shop");
       await page.keyboard.press("Escape");
       await page
         .getByRole("button", {name: /^profile$/i})

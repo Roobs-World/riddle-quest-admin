@@ -210,7 +210,43 @@
   box-shadow: 0 5px 14px rgba(82, 38, 112, 0.24);
 }
 .profile-links .profile-treasure-button {
+  position: relative;
+  isolation: isolate;
   grid-column: 1 / -1;
+  padding: 16px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 204, 112, 0.92);
+  border-radius: 20px;
+  background: var(--play-panel) url("../../../assets/images/home-bg.svg?no-inline") center / 115% 115% no-repeat;
+  box-shadow: 0 5px 14px rgba(69, 17, 70, 0.2);
+}
+.profile-treasure-button > .spinning-wheel-graphic {
+  width: 180%;
+  min-width: 360px;
+}
+.profile-treasure-content {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+.profile-treasure-content img {
+  object-fit: contain;
+  filter: drop-shadow(0 5px 8px rgba(69, 17, 70, 0.2));
+}
+.profile-treasure-content small {
+  font-size: 12px;
+}
+.profile-treasure-content strong {
+  font-size: 24px;
+}
+.profile-treasure-content > span {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.profile-treasure-button:focus-visible {
+  outline: 3px solid #7c3fb1;
+  outline-offset: 3px;
 }
 .profile-page .live-race-push-consent {
   justify-content: center;

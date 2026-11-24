@@ -1,4 +1,5 @@
 import {LiveRacePushConsent} from "../../races/components/social/LiveRacePushConsent";
+import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
 import {ProfileSubscriptionContext} from "../browser/ProfileSubscriptionContext";
 import chestUrl from "../../../assets/images-web/chest-closed.png";
 import {useProviderProfile} from "./ProviderProfileContext";
@@ -72,6 +73,7 @@ export function ProfileModalPage({
   const rank = getRankForLevel(progress.level);
   /** Next rank milestone, when another rank remains. */
   const nextRank = getNextRankForLevel(progress.level);
+  const balance = profile?.coins ?? 0;
 
   /** Opens registration for guests or the system file picker for registered players. */
   const chooseAvatar = () => {
@@ -223,7 +225,7 @@ export function ProfileModalPage({
       <dl className="profile-stats" data-tooltip="profileStats">
         <div>
           <dt>{tr("Profile.TOTAL_COINS_LABEL")}</dt>
-          <dd>{profile?.coins ?? 0}</dd>
+          <dd>{balance}</dd>
         </div>
         <div>
           <dt>{tr("Profile.TOTAL_WINS_STAT")}</dt>
@@ -263,8 +265,14 @@ export function ProfileModalPage({
         <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>
           {tr("Leaderboard.TITLE")}
         </button>
-        <button className="profile-treasure-button" data-tooltip="profileTreasure" aria-label={tr("Profile.TREASURE_CHEST_TITLE")} onClick={() => onOpenModal("treasure")}>
-          <img src={chestUrl} alt="" width="72" height="64" />
+        <button type="button" className="profile-treasure-button" data-tooltip="profileTreasure" onClick={() => onOpenModal("shop")}>
+          <SpinningWheel />
+          <span className="profile-treasure-content">
+            <img src={chestUrl} alt="" width="112" height="100" />
+            <small>{tr("CoinShop.YOUR_BALANCE")}</small>
+            <strong>{balance.toLocaleString()}{tr("CoinShop.COINS_SUFFIX")}</strong>
+            <span>{tr("Navigation.BUY_COINS_BUTTON")}</span>
+          </span>
         </button>
       </div>
       <LiveRacePushConsent />
