@@ -26,7 +26,7 @@ const receiptPath = path.join(receiptDirectory, "gated-artifact.json");
 const fail = (message) => {
   throw new Error(`${message}\nUsage:\n` +
     "  pnpm facebook:draft begin\n" +
-    "  pnpm facebook:draft upload --archive-hash SHA256 < /private/asset-upload-token\n" +
+    "  pnpm facebook:draft upload --archive-hash SHA256 [--dry-run]\n" +
     "  pnpm facebook:draft recover --archive-hash SHA256\n" +
     "  pnpm facebook:draft ambiguous --archive-hash SHA256 --reason REASON\n" +
     "  pnpm facebook:draft accept --archive-hash SHA256 --draft-id ID --evidence /absolute/dashboard-file\n" +
@@ -35,12 +35,17 @@ const fail = (message) => {
 
 const parseOptions = (values) => {
   const result = new Map();
-  for (let index = 0; index < values.length; index += 2) {
+  for (let index = 0; index < values.length; index += 1) {
     const name = values[index];
-    const value = values[index + 1];
-    if (!name?.startsWith("--") || value === undefined || value.startsWith("--") || result.has(name)) {
+    if (!name?.startsWith("--") || result.has(name)) {
       fail("Invalid or duplicate Facebook draft option.");
     }
+    if (name === "--dry-run") {
+      result.set(name, true);
+      continue;
+    }
+    const value = values[++index];
+    if (value === undefined || value.startsWith("--")) fail("Invalid Facebook draft option value.");
     result.set(name, value);
   }
   return result;
@@ -70,9 +75,11 @@ const hashEvidenceFile = async (filePath) => {
 /** Reads one upload credential without exporting the environment file to child processes. */
 const readAssetUploadToken = async () => {
   let token = process.env.FACEBOOK_APP_ACCESS_TOKEN?.trim();
+  let source = "process environment";
   if (!token) {
     try {
       token = parseEnv(await readFile(path.join(repositoryDirectory, ".env"), "utf8")).FACEBOOK_APP_ACCESS_TOKEN?.trim();
+      source = "root .env";
     } catch (error) {
       if (error?.code !== "ENOENT") fail("Unable to read the Facebook upload credential from the root .env file.");
     }
@@ -86,10 +93,11 @@ const readAssetUploadToken = async () => {
       chunks.push(Buffer.from(chunk));
     }
     token = Buffer.concat(chunks).toString("utf8").trim();
+    source = "stdin";
   }
   if (!token) fail("Set FACEBOOK_APP_ACCESS_TOKEN in the root .env or pipe an upload-user token to stdin.");
-  validateFacebookAssetUploadToken(token);
-  return token;
+  const namespace = validateFacebookAssetUploadToken(token);
+  return {token, source, namespace};
 };
 
 const [command, ...optionArguments] = process.argv.slice(2);
@@ -110,19 +118,30 @@ await withFacebookReleaseLock(receiptDirectory, async () => {
     console.log(`Upload exactly: ${handoffPath}`);
     console.log(`Barrier: ${barrierPath}`);
   } else if (command === "upload") {
-    if (options.size !== 1 || !options.has("--archive-hash")) fail("upload requires --archive-hash.");
+    if (!options.has("--archive-hash") || [...options.keys()].some((name) => !["--archive-hash", "--dry-run"].includes(name))) {
+      fail("upload requires --archive-hash and accepts optional --dry-run.");
+    }
     if (runGit(["branch", "--show-current"]) !== "main") fail("Facebook uploads require main.");
     await assertFacebookHandoffsSettled(receiptDirectory);
     const {gated, verified} = await readGatedState();
     const hash = options.get("--archive-hash");
-    if (hash !== gated.archive.sha256) fail("The requested Facebook hash does not match the gated artifact.");
-    const uploadToken = await readAssetUploadToken();
+    if (hash !== gated.archive.sha256) {
+      fail(`The requested Facebook hash does not match the current gated artifact. After preflight, use --archive-hash ${gated.archive.sha256}.`);
+    }
+    const credential = await readAssetUploadToken();
+    if (options.has("--dry-run")) {
+      console.log(`Facebook upload source verified: ${gated.source.commit}`);
+      console.log(`Facebook archive verified: sha256 ${hash}`);
+      console.log(`Credential format accepted from ${credential.source}; upload namespace ${credential.namespace}.`);
+      console.log("Dry run: no handoff opened, Meta request sent, or game bytes uploaded. Provider authorization remains unverified.");
+      return;
+    }
     await createFacebookHandoffArchive(receiptDirectory, hash, verified.contents);
     const {barrierPath} = await createFacebookUploadBarrier(receiptDirectory, hash);
     const remoteReceiptPath = path.join(receiptDirectory, `remote-upload-${hash}.json`);
     let result;
     try {
-      result = await uploadFacebookArchive({contents: verified.contents, archiveSha256: hash, token: uploadToken});
+      result = await uploadFacebookArchive({contents: verified.contents, archiveSha256: hash, token: credential.token});
       await writeExclusivePrivateFacebookJson(remoteReceiptPath, {
         ...result,
         sourceCommit: gated.source.commit,
@@ -148,9 +167,19 @@ await withFacebookReleaseLock(receiptDirectory, async () => {
       }
       await transitionFacebookUploadBarrier(barrierPath, "transmitting", "ambiguous",
         "Remote upload did not produce a durable success receipt; reconcile Meta before any retry");
-      const diagnostic = error instanceof FacebookUploadError
-        ? ` Stage: ${error.stage}; HTTP: ${error.stages.findLast((entry) => entry.stage === error.stage)?.httpStatus ?? "unavailable"}.`
-        : "";
+      let diagnostic = "";
+      if (error instanceof FacebookUploadError) {
+        const stage = error.stages.findLast((entry) => entry.stage === error.stage);
+        const provider = stage?.providerError;
+        const details = [
+          provider?.code !== undefined ? `code ${provider.code}` : undefined,
+          provider?.subcode !== undefined ? `subcode ${provider.subcode}` : undefined,
+          provider?.type,
+          provider?.reason,
+        ].filter(Boolean);
+        diagnostic = ` Stage: ${error.stage}; HTTP: ${stage?.httpStatus ?? "unavailable"}.`;
+        if (details.length) diagnostic += ` Meta: ${details.join(", ")}.`;
+      }
       throw new Error(`Facebook upload outcome requires reconciliation for sha256 ${hash}.${diagnostic} Do not retry; inspect Meta Web Hosting.`);
     }
     await transitionFacebookUploadBarrier(barrierPath, "transmitting", "ambiguous",

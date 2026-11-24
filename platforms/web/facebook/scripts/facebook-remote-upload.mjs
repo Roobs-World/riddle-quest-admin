@@ -6,6 +6,13 @@ export const FACEBOOK_UPLOAD_GUIDE_URL = "https://developers.facebook.com/docume
 const maximumArchiveBytes = 200 * 1024 * 1024;
 const maximumResponseBytes = 1024 * 1024;
 const sha256 = (contents) => createHash("sha256").update(contents).digest("hex");
+const providerExceptionTypes = new Set([
+  "OAuthException",
+  "GraphMethodException",
+  "FacebookApiException",
+  "InvalidRequestException",
+  "PermissionException",
+]);
 
 /** Contains only fixed diagnostics and response fingerprints, without provider payloads or credentials. */
 export class FacebookUploadError extends Error {
@@ -17,25 +24,56 @@ export class FacebookUploadError extends Error {
   }
 }
 
-/** Selects the upload namespace and rejects app credentials before opening a handoff. */
+/** Selects the upload namespace and binds Gaming app credentials to this game's app ID. */
 export function validateFacebookAssetUploadToken(token) {
-  if (typeof token !== "string" || token.length < 16 || token.length > 16_384) {
-    throw new FacebookUploadError("A complete Facebook User or System User upload token is required.", "validation");
+  if (typeof token !== "string" || token.length < 16 || token.length > 16_384 || /\s/u.test(token)) {
+    throw new FacebookUploadError("A complete Facebook upload token is required.", "validation");
   }
   const gamingAppToken = /^GG\|([0-9]{5,32})\|[A-Za-z0-9._~+/-]+=*$/u.exec(token);
   if (gamingAppToken) {
     if (gamingAppToken[1] !== FACEBOOK_APP_ID) {
       throw new FacebookUploadError("The Facebook Gaming app token belongs to a different app.", "validation");
     }
-    throw new FacebookUploadError("Facebook archive uploads require a User or System User access token. The supplied Gaming App Access Token cannot upload archives.", "validation");
+    return "gg_graph_api";
   }
   if (!/^(?:GG|EAA)[A-Za-z0-9._~+/-]+=*$/u.test(token)) {
-    throw new FacebookUploadError("A complete Gaming User token or Facebook User/System User token is required.", "validation");
+    throw new FacebookUploadError("A complete Gaming token or Facebook User/System User token is required.", "validation");
   }
   return token.startsWith("GG") ? "gg_graph_api" : "fb_game_bundle";
 }
 
-/** Reads a bounded response while retaining only a digest in the receipt. */
+/** Classifies provider text without retaining the text or identifiers it may contain. */
+function providerFailureReason(message) {
+  if (/\bapp(?:lication)?(?: access)? tokens?\b.*\b(?:not allowed|not supported|cannot|unsupported)\b/iu.test(message) ||
+      /\b(?:user|system user)(?: access)? tokens?\b.*\brequired\b|\brequires?\b.*\b(?:user|system user)(?: access)? tokens?\b/iu.test(message)) {
+    return "user-token-required";
+  }
+  if (/\bexpir(?:ed|ation|y)\b/iu.test(message)) return "expired-token";
+  if (/\b(?:rate limit(?:ed)?|too many requests|throttl(?:ed|ing))\b/iu.test(message)) return "upload-rate-limited";
+  if (/\b(?:token|oauth|authentication|credential)\b/iu.test(message)) return "credential-rejected";
+  if (/\b(?:permissions?|not authorized|unauthorized|forbidden|access denied)\b/iu.test(message)) return "permission-denied";
+  if (/\b(?:invalid|malformed|unsupported)\b/iu.test(message)) return "invalid-upload-request";
+  return "provider-rejected";
+}
+
+/** Copies only bounded public error metadata into the private attempt receipt. */
+function safeProviderError(payload) {
+  const envelope = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
+  const error = envelope.error;
+  const details = error && typeof error === "object" && !Array.isArray(error) ? error : envelope;
+  const message = (typeof error === "string" ? error :
+    typeof details.message === "string" ? details.message :
+      typeof details.error_msg === "string" ? details.error_msg : "").slice(0, 4096);
+  const diagnostic = {reason: providerFailureReason(message)};
+  const code = details.code ?? details.error_code;
+  const subcode = details.error_subcode;
+  if (Number.isInteger(code) && code >= 0 && code <= 2_147_483_647) diagnostic.code = code;
+  if (Number.isInteger(subcode) && subcode >= 0 && subcode <= 2_147_483_647) diagnostic.subcode = subcode;
+  if (providerExceptionTypes.has(details.type)) diagnostic.type = details.type;
+  return diagnostic;
+}
+
+/** Reads a bounded response while retaining only a digest and safe error metadata. */
 async function readResponse(response, stage, stages) {
   const entry = {stage, httpStatus: response.status};
   stages.push(entry);
@@ -62,14 +100,24 @@ async function readResponse(response, stage, stages) {
   }
   const contents = Buffer.concat(chunks, length);
   entry.responseSha256 = sha256(contents);
-  if (!response.ok) {
+  let payload;
+  let parsed = false;
+  try {
+    payload = JSON.parse(contents.toString("utf8"));
+    parsed = true;
+  } catch {
+    // An error response need not be JSON; its body still stays out of diagnostics.
+  }
+  const providerError = payload && typeof payload === "object" && !Array.isArray(payload) &&
+    Object.hasOwn(payload, "error");
+  if (!response.ok || providerError) {
+    entry.providerError = safeProviderError(payload);
     throw new FacebookUploadError("Facebook rejected the upload request. Reconcile the retained attempt before retrying.", stage, stages);
   }
-  try {
-    return JSON.parse(contents.toString("utf8"));
-  } catch {
+  if (!parsed) {
     throw new FacebookUploadError("Facebook returned an unrecognized upload response. Reconcile the retained attempt before retrying.", stage, stages);
   }
+  return payload;
 }
 
 /** Sends one request without redirects or retries; thrown network details never escape this boundary. */

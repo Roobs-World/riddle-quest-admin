@@ -208,9 +208,9 @@ Meta documents a separate [Graph API bundle upload flow](https://developers.face
 
 After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `.facebook-upload-receipts/gated-artifact.json`:
 
-The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. The setting retains its existing name, but archive uploads require an opaque `GG` Gaming User token or an `EAA` User/System User token. The `GG|app-id|app-access-token` format is an App Access Token and is rejected before creating a handoff or upload session. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
+The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. It accepts complete `GG|app-id|token` credentials only for this app, opaque `GG` credentials, and `EAA` User/System User credentials. Meta decides whether the supplied credential authorizes the operation; a valid Token Debugger result or upload-session response alone does not establish archive-transfer permission. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
 
-On 24 November 2026, Meta accepted this app's complete Gaming App Access Token for app metadata and a Graph upload session, then rejected the archive transfer with HTTP 403. The retained upload receipt and reconciliation barrier preserve that failed attempt; no successful submission or processing is claimed. The Bundles inventory API uses the separate `app-id|app-secret` credential. Its earlier HTTP 401 with the Gaming token did not establish the bundle inventory.
+On 24 November 2026, Meta accepted this app's complete Gaming App Access Token for app metadata and a Graph upload session, then rejected the archive transfer with HTTP 403. That response's status and digest were retained, but its provider error details were discarded, so the status alone does not establish the exact cause. A later blanket local rejection of that token format stopped the unchanged credential before any Meta request. The format check now again permits the correctly app-bound credential and leaves authorization to Meta. No successful archive submission or processing is claimed. The Bundles inventory API uses the separate `app-id|app-secret` credential. Its earlier HTTP 401 with the Gaming token did not establish the bundle inventory.
 
 The [remote upload evidence](evidence/facebook-remote-upload-2026-11-24.json) records the built candidate, rejected transfer and authenticated inventory reconciliation. No new bundle was created, and both retained handoffs were settled as absent without retransmitting.
 
@@ -218,6 +218,12 @@ With the token saved in the root `.env`:
 
 ```sh
 pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256
+```
+
+To diagnose the same upload path without transmitting, append `--dry-run`. It verifies the branch, clean source, gated archive, retained handoffs and credential format, and reports whether the credential came from the process environment, root `.env` or stdin. It does not print the credential, open an upload handoff or contact Meta:
+
+```sh
+pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256 --dry-run
 ```
 
 When the setting is absent from both the process environment and root `.env`, supply a token privately through stdin:
@@ -232,6 +238,10 @@ unset facebook_asset_upload_token
 The process environment takes precedence over the root `.env`; stdin is a fallback when neither setting exists. A saved token therefore does not require waiting for stdin to close. A local format check does not establish the token's permissions; Meta must accept the credential for the relevant operation.
 
 This command verifies the clean source and archive, creates the immutable handoff and retry barrier, then transmits those exact bytes. It uses Graph API v24.0 for the upload session and selects `gg_graph_api` for `GG` tokens or `fb_game_bundle` for `EAA` tokens. Requests have bounded timeouts and no automatic retries. It records only response hashes, HTTP status and validated bundle metadata in the private `remote-upload-SHA.json` receipt.
+
+Failed responses also retain sanitized provider error codes and a fixed reason category when available. Raw provider messages, response bodies, tokens and session identifiers are excluded. These diagnostics identify Meta's rejection without inferring its cause from HTTP 403 alone.
+
+Use the current SHA-256 printed by preflight. Rebuilding can change the ZIP fingerprint even when the credential and command name are unchanged. An explicitly selected older hash remains blocked; the CLI reports the current gated hash rather than silently uploading different bytes. `release:facebook` prepares the manual dashboard handoff; remote transmission remains the separate `facebook:draft upload` subcommand.
 
 A successful HTTP upload establishes submission, not completed processing or acceptance. The barrier remains `ambiguous` until Meta Web Hosting provides exact-artifact evidence and the existing `accept` command records it. A timeout, failed response or interrupted command also requires reconciliation before another transmission. Do not run `begin` before the remote command or reuse a handoff already opened for dashboard upload. Remote upload does not assign a Testing version, promote a bundle, publish the game or submit a review.
 
