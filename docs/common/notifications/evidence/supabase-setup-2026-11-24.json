@@ -76,7 +76,6 @@
   "notificationsSent": false,
   "pending": [
     "Full Google sign-in and post-login redirect verification",
-    "Approved operator membership after Google sign-in",
     "Push transport credentials and scheduler setup",
     "Live push delivery acceptance"
   ],
@@ -92,8 +91,10 @@
   },
   "operatorMembership": {
     "approvedAccountSpecified": true,
-    "qualifyingGoogleUsers": 0,
-    "granted": false
+    "qualifyingGoogleUsers": 1,
+    "googleIdentityConfirmed": true,
+    "granted": true,
+    "membershipVerified": true
   },
   "productionWebsite": {
     "origin": "https://riddle-quest-admin.vercel.app",
