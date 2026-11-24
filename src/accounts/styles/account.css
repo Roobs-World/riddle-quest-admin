@@ -212,6 +212,9 @@
 .profile-links .profile-treasure-button {
   grid-column: 1 / -1;
 }
+.profile-page .live-race-push-consent {
+  justify-content: center;
+}
 .profile-danger-zone {
   padding-top: 8px;
   border-top: 1px solid #eadede;
