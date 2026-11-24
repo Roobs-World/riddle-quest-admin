@@ -1,5 +1,5 @@
 import type {BridgeProfile} from "../../platform/bridge/messages";
-import type {AchievementPlayerData} from "../achievements/browser/achievements";
+import type {AchievementPlayerData} from "./catalog/achievementTypes";
 
 /** Projects an optional bridge profile into the achievement evaluation contract. */
 export const createAchievementPlayer = (profile: BridgeProfile | null): AchievementPlayerData => ({
@@ -16,8 +16,8 @@ export const createAchievementPlayer = (profile: BridgeProfile | null): Achievem
     dailyPuzzlesCompleted: profile?.dailyPuzzlesCompleted ?? 0,
     bestStreak: profile?.bestStreak ?? 0,
     totalWordsGuessed: profile?.totalWordsGuessed ?? 0,
-    winRate: profile?.winRate ?? 0,
-    averageGuesses: profile?.averageGuesses ?? 0,
+    winRate: profile?.winRate ?? (profile && profile.gamesPlayed > 0 ? (profile.totalWins ?? profile.wins) / profile.gamesPlayed * 100 : 0),
+    averageGuesses: profile?.averageGuesses,
     totalScore: profile?.totalScore ?? 0,
     highestLevelClassic: profile?.highestLevelClassic ?? 0,
     gamesPlayed: profile?.gamesPlayed ?? 0,

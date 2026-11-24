@@ -2,7 +2,7 @@ import {afterEach, describe, expect, it} from "@jest/globals";
 import {readFileSync, readdirSync} from "node:fs";
 import path from "node:path";
 import {renderToString} from "react-dom/server";
-import {ACHIEVEMENT_DEFINITIONS} from "../achievements";
+import {ACHIEVEMENT_DEFINITIONS} from "../../catalog/achievements";
 import {LANGUAGE_OPTIONS, setLocaleAndWait} from "../../../../localization/browser/i18n";
 import {AchievementFanfare} from "../../../components/rewards/FanfareModalContent";
 import {AchievementsModalPage} from "../../../components/ProfileStatsModalPages";

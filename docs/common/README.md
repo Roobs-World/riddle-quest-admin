@@ -10,6 +10,7 @@ These modules and operations support the platform targets. Provider-specific SDK
 | Hosted | [Race architecture, multiplayer operations and evidence](hosted/README.md) |
 | Web game | [Feature components, visual parity and evidence](web-game/README.md) |
 | Notifications | [Shared Settings preference and provider delivery](notifications/README.md) |
+| Progression | [Achievement catalog, progress and unlock authority](progression/achievements.md) |
 | Firebase Functions | [Backend layout, operations and evidence](firebase-functions/README.md) |
 | Architecture | [Platform ownership, integration matrix and decisions](architecture/README.md) |
 | Development | [Packages, CI cost controls and task declarations](development/README.md) |

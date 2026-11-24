@@ -1,10 +1,11 @@
-import {ACHIEVEMENT_DEFINITIONS} from "../achievements/browser/achievements";
+import {ACHIEVEMENT_DEFINITIONS} from "../achievements/catalog/achievements";
 import type {GameSessionState} from "../../gameplay/session/gameSession";
 import {useTranslator} from "../../localization/browser/i18n";
 import {getNextRankForLevel, getRankForLevel, PLAYER_RANKS, RANK_MATERIAL_ORDER} from "../browser/ranks";
 import {RankedAvatar} from "./ranks/RankedAvatar";
 import {RankIcon} from "./ranks/RankIcon";
-import {createAchievementPlayer} from "../browser/profileStats";
+import {createAchievementPlayer} from "../achievements/hostedAchievementPlayer";
+import {getAchievementProgressViews, orderAchievementDefinitions} from "../achievements/achievementPresentation";
 
 /** Shared properties for profile-derived detail pages. */
 export type ProfileStatsModalPageProps = {
@@ -35,13 +36,10 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
         </div>
       </div>
       <div className="achievement-grid">
-      {ACHIEVEMENT_DEFINITIONS.map((achievement) => {
+      {orderAchievementDefinitions(ACHIEVEMENT_DEFINITIONS, achievementPlayer, profile?.achievements ?? []).map((achievement) => {
         /** Whether the trusted profile records this achievement as unlocked. */
         const unlocked = profile?.achievements.includes(achievement.id) ?? false;
-        /** Clamped progress displayed for this achievement. */
-        const progress = unlocked
-          ? achievement.threshold
-          : Math.max(0, Math.min(achievement.threshold, achievement.getProgress(achievementPlayer)));
+        const requirements = getAchievementProgressViews(achievement, achievementPlayer, unlocked);
         /** Localized title also names the accessible progress indicator. */
         const name = achievement.nameKey ? tr(achievement.nameKey) : achievement.name;
         return (
@@ -50,12 +48,16 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
             <div className="achievement-details">
               <h3 className="profile-card-title">{name}</h3>
               <p>{achievement.descriptionKey ? tr(achievement.descriptionKey) : achievement.description}</p>
-              <div className="achievement-progress" role="progressbar" aria-label={name}
-                aria-valuemin={0} aria-valuemax={achievement.threshold} aria-valuenow={progress}>
-                <i style={{width: `${(progress / achievement.threshold) * 100}%`}} />
-              </div>
+              {requirements.map((requirement, index) => <div key={index}>
+                <div className="achievement-progress" role="progressbar"
+                  aria-label={requirement.labelKey ? `${name}: ${tr(requirement.labelKey)}` : name}
+                  aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(requirement.ratio * 100)}
+                  aria-valuetext={requirement.text}>
+                  <i style={{width: `${requirement.ratio * 100}%`}} />
+                </div>
+                <small>{requirement.labelKey ? `${tr(requirement.labelKey)}: ` : ""}{requirement.text}</small>
+              </div>)}
               <div className="achievement-meta">
-                <small>{progress} / {achievement.threshold}</small>
                 {unlocked ? <small className="achievement-status"><span aria-hidden="true">✓ </span>{tr("Achievements.UNLOCKED_LABEL")}</small> : null}
               </div>
             </div>

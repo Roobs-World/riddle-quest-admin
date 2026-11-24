@@ -51,6 +51,7 @@
         "src/gameplay/persistence/YouTubeSaveGate.ts",
         "src/gameplay/persistence/localSave.ts",
         "src/localization/copy/localGameCopy.ts",
+        "src/localization/copy/achievementCopy.ts",
         "src/progression/achievements/localAchievements.ts",
         "src/progression/economy/localEconomy.ts"
       ]
@@ -149,6 +150,9 @@
         "src/platform/firebase/browserHostServices.ts",
         "src/presence/**",
         "src/progression/achievements/browser/**",
+        "src/progression/achievements/catalog/**",
+        "src/progression/achievements/achievementPresentation.ts",
+        "src/progression/achievements/hostedAchievementPlayer.ts",
         "src/progression/browser/**",
         "src/progression/components/**",
         "src/progression/economy/__tests__/localEconomy.test.ts",
@@ -387,7 +391,13 @@
         "functions": 100,
         "lines": 100
       },
-      "src/progression/achievements/browser/achievements.ts": {
+      "src/progression/achievements/catalog/achievements.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "src/progression/achievements/catalog/soloAchievements.ts": {
         "statements": 100,
         "branches": 100,
         "functions": 100,
@@ -464,7 +474,7 @@
     "interface": {
       "sources": [
         "src/gameplay/components/__tests__/raceBoardAttempts.test.tsx",
-        "src/progression/achievements/browser/raceAchievementDefinitions.ts",
+        "src/progression/achievements/catalog/raceAchievementDefinitions.ts",
         "src/races/__tests__/**",
         "src/races/browser/controllers/**",
         "src/races/browser/model/**",

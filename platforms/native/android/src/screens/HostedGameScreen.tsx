@@ -135,7 +135,7 @@ export function HostedGameScreen({services, mode, locale, onBack, journal}: Host
           {result.newlyUnlockedAchievementIds.length > 0 && (
             <View style={styles.achievements}>
               <Heading level={2}>{text("newAchievements")}</Heading>
-              <AchievementRow ids={result.newlyUnlockedAchievementIds} text={text} label={text("newAchievements")} />
+              <AchievementRow ids={result.newlyUnlockedAchievementIds} locale={locale} label={text("newAchievements")} />
             </View>
           )}
           <ActionButton

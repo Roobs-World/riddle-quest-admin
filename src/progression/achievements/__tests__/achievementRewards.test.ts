@@ -9,4 +9,7 @@ describe("achievement coin eligibility", () => {
     expect(countCoinRewardAchievements(["first_win", "first_purchase", "race_clean_run"])).toBe(3);
     expect(countCoinRewardAchievements([])).toBe(0);
   });
+  it("counts an earned badge only once within a reward batch", () => {
+    expect(countCoinRewardAchievements(["first_win", "first_win", "hint_user", "hint_user", "wins_5"])).toBe(2);
+  });
 });

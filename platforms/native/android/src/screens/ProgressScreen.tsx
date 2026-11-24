@@ -1,3 +1,6 @@
+import {AchievementCollection} from "../components/AchievementCollection";
+import {LOCAL_ACHIEVEMENT_DEFINITIONS} from "../../../../../src/progression/achievements/localAchievements";
+import {createLocalAchievementPlayer} from "../../../../../src/progression/achievements/achievementPresentation";
 import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
 import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
@@ -5,7 +8,7 @@ import {type YouTubeContent, type YouTubeLocale} from "../../../../../src/gamepl
 import {type YouTubeCopyKey} from "../../../../../src/localization/copy/localGameCopy";
 import {StyleSheet, Switch, Text, View} from "react-native";
 import {ActionButton, Heading, Panel, Screen} from "../components/Primitives";
-import {AchievementRow, SaveBanner, StatusHeader} from "../components/StatusViews";
+import {SaveBanner, StatusHeader} from "../components/StatusViews";
 import {palette, spacing} from "../theme";
 /** Level thresholds that advance the displayed rank. */
 const RANK_THRESHOLDS = [1, 3, 6, 10, 15, 21, 28, 36] as const;
@@ -100,12 +103,8 @@ export function ProgressScreen({locale, content, authority, snapshot, run, text,
             value={`${Math.min(progression.classicIndex, content.classicOrder.length)}/${content.classicOrder.length}`}
           />
         </View>
-        <Heading level={2}>{text("achievements")}</Heading>
-        {progression.unlockedAchievementIds.length > 0 ? (
-          <AchievementRow ids={progression.unlockedAchievementIds} text={text} label={text("achievements")} />
-        ) : (
-          <Text style={styles.empty}>{text("noAchievements")}</Text>
-        )}
+        <AchievementCollection locale={locale} definitions={LOCAL_ACHIEVEMENT_DEFINITIONS}
+          player={createLocalAchievementPlayer(progression)} unlockedIds={progression.unlockedAchievementIds} />
         <View style={styles.preferences}>
           <PreferenceRow
             label={text("reducedMotion")}

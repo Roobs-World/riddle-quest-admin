@@ -57,7 +57,7 @@ export type AchievementCriteriaType =
 /** Contains the subset of player data needed to evaluate achievement progress. */
 export type AchievementPlayerData = {
   /** Aggregated gameplay statistics used by achievement counters. */
-  stats?: PlayerStats | null;
+  stats?: Partial<PlayerStats> | null;
   /** Persistent progression values used by mode-specific achievements. */
   progress?: PlayerProgress | null;
   /** Current spendable balance used by coin achievements. */
@@ -80,10 +80,21 @@ export interface AchievementDefinition {
   descriptionKey?: string;
   /** Server-recognized condition used to grant the achievement. */
   criteriaType: AchievementCriteriaType;
-  /** Target value at which the achievement unlocks. */
+  /** Target for the primary progress counter; additional requirements may apply. */
   threshold: number;
   /** Emoji shown in the achievement icon circle. */
   icon: string;
   /** Returns the player's current progress, clamped by the caller to the configured threshold. */
   getProgress(player: AchievementPlayerData): number;
+  /** Separate conditions for achievements that require more than one statistic. */
+  getRequirements?(player: AchievementPlayerData): readonly AchievementRequirement[];
 }
+
+/** One measurable condition, including conditions where a lower value is better. */
+export type AchievementRequirement = Readonly<{
+  labelKey: string;
+  value: number | null;
+  target: number;
+  comparison: "at-least" | "at-most";
+  unit?: "%";
+}>;

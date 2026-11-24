@@ -1,4 +1,4 @@
-import {ACHIEVEMENT_DEFINITIONS} from "../../achievements/browser/achievements";
+import {ACHIEVEMENT_DEFINITIONS} from "../../achievements/catalog/achievements";
 import {useTranslator} from "../../../localization/browser/i18n";
 import {CoinAwardSequence} from "./CoinAwardSequence";
 import type {FanfareCoinAward, FanfareStep} from "../../browser/fanfareSequence";

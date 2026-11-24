@@ -1,25 +1,8 @@
-/**
- * @fileoverview Achievement definitions for UI display and progress calculation.
- *
- * This module is the client-side source of truth for achievement names, descriptions,
- * criteria types, thresholds, icons, and progress calculation.  Unlock authority
- * lives server-side in firebase-functions/src/gameplay/achievements.ts; this file is used for:
- * - Rendering the achievements list (AchievementsModal)
- * - Computing per-achievement progress from player stats/progress.
- *
- * Each definition owns its own `getProgress` method so adding a new achievement
- * only requires one place to change.
- */
-
 import {MILESTONE_ACHIEVEMENT_DEFINITIONS} from "./achievementMilestones";
-import {type PlayerStats, type PlayerProgress} from "../../../platform/contracts/firestoreSchemas";
-import {RACE_ACHIEVEMENT_DEFINITIONS} from "./raceAchievementDefinitions";
-import type {AchievementCriteriaType, AchievementDefinition} from "./achievementTypes";
+import type {AchievementDefinition} from "./achievementTypes";
 
-export type {AchievementCriteriaType, AchievementDefinition, AchievementPlayerData} from "./achievementTypes";
-
-/** Defines the achievement definitions value. */
-const achievementDefinitions: AchievementDefinition[] = [
+/** Shared solo catalog; unlocks remain authoritative in each gameplay controller. */
+const soloAchievementDefinitions: AchievementDefinition[] = [
   {
     id: "first_win",
     name: "First Win",
@@ -73,6 +56,10 @@ const achievementDefinitions: AchievementDefinition[] = [
     threshold: 80,
     icon: "🎯",
     getProgress: (p) => p.stats?.winRate ?? 0,
+    getRequirements: (p) => [
+      {labelKey: "StatsModal.GAMES_PLAYED", value: p.stats?.gamesPlayed ?? 0, target: 10, comparison: "at-least"},
+      {labelKey: "StatsModal.WIN_RATE", value: p.stats?.winRate ?? 0, target: 80, comparison: "at-least", unit: "%"},
+    ],
   },
   {
     id: "efficient_10",
@@ -81,10 +68,12 @@ const achievementDefinitions: AchievementDefinition[] = [
     criteriaType: "efficient_10",
     threshold: 10,
     icon: "🧠",
-    getProgress: (p) =>
-      (p.stats?.totalWins ?? 0) >= 10 && (p.stats?.averageGuesses ?? Number.POSITIVE_INFINITY) <= 3
-        ? 10
-        : Math.min(p.stats?.totalWins ?? 0, 10),
+    getProgress: (p) => p.stats?.totalWins ?? 0,
+    getRequirements: (p) => [
+      {labelKey: "StatsModal.TOTAL_WINS", value: p.stats?.totalWins ?? 0, target: 10, comparison: "at-least"},
+      {labelKey: "StatsModal.AVG_GUESSES", value: (p.stats?.totalWins ?? 0) > 0 ? p.stats?.averageGuesses ?? null : null,
+        target: 3, comparison: "at-most"},
+    ],
   },
   {
     id: "games_25",
@@ -404,28 +393,12 @@ const achievementDefinitions: AchievementDefinition[] = [
     getProgress: (p) => (p.hasPurchasedApp ? 1 : 0),
   },
   ...MILESTONE_ACHIEVEMENT_DEFINITIONS,
-  ...RACE_ACHIEVEMENT_DEFINITIONS,
 ];
 
-/** Localized display keys preserve the separate milestone and race catalogs. */
-export const ACHIEVEMENT_DEFINITIONS: AchievementDefinition[] = achievementDefinitions.map((definition) => ({
+
+/** Localized solo metadata used by hosted, offline and native views. */
+export const SOLO_ACHIEVEMENT_DEFINITIONS = soloAchievementDefinitions.map((definition) => ({
   ...definition,
   nameKey: definition.nameKey ?? `Achievements.SOLO.${definition.id}.NAME`,
   descriptionKey: definition.descriptionKey ?? `Achievements.SOLO.${definition.id}.DESCRIPTION`,
 }));
-
-/**
- * @deprecated Use `def.getProgress(playerData)` instead.
- * Kept for any external callers during migration.
- */
-export function getAchievementProgress(
-  criteriaType: AchievementCriteriaType,
-  stats: PlayerStats | undefined | null,
-  progress: PlayerProgress | undefined | null,
-  hasPurchasedApp?: boolean | null,
-): number {
-  /** Provides def behavior. */
-  const def = ACHIEVEMENT_DEFINITIONS.find((d) => d.criteriaType === criteriaType);
-  if (!def) return 0;
-  return def.getProgress({stats, progress, hasPurchasedApp});
-}

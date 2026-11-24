@@ -16,11 +16,11 @@ await writeFile(path.join(scratch, 'tsconfig.json'), JSON.stringify({compilerOpt
 await writeFile(path.join(scratch, 'index.html'), '<html><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
 await writeFile(path.join(scratch, 'main.tsx'), `
 import React from 'react'; import {createRoot} from 'react-dom/client';
-import {ACHIEVEMENT_DEFINITIONS} from ${JSON.stringify(path.join(root, "src/progression/achievements/browser/achievements.ts"))};
+import {ACHIEVEMENT_DEFINITIONS} from ${JSON.stringify(path.join(root, "src/progression/achievements/catalog/achievements.ts"))};
 import {AchievementsModalPage} from ${JSON.stringify(path.join(root, "src/progression/components/ProfileStatsModalPages.tsx"))};
 import {AchievementFanfare} from ${JSON.stringify(path.join(root, "src/progression/components/rewards/FanfareModalContent.tsx"))};
 import {setLocaleAndWait, tr} from ${JSON.stringify(path.join(root, "src/localization/browser/i18n.ts"))};
-${['styles.css','styles.modal-shell.css','styles.account.css','styles.profile-details.css','styles.modal-rewards.css'].map(name => 'import '+JSON.stringify(path.join(root,'src',name))+';').join('\n')}
+${['app/styles/foundation.css', 'app/styles/game.css', 'app/styles/shared-controls.css', 'app/modals/styles/modal-shell.css', 'accounts/styles/account.css', 'accounts/styles/profile-details.css', 'progression/styles/rewards.css'].map(name => 'import '+JSON.stringify(path.join(root,'src',name))+';').join('\n')}
 const root = createRoot(document.getElementById('root'));
 window.injectAchievementProfile = async (locale, unlocked) => {
   await setLocaleAndWait(locale);
@@ -62,20 +62,21 @@ try {
         const expected = await page.evaluate(([locale,unlocked]) => window.injectAchievementProfile(locale,unlocked),[locale,unlocked]);
         await page.locator('[data-fixture="'+locale+'-'+unlocked+'"]').waitFor();
         const cards = await page.locator('.achievement-grid article').evaluateAll(elements => elements.map(card => ({
-          name:card.querySelector('strong').textContent, description:card.querySelector('p').textContent,
+          name:card.querySelector('h3').textContent, description:card.querySelector('p').textContent,
           unlocked:card.classList.contains('unlocked'), progress:Number(card.querySelector('[role="progressbar"]').getAttribute('aria-valuenow')),
           threshold:Number(card.querySelector('[role="progressbar"]').getAttribute('aria-valuemax')),
           overflow:card.scrollWidth > card.clientWidth+1,
         })));
         assert.equal(cards.length,expected.length);
-        cards.forEach((card,index)=>{
-          const definition=expected[index];
+        cards.forEach(card=>{
+          const definition=expected.find(item=>item.name===card.name);
+          assert(definition,card.name);
           assert.equal(card.name,definition.name,definition.id);
           assert.equal(card.description,definition.description,definition.id);
-          assert.equal(card.threshold,definition.threshold,definition.id);
+          assert.equal(card.threshold,100,definition.id);
           assert.equal(card.unlocked,unlocked,definition.id);
           assert.equal(card.overflow,false,'card overflow: '+locale+'/'+definition.id);
-          assert.equal(card.progress,unlocked ? definition.threshold : (definition.id.startsWith('level_') ? 1 : 0),definition.id);
+          assert.equal(card.progress,unlocked ? 100 : (definition.id.startsWith('level_') ? Math.round(100 / definition.threshold) : 0),definition.id);
         });
         const fanfares = await page.locator('#fanfare .achievement-unlock').evaluateAll(elements=>elements.map(element=>({
           name:element.querySelector('strong').textContent,description:element.querySelector('p').textContent,

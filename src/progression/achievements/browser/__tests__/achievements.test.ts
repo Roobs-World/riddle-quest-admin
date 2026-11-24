@@ -1,7 +1,7 @@
 import {describe, expect, it} from "@jest/globals";
 import {RACE_ACHIEVEMENT_IDS} from "../../../../races/contracts/index";
 import {PlayerProgressSchema, PlayerStatsSchema} from "../../../../platform/contracts/firestoreSchemas";
-import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../achievements";
+import {ACHIEVEMENT_DEFINITIONS, getAchievementProgress} from "../../catalog/achievements";
 import {predictCompletionAchievementIds} from "../../../../gameplay/session/completion/predictCompletionAchievements";
 
 describe("multiplayer achievement presentation", () => {

@@ -1,3 +1,4 @@
+import english from "../../../../locales/en/achievements.json";
 import {describe, expect, it} from "@jest/globals";
 import {chromium} from "@playwright/test";
 import {readFile, mkdir} from "node:fs/promises";
@@ -11,7 +12,7 @@ const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : de
 describeBrowser("earned achievement milestones in isolated solo artifacts", () => {
   it.each(["youtube", "netflix", "yahoo"] as const)("%s earns, saves and reloads the new win/play badges", async target => {
     /** Portal workspace containing the built isolated artifacts. */
-    const packageRoot = path.resolve(__dirname, "../../../../web/..");
+    const packageRoot = path.resolve(__dirname, "../../../../..");
     /** Local HTTP server exposing this target artifact. */
     const artifact = await startYouTubeArtifactServer(target);
     /** Content identity embedded in the exact artifact under test. */
@@ -19,7 +20,7 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
     /** Browser executing the built gameplay and persistence paths. */
     const browser = await chromium.launch({headless: true});
     /** Directory retaining screenshots of earned milestone badges. */
-    const evidence = path.resolve(packageRoot, "../../builds/test-evidence/achievements-expansion/browser");
+    const evidence = path.join(packageRoot, "builds/test-evidence/achievements-expansion/browser");
     await mkdir(evidence, {recursive: true});
     try {
       for (const width of [390, 1280]) {
@@ -50,8 +51,8 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
         await page.getByRole("heading", {name: "Solved!"}).waitFor();
         /** New unlocks displayed by the actual completion screen. */
         const badges = page.locator('[aria-label="New achievements"]');
-        expect(await badges.getByRole("img", {name: "Wins: 10", exact: true}).count()).toBe(1);
-        expect(await badges.getByRole("img", {name: "Games: 10", exact: true}).count()).toBe(1);
+        expect(await badges.getByRole("img", {name: english.Achievements.MILESTONES.wins_10.NAME, exact: true}).count()).toBe(1);
+        expect(await badges.getByRole("img", {name: english.Achievements.MILESTONES.games_10.NAME, exact: true}).count()).toBe(1);
         await page.screenshot({path: path.join(evidence, `${target}-earned-${width}.png`), fullPage: true});
         /** Target-owned committed save containing the milestone grants. */
         const persisted = target === "youtube" ? (await youtubeHarnessSnapshot(page)).savedPayloads.at(-1)!
@@ -64,9 +65,10 @@ describeBrowser("earned achievement milestones in isolated solo artifacts", () =
         await reloaded.goto(artifact.origin);
         await reloaded.getByRole("button", {name: "Progress", exact: true}).click();
         /** Restored achievement collection on the Progress screen. */
-        const achievements = reloaded.locator('[aria-label="Achievements"]');
-        expect(await achievements.getByRole("img", {name: "Wins: 10", exact: true}).count()).toBe(1);
-        expect(await achievements.getByRole("img", {name: "Games: 10", exact: true}).count()).toBe(1);
+        const achievements = reloaded.locator('.yt-achievement-collection');
+        await achievements.locator('summary').click();
+        expect(await achievements.getByRole("heading", {name: english.Achievements.MILESTONES.wins_10.NAME, exact: true}).count()).toBe(1);
+        expect(await achievements.getByRole("heading", {name: english.Achievements.MILESTONES.games_10.NAME, exact: true}).count()).toBe(1);
         expect(errors).toEqual([]);
         console.info(`${target}: earned both badges and restored them at ${width}px`);
         await context.close();

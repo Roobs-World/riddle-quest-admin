@@ -367,6 +367,42 @@ dd {
   background: rgba(255, 255, 255, 0.1);
   font-size: 1.35rem;
 }
+.yt-earned-badge {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  max-width: 15rem;
+}
+.yt-earned-badge small { opacity: 0.85; }
+.yt-achievement-collection { margin-block: 1rem; text-align: start; }
+.yt-achievement-collection summary {
+  cursor: pointer;
+  padding-block: 0.8rem;
+  font-size: 1.15rem;
+}
+.yt-achievement-collection summary strong { margin-inline-start: 0.5rem; }
+.yt-achievement-list { display: grid; gap: 0.65rem; }
+.yt-achievement-list article {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid var(--yt-border);
+  border-radius: 0.75rem;
+}
+.yt-achievement-list article > div { flex: 1; min-width: 0; }
+.yt-achievement-list article.earned { border-color: currentColor; }
+.yt-achievement-icon { font-size: 1.75rem; }
+.yt-achievement-list h3 { margin: 0; font-size: 1rem; }
+.yt-achievement-list p { margin-block: 0.35rem; font-size: 0.9rem; }
+.yt-achievement-bar {
+  height: 0.35rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  margin-block: 0.35rem;
+}
+.yt-achievement-bar i { display: block; height: 100%; background: currentColor; }
+.yt-achievement-status { font-weight: 700; }
 
 .yt-preferences {
   display: grid;

@@ -1,3 +1,4 @@
+import {LocalAchievementCollection} from "../../../progression/components/LocalAchievementCollection";
 import {useEffect, useRef, useState, type ReactNode} from "react";
 import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "../../../progression/economy/localEconomy";
 import {youtubeDirection, youtubeText, type YouTubeCopyKey} from "../../../localization/copy/localGameCopy";
@@ -211,7 +212,7 @@ function ReadyYouTubeApp({
               <h2>{text("newAchievements")}</h2>
               <div className="yt-achievement-icons" role="group" aria-label={text("newAchievements")}>
                 {result.newlyUnlockedAchievementIds.map((id) => (
-                  <AchievementIcon key={id} id={id} text={text} />
+                  <AchievementIcon key={id} id={id} locale={locale} />
                 ))}
               </div>
             </div>
@@ -445,16 +446,7 @@ function ReadyYouTubeApp({
               </dd>
             </div>
           </dl>
-          <h2>{text("achievements")}</h2>
-          {progression.unlockedAchievementIds.length > 0 ? (
-            <div className="yt-achievement-icons" role="group" aria-label={text("achievements")}>
-              {progression.unlockedAchievementIds.map((id) => (
-                <AchievementIcon key={id} id={id} text={text} />
-              ))}
-            </div>
-          ) : (
-            <p>{text("noAchievements")}</p>
-          )}
+          <LocalAchievementCollection locale={locale} progress={progression} />
           <fieldset className="yt-preferences" disabled={materialDisabled}>
             <legend>{text("progress")}</legend>
             <label>

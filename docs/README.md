@@ -29,6 +29,8 @@ The Settings toggle and universal provider contract are documented in [Notificat
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 
+The shared catalog, localized collections and unlock authority are documented in [Achievements](common/progression/achievements.md).
+
 ## Documentation placement
 
 Move callers and links with a document so it has one canonical location. Add shared module documentation beneath `common/`, and provider-specific documentation beneath that provider's folder.

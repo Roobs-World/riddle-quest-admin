@@ -4,7 +4,9 @@ import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
 import {useState} from "react";
 import {StyleSheet, Text, TextInput, View} from "react-native";
 import {ActionButton, Eyebrow, Heading, Notice, Panel, Screen} from "../components/Primitives";
-import {AchievementRow} from "../components/StatusViews";
+import {AchievementCollection} from "../components/AchievementCollection";
+import {ACHIEVEMENT_DEFINITIONS} from "../../../../../src/progression/achievements/catalog/achievements";
+import {createAchievementPlayer} from "../../../../../src/progression/achievements/hostedAchievementPlayer";
 import {AvatarEditor} from "../components/AvatarEditor";
 import {useAuthSnapshot} from "../hosted/useAuthSnapshot";
 import {PROFILE_LEADERBOARDS, useHostedProfile, type UsernameNotice} from "../hosted/useHostedProfile";
@@ -73,12 +75,10 @@ export function HostedProfileScreen({locale, services, accountUid, onBack, onDel
                 </View>
               ))}
             </View>
-            {profile.achievements.length > 0 && (
-              <View style={styles.stack} testID="profile-achievements">
-                <Eyebrow>{solo("achievements")}</Eyebrow>
-                <AchievementRow ids={profile.achievements} text={solo} label={solo("achievements")} />
-              </View>
-            )}
+            <View style={styles.stack} testID="profile-achievements">
+              <AchievementCollection locale={locale} definitions={ACHIEVEMENT_DEFINITIONS}
+                player={createAchievementPlayer(profile)} unlockedIds={profile.achievements} />
+            </View>
           </View>
         ) : (
           <Notice testID="profile-loading">{youtubeText(locale, "loading")}</Notice>
