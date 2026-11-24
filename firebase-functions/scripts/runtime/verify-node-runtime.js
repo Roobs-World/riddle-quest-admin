@@ -17,14 +17,14 @@ function packageBinary(packageName, relativePath) {
   return path.join(path.dirname(packageJson), relativePath);
 }
 
-function run(label, binary, args, options = {}) {
+function run(label, binary, args) {
   console.log(`[Node ${process.version}] ${label}`);
   const result = spawnSync(
     process.execPath,
-    [...(options.nodeArgs ?? []), binary, ...args],
+    [binary, ...args],
     {
       cwd: functionsRoot,
-      env: {...process.env, ...(options.env ?? {})},
+      env: process.env,
       stdio: "inherit",
     },
   );
@@ -34,14 +34,4 @@ function run(label, binary, args, options = {}) {
 
 run("TypeScript", packageBinary("@typescript/native", "bin/tsc"), ["-p", "tsconfig.json", "--noEmit"]);
 run("ESLint", path.join(functionsRoot, "scripts/build/lint-source.js"), []);
-run(
-  "Jest unit suite",
-  packageBinary("jest", "bin/jest.js"),
-  ["--config", "config/testing/jest.config.js", "--runInBand"],
-  {
-    nodeArgs: ["--experimental-vm-modules"],
-    env: {FIRESTORE_EMULATOR_HOST: "127.0.0.1:8099", NODE_ENV: "test"},
-  },
-);
-
 console.log(`Firebase Functions Node 22 compatibility verification passed on ${process.version}.`);

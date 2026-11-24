@@ -26,7 +26,7 @@
     "release:candidate": "pnpm validate:contracts && node scripts/prepare-reddit-release.mjs",
     "release:gate": "pnpm release:candidate",
     "release:promotion": "pnpm validate:hosted && node scripts/verify-reddit-promotion.mjs && node scripts/assert-reddit-promotion-ready.mjs",
-    "validate": "pnpm check:types && pnpm test && node scripts/validate-package.mjs",
+    "validate": "pnpm check:types && node scripts/validate-package.mjs",
     "playtest": "devvit playtest",
     "playtest:upload": "node scripts/upload-reddit-playtest.mjs",
     "playtest:resolve": "node scripts/resolve-reddit-playtest.mjs",

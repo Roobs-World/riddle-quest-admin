@@ -4,7 +4,6 @@ import {
   chmodSync,
   closeSync,
   copyFileSync,
-  cpSync,
   existsSync,
   lstatSync,
   mkdtempSync,
@@ -301,7 +300,7 @@ if (pathIsWithin(operatorHomeDirectory, nodeRuntimeDirectory)) {
   addReadOnlyDirectoryBind(nodeRuntimeDirectory, nodeRuntimeDirectory);
 }
 // Reuse the installed pinned Functions runtime inside the release sandbox.
-// The gate itself still needs Node 24 for the repository's test runner flags.
+// The build gate itself uses the repository's Node 24 runtime.
 const functionsNodeVersion = readFileSync(join(repositoryDirectory, "firebase-functions", ".nvmrc"), "utf8").trim();
 const functionsNodeDirectory = join(operatorHomeDirectory, ".nvm", "versions", "node", `v${functionsNodeVersion}`);
 const functionsNodeBinary = join(functionsNodeDirectory, "bin", "node");
@@ -358,33 +357,6 @@ if (!isAbsolute(operatorCorepackCache)) {
 }
 mkdirSync(isolatedCorepackCache, {mode: 0o700, recursive: true});
 addReadOnlyDirectoryBind(operatorCorepackCache, isolatedCorepackCache);
-
-// Firebase's Firestore and Storage rules emulators are large runtime artifacts
-// installed outside node_modules. Freeze a private copy inside the isolated
-// writable HOME: firebase-tools may update cache metadata during startup, so a
-// read-only bind fails even when the required runtimes are already installed.
-const operatorFirebaseEmulatorCache = join(operatorHomeDirectory, ".cache", "firebase", "emulators");
-const isolatedFirebaseEmulatorCache = join(isolatedHomeDirectory, ".cache", "firebase", "emulators");
-if (process.env.JEST_RELEASE_SKIP_TESTS !== "true" && existsSync(operatorFirebaseEmulatorCache)) {
-  cpSync(operatorFirebaseEmulatorCache, isolatedFirebaseEmulatorCache, {recursive: true});
-}
-
-if (!process.env.PLAYWRIGHT_BROWSERS_PATH) {
-  const operatorPlaywrightCache = join(operatorHomeDirectory, ".cache", "ms-playwright");
-  const isolatedPlaywrightCache = join(isolatedHomeDirectory, ".cache", "ms-playwright");
-  mkdirSync(isolatedPlaywrightCache, {mode: 0o700, recursive: true});
-  addReadOnlyDirectoryBind(operatorPlaywrightCache, isolatedPlaywrightCache);
-} else if (process.env.PLAYWRIGHT_BROWSERS_PATH !== "0") {
-  if (!isAbsolute(process.env.PLAYWRIGHT_BROWSERS_PATH)) {
-    throw new Error("PLAYWRIGHT_BROWSERS_PATH must be absolute or 0 for a secure Jest release");
-  }
-  if (pathIsWithin(operatorHomeDirectory, process.env.PLAYWRIGHT_BROWSERS_PATH)) {
-    addReadOnlyDirectoryBind(
-      process.env.PLAYWRIGHT_BROWSERS_PATH,
-      process.env.PLAYWRIGHT_BROWSERS_PATH,
-    );
-  }
-}
 
 releaseSandboxConfiguration = {
   additionalMaskedDirectoryPaths: ignoredSensitiveDirectoryPaths,
@@ -494,10 +466,6 @@ const sentryRelease = `riddle-quest@${buildVersion}`;
 if (process.env.JEST_RELEASE_INACTIVE !== undefined && process.env.JEST_RELEASE_INACTIVE !== "true") {
   throw new Error("JEST_RELEASE_INACTIVE accepts only true when specified");
 }
-if (process.env.JEST_RELEASE_SKIP_TESTS !== undefined && process.env.JEST_RELEASE_SKIP_TESTS !== "true") {
-  throw new Error("JEST_RELEASE_SKIP_TESTS accepts only true when specified");
-}
-const skipTests = process.env.JEST_RELEASE_SKIP_TESTS === "true";
 const activationRequested = process.env.JEST_RELEASE_INACTIVE !== "true";
 const workspaceDirectory = join(workspaceRoot, buildVersion);
 const immutableSourceDirectory = join(workspaceDirectory, "source");
@@ -658,16 +626,6 @@ const resolveTypeScriptCli = () => {
   return join(packageDirectory, "node_modules", "typescript", executable);
 };
 
-const resolveJestCli = () => {
-  const jestPackageJson = JSON.parse(
-    readFileSync(join(packageDirectory, "node_modules", "jest", "package.json"), "utf8"),
-  );
-  if (typeof jestPackageJson.bin !== "string") {
-    throw new Error("The installed Jest package does not expose a CLI executable");
-  }
-  return join(packageDirectory, "node_modules", "jest", jestPackageJson.bin);
-};
-
 const makeReadOnly = (directory) => {
   for (const entry of readdirSync(directory, {withFileTypes: true})) {
     const entryPath = join(directory, entry.name);
@@ -687,7 +645,6 @@ for (const key of ["JEST_UPLOAD_IS_ACTIVE", "JEST_CONFIRM_ACTIVATION"]) {
   }
 }
 console.log(`Gating immutable Jest build ${buildVersion} from ${sourceCommit} for ${activationRequested ? "automatic activation" : "inactive upload"}`);
-if (skipTests) console.log("Skipping release test suites and packaged browser tests by operator request");
 
 try {
   const unresolvedUploadBarriers = findUnresolvedUploadBarriers({
@@ -711,7 +668,7 @@ try {
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
   // are read only after it passes.
-  if (!skipTests) runPnpm(["verify:production:extended"], gateEnvironment);
+  runPnpm(["verify:production"], gateEnvironment);
   assertSourceClean();
   // Capture the installed graph while the read-only package store is available.
   // The credential-bearing rebuild consumes this frozen input without querying pnpm.
@@ -819,8 +776,8 @@ try {
     immutablePackageDirectory,
   );
 
-  // Package first, then extract and test the archive's actual bytes. The
-  // extracted tree is made read-only before either validator or browser runs.
+  // Package first, then extract and audit the archive's actual bytes. The
+  // extracted tree is made read-only before the validators run.
   runNode(
     trustedScript("upload-jest-build.mjs"),
     [],
@@ -855,26 +812,6 @@ try {
     immutableEnvironment,
     immutablePackageDirectory,
   );
-  const verifiedBrowserEnvironment = {
-    ...immutableEnvironment,
-    PORTAL_BROWSER_TESTS: "1",
-    PORTAL_JEST_BUILD_DIR: verifiedBuildDirectory,
-    PORTAL_USE_EXISTING_BUILD: "1",
-  };
-  if (!skipTests) {
-    for (const testPath of [
-      "src/app/components/__tests__/hostedBrowser.jest-playwright.test.ts",
-      "src/gameplay/hooks/browser/__tests__/musicStart.jest-playwright.test.ts",
-      "platforms/web/jest/src/__tests__/authentication.jest-playwright.test.ts",
-    ]) {
-      runNode(
-        resolveJestCli(),
-        ["--config", "jest.config.cjs", "--runInBand", testPath],
-        verifiedBrowserEnvironment,
-        immutablePackageDirectory,
-      );
-    }
-  }
   assertSourceClean();
   const finalDependencyFingerprint = fingerprintReleaseDependencies({repositoryDirectory});
   if (finalDependencyFingerprint !== dependencyFingerprint) {

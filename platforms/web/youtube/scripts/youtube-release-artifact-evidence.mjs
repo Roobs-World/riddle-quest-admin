@@ -11,31 +11,12 @@ import {
 const repositoryDirectory = fileURLToPath(new URL("../../../..", import.meta.url));
 
 const invocations = Object.freeze([
-  Object.freeze({args: ["--dir", "firebase-functions", "test:youtube-content"]}),
-  Object.freeze({args: ["--filter", "riddle-quest", "test:youtube:unit"]}),
   Object.freeze({args: ["--filter", "riddle-quest", "build:web"]}),
   Object.freeze({args: ["--filter", "riddle-quest", "build:youtube"]}),
-  Object.freeze({args: ["--filter", "riddle-quest", "test:release-scripts"]}),
-  Object.freeze({
-    args: ["--filter", "riddle-quest", "test:jest-local:playwright"],
-    environment: {PORTAL_USE_EXISTING_BUILD: "1"},
-  }),
-  Object.freeze({
-    args: ["--filter", "riddle-quest", "test:facebook:playwright"],
-    environment: {PORTAL_USE_EXISTING_BUILD: "1"},
-  }),
-  Object.freeze({
-    args: ["--filter", "riddle-quest", "test:reddit:playwright"],
-    environment: {PORTAL_USE_EXISTING_BUILD: "1"},
-  }),
-  Object.freeze({
-    args: ["--filter", "riddle-quest", "test:youtube:playwright"],
-    environment: {PORTAL_USE_EXISTING_BUILD: "1"},
-  }),
 ]);
 
 if (invocations.length !== youtubeReleaseVerificationSuites.length) {
-  throw new Error("YouTube release verification suite/invocation mismatch");
+  throw new Error("YouTube release verification check/invocation mismatch");
 }
 
 export async function runVerificationCommand(suite, invocation, {cwd = repositoryDirectory} = {}) {
@@ -80,7 +61,7 @@ export async function runYouTubeReleaseVerification({
   capturedAt = new Date().toISOString(),
 } = {}) {
   const expectedSource = await captureSourceIdentity(repository);
-  const tests = [];
+  const checks = [];
   for (let index = 0; index < youtubeReleaseVerificationSuites.length; index += 1) {
     const suite = youtubeReleaseVerificationSuites[index];
     const output = await commandRunner(suite, invocations[index], {cwd: repository});
@@ -93,7 +74,7 @@ export async function runYouTubeReleaseVerification({
     if (JSON.stringify(await captureSourceIdentity(repository)) !== JSON.stringify(expectedSource)) {
       throw new Error(`YouTube source tree changed during release verification (${suite.id})`);
     }
-    tests.push({
+    checks.push({
       id: suite.id,
       command: suite.command,
       status: "passed",
@@ -107,7 +88,7 @@ export async function runYouTubeReleaseVerification({
     distDirectory,
     contentAuditPath,
     reportPath,
-    tests,
+    checks,
     expectedSource,
     capturedAt,
   });

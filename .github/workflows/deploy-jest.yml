@@ -37,8 +37,6 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter riddle-quest exec playwright install --with-deps chromium
-        timeout-minutes: 15
       - name: Install the release sandbox
         run: sudo apt-get update && sudo apt-get install --yes bubblewrap
       - name: Run the immutable build release without game publication

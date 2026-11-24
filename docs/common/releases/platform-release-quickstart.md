@@ -1,12 +1,12 @@
 # Platform release quickstart
 
-Use one read-only command before preparing any platform handoff:
+Run the shared build and audit preparation before a platform handoff:
 
 ```sh
 pnpm preflight:all-platforms
 ```
 
-It runs the security audit, builds and audits the six core isolated artifacts, exercises their browser harnesses, validates the Reddit package, and prints the exact release boundary and runbook for each platform. It does not upload, publish, or promote anything.
+It runs the security audit, builds and audits the core isolated artifacts, validates the Reddit package, and prints the exact release boundary and runbook for each platform. It does not run local tests, start a local game, upload, publish or promote anything. Complete manual acceptance through each provider's private hosted version separately.
 
 After the preflight succeeds, run only the intended target command:
 

@@ -4,201 +4,40 @@ Riddle Quest is a standard React HTML5 game. It has no React Native, Expo, Andro
 
 For the source-audited map of player data, system boundaries, deletion, export, retention, and unresolved owner/counsel decisions, see the [privacy data inventory](../common/security/privacy-data-inventory.md).
 
-## Testing modes
+## Hosted acceptance
 
-### 1. Local Jest SDK mock
+Use an uploaded build in Jest's Developer Console and sandbox. The root package no longer exposes local development servers, local previews, browser harnesses or test-suite commands. Release preparation builds and audits the artifact without running local tests.
 
-Start the normal development server:
+1. Create the required accounts under **Developer Console → Sandbox Users**.
+2. Upload the approved build through the release command and wait for the Console or completion email to confirm its exact version and final status.
+3. Generate a sandbox login link and open the exact uploaded version through Jest's game shell. Keep sandbox login links private.
+4. Check onboarding, guest play, registration, one completed riddle, saving, shop entry, cancellation and recovery in the supported hosts.
+5. Use two sandbox users to confirm real multiplayer and referral delivery. Reset invitee state only when the account is explicitly disposable and resetting it is authorized.
+6. Complete the Developer Console Simulator quality checklist for that same version, including layout, audio, background/resume, enabled payments, subscriptions, notifications and sharing. Record the result against the exact accepted ZIP and backend revision.
 
-```bash
-pnpm dev:jest
-```
+Sandbox checkout uses the real platform UI at zero charge. Confirm the account's **Sandbox User** marker before any authorized purchase. Purchase acceptance must include signed receipt verification, a one-time grant, recovery after interruption and successful consumption. Subscription acceptance must include platform activation, restoration and cancellation. Jest owns its Stripe customer, wallet, checkout and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
 
-Open `http://localhost:5173/`. The game uses Jest's SDK adapter and the SDK's built-in local mock host, while keeping authoritative Firebase operations mocked. Use the **JestSDK** debug menu to switch guest/registered state, set entry payloads, and simulate SDK success, cancellation, and error responses.
+A local build or artifact audit does not establish hosted gameplay, payment, notification, persistence or referral acceptance. Keep production App Check and origin restrictions intact while investigating a hosted failure. Do not add localhost to the deployed `JEST_GAME_ORIGIN` allowlist.
 
-For repeatable automated regression tests, use the project's deterministic harness and Playwright suite:
+## Build and artifact verification
 
-```bash
-pnpm test:jest-local:playwright
-```
-
-The deterministic `?harness=jest` route is test-only; it deliberately uses the repository's fixed mock adapter instead of the JestSDK debug menu.
-
-### 2. Jest hosted emulator
-
-Start Vite on the port expected by the hosted emulator:
-
-```bash
-pnpm jest:hosted
-```
-
-While logged in to Jest, open:
-
-```text
-https://jest.com/g/riddle-q?host=http://localhost:3000
-```
-
-The embedded-development check selects the real `JestSDK` adapter, not the deterministic local harness. The production deploy validator deliberately rejects localhost origins, so never add `http://localhost:3000` to the deployed `JEST_GAME_ORIGIN` allowlist. Backend-authoritative checks in this mode require a local Functions emulator selected through the ignored `platforms/web/jest/.env.jest.local`; otherwise use an uploaded sandbox build for real backend flows. Do not add `harness=` to this URL.
-
-Validate Jest SDK loading, player identity payloads, registration dismissal/completion, entry payloads, cancellation, and retryable SDK errors here. Validate player-data persistence and catalog reads through a local Functions emulator or uploaded sandbox build. Payment settlement, notification delivery, and referral attribution require sandbox users.
-
-### 3. Uploaded build with sandbox users
-
-Create a sandbox user in **Developer Console → Sandbox Users**, upload the build for activation, generate a
-login URL, then run with the exact build version from its accepted receipt:
-
-```bash
-JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
-JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm test:jest-deployed:playwright
-```
-
-If Firebase App Check rejects the automated Chromium session, rerun the deployed gate in a visible browser. This preserves production attestation instead of weakening App Check or introducing a production debug token:
-
-```bash
-JEST_DEPLOYED_HEADED=1 \
-JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
-JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm test:jest-deployed:playwright
-```
-
-Use two sandbox users for referral attribution. Reset the invitee's player state between referral runs because attribution happens on first entry. Sandbox checkout uses the real platform UI at a zero charge; also inspect scheduled notifications and persisted player state in the Developer Console.
-
-### 4. Developer Console Simulator
-
-Use the `pnpm jest:hosted` local URL in the Simulator for SDK embedding and lifecycle checks only. Open the uploaded version for the complete quality checklist and record a self-review that covers onboarding, guest play, registration, one complete riddle, the shop, a canceled checkout, a successful sandbox checkout, subscription state, notifications, sharing, portrait/landscape layout, audio, and background/foreground recovery. Attach the recording to the exact version being submitted for moderation.
-
-After build processing and activation succeed, open that exact version in the Simulator and run the sandbox acceptance gate. A
-Simulator run is not a substitute for sandbox payment, notification, persistence, or referral validation.
-
-## Local release verification
-
-Run the complete fail-closed release gate:
+Run the production build and audit gate:
 
 ```bash
 pnpm verify:production
 ```
 
-This checks production dependency advisories, all TypeScript projects, backend lint, full coverage thresholds, Firestore and Storage rules in their emulators, security and scalability policies, package-feature adoption, TSDoc and file-size limits, the standalone Jest build, W3C validity, both local browser suites, and the exact ZIP packaging preflight. Any failed stage stops the release.
+This runs the retained dependency, security, type, backend lint/runtime, production build, W3C, artifact and packaging checks. It does not run unit suites, emulator tests, local browser journeys or a mobile soak. A failed build or audit stops release preparation.
 
-Before a production launch or major gameplay release, run the extended gate. It includes the complete gate above followed by the full ten-minute low-end mobile stability and memory soak:
-
-```bash
-pnpm verify:production:extended
-```
-
-The individual commands remain useful while diagnosing a failed gate:
+Individual build and lint commands remain available:
 
 ```bash
 pnpm build:jest
-PORTAL_BROWSER_TESTS=1 pnpm exec jest --selectProjects interface \
-  --config jest.config.cjs \
-  src/app/components/__tests__/hostedBrowser.jest-playwright.test.ts \
-  --runInBand
-pnpm test:interface
-pnpm test:rules
-pnpm --dir firebase-functions test
 pnpm --dir firebase-functions lint
 pnpm build
 ```
 
-The Fund-facing end-to-end check must target the active uploaded build through a real registered Jest sandbox session:
-
-```bash
-JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
-JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm test:jest-deployed:playwright
-```
-
-Generate the short-lived login URL from **Developer Console → Sandbox Users**. The test opens the deployed Riddle Quest
-route after sandbox authentication; `JEST_DEPLOYED_GAME_URL` can override the default `https://jest.com/g/riddle-q` route.
-It requires `JEST_EXPECTED_BUILD_VERSION` from the accepted upload receipt and rejects an older active iframe before feature
-assertions. It also rejects direct storage-origin access, local servers, and `harness=` mock mode; the exact build must run
-at the configured `*.builds.jest.com` origin and produce real identity and riddle Function traffic.
-
-The authenticated browser state is cached only in `/tmp/riddle-quest-jest-sandbox-state.json` so a consumed one-time link can be reused while diagnosing a failed run. The writer pre-creates and revalidates it as a regular current-user `0600` file; the payment and subscription gates fail closed on permissive, linked, or foreign-owned state. Set `JEST_SANDBOX_STORAGE_STATE` to override that ephemeral path, keep the custom file owner-only, and remove it after the acceptance evidence is complete. The deployed gate also requires a successful signed `verifyJestReferrals` response and validates its conversion, two-sided reward, reward amount, and balance fields; a sandbox smoke test cannot pass if referral reconciliation is unavailable.
-
-Headless browsers can be rejected by reCAPTCHA Enterprise even when the hosted build is healthy. Create a dedicated token under **Firebase Console → App Check → Apps → Riddle Quest web app → Manage debug tokens**, keep it out of files and shell history, and inject it only into the test process:
-
-```bash
-read -rsp 'App Check debug token: ' RQ_APP_CHECK_DEBUG_TOKEN; echo
-FIREBASE_APPCHECK_DEBUG_TOKEN="$RQ_APP_CHECK_DEBUG_TOKEN" \
-JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm test:jest-deployed:playwright
-unset RQ_APP_CHECK_DEBUG_TOKEN
-```
-
-The Playwright context installs this value before any page or iframe JavaScript executes. Production visitors continue using reCAPTCHA Enterprise; the token is never bundled. Revoke the debug token immediately in Firebase if it is disclosed.
-
-Run the destructive-but-zero-dollar payment smoke test separately. It refuses to click checkout unless the hosted dialog explicitly identifies the account as a sandbox user and the confirmation value exactly matches the requested SKU:
-
-```bash
-JEST_SANDBOX_PAYMENT_CONFIRM=com.roobsworld.riddlequest.coinpack1 \
-pnpm test:jest-payments:live
-```
-
-This checks the live Jest/Stripe product and subscription catalogs, completes a sandbox checkout, verifies the signed receipt through `grantJestPurchase`, replays the receipt to prove the grant is idempotent, calls `completePurchase`, and confirms the token has left the recovery queue. The backend hashes the signed purchase token before using it as a Firestore receipt ID, and a replay returns the user's current balance rather than the historical post-grant balance. Account deletion removes receipt identity fields but retains the opaque hash as a minimal anti-replay tombstone; older raw-token receipts are migrated when read or deleted. Jest owns the Stripe customer, wallet, checkout, and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
-
-Run the separate subscription activation, restoration, and cancellation gate with an exact SKU confirmation:
-
-```bash
-JEST_SANDBOX_SUBSCRIPTION_CONFIRM=com.roobsworld.riddlequest.premium.monthly \
-pnpm test:jest-subscription:live
-```
-
-This is a direct SDK sandbox gate. The gate requires Jest's **Sandbox User** checkout marker before it clicks Subscribe, verifies
-the signed active entitlement through `syncJestSubscriptions`, reloads the active game to prove restoration, and confirms platform
-cancellation. The uploaded Simulator build exposes the configured subscription to guests and registered players so the launch checklist can
-exercise `getSubscriptions()` and `beginSubscription()`. Checkout holds a per-player cross-tab lock until Jest returns the
-actual success, cancellation, or error outcome. A timer cannot release that lock while payment might still complete. Browsers
-without cross-tab locking cannot start subscription checkout. Jest owns the guest signup gate; `guest_not_allowed`
-closes checkout without an additional game-owned registration prompt. Sandbox transactions and restored subscriptions do not
-produce revenue analytics.
-
-The current CDN SDK exposes `getSubscriptions`, `beginSubscription`, `cancelSubscription`, and `claimRetentionOffer` in localhost
-mock mode. Its bundled debug menu does not currently expose the documented subscription outcome controls, however, and direct mock
-start/cancel calls return `cancel`. Keep the deterministic repository mocks for success and error coverage, and use the live sandbox
-gate for provider behavior rather than treating the localhost mock as proof of checkout configuration.
-
-`build:jest` validates TypeScript, every imported locale JSON file, the production build, and the standalone artifact. The artifact audit enforces a 4.75 MiB internal release budget beneath the 5 MiB artifact cap, retaining 0.25 MiB of headroom for the actual-screen capture renderer. The renderer is lazy-loaded only for screenshot requests and the 0.55 MiB initial-resource budget remains unchanged. The audit also checks local relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets, and source maps.
-
-## Jest testing modes
-
-### Local SDK mock
-
-Run `pnpm dev:jest` and open `http://localhost:5173/`. Standalone development uses JestSDK's built-in mock host; use the **JestSDK** debug menu to switch guest/registered state, inspect calls and entry payloads, and simulate success, cancellation, and error responses. Add `?harness=jest` only when you need the repository's deterministic browser-test adapter instead.
-
-Run both deterministic browser suites with:
-
-```bash
-pnpm test:jest-local:playwright
-```
-
-### Hosted emulator
-
-Start the local server on the port expected by Jest:
-
-```bash
-pnpm jest:hosted
-```
-
-While logged into the developer account, open `https://jest.com/g/riddle-q?host=http://localhost:3000`. The game detects that it is embedded and uses the live Jest SDK with the local authoritative-backend mock. This lets the Developer Console exercise interrupted-purchase recovery through grant and `completePurchase()` without sending its synthetic signed payloads to production. Exercise registration dismissal/completion, stable player identity, entry payloads, platform overlays, and mobile iframe sizing here; use an uploaded sandbox build for production-backend-authoritative behavior.
-
-### Uploaded build and sandbox users
-
-Upload the audited build for activation, generate a login link under **Developer Console → Sandbox Users**, then
-run `test:jest-deployed:playwright` with its exact receipt build version using the command above. Manually exercise
-notifications, purchase success/cancel/error/recovery, subscriptions, persistence, and two-player referrals. Sandbox
-checkout shows the real checkout UI but charges zero.
-
-### Simulator and version preview
-
-Before review, select the exact active version in the Developer Console Simulator, complete its quality checklist, and
-record a self-review covering onboarding, guest play, registration, the first solved riddle, shop entry, and multiplayer
-entry. The canonical release command activates the processed build, so perform this check and the sandbox gate on that exact version
-after the Console or completion email confirms the version.
-
-These environments are complementary: local mocks prove application branches, the hosted emulator proves the live SDK boundary, sandbox users prove platform-backed state, and the Simulator produces moderator evidence.
+`build:jest` validates TypeScript, every imported locale JSON file, the production build and the standalone artifact. The artifact audit enforces a 4.75 MiB internal release budget beneath the 5 MiB artifact cap, retaining 0.25 MiB of headroom for the actual-screen capture renderer. The renderer is lazy-loaded only for screenshot requests and the 0.55 MiB initial-resource budget remains unchanged. The audit also checks relative assets, the single approved Jest SDK script, and the absence of native modules, external authentication, ads, install prompts, secrets and source maps.
 
 ## Current projects
 
@@ -266,19 +105,18 @@ non-cancellable production concurrency lock; it does not provide a shorter CI-on
 YouTube retain their separately documented manual handoff boundaries.
 
 The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
-to its timestamped version, and runs `verify:production:extended` before reading credential-file contents. Timestamped
+to its timestamped version, and runs `verify:production` before reading credential-file contents. Timestamped
 releases require Linux and functional `/usr/bin/bwrap`; the command probes the boundary first and refuses an unsandboxed
-fallback. Every gate, build, validator, browser, and uploader child receives a minimal environment and runs with the
-operator home hidden, isolated home/temp/PID/proc state, a read-only host filesystem, and required runtime/browser caches
+fallback. Every gate, build, validator and uploader child receives a minimal environment and runs with the
+operator home hidden, isolated home/temp/PID/proc state, a read-only host filesystem, and required runtime caches
 rebound read-only. During the credential-free gate, only the repository and isolated release workspace are writable;
 `.git`, ignored `.env*` files, receipt state, other known secret-bearing paths, and the exact configured credential path
 are overmounted. Before reading credentials, the repository, committed snapshot, and copied trusted release scripts are
-switched to read-only mounts. Network remains shared because dependency/W3C audits, emulator setup, and browser tests
-require it. The command fingerprints the pnpm/npm lock and workspace manifests
+switched to read-only mounts. Network remains shared for dependency and W3C audits. The command fingerprints the pnpm/npm lock and workspace manifests
 plus the installed root/core/portal/Functions dependency trees when it acquires the lock, then
 requires the same fingerprint immediately before upload. It materializes the committed Git snapshot in a unique
 `/tmp` workspace, builds there with the Sentry token scoped to the direct Vite process, packages a version-specific
-archive, extracts it into a fresh read-only directory, and reruns the artifact, W3C, and both browser gates against those
+archive, extracts it into a fresh read-only directory, and reruns the artifact and W3C audits against those
 extracted bytes. Parent-held pre/post fingerprints and the trusted uploader independently bind the Git commit and clean
 state, ZIP size, SHA-256, version, game, receipt, and activation intent before the unchanged ZIP is uploaded with
 `isActive=true` by default. Processing activates that exact build. `JEST_RELEASE_INACTIVE=true` retains an inactive build. Neither mode submits the game for review, publishes it, or changes listing visibility.
@@ -331,7 +169,7 @@ status may an owner manually remove the corresponding `<game-id>.<source-commit>
 before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
 deliberately does not infer readiness from elapsed time or poll an unofficial URL. Use the Developer Console or completion
-email to confirm that the receipt's exact build finished processing and became active, then run the sandbox smoke.
+email to confirm that the receipt's exact build finished processing and became active, then complete hosted sandbox acceptance.
 
 ### Build activation and game publication
 
@@ -391,7 +229,7 @@ Retain screenshots, recordings, event IDs, and device traces with the relevant r
 
 ## Jest Games Fund readiness
 
-Jest multiplayer friend invitations use the [Referrals API](https://docs.jest.com/sdk/referrals). Select a category and choose **Challenge a friend** to reserve a private lobby, then choose **Challenge a friend** in the lobby to open Jest's share dialog with the message and exact challenge link. The SDK call runs directly in the click handler after a synchronous account-deletion check. Each share has its own reference so a later lobby cannot replace an earlier invitation. Dismissing the dialog keeps the lobby available for another attempt; a provider failure shows the translated retry notice. The player chooses the recipient and messaging destination in the platform dialog. SDK success does not prove SMS delivery. Run `pnpm test:jest-live-invite:browser` for the injected guest, registered-player, retry, and recipient-entry journeys. Confirm actual messaging delivery separately with two Jest sandbox users before publication.
+Jest multiplayer friend invitations use the [Referrals API](https://docs.jest.com/sdk/referrals). Select a category and choose **Challenge a friend** to reserve a private lobby, then choose **Challenge a friend** in the lobby to open Jest's share dialog with the message and exact challenge link. The SDK call runs directly in the click handler after a synchronous account-deletion check. Each share has its own reference so a later lobby cannot replace an earlier invitation. Dismissing the dialog keeps the lobby available for another attempt; a provider failure shows the translated retry notice. The player chooses the recipient and messaging destination in the platform dialog. SDK success does not prove SMS delivery. Confirm actual guest, registered-player, retry, recipient-entry and messaging behavior with two Jest sandbox users on the exact uploaded version before publication.
 
 - **User acquisition:** guests see the custom registration step immediately after the instructions and again after an authoritative win when the cooldown permits. Jest onboarding `customName`, campaign, source, and reference values are preserved through the native registration overlay.
 - **Notifications:** registered players receive a fuzzy D1-D7 series early in the session. Stable identifiers replace the existing schedule whenever level, wins, streak, name, or locale changes. Each localized message has distinct reward-focused copy and carries template, offset, campaign, and callback attribution back into the Daily Cosmic Riddle.

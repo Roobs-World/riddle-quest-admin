@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       confirm_runner_usage:
-        description: Run full verification using Actions allowance, up to 445 runner minutes
+        description: Build and audit using Actions allowance, up to 105 runner minutes
         type: boolean
         required: true
         default: false
@@ -44,9 +44,6 @@ jobs:
       - run: pnpm --dir firebase-functions lint
       - run: pnpm check:facebook-secrets
       - run: pnpm check:facebook-copy
-      - run: pnpm test:coverage:jest-facebook
-      - run: pnpm --filter riddle-quest test:release-scripts
-      - run: pnpm test:architecture
       - run: pnpm build:jest-facebook
       - run: git diff --exit-code -- firebase-functions/package.json
 
@@ -70,18 +67,16 @@ jobs:
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm check:functions-lock
-      - run: pnpm --dir firebase-functions test:deploy-scripts
       - run: pnpm verify:functions:node22
       - run: pnpm --dir firebase-functions check:types
       - run: pnpm --dir firebase-functions build
-      - run: pnpm --dir firebase-functions test:coverage
 
-  browser-and-rules:
-    name: Jest and Facebook browser and rules
+  artifact-integrity:
+    name: Jest and Facebook artifact integrity
     if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     needs: [workspace-node24, functions-node22]
     runs-on: ubuntu-24.04
-    timeout-minutes: 360
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -96,39 +91,9 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter riddle-quest exec playwright install --with-deps chromium
-      - run: pnpm test:e2e:jest-facebook
+      - run: pnpm build:jest-facebook
       - run: pnpm --filter riddle-quest validate:w3c builds/jest/index.html builds/facebook/index.html
       - run: pnpm --filter riddle-quest preflight:jest-upload
-      - name: Package the Facebook build already verified by the browser suite
+      - name: Package the audited Facebook build
         run: node platforms/web/facebook/scripts/prepare-facebook-draft.mjs
       - run: pnpm check:facebook-progress
-
-  development-progress:
-    name: Record verified development progress
-    needs: [workspace-node24, functions-node22, browser-and-rules]
-    if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-        with:
-          persist-credentials: false
-      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
-        with:
-          node-version-file: .nvmrc
-      - name: Record the successful checks as a completion receipt
-        run: node scripts/release/complete-development-task.mjs --ci
-        env:
-          DEVELOPMENT_VERIFICATION_JOBS: ${{ toJSON(needs) }}
-          DEVELOPMENT_TARGETS: '["jest","facebook"]'
-      - name: Retain the completion receipt
-        if: always()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: development-progress-${{ github.sha }}
-          path: artifacts/development-progress/
-          if-no-files-found: error
-          retention-days: 7

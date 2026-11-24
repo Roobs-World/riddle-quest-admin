@@ -12,14 +12,7 @@ submission work.
 
 The command first runs `pnpm verify:all-targets`. No target release adapter starts unless that shared gate succeeds. It then runs all configured provider and distribution adapters in a deterministic order and stops at the first failure.
 
-Every single-target release (`pnpm release:<target>`) and every adapter inside the combined release plays its own freshly produced artifact in a real browser before reporting `Release handoff ready`:
-
-- Neutral HTML5 targets, Netflix, Yahoo and GameSnacks run `node scripts/release/verify-packaged-games.mjs --target <target>`, which serves the exact package and solves a riddle, collects the reward and reloads. Evidence is written to `artifacts/release-e2e/packaged-games-<target>.json`.
-- Reddit runs the Reddit browser suite against the build its candidate just staged.
-- Facebook runs the Facebook browser suite inside `preflight:facebook-upload`, before any ZIP or handoff is prepared.
-- Jest (`verify:production:extended`) and YouTube (artifact evidence) already gate on their browser suites.
-
-A failed gameplay gate fails the release; no handoff is reported ready.
+Single-target and combined releases perform their build, type, security, artifact and packaging checks without starting local unit suites, emulators or browser harnesses. A successful handoff records those checks only. Gameplay acceptance remains a separate manual procedure against the exact uploaded private version on the provider's supported hosts.
 
 Review the complete plan without building, uploading, packaging, or publishing:
 
@@ -29,7 +22,7 @@ pnpm release:all --dry-run
 
 Each adapter preserves the provider's current delivery boundary. Jest uploads and activates automatically. Facebook, YouTube, and Reddit produce their existing immutable portal handoffs. Netflix and Yahoo produce validated isolated artifact directories until their private partner upload tools are available. Every supported HTML5 distributor receives a distinct ZIP and SHA-256 manifest. The configured itch.io Butler stage can publish after the initial project exists; the other public portals retain manual account, contract, upload, or review steps unless their release plan explicitly says otherwise.
 
-The `Release all platforms` GitHub Actions workflow runs on version tags and by manual dispatch. It executes `pnpm release:all`, including Jest's build upload and activation without game publication and every current target's validated handoff, packages the audited provider-neutral and distribution-specific builds, builds the release dashboard, and retains the complete handoff as one immutable Actions artifact. It uses the existing `jest-production` environment so the established Jest release credentials and any environment protection rules remain authoritative.
+The `Release all platforms` GitHub Actions workflow is manual-only and requires the explicit runner-usage confirmation gate. A tag or push does not authorize hosted runner usage. It executes `pnpm release:all`, including Jest's build upload and activation without game publication and every current target's validated handoff, packages the audited provider-neutral and distribution-specific builds, builds the release dashboard, and retains the complete handoff as one immutable Actions artifact. It uses the existing `jest-production` environment so the established Jest release credentials and any environment protection rules remain authoritative.
 
 After the initial itch.io project page exists, configure repository secret `ITCH_BUTLER_API_KEY` and repository variable `ITCH_GAME_TARGET` (for example `roobsworld/riddle-quest`). The same workflow then publishes the verified neutral archive through itch.io's official Butler transport. Missing itch.io configuration is reported as a tracked skip and does not misrepresent the other portal handoffs as published.
 

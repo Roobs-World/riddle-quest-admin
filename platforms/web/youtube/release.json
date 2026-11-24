@@ -3,7 +3,7 @@
   "title": "YouTube",
   "boundary": "local-manual-handoff",
   "publicCommand": "pnpm release:youtube",
-  "summary": "Verify all isolated targets and create the deterministic YouTube release bundle.",
+  "summary": "Build and audit isolated targets and create the deterministic YouTube release bundle.",
   "externalEffect": "None; Developer Portal ingestion and certification remain manual.",
   "command": {
     "executable": "pnpm",
@@ -13,7 +13,7 @@
       "preflight:youtube-upload"
     ]
   },
-  "handoff": "Upload build-youtube.zip and retain its manifest and test report for manual certification.",
+  "handoff": "Upload build-youtube.zip and retain its manifest and build/audit report for manual certification.",
   "runbook": "docs/youtube/youtube-playables-operations.md",
   "displayName": "YouTube",
   "delivery": "web-target"

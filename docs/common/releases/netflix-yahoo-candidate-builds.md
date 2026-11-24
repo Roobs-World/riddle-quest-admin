@@ -17,9 +17,4 @@ Yahoo now has an explicitly requested hosted push extension. Setting `VITE_NOTIF
 
 The Netflix candidate bundles the same audited 17-locale, 180-riddle production content pack used by the YouTube release. A partner release still needs a target-owned adapter for any required lifecycle, save, identity, or commerce API before submission.
 
-Preview either built artifact locally with:
-
-```bash
-pnpm preview:netflix
-pnpm preview:yahoo
-```
+Use the audited artifact for an explicitly authorized partner handoff or hosted candidate update. Local preview launchers are not exposed in the root package scripts. Manual gameplay acceptance uses the provider-approved hosted candidate and records the exact artifact hash.

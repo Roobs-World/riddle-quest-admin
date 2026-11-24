@@ -1,4 +1,4 @@
-# YouTube Playables Operations
+# YouTube Playables operations
 
 This runbook prepares the self-contained Riddle Quest YouTube Playable for manual Developer Portal submission. The repository produces and verifies the bundle; an invited channel Manager or Editor performs Portal ingestion, hosted testing, and certification.
 
@@ -49,20 +49,20 @@ pnpm check:youtube-progress
 pnpm release:youtube
 ```
 
-`release:youtube` runs the content tests, YouTube runtime unit tests, isolated builds and reciprocal artifact audits for all four targets, release-boundary tests, and injected browser suites for all four targets. It then writes the exact test report and packages only if every repository-owned gate passed. It has no remote upload action. To recapture only the verification report use `pnpm youtube:evidence`; to repackage an unchanged, already verified candidate use `pnpm youtube:package`. Packaging fails closed when the report is missing or no longer matches the Git snapshot, expanded artifact, or content/model audit. The legacy `pnpm youtube:preflight` alias delegates to the same canonical command for one migration cycle.
+`release:youtube` builds and audits the isolated Jest, Facebook, Reddit and YouTube artifacts. The YouTube build also requires the complete content/model audit. The command writes a build-and-audit report and packages only after those checks pass; it does not run local test suites or browser harnesses. It has no remote upload action. To recapture only the verification report use `pnpm youtube:evidence`; to repackage an unchanged, already verified candidate use `pnpm youtube:package`. Packaging fails closed when the report is missing or no longer matches the Git snapshot, expanded artifact, or content/model audit. The legacy `pnpm youtube:preflight` alias delegates to the same canonical command for one migration cycle.
 
 The expected outputs are:
 
 - `builds/youtube/` — audited expanded artifact.
-- `build-youtube.test-report.json` — machine-readable exact commands/results plus the repository and external certification checklist.
+- `build-youtube.test-report.json` — build-and-audit results plus the repository and external certification checklist. The filename is retained for existing output consumers; schema version 2 contains `checks` and does not claim that tests ran.
 - `build-youtube.zip` — repository-root upload ZIP with `index.html` at archive root.
-- `build-youtube.manifest.json` — repository-root source/content/model/test identity, file inventory, and ZIP SHA-256 evidence.
+- `build-youtube.manifest.json` — repository-root source/content/model/verification identity, file inventory, and ZIP SHA-256 evidence.
 
-The manifest records the exact Git commit, clean/dirty state, a content-sensitive dirty-tree fingerprint, every artifact file hash, all locale/model hashes, the `canonicalAuthoring` generator/critic and append-receipt binding, and an embedded copy plus hash of the exact test report. Packaging must be reproducible: rerunning it from unchanged inputs and the same report produces the same ZIP and manifest. Never edit source, the expanded artifact, content audit, test report, or ZIP after evidence capture; any such drift requires rerunning the full preflight.
+The manifest records the exact Git commit, clean/dirty state, a content-sensitive dirty-tree fingerprint, every artifact file hash, all locale/model hashes, the `canonicalAuthoring` generator/critic and append-receipt binding, and an embedded copy plus hash of the exact verification report. Packaging must be reproducible: rerunning it from unchanged inputs and the same report produces the same ZIP and manifest. Never edit source, the expanded artifact, content audit, verification report, or ZIP after evidence capture; any such drift requires rerunning the full preflight.
 
-Source identity uses the development verifier’s tracked and untracked source path scope. Generated root artifacts, `.codex` state and generated readiness data are excluded; the expanded playable and content/model audit have their own SHA-256 identities. The runner captures source before the first suite, checks it after every suite, and rejects a mismatch before writing a passing report.
+Source identity uses the development verifier's tracked and untracked source path scope. Generated root artifacts, `.codex` state and generated readiness data are excluded; the expanded playable and content/model audit have their own SHA-256 identities. The runner captures source before the first check, compares it after every check, and rejects a mismatch before writing a passing report. Reports from the earlier local-test workflow must be regenerated before packaging.
 
-The release build intentionally remains blocked until all 16 credentialed translation bundles are present and audited. The English fixture build is suitable for repository verification, but neither it nor synthetic package tests can create upload evidence.
+The release build intentionally remains blocked until all 16 credentialed translation bundles are present and audited. Incomplete-content fixtures do not create upload evidence.
 
 ## Save and Daily operating assumptions
 
@@ -72,9 +72,9 @@ Cloud Save is last-writer-wins across concurrent devices because the public Play
 
 Daily selection uses device UTC because the public SDK exposes no trusted platform time. An unfinished Daily remains the one globally active puzzle across midnight, and `lastDailyCompletedDate` blocks a clock rollback from replaying a rewarded day. Record this unavoidable device-clock limitation in release notes and certification evidence.
 
-## Local acceptance
+## Hosted acceptance
 
-The exact artifact must pass all of these before Portal ingestion:
+The build-and-audit report does not establish gameplay acceptance. Verify the exact ingested artifact through the provider's hosted checks and required device coverage:
 
 - `firstFrameReady()` once before `gameReady()`, with successful `loadData()` and interactive localized content between them.
 - No save before a successful load; every material gameplay mutation is durably serialized or held behind retry.
@@ -84,7 +84,7 @@ The exact artifact must pass all of these before Portal ingestion:
 - No unsupported UI or forbidden network request.
 - Relative resource paths, approved filenames, at most 8,000 files, every file strictly below 30 MiB, initial transfer strictly below 30 MiB, and total content strictly below 250 MiB. The [normative stability requirements](https://developers.google.com/youtube/gaming/playables/certification/requirements_stability) win over any sample analyzer boundary discrepancy.
 
-Run the unchanged Jest, Facebook, and Reddit build/audit/browser gates as well. A YouTube change is not releasable if it contaminates or regresses another target.
+The release preflight retains the isolated Jest, Facebook and Reddit builds and artifact audits so a YouTube change cannot package another target's SDK or resources.
 
 ## Portal ingestion and certification
 
@@ -113,5 +113,5 @@ For each candidate retain:
 - Source commit and clean/dirty-state note.
 - Content version, canonical source hash, 17 locale hashes, translator/critic IDs, and content-audit result.
 - Expanded artifact report, deterministic ZIP SHA-256, and release manifest.
-- Unit, injected-browser, existing-target regression, bundle-analyzer, hosted Test Suite, and physical-device results.
+- Build/audit report, bundle-analyzer, hosted Test Suite and physical-device results. Record only checks that actually ran.
 - Portal release/certification identifiers and timestamps without player identity, credentials, signed URLs, or private payloads.

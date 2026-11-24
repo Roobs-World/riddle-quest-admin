@@ -38,7 +38,7 @@ The YouTube artifact contains its own versioned riddle catalog and uses only the
 - Node.js `>=24.17.0` for the workspace and frontend tooling
 - Node.js 22 for the deployed Firebase Functions runtime
 - pnpm `11.21.0` through Corepack
-- Java 21 for the Firebase emulators
+- Java 21 for HTML validation
 - `zip` and `unzip` for Jest build packaging
 - Linux with functional `/usr/bin/bwrap` (bubblewrap and user namespaces) for timestamped Jest releases
 - Firebase and Jest Developer Console access for production operations
@@ -56,42 +56,11 @@ corepack pnpm install --frozen-lockfile
 
 Do not use npm or Yarn to update this workspace. Commit `pnpm-lock.yaml` whenever dependencies change.
 
-## Local development
+## Hosted development workflow
 
-Start the normal Vite development server:
+The root package scripts build platform artifacts, run static checks and prepare releases or uploads. Local development servers, previews, fixture builds and test launchers are not exposed.
 
-```bash
-pnpm dev:jest
-```
-
-Open `http://localhost:5173/`. Standalone development uses JestSDK's interactive local mock and a mocked authoritative backend. Use the JestSDK debug menu to change player registration, entry payloads, and SDK outcomes.
-
-Deterministic harness routes are intended for development and automated tests:
-
-| Query | Purpose |
-| --- | --- |
-| `?harness=jest` | Fixed Jest platform and backend mock |
-| `?harness=jest-auth` | Jest authentication integration harness |
-| `?harness=race` | Race to 10 with deterministic services |
-| `?harness=race-auth` | Race and Jest authentication harness |
-
-Do not add a harness query to hosted-emulator, sandbox, preview, or production URLs.
-
-### Test through the live Jest shell
-
-Start the development server on Jest's expected port:
-
-```bash
-pnpm jest:hosted
-```
-
-While signed into Jest, open:
-
-```text
-https://jest.com/g/riddle-q?host=http://localhost:3000
-```
-
-This uses the real Jest SDK inside the Jest shell. The production Firebase backend deliberately rejects the localhost iframe origin, so this workflow is limited to SDK, overlay, entry-payload, and responsive-shell checks. Never add localhost to the deployed `JEST_GAME_ORIGIN`; use the deterministic local harness for application branches and an uploaded sandbox build for live backend, payment, notification, persistence, and referral verification.
+Use the provider's uploaded private version for gameplay acceptance. For Jest, use an inactive uploaded build and approved sandbox accounts; for Facebook, use the Meta Testing assignment and app-role accounts. Follow the target's operations guide before uploading. Keep localhost out of deployed origin allowlists.
 
 ## Configuration
 
@@ -334,63 +303,19 @@ When adding or removing copy:
 pnpm check:locales
 ```
 
-## Testing
+## Build checks and hosted acceptance
 
-Run the standard unit suites:
-
-```bash
-pnpm test
-pnpm test:functions
-```
-
-Run whole-source coverage for Core, Portal, and Functions:
-
-```bash
-pnpm test:coverage
-```
-
-Coverage is collected across each package's source tree instead of a handpicked module list. Declaration files are excluded, and Portal excludes the Playwright test files themselves. Do not improve reported coverage by excluding untested production modules. Core currently enforces 100% statements, branches, functions, and lines. Portal and Functions use honest global ratchets that must be raised as real tests are added; browser-only behavior is additionally verified by the Playwright suites.
-
-For the authoritative multiplayer slice, run the focused cross-package coverage suites:
-
-```bash
-pnpm test:race:coverage
-```
-
-Useful focused checks:
-
-```bash
-pnpm test:rules
-pnpm test:interface
-pnpm test:jest-local:playwright
-pnpm test:mobile-soak
-pnpm --dir firebase-functions test:race:rules
-```
-
-The mobile soak defaults to ten minutes. Override it only for diagnosis with `PORTAL_SOAK_DURATION_MS`; the release check should use the full duration.
-
-Run the fail-closed release gate before every upload. It includes production dependency, type, lint, coverage, security-rules emulator, build, W3C, browser, and exact archive checks. Use the extended gate before launches and major gameplay releases to append the full mobile soak:
+Run the production preparation checks before an upload:
 
 ```bash
 pnpm verify:production
-pnpm verify:production:extended
 ```
 
-The gate stages canonical shared and provider source inside the ignored Functions deployment tree before any Functions check, then runs the Functions type, lint, and unit suites through pinned Node.js 22.23.1 in addition to the Node.js 24 workspace checks. GitHub Actions mirrors these checks on clean runners without production secrets; deployed Jest sandbox purchases, subscriptions, active-version verification, and moderation remain explicit owner-run checks.
+This runs dependency and security audits, type and lint checks, production builds, HTML validation and exact-artifact preparation. It does not start local games, emulators, unit suites or browser harnesses. Functions compatibility checks use the pinned Node.js 22 runtime alongside the Node.js 24 workspace toolchain.
 
-### Uploaded sandbox build
+These checks establish build and configuration results, not playable behavior. Complete manual acceptance against the exact uploaded version in the provider's private environment before publication. Record the version, artifact hash, backend revision, device and observed outcome. Keep login links, credentials and identifiable captures private.
 
-Generate a short-lived login URL under Developer Console → Sandbox Users, copy `buildVersion` from the accepted-pending upload receipt, then run:
-
-```bash
-JEST_SANDBOX_LOGIN_URL='https://jest.com/...' \
-JEST_EXPECTED_BUILD_VERSION='1.0.0-dev.YYYYMMDDHHMMSS.commit.attempt' \
-pnpm test:jest-deployed:playwright
-```
-
-`JEST_EXPECTED_BUILD_VERSION` is required. Optional deployed-test values are `JEST_DEPLOYED_GAME_URL`, `JEST_SANDBOX_STORAGE_STATE`, and `JEST_GAME_ID`. The default storage-state file lives under `/tmp`; do not commit authenticated browser state.
-
-Use two sandbox players for referral tests. Reset the invitee before rerunning attribution because Jest attributes the first entry. Local mocks cannot prove real notification delivery, catalog configuration, payment settlement, persistence, or referral conversion.
+GitHub Actions remains manual-only behind its runner-usage confirmation gate. Uploads, activation, review submission and publication retain their separate authorization requirements.
 
 ## Build and release
 
@@ -425,13 +350,13 @@ pnpm build:web
 
 This preserves the existing deployment path and writes isolated artifacts to `builds/jest`, `builds/facebook`, and `builds/reddit`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
 
-Verify the isolated client targets without requiring release translations:
+Build and audit all configured client targets:
 
 ```bash
 pnpm verify:all-targets
 ```
 
-This uses the committed English YouTube fixture solely for repository verification.
+This uses the production content and artifact checks for each target; it does not run local tests or fixture builds.
 
 Prepare the immutable Facebook handoff for manual upload from a clean reviewed commit:
 
@@ -448,24 +373,24 @@ pnpm build:youtube
 pnpm release:youtube
 ```
 
-The release build writes `builds/youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The fixture artifact and synthetic packaging tests are not upload evidence. See [`docs/youtube/youtube-playables-operations.md`](../../youtube/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
+The release build writes `builds/youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The legacy report filename now contains build and audit results, not test results. Hosted acceptance remains separate. See [`docs/youtube/youtube-playables-operations.md`](../../youtube/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
 
-After all tests and sandbox checks pass, upload a timestamped build:
+After reviewing the build checks and authorizing the upload, create a timestamped Jest build:
 
 ```bash
 pnpm release:jest
 ```
 
-The command takes an exclusive release lock and runs the full extended production gate before reading credential-file
+The command takes an exclusive release lock and runs the production build and audit gate before reading credential-file
 contents. It first probes a Linux bubblewrap boundary and refuses to run any child if that boundary is unavailable; there
-is no unsandboxed fallback. Gate, build, validator, browser, and uploader children see a read-only host filesystem, a
-masked operator home, isolated `HOME`/temporary/PID/proc state, and only the required read-only runtime/browser caches.
+is no unsandboxed fallback. Gate, build, validator and uploader children see a read-only host filesystem, a
+masked operator home, isolated `HOME`/temporary/PID/proc state, and only the required read-only runtime caches.
 Before credentials are read, the gate may write only to the repository and isolated release workspace; `.git`, the
 external credential file, ignored `.env*` files, receipt state, and other known secret-bearing paths are overmounted.
 The command then materializes the committed Git snapshot in an isolated `/tmp` workspace and switches the repository,
 snapshot, and copied trusted release scripts to read-only mounts. It builds the Sentry-tagged artifact there, creates a
-version-specific ZIP and receipt, extracts that ZIP into a fresh read-only directory, and runs both browser suites against
-the extracted bytes. The parent fingerprints the archive and gate receipt before and after those checks. The Sentry token
+version-specific ZIP and receipt, extracts that ZIP into a fresh read-only directory, and audits the extracted bytes
+and HTML. The parent fingerprints the archive and gate receipt before and after those checks. The Sentry token
 is intentionally available to the Vite source-map process and its loaded build dependencies. The game upload token is
 framed through an anonymous pipe to the read-only trusted uploader, consumed and closed before it starts any child, and
 then sent as an in-process HTTP header rather than an environment variable or command-line argument. The unchanged,
@@ -497,7 +422,6 @@ Deploy backend changes separately:
 
 ```bash
 pnpm --dir firebase-functions build
-pnpm --dir firebase-functions test
 pnpm --dir firebase-functions run deploy --project riddle-quest-ec2b2
 ```
 
@@ -510,10 +434,9 @@ Function cohort as well as client compatibility. Releases that change those cont
 `pnpm release:jest` and follow the guarded inactive workflow requirement in
 [`docs/jest/jest-html5-operations.md`](../../jest/jest-html5-operations.md#automatic-activation-compatibility).
 
-When Firestore rules or indexes change, deploy those explicitly and test the rules emulator first.
+When Firestore rules or indexes change, review the access rules and deploy them explicitly. Verify the resulting behavior through the authorized hosted acceptance procedure.
 
 ```bash
-pnpm --dir firebase-functions test:race:rules
 pnpm dlx firebase-tools@15.25.1 deploy \
   --only firestore:rules,firestore:indexes,storage \
   --project riddle-quest-ec2b2
@@ -528,20 +451,19 @@ Before merging a change:
 3. Preserve guest progress by continuing to use the stable Jest `playerId` when registration completes.
 4. Keep purchase grants, subscription entitlements, and referral rewards signed, server-authoritative, and idempotent.
 5. Update all locales for visible copy and republish Firestore notification copy when applicable.
-6. When tests are explicitly requested, cover cancellation, retryable failure, terminal failure, reload recovery, guest state and registered state for SDK changes.
-7. Build the affected isolated artifacts. When browser testing is explicitly requested, use the affected injected harness; use hosted unpublished previews for Jest end-to-end checks.
-8. Retain release evidence with the relevant operational runbook or acceptance test.
-9. Keep exported contracts, public methods, and security-sensitive variables documented with accurate TSDoc; update this README when commands, architecture, configuration, coverage gates, or deployment steps change.
-10. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive, or browser state is included.
+6. Build and audit the affected isolated artifacts.
+7. Use the exact uploaded private version for manual acceptance, including recovery, saving and supported provider features.
+8. Retain release evidence with the relevant operational runbook.
+9. Keep exported contracts, public methods and security-sensitive variables documented with accurate TSDoc; update this README when commands, architecture, configuration or deployment steps change.
+10. Review `git diff` and `git status` to ensure no `.env`, secret, credential, generated archive or browser state is included.
 
 When updating dependencies:
 
 ```bash
 corepack pnpm outdated -r
 corepack pnpm update -r --latest
-pnpm test
-pnpm test:functions
-pnpm build
+pnpm check:types
+pnpm verify:production
 ```
 
 Review release notes for Vite, React, Firebase, Jest, Three.js, TypeScript, and Node before accepting breaking upgrades. The workspace runs Node 24 tooling while Firebase deploys Functions on Node 22, so verify both environments.

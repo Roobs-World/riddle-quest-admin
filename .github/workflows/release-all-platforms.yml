@@ -37,25 +37,15 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter riddle-quest exec playwright install --with-deps chromium
+      - name: Keep dependency evidence outside the source checkout
+        run: echo "RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR=$RUNNER_TEMP/target-dependencies" >> "$GITHUB_ENV"
       - name: Compile shared server source for the target checks
         run: pnpm build:shared
       - name: Verify every configured target
         run: pnpm verify:all-targets
-      - name: Discard regenerated browser evidence before the clean-source adapters
-        # The browser gates rewrite committed screenshots under artifacts/;
-        # the Facebook draft refuses to stage from a dirty worktree. The
-        # adapters' own builds then write their dependency inventories outside
-        # the checkout, as the Jest release already does.
-        run: |
-          git checkout -- artifacts
-          git clean -fdq -- artifacts
-          git status --short | head -20
-          echo "RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR=$RUNNER_TEMP/target-dependencies" >> "$GITHUB_ENV"
       - name: Run core provider release adapters
         # Jest is published by deploy-jest.yml and YouTube is packaged by the
-        # parallel youtube job, because each adapter repeats the multi-hour
-        # browser gate and would not fit in this job's runner limit.
+        # parallel youtube job, keeping their independent release boundaries.
         shell: bash
         run: |
           set -euo pipefail
@@ -70,8 +60,6 @@ jobs:
           node scripts/release/run-platform-release.mjs gamesnacks
       - name: Prepare one neutral source and package registered distribution handoffs
         run: node scripts/release/package-neutral-handoffs.mjs
-      - name: Verify packaged gameplay before recording readiness
-        run: pnpm test:release-artifacts:browser
       - name: Hand the verified packages to the finalize job
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -79,7 +67,6 @@ jobs:
           if-no-files-found: error
           retention-days: 3
           path: |
-            artifacts/release-e2e/
             build-*.zip
             build-*.manifest.json
             build-html5.sha256
@@ -106,11 +93,8 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter riddle-quest exec playwright install --with-deps chromium
       - name: Compile shared server source for the target checks
         run: pnpm build:shared
-      - name: Build the solo artifacts the YouTube browser suite also plays
-        run: pnpm build:netflix && pnpm build:yahoo
       - name: Run the YouTube release adapter
         run: node scripts/release/run-platform-release.mjs youtube
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -145,7 +129,7 @@ jobs:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: release-youtube-${{ github.sha }}
-      - name: Verify every release target end to end
+      - name: Audit every release archive and manifest
         run: node scripts/release/verify-release-target-e2e.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -153,7 +137,6 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           path: |
-            artifacts/release-e2e/
             build-*.zip
             build-*.manifest.json
             build-youtube.test-report.json

@@ -44,7 +44,7 @@ Use the dashboard for the first private upload if you want the shortest route to
 4. Wait for upload processing and scanning to finish. Read any validation error before trying again.
 5. Record the version number, bundle ID and final status. If Meta offers a download, have the developer compare it with the original ZIP's fingerprint.
 
-The developer prepares this handoff from clean, reviewed `main` using `pnpm release:facebook:handoff`. That command includes browser tests. Under this repository's rules, an agent needs an explicit request before running those tests. An upload also needs an explicit request.
+The developer prepares this handoff from clean, reviewed `main` using `pnpm release:facebook:handoff`. It builds and audits the artifact without running local tests or browser harnesses. Gameplay acceptance happens through Meta's Testing version after the upload. An upload needs an explicit request.
 
 ### Enable remote uploading
 

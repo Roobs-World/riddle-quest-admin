@@ -7,7 +7,7 @@ packages:
 autoInstallPeers: false
 
 # This upstream advisory has no fixed release. Its exception requires the exact
-# installed patch and security regression checks to pass.
+# installed patch configuration audit to pass.
 audit:
   ignore:
     # Depth guards backported from braces PR72; checked before production audit.

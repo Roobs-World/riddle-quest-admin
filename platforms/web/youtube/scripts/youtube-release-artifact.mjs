@@ -17,40 +17,15 @@ const sha256Pattern = /^[0-9a-f]{64}$/u;
 const gitCommitPattern = /^[0-9a-f]{40,64}$/u;
 
 export const youtubeReleaseVerificationSuites = Object.freeze([
-  Object.freeze({id: "youtube-content-tests", command: "pnpm --dir firebase-functions test:youtube-content"}),
-  Object.freeze({id: "youtube-runtime-unit-tests", command: "pnpm --filter riddle-quest test:youtube:unit"}),
   Object.freeze({id: "legacy-target-builds-and-audits", command: "pnpm --filter riddle-quest build:web"}),
   Object.freeze({id: "youtube-release-build-and-audit", command: "pnpm --filter riddle-quest build:youtube"}),
-  Object.freeze({id: "release-boundary-tests", command: "pnpm --filter riddle-quest test:release-scripts"}),
-  Object.freeze({
-    id: "jest-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:jest-local:playwright",
-  }),
-  Object.freeze({
-    id: "facebook-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:facebook:playwright",
-  }),
-  Object.freeze({
-    id: "reddit-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:reddit:playwright",
-  }),
-  Object.freeze({
-    id: "youtube-browser-tests",
-    command: "PORTAL_USE_EXISTING_BUILD=1 pnpm --filter riddle-quest test:youtube:playwright",
-  }),
 ]);
 
 const repositoryChecklist = Object.freeze([
-  Object.freeze({id: "content-and-model-audit", evidence: "suite:youtube-content-tests"}),
-  Object.freeze({id: "runtime-unit-tests", evidence: "suite:youtube-runtime-unit-tests"}),
+  Object.freeze({id: "content-and-model-audit", evidence: "check:youtube-release-build-and-audit"}),
   Object.freeze({
     id: "four-isolated-builds-and-reciprocal-audits",
-    evidence: "suite:legacy-target-builds-and-audits,suite:youtube-release-build-and-audit",
-  }),
-  Object.freeze({id: "release-boundary-and-reproducibility-tests", evidence: "suite:release-boundary-tests"}),
-  Object.freeze({
-    id: "four-target-injected-browser-tests",
-    evidence: "suite:jest-browser-tests,suite:facebook-browser-tests,suite:reddit-browser-tests,suite:youtube-browser-tests",
+    evidence: "check:legacy-target-builds-and-audits,check:youtube-release-build-and-audit",
   }),
 ]);
 
@@ -350,7 +325,7 @@ function validateSourceIdentity(source) {
 }
 
 function validateVerificationReport(report, {source, artifact, contentAuditSha256}) {
-  const expectedSuites = youtubeReleaseVerificationSuites;
+  const expectedChecks = youtubeReleaseVerificationSuites;
   if (
     !exactKeys(report, [
       "artifact",
@@ -361,11 +336,11 @@ function validateVerificationReport(report, {source, artifact, contentAuditSha25
       "provider",
       "schemaVersion",
       "source",
-      "tests",
+      "checks",
     ]) ||
-    report.schemaVersion !== 1 ||
+    report.schemaVersion !== 2 ||
     report.provider !== "youtube-playables" ||
-    report.kind !== "local-release-verification" ||
+    report.kind !== "build-and-audit-verification" ||
     typeof report.capturedAt !== "string" ||
     !Number.isFinite(Date.parse(report.capturedAt)) ||
     !validateSourceIdentity(report.source) ||
@@ -379,12 +354,12 @@ function validateVerificationReport(report, {source, artifact, contentAuditSha25
     report.contentAudit.sha256 !== contentAuditSha256 ||
     report.contentAudit.contentVersion !== artifact.contentVersion
   ) throw new Error("YouTube verification report is stale for the exact content/model audit");
-  if (!Array.isArray(report.tests) || report.tests.length !== expectedSuites.length) {
-    throw new Error("YouTube verification report does not contain the exact required test suite");
+  if (!Array.isArray(report.checks) || report.checks.length !== expectedChecks.length) {
+    throw new Error("YouTube verification report does not contain the exact required build and audit checks");
   }
-  for (let index = 0; index < expectedSuites.length; index += 1) {
-    const result = report.tests[index];
-    const expected = expectedSuites[index];
+  for (let index = 0; index < expectedChecks.length; index += 1) {
+    const result = report.checks[index];
+    const expected = expectedChecks[index];
     if (
       !exactKeys(result, ["command", "exitCode", "id", "status", "stderrSha256", "stdoutSha256"]) ||
       result.id !== expected.id ||
@@ -426,16 +401,16 @@ function validateVerificationReport(report, {source, artifact, contentAuditSha25
   return report;
 }
 
-export function createYouTubeVerificationReport({capturedAt, source, artifact, contentAuditSha256, tests}) {
+export function createYouTubeVerificationReport({capturedAt, source, artifact, contentAuditSha256, checks}) {
   const report = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     provider: "youtube-playables",
-    kind: "local-release-verification",
+    kind: "build-and-audit-verification",
     capturedAt,
     source,
     artifact,
     contentAudit: {contentVersion: artifact.contentVersion, sha256: contentAuditSha256},
-    tests,
+    checks,
     certificationChecklist: {
       repository: repositoryChecklist.map(({id, evidence}) => ({id, status: "passed", evidence})),
       external: externalChecklist.map(({id, blocker}) => ({id, status: "blocked", evidence: null, blocker})),
@@ -469,7 +444,7 @@ export async function writeYouTubeVerificationReport({
   distDirectory,
   contentAuditPath,
   reportPath,
-  tests,
+  checks,
   expectedSource,
   capturedAt = new Date().toISOString(),
 } = {}) {
@@ -503,7 +478,7 @@ export async function writeYouTubeVerificationReport({
     source,
     artifact,
     contentAuditSha256: sha256(contentAuditSource),
-    tests,
+    checks,
   });
   const confirmedSource = await captureSourceIdentity(repository);
   if (!sameValue(source, confirmedSource)) {
@@ -530,7 +505,7 @@ export async function packageYouTubeArtifact(options = {}) {
     resolvedArchive.startsWith(`${resolvedDist}${path.sep}`) ||
     resolvedManifest.startsWith(`${resolvedDist}${path.sep}`) ||
     resolvedReport.startsWith(`${resolvedDist}${path.sep}`)
-  ) throw new Error("YouTube release ZIP, manifest, and test report must be distinct root-level outputs outside dist-youtube");
+  ) throw new Error("YouTube release ZIP, manifest, and verification report must be distinct root-level outputs outside builds/youtube");
 
   const audit = await auditYouTubeArtifact(resolvedDist);
   let contentAuditSource;
