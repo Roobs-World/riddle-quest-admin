@@ -28,17 +28,38 @@ The composer saves working drafts in this browser, including the request ID need
 
 The Supabase project is named `riddle-quest-notifications`. Its Marketplace installation is connected to `riddle-quest-admin` in production, and its project URL remains `https://vqyjgcqyudqonfhgymoy.supabase.co`. The integration supplies the standard URL, publishable key and server secret variables. It is not currently connected to Preview or Development environments.
 
-A read-only check on November 24, 2026 confirmed that the Auth endpoint responds, Google sign-in is disabled, and the Data API reports `PGRST205` for `notification_operators`. Schema readiness is therefore unconfirmed. The integration connection alone does not apply the schema, enable Google OAuth, approve operators or configure the push scheduler.
+Database setup completed on November 24, 2026. Migration `20261124055801_notification_service` created six notification tables with RLS and twenty service-role-only, SECURITY INVOKER RPC functions. The public `notification-images` bucket accepts PNG, JPEG and WebP files up to 2 MB. Migration `20261124060208_notification_trigger_permissions` removed browser execution grants from Supabase's existing RLS event-trigger helper while preserving the helper and enabled trigger. Follow-up security and performance advisors reported zero warnings or errors. Informational findings reflect the deliberately inaccessible service tables and indexes in the empty database. See the [setup evidence](evidence/supabase-setup-2026-11-24.json).
+
+Google provider configuration, the first operator membership and the push scheduler remain pending. The database setup did not deploy the website, create user accounts or send notifications.
 
 1. Use the notification service's connected Supabase project. The game's existing account database stays separate.
-2. Review the declarative schema files in `notification-manager/supabase/config.toml`. Generate and review the initial migration with the current Supabase CLI before applying it. Follow [Supabase's declarative schema workflow](https://supabase.com/docs/guides/local-development/declarative-database-schemas).
-3. Apply `notification-manager/supabase/seed.sql` to configure the public `notification-images` bucket. It allows PNG, JPEG and WebP images up to 2 MB. Approved operators can upload into their own user folder. Notification images are public.
+2. The initial schema is already applied to this project. For future changes, edit the declarative schema files selected by `notification-manager/supabase/config.toml`, generate and review an incremental migration, then apply it once. Follow [Supabase's declarative schema workflow](https://supabase.com/docs/guides/local-development/declarative-database-schemas). Do not replay the raw CREATE statements against the existing database.
+3. The bucket is already configured. `notification-manager/supabase/seed.sql` can reapply its settings. Approved operators can upload into their own user folder. Notification images are public.
 4. Enable Google in Supabase Authentication and configure its callback with Google. Set the site URL and allowed redirects to the management website origin. Add local origins explicitly for development. See [Google OAuth setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
 5. After an intended operator signs in, insert their authenticated user UUID into `public.notification_operators` using a trusted database administration connection. Only members can read campaigns, upload images or send notifications. Remove the row to revoke access.
 
 Every notification table enables RLS. Browser clients cannot access installations, push credentials, campaigns, receipts or quotas directly. Server-only RPCs perform atomic subscription, revision, lease and receipt operations. Each management request checks the current Supabase user and database membership. User-editable metadata never grants authority.
 
 No schema, seed, operator membership or scheduled job is applied by a frontend build.
+
+### Google provider settings
+
+Supabase manages the operator sign-in session. Google OAuth requires a Web application client ID and client secret from Google Cloud. The approved Google Cloud project is `riddle-quest-ec2b2`. Configure these exact URLs:
+
+| Setting | Value |
+| --- | --- |
+| Google authorized JavaScript origin | `https://riddle-quest-admin.vercel.app` |
+| Google authorized redirect URI | `https://vqyjgcqyudqonfhgymoy.supabase.co/auth/v1/callback` |
+| Supabase Site URL | `https://riddle-quest-admin.vercel.app` |
+| Supabase allowed redirect URL | `https://riddle-quest-admin.vercel.app` |
+
+Create or select a Web application client in [Google Cloud](https://console.cloud.google.com/auth/clients?project=riddle-quest-ec2b2), then enter its client ID and secret directly in the [Supabase Google provider settings](https://supabase.com/dashboard/project/vqyjgcqyudqonfhgymoy/auth/providers?provider=Google) and enable Google. Keep the secret out of chat, source files and browser build variables. Site URL and redirect entries are configured separately in [Supabase URL Configuration](https://supabase.com/dashboard/project/vqyjgcqyudqonfhgymoy/auth/url-configuration). Keep existing redirects needed by other approved environments. See [Google OAuth setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
+
+The authenticated MCP connection does not establish a Supabase dashboard browser session and does not expose an Auth provider configuration tool. The available browser runs headlessly and is signed out. Provider configuration needs a signed-in dashboard session and the Google OAuth client credentials. Do not enable a provider with placeholder credentials.
+
+### Initial migration provenance
+
+The application schema and migration history were confirmed empty before setup. Supabase CLI 3.2.0 generated the initial local migration filename. Its declarative diff engine could not run because Docker was stopped, so the initial SQL was generated by concatenating the five existing declarative files in their configured order. The SQL was reviewed, applied once with MCP and checked using read-only catalog queries. The local filenames were aligned with the versions recorded by Supabase's migration history. The initial migration contains the exact declarative source SQL; the trigger-permission migration is generated from `supabase/hardening.sql` and only changes grants on the existing provider-owned helper.
 
 ### Agent administration connection
 

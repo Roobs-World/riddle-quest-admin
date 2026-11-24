@@ -1,0 +1,84 @@
+{
+  "date": "2026-11-24",
+  "projectRef": "vqyjgcqyudqonfhgymoy",
+  "projectName": "riddle-quest-notifications",
+  "migrations": [
+    {
+      "version": "20261124055801",
+      "name": "notification_service",
+      "sha256": "12bfbb8437b056b1744980891e567b257975fa192f876158e18d48014a03d1a8"
+    },
+    {
+      "version": "20261124060208",
+      "name": "notification_trigger_permissions",
+      "sha256": "4dd4e5a4ec76b9a6245124853ecd017e74eb7b0564bc7c05078f49eb4c74dc90"
+    }
+  ],
+  "notificationTables": [
+    "notification_operators",
+    "notification_installations",
+    "notification_endpoints",
+    "notification_quotas",
+    "notification_campaigns",
+    "notification_attempts"
+  ],
+  "notificationFunctionCount": 20,
+  "accessVerification": {
+    "all_tables_rls_enabled": true,
+    "anon_table_access": false,
+    "authenticated_access": "Operator-self SELECT only",
+    "all_notification_functions_security_invoker": true,
+    "all_notification_functions_service_role_executable": true,
+    "public_anon_authenticated_notification_function_execute": false,
+    "application_rows_read": false
+  },
+  "bucket": {
+    "id": "notification-images",
+    "public": true,
+    "file_size_limit": 2097152,
+    "allowed_mime_types": [
+      "image/png",
+      "image/jpeg",
+      "image/webp"
+    ]
+  },
+  "hardeningVerification": {
+    "anon_execute_revoked": true,
+    "authenticated_execute_revoked": true,
+    "public_execute_revoked": true,
+    "postgres_owner_unchanged": true,
+    "helper_unchanged": true,
+    "event_trigger_linkage_unchanged_and_enabled": true,
+    "all_6_tables_rls": true,
+    "all_20_service_role_grants_retained": true,
+    "migration_listed_once": true
+  },
+  "advisors": {
+    "warnings": 0,
+    "errors": 0,
+    "security": {
+      "finding": "rls_enabled_no_policy",
+      "level": "INFO",
+      "count": 5,
+      "guidance": "[Remediation](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy)"
+    },
+    "performance": {
+      "finding": "unused_index",
+      "level": "INFO",
+      "count": 9,
+      "guidance": "[Remediation](https://supabase.com/docs/guides/database/database-linter?lint=0005_unused_index)"
+    }
+  },
+  "verificationMethod": "Authenticated MCP metadata queries and Supabase advisors; no application records read",
+  "managerBuild": "passed with type checking and browser boundary audit",
+  "automatedTestsRun": false,
+  "websiteDeployed": false,
+  "notificationsSent": false,
+  "pending": [
+    "Google OAuth provider credentials and exact redirect configuration",
+    "Approved operator membership after Google sign-in",
+    "Push transport credentials and scheduler setup",
+    "Authorized website deployment and live delivery acceptance"
+  ],
+  "submittedSqlMatchesLocalMigrations": true
+}
