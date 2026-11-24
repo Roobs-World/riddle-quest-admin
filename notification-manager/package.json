@@ -1,0 +1,29 @@
+{
+  "name": "@riddle-quest/notification-manager",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": "24.x"},
+  "packageManager": "pnpm@12.21.0",
+  "scripts": {
+    "dev": "vite --config vite.config.ts",
+    "check:types": "tsc -p tsconfig.json --noEmit",
+    "build": "pnpm check:types && vite build --config vite.config.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.119.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "web-push": "4.0.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "@types/react": "~19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/web-push": "3.6.4",
+    "@vitejs/plugin-react": "^6.3.0",
+    "typescript": "npm:@typescript/typescript6@6.0.2",
+    "vite": "^8.3.8"
+  }
+}

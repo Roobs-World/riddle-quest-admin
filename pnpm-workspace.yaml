@@ -2,6 +2,7 @@ packages:
   - "platforms/native/*"
   - "platforms/web/*"
   - "firebase-functions"
+  - "notification-manager"
 
 autoInstallPeers: false
 

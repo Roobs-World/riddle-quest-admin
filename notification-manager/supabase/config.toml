@@ -1,0 +1,12 @@
+project_id = "riddle-quest-notification-manager"
+
+[api]
+enabled = true
+schemas = ["public", "graphql_public"]
+
+[db.migrations]
+schema_paths = ["./schemas/notifications.sql", "./schemas/subscriptions.sql", "./schemas/campaigns.sql", "./schemas/delivery.sql"]
+
+[db.seed]
+enabled = true
+sql_paths = ["./seed.sql"]

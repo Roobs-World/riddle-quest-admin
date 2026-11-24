@@ -1,0 +1,70 @@
+# Notification management service
+
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. This service has no Firebase dependency.
+
+Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
+
+Calendar times use the operator's displayed browser timezone. The frontend converts them to an absolute UTC instant and rejects nonexistent daylight-saving times or past times. The server independently rejects a new schedule in the past. There is no arbitrary one-year limit.
+
+Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. Counts cover loaded rows.
+
+## Local commands
+
+Run from the repository root:
+
+```sh
+pnpm dev:notification-manager
+pnpm check:types:notification-manager
+pnpm build:notification-manager
+```
+
+Vite serves the frontend on port 5180. For local API routes, use Vercel's development runtime with `notification-manager/` as the project root. Vite alone serves only the frontend. Builds emit `notification-manager/dist/` and reject browser imports of server modules, Web Push server code, Firebase or private credentials.
+
+## Supabase setup
+
+1. Create or select the notification service's Supabase project. The game's existing account database stays separate.
+2. Review the declarative schema files in `notification-manager/supabase/config.toml`. Generate and review the initial migration with the current Supabase CLI before applying it. Follow [Supabase's declarative schema workflow](https://supabase.com/docs/guides/local-development/declarative-database-schemas).
+3. Apply `notification-manager/supabase/seed.sql` to configure the public `notification-images` bucket. It allows PNG, JPEG and WebP images up to 2 MB. Approved operators can upload into their own user folder. Notification images are public.
+4. Enable Google in Supabase Authentication and configure its callback with Google. Set the site URL and allowed redirects to the management website origin. Add local origins explicitly for development. See [Google OAuth setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
+5. After an intended operator signs in, insert their authenticated user UUID into `public.notification_operators` using a trusted database administration connection. Only members can read campaigns, upload images or send notifications. Remove the row to revoke access.
+
+Every notification table enables RLS. Browser clients cannot access installations, push credentials, campaigns, receipts or quotas directly. Server-only RPCs perform atomic subscription, revision, lease and receipt operations. Each management request checks the current Supabase user and database membership. User-editable metadata never grants authority.
+
+No schema, seed, operator membership or scheduled job is applied by a frontend build.
+
+## Vercel setup
+
+Create a Vercel project for this repository with Root Directory `notification-manager`, Node.js 24 and access to workspace files outside that root. The checked-in `vercel.json` selects Vite, `pnpm build`, `dist` and 60-second API Functions. Source pushes do not authorize a deployment or automatic production release.
+
+Use `notification-manager/.env.example` for the required environment settings:
+
+| Setting | Visibility and purpose |
+| --- | --- |
+| `VITE_NOTIFICATION_SUPABASE_URL` | Public frontend Supabase URL |
+| `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY` | Public frontend publishable key |
+| `SUPABASE_URL` | API Supabase URL, matching the frontend |
+| `SUPABASE_SECRET_KEY` | API-only secret key |
+| `HOSTED_PUSH_VAPID_PUBLIC_KEY` | Stable Web Push application public key |
+| `HOSTED_PUSH_VAPID_PRIVATE_KEY` | API-only matching private key |
+| `HOSTED_PUSH_VAPID_SUBJECT` | Real operator contact as `mailto:` or HTTPS URL |
+| `NOTIFICATION_ALLOWED_ORIGINS` | JSON map of platform IDs to exact HTTPS game origins |
+| `CRON_SECRET` | Dedicated random scheduler credential, 32 to 256 URL-safe characters |
+
+Generate one stable P-256 VAPID pair using the installed `web-push` package or an approved credential workflow. Store the private value only in secret configuration. Rotating it requires browser re-enrollment; do not generate a new pair on each build. Never prefix server secrets with `VITE_`, log them or commit them.
+
+The default Content Security Policy admits Supabase connections under `*.supabase.co`. Update its `connect-src` directive if using an approved custom Supabase domain.
+
+## Scheduled delivery
+
+Supabase Cron invokes Vercel's authenticated `/api/cron/notifications` route every minute. Review `notification-manager/supabase/scheduler.sql` separately from the database schema. After the service is deployed, create these Supabase Vault secrets with a trusted administration connection:
+
+- `notification_service_url`: the HTTPS Vercel service origin, with no API path.
+- `notification_cron_secret`: the exact dedicated `CRON_SECRET` configured on Vercel.
+
+Then run the reviewed scheduler source as the database owner. The named job `notification-manager-dispatch` can be configured repeatedly and reads the Vault values at runtime so rotation does not expose a credential in the scheduled SQL. It does not use a Supabase secret key as the HTTP credential. See [Supabase Cron](https://supabase.com/docs/guides/cron) and [scheduled HTTP requests with Vault](https://supabase.com/docs/guides/functions/schedule-functions).
+
+Postgres persists scheduled work. The service does not rely on a browser tab or an in-memory timer. Send now starts a bounded dispatch batch; Cron continues remaining work. Scheduling resolution is one minute plus dispatcher and provider latency, rather than an exact device display time.
+
+Each campaign has a durable lease and one receipt per installation. The dispatcher checks current consent, subscription revision and cancellation immediately before contacting the push vendor. Uncertain sends are recorded without blind retries. Raw subscriptions expire after 30 days without renewal; minimal opt-out revision records persist. Push payloads expire after six hours. Cleanup removes expired subscription material, quotas and terminal delivery records.
+
+The database, environment values and scheduler must be configured before live delivery works. Source builds validate types and packaging. Live sign-in, RLS, uploads and after-close push delivery still need acceptance against an authorized configured deployment.

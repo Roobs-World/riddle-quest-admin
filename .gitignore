@@ -24,6 +24,8 @@ yarn-error.log*
 .fallow/
 .vercel/
 .firebase/
+/notification-manager/supabase/.temp/
+/notification-manager/supabase/.branches/
 
 firebase-functions/lib/
 firebase-functions/.emulator-data/
