@@ -1,5 +1,6 @@
 # Facebook Instant Games
 
+- [Get Riddle Quest working on Facebook](facebook-setup-guide.md)
 - [Assets](assets/)
 - [Evidence](evidence/)
 - [Facebook approval walkthrough](facebook-approval-walkthrough.md)

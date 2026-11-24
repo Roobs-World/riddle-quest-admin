@@ -14,6 +14,7 @@ import {
 } from "./facebook-release-artifact.mjs";
 
 import {assertFacebookHandoffsSettled, loadFacebookHandoff, withFacebookReleaseLock} from "./facebook-release-state.mjs";
+import {FacebookUploadError, uploadFacebookArchive, validateFacebookAssetUploadToken} from "./facebook-remote-upload.mjs";
 
 const packageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
@@ -24,6 +25,7 @@ const receiptPath = path.join(receiptDirectory, "gated-artifact.json");
 const fail = (message) => {
   throw new Error(`${message}\nUsage:\n` +
     "  pnpm facebook:draft begin\n" +
+    "  pnpm facebook:draft upload --archive-hash SHA256 < /private/asset-upload-token\n" +
     "  pnpm facebook:draft recover --archive-hash SHA256\n" +
     "  pnpm facebook:draft ambiguous --archive-hash SHA256 --reason REASON\n" +
     "  pnpm facebook:draft accept --archive-hash SHA256 --draft-id ID --evidence /absolute/dashboard-file\n" +
@@ -62,6 +64,21 @@ const hashEvidenceFile = async (filePath) => {
   return facebookArtifactSha256(await readFile(filePath));
 };
 
+/** Reads a separately granted upload credential without placing it in arguments or receipts. */
+const readAssetUploadToken = async () => {
+  if (process.stdin.isTTY) fail("Pipe the Meta Asset Upload Access Token to stdin.");
+  const chunks = [];
+  let bytes = 0;
+  for await (const chunk of process.stdin) {
+    bytes += chunk.length;
+    if (bytes > 16386) fail("The Meta upload token is too long.");
+    chunks.push(Buffer.from(chunk));
+  }
+  const token = Buffer.concat(chunks).toString("utf8").trim();
+  validateFacebookAssetUploadToken(token);
+  return token;
+};
+
 const [command, ...optionArguments] = process.argv.slice(2);
 const options = parseOptions(optionArguments);
 
@@ -79,6 +96,56 @@ await withFacebookReleaseLock(receiptDirectory, async () => {
     console.log(`Facebook draft handoff opened for sha256 ${gated.archive.sha256}`);
     console.log(`Upload exactly: ${handoffPath}`);
     console.log(`Barrier: ${barrierPath}`);
+  } else if (command === "upload") {
+    if (options.size !== 1 || !options.has("--archive-hash")) fail("upload requires --archive-hash.");
+    if (runGit(["branch", "--show-current"]) !== "main") fail("Facebook uploads require main.");
+    await assertFacebookHandoffsSettled(receiptDirectory);
+    const {gated, verified} = await readGatedState();
+    const hash = options.get("--archive-hash");
+    if (hash !== gated.archive.sha256) fail("The requested Facebook hash does not match the gated artifact.");
+    const uploadToken = await readAssetUploadToken();
+    await createFacebookHandoffArchive(receiptDirectory, hash, verified.contents);
+    const {barrierPath} = await createFacebookUploadBarrier(receiptDirectory, hash);
+    const remoteReceiptPath = path.join(receiptDirectory, `remote-upload-${hash}.json`);
+    let result;
+    try {
+      result = await uploadFacebookArchive({contents: verified.contents, archiveSha256: hash, token: uploadToken});
+      await writeExclusivePrivateFacebookJson(remoteReceiptPath, {
+        ...result,
+        sourceCommit: gated.source.commit,
+        status: "submitted-awaiting-provider-acceptance",
+      });
+    } catch (error) {
+      if (error instanceof FacebookUploadError) {
+        try {
+          await writeExclusivePrivateFacebookJson(remoteReceiptPath, {
+            schemaVersion: 1,
+            provider: "facebook",
+            intent: "non-production-draft",
+            archiveSha256: hash,
+            sourceCommit: gated.source.commit,
+            status: "reconciliation-required",
+            failedStage: error.stage,
+            stages: error.stages,
+            recordedAt: new Date().toISOString(),
+          });
+        } catch {
+          // The handoff barrier remains authoritative if a diagnostic receipt cannot be saved.
+        }
+      }
+      await transitionFacebookUploadBarrier(barrierPath, "transmitting", "ambiguous",
+        "Remote upload did not produce a durable success receipt; reconcile Meta before any retry");
+      const diagnostic = error instanceof FacebookUploadError
+        ? ` Stage: ${error.stage}; HTTP: ${error.stages.findLast((entry) => entry.stage === error.stage)?.httpStatus ?? "unavailable"}.`
+        : "";
+      throw new Error(`Facebook upload outcome requires reconciliation for sha256 ${hash}.${diagnostic} Do not retry; inspect Meta Web Hosting.`);
+    }
+    await transitionFacebookUploadBarrier(barrierPath, "transmitting", "ambiguous",
+      "Remote upload completed; provider processing and exact-artifact acceptance still require Meta evidence");
+    console.log(`Facebook archive submitted for sha256 ${hash}`);
+    if (result.bundleInstanceId) console.log(`Reported bundle: ${result.bundleInstanceId}`);
+    console.log(`Submission receipt: ${remoteReceiptPath}`);
+    console.log("Verify processing and the exact artifact in Meta Web Hosting, then record acceptance. Do not upload again.");
   } else if (command === "recover") {
     if (options.size !== 1 || !options.has("--archive-hash")) fail("recover requires --archive-hash.");
     const hash = options.get("--archive-hash");

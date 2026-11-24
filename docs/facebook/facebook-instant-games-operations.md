@@ -2,7 +2,7 @@
 
 As of 16 October 2026, the hourly Facebook context-retention schedule is removed. Request-time expiry, rollover deletion, account deletion and manual retention commands remain. Untouched expired records are not guaranteed automatic physical cleanup. Analytics does not delete provider data.
 
-Last updated: 2026-11-23
+Last updated: 2026-11-24
 
 This runbook describes the Facebook web target currently present in source. It is not release approval. The authoritative acceptance status is
 [`facebook-instant-games-progress.html`](facebook-instant-games-progress.html). An exact-hash, non-production role-account test draft is permitted only after the local artifact/backend preflight so P0 Meta-hosted evidence can be collected. Business/Partner approval, production promotion, public traffic, and a claim of release readiness remain forbidden until their required gates pass.
@@ -192,13 +192,34 @@ Selected-context private Live PvP is prepared in the [3 October context challeng
 - If an upload result is ambiguous, retain its hash-scoped retry barrier and reconcile the dashboard state before transmitting again. Preparation and draft commands share an exclusive local lock across every hash in the receipt directory. Preparation/begin scan all retained attempts and refuse transmitting, ambiguous, malformed or interrupted handoffs; reconcile the existing attempt before another artifact.
 - During an incident, disable only the affected Facebook feature, preserve Jest/core play where safe, record timestamps/revisions/hashes, and retain sanitized evidence for review.
 
-The exact-byte handoff is deliberately human-controlled because no verified Meta upload transport contract is committed. From a clean reviewed commit, use the canonical command below. It runs the existing preflight and then opens one hash-scoped handoff; it never contacts Meta. The build performs its normal artifact audit first, then the Facebook browser suite plays the game end to end and must pass before any ZIP is prepared; the preparer then runs the source secret-boundary audit, reruns the artifact audit, and creates the ZIP. `begin` copies the verified bytes once to an owner-private, read-only, hash-named snapshot under `.facebook-upload-receipts`; upload only that printed snapshot path:
+The dashboard handoff preserves the exact gated bytes. From a clean reviewed commit, use the canonical command below. It runs the existing preflight and then opens one hash-scoped handoff; it never contacts Meta. The build performs its normal artifact audit first, then the Facebook browser suite plays the game end to end and must pass before any ZIP is prepared; the preparer then runs the source secret-boundary audit, reruns the artifact audit, and creates the ZIP. Run tests and browser harnesses only when explicitly requested. `begin` copies the verified bytes once to an owner-private, read-only, hash-named snapshot under `.facebook-upload-receipts`; upload only that printed snapshot path:
 
 ```sh
 pnpm release:facebook
 ```
 
 The package-level `preflight:facebook-upload` and `facebook:draft begin` commands remain the target-native implementation and may be run separately for diagnosis. A preflight alone creates only the rebuildable ZIP and is not a release handoff.
+
+### Remote draft upload authorization
+
+The Meta Social Technologies MCP connection currently grants `read` access to Riddle Quest. Its Read and Manage scopes govern developer tools such as configuration inspection and webhook management. Neither scope supplies a game-bundle upload tool. Increasing that connection's permissions does not establish upload authorization. See [Meta's MCP scope reference](https://developers.facebook.com/documentation/mcp/devtools-mcp).
+
+Meta documents a separate [Graph API bundle upload flow](https://developers.facebook.com/documentation/games/launch/upload-bundle). In app `1748953042991569`, open **Instant Games → Web Hosting → Get Asset Upload Access Token**. Obtain a user upload token through the app's admin or developer account. Keep the credential in a private local prompt or secret store. Do not put it in chat, command arguments, source, receipts or logs. The upload token is separate from the MCP consent grant and the server's app secret.
+
+After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `.facebook-upload-receipts/gated-artifact.json`:
+
+```sh
+read -r -s -p "Meta asset upload token: " facebook_asset_upload_token
+printf '\n'
+printf '%s' "$facebook_asset_upload_token" | pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256
+unset facebook_asset_upload_token
+```
+
+This command verifies the clean source and archive, creates the immutable handoff and retry barrier, then transmits those exact bytes. It uses Graph API v24.0 for the upload session and selects `gg_graph_api` for `GG` tokens or `fb_game_bundle` for `EAA` tokens. Requests have bounded timeouts and no automatic retries. It records only response hashes, HTTP status and validated bundle metadata in the private `remote-upload-SHA.json` receipt.
+
+A successful HTTP upload establishes submission, not completed processing or acceptance. The barrier remains `ambiguous` until Meta Web Hosting provides exact-artifact evidence and the existing `accept` command records it. A timeout, failed response or interrupted command also requires reconciliation before another transmission. Do not run `begin` before the remote command or reuse a handoff already opened for dashboard upload. Remote upload does not assign a Testing version, promote a bundle, publish the game or submit a review.
+
+The local syntax checks for this transport do not establish credential validity or remote acceptance. A live upload still requires the separately granted upload token and an explicit upload request.
 
 The preparer refuses to replace the rebuildable ZIP while any retained handoff is unresolved. Every outcome command requires `--archive-hash` and re-verifies that exact read-only snapshot and matching barrier, independently of current `HEAD`, the latest ZIP or the singleton gate receipt. If `begin` is interrupted after writing `artifact-SHA.zip` but before writing `upload-SHA.json`, `recover --archive-hash EXACT_64_HEX_SHA256` verifies the retained bytes and creates an ambiguous barrier without replacing the archive or authorizing transmission. Reconcile Meta before acceptance; recovery never prints a new upload instruction. A crashed process can leave `release.lock` or a per-hash transition lock. Inspect the process and retained evidence before manually clearing a confirmed stale lock; no command automatically steals it.
 
