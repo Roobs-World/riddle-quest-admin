@@ -1,23 +1,29 @@
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState, type ReactNode} from "react";
 import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "../../../progression/economy/localEconomy";
 import {youtubeDirection, youtubeText, type YouTubeCopyKey} from "../../../localization/copy/localGameCopy";
 import {canShowLatinShortcut, normalizeLatinShortcutKey} from "../../input/localInput";
-import type {YouTubeSdkPort} from "../../../platform/contracts/localGamePolicy";
+import type {YouTubeLocale, YouTubeSdkPort} from "../../../platform/contracts/localGamePolicy";
 import {YouTubeNativeAnswerInput} from "./LocalAnswerInput";
 import {AchievementIcon, SaveBanner, StatusHeader} from "./LocalGameViews";
 import {useYouTubePlayableBoot, type YouTubeRuntime} from "../../hooks/browser/useLocalGameBoot";
 import {useYouTubeReadySession} from "../../hooks/browser/useLocalReadySession";
 /** Fixed Latin shortcut letters do not need splitting again for each answer or save projection. */
 const LATIN_SHORTCUT_KEYS = "QWERTYUIOPASDFGHJKLZXCVBNM".split("");
+/** Optional host presentation remains outside the local game's platform policy. */
+export type LocalGameAppProps = {
+  /** Local storage and lifecycle adapter. */
+  sdk: YouTubeSdkPort;
+  /** A host may add its own settings without exposing provider code to this view. */
+  renderSettings?: (context: {locale: YouTubeLocale; disabled: boolean}) => ReactNode;
+  /** Reports the resolved content language to an optional host. */
+  onLocaleReady?: (locale: YouTubeLocale) => void;
+};
 /** Provides you tube playable app behavior. */
 export function YouTubePlayableApp({
   sdk,
-}: {
-  /** Stores sdk. */
-  /** Stores sdk. */
-  /** Stores sdk. */
-  sdk: YouTubeSdkPort;
-}) {
+  renderSettings,
+  onLocaleReady,
+}: LocalGameAppProps) {
   /** Provides the complete YouTube boot controller. */
   const {state: boot, platformPaused, retry, setResetConfirmation, resetSave} = useYouTubePlayableBoot(sdk);
 
@@ -126,22 +132,22 @@ export function YouTubePlayableApp({
       </main>
     );
   }
-  return <ReadyYouTubeApp runtime={boot.runtime} sdk={sdk} />;
+  return <ReadyYouTubeApp runtime={boot.runtime} sdk={sdk} renderSettings={renderSettings} onLocaleReady={onLocaleReady} />;
 }
 /** Provides ready you tube app behavior. */
 function ReadyYouTubeApp({
   runtime,
   sdk,
-}: {
+  renderSettings,
+  onLocaleReady,
+}: LocalGameAppProps & {
   /** Stores runtime. */
   runtime: YouTubeRuntime;
-  /** Stores sdk. */
-  sdk: YouTubeSdkPort;
 }) {
   /** Provides {locale, content, authority} behavior. */
   const {locale, content, authority} = runtime;
   /** Provides [screen, set screen] behavior. */
-  const [screen, setScreen] = useState<"menu" | "progress">("menu");
+  const [screen, setScreen] = useState<"menu" | "progress" | "settings">("menu");
   /** Provides input ref behavior. */
   const inputRef = useRef<HTMLInputElement>(null);
   /** Ready-session lifecycle and authority projection. */
@@ -156,6 +162,7 @@ function ReadyYouTubeApp({
   const displayLetters = snapshot.displayLetters;
   /** Provides progression behavior. */
   const progression = snapshot.save.progression;
+  useEffect(() => {onLocaleReady?.(locale);}, [locale, onLocaleReady]);
   /** Provides material disabled behavior. */
   const materialDisabled = snapshot.busy || snapshot.paused || snapshot.saveBlocked;
   /** Ephemeral drafts remain editable while the previous result saves. */
@@ -359,6 +366,28 @@ function ReadyYouTubeApp({
     );
   }
 
+  if (screen === "settings" && renderSettings) {
+    return (
+      <main
+        className="yt-shell"
+        data-youtube-playable-root
+        lang={locale}
+        dir={youtubeDirection(locale)}
+        inert={snapshot.paused}
+      >
+        <StatusHeader snapshot={snapshot} locale={locale} />
+        {snapshot.saveBlocked && <SaveBanner text={text} retry={() => run(() => authority.retryPendingSave())} />}
+        <section className="yt-panel yt-settings">
+          <button className="yt-back" disabled={materialDisabled} onClick={() => setScreen("menu")}>
+            ← {text("back")}
+          </button>
+          <h1>{text("settings")}</h1>
+          {renderSettings({locale, disabled: materialDisabled})}
+        </section>
+      </main>
+    );
+  }
+
   if (screen === "progress") {
     /** Provides rank behavior. */
     const rank = Math.max(
@@ -519,6 +548,9 @@ function ReadyYouTubeApp({
         <button className="yt-progress-button" disabled={materialDisabled} onClick={() => setScreen("progress")}>
           {text("progress")}
         </button>
+        {renderSettings && <button className="yt-progress-button" disabled={materialDisabled} onClick={() => setScreen("settings")}>
+          {text("settings")}
+        </button>}
       </section>
     </main>
   );

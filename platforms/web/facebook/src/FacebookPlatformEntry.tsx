@@ -1,6 +1,7 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
-import type {NotificationSettingsCapability} from "../../../../src/notifications/contracts/notificationSettings";
+import type {NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
+import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
 import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {getCurrentLocale, tr} from "../../../../src/localization/browser/i18n";
@@ -27,6 +28,8 @@ import {
   applyPlayerPreferences,
   clearBrowserPlayerState,
   isPlayerNotificationsEnabled,
+  setPlayerNotificationsEnabled,
+  subscribeToPlayerNotifications,
   subscribeToPlayerPreferenceChanges,
 } from "../../../../src/settings/browser/playerPreferences";
 import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFacebookPause";
@@ -65,7 +68,7 @@ type StartupState =
       /** Target-owned native sharing, absent when Meta or the server disallows it. */
       referralSharing?: import("../../../../src/sharing/components/ReferralSharingCapability").ReferralSharingCapability;
       /** Settings owns the authenticated player's global notification preference. */
-      notificationSettings?: NotificationSettingsCapability;
+      notificationProvider?: NotificationProvider;
       /** Bounded launch hints; competitive authority remains on the server. */
       launch: ReturnType<typeof facebookLaunchFromEntryData>;
     }
@@ -183,7 +186,7 @@ export function FacebookPlatformEntry() {
         /** Meta-owned subscription capability, composed only after authenticated server gates. */
         let notifications = undefined;
         /** Settings is the only game surface that can request notification permission. */
-        let notificationSettings: NotificationSettingsCapability | undefined;
+        let notificationProvider: NotificationProvider | undefined;
         /** Provides referrals enabled behavior. */
         let referralsEnabled = false;
         /** Provides matchmaking enabled behavior. */
@@ -253,8 +256,18 @@ export function FacebookPlatformEntry() {
             const isCurrent = () => active && deletionGateRef.current.isOpen();
             const permission = createFacebookNotificationCapability(sdk, isCurrent);
             notifications = permission;
-            if (permission) notificationSettings = {
-              async setEnabled(enabled) {
+            if (permission) notificationProvider = createPlatformNotificationProvider({
+              preferences: {
+                getEnabled: isPlayerNotificationsEnabled,
+                setEnabled: setPlayerNotificationsEnabled,
+                subscribe: subscribeToPlayerNotifications,
+              },
+              async restoreDelivery() {
+                if (!isCurrent()) return "unsupported";
+                const subscribed = await sdk.player.isSubscribedBotAsync?.();
+                return isCurrent() ? subscribed === true ? "ready" : "permission-required" : "unsupported";
+              },
+              async applyEnabled(enabled) {
                 if (!isCurrent()) return false;
                 return deletionGateRef.current.run(async () => {
                   const {setNotificationPreference} = await import("../../../../src/platform/firebase/browserClient");
@@ -272,7 +285,7 @@ export function FacebookPlatformEntry() {
                   return isCurrent();
                 });
               },
-            };
+            });
           }
           referralsEnabled = ageCategory === "13_plus" && clientConfiguration.referralsEnabled;
           matchmakingEnabled = ageCategory === "13_plus" && clientConfiguration.matchmakingEnabled;
@@ -509,7 +522,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, notificationSettings, launch,
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
@@ -662,7 +675,7 @@ export function FacebookPlatformEntry() {
           initialPlayerData: startup.playerData,
           ...startup.launch,
           referralSharing: startup.referralSharing,
-          notificationSettings: startup.notificationSettings,
+          notificationProvider: startup.notificationProvider,
           onPlayerDataChange: (update) => void writePlayerData(update),
           accountDeletionServiceGate: deletionGateRef.current,
           presenceEnabled,

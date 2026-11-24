@@ -6,7 +6,7 @@ export function NotificationSettings() {
   const consent = useNotificationSettings();
   const tr = useTranslator();
   if (!consent) return null;
-  const {enabled, busy, unavailable, change} = consent;
+  const {enabled, busy, delivery, change} = consent;
   return <>
     <button
       type="button"
@@ -19,6 +19,6 @@ export function NotificationSettings() {
       <span>{tr("Settings.NOTIFICATIONS")}</span>
       <strong>{tr(enabled ? "Settings.TOGGLE_ON" : "Settings.TOGGLE_OFF")}</strong>
     </button>
-    {unavailable && <p role="status">{tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR")}</p>}
+    {delivery === "save-failed" && <p role="status">{tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR")}</p>}
   </>;
 }

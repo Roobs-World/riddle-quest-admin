@@ -8,7 +8,7 @@ import {
   type SetStateAction,
 } from "react";
 import {subscribeToPlayerPreferenceChanges} from "../../../../src/settings/browser/playerPreferences";
-import type {JestEngagementProgress, JestPlayerData, JestPlayerDataUpdate, JestSession} from "./types";
+import type {JestPlayerData, JestPlayerDataUpdate, JestSession} from "./types";
 import type {JestPlatformPort} from "./types";
 import type {NotificationOperationGate} from "./notifications/operationGate";
 import {PlayerSaveRecovery} from "../../../../src/accounts/browser/playerState/PlayerSaveRecovery";
@@ -20,7 +20,6 @@ export function useJestPlayerStateWrites({
   gate,
   sessionRef,
   setSession,
-  setEngagementProgress,
   trackFailure,
 }: {
   /** Stores platform. */
@@ -31,8 +30,6 @@ export function useJestPlayerStateWrites({
   sessionRef: MutableRefObject<JestSession | null>;
   /** Stores set session. */
   setSession: Dispatch<SetStateAction<JestSession | null>>;
-  /** Stores set engagement progress. */
-  setEngagementProgress: Dispatch<SetStateAction<JestEngagementProgress>>;
   /** Stores track failure. */
   trackFailure: (eventName: string) => void;
 }) {
@@ -134,13 +131,6 @@ export function useJestPlayerStateWrites({
       const currentSession = sessionRef.current;
       if (!enabledRef.current || !currentSession || !gate.isOpen()) return;
       claimOwner(currentSession.player.playerId);
-      if (update.profile) {
-        setEngagementProgress({
-          level: update.profile.level,
-          winStreak: update.profile.winStreak,
-          wins: update.profile.wins,
-        });
-      }
       /** Provides next behavior. */
       const next: JestPlayerData = {
         ...(playerDataRef.current ?? {}),
@@ -181,7 +171,7 @@ export function useJestPlayerStateWrites({
         trackFailure("player_data_save_failed");
       });
     },
-    [claimOwner, gate, ownsWrite, platform, recoverIfClean, recovery, sessionRef, setEngagementProgress, trackFailure],
+    [claimOwner, gate, ownsWrite, platform, recoverIfClean, recovery, sessionRef, trackFailure],
   );
 
   /** Recovery uses the same owned queues and newest accepted projections as ordinary saves. */

@@ -3,7 +3,7 @@ import {afterAll, afterEach, beforeAll, describe, expect, it, jest} from "@jest/
 import {chromium, type Browser} from "@playwright/test";
 import {execFileSync} from "node:child_process";
 import {createServer, type Server} from "node:http";
-import {mkdir, readFile, writeFile} from "node:fs/promises";
+import {mkdir, readFile} from "node:fs/promises";
 import path from "node:path";
 import type {HostToGameMessage} from "../../../../../src/platform/bridge/messages";
 
@@ -637,40 +637,7 @@ describeBrowser("Jest authentication integration", () => {
     ]);
     expect(state.firebaseTokens).toEqual(["mock", "mock"]);
     expect(state.profileReads).toBe(1);
-    await page.waitForFunction(
-      () =>
-        (
-          window as typeof window & {
-            /** Stores riddle quest jest auth test. */
-            __RIDDLE_QUEST_JEST_AUTH_TEST__: AuthHarnessState;
-          }
-        ).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length >= 7,
-    );
-    expect((await getHarnessState(page)).notificationSchedules).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          identifier: "riddle-quest-d1-v3",
-          scheduledInDays: 1,
-          priority: "medium",
-          asset: expect.stringMatching(/^data:image\/(?:png|jpeg|webp);base64,/),
-          entryPayload: expect.objectContaining({
-            gameMode: "challenge",
-            reference: "notification_d1_v4",
-            notification_offset: "D1",
-          }),
-        }),
-        expect.objectContaining({
-          identifier: "riddle-quest-d3-v3",
-          scheduledInDays: 3,
-          priority: "high",
-        }),
-        expect.objectContaining({
-          identifier: "riddle-quest-d7-v3",
-          scheduledInDays: 7,
-          priority: "high",
-        }),
-      ]),
-    );
+    expect((await getHarnessState(page)).notificationSchedules).toEqual([]);
     expect((await getHarnessState(page)).calls).toContain("sdk.payments.getSubscriptions");
     await page.evaluate(() =>
       window.dispatchEvent(
@@ -934,53 +901,21 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("schedules decodable inline daily and race cards without library references", async () => {
-    /** Registered SDK session with real browser canvas rendering. */
+  it("retires legacy notifications without scheduling app-authored content", async () => {
     const {context, page} = await openHarness(browser, {registered: true});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
-    await page.waitForFunction(() => (window as any).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.length >= 7);
-    await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: {challengeId: "inline-card-race"}})));
-    await page.waitForFunction(() => (window as any).__RIDDLE_QUEST_JEST_AUTH_TEST__.notificationSchedules.some((item: any) => item.identifier === "race_to_10_results_v1"));
-    /** All dispatches, including replacement after stored progress loads. */
-    const schedules = (await getHarnessState(page)).notificationSchedules;
-    /** Latest rolling series reflects the current personalized progress. */
-    const daily = [...new Map(schedules.filter((item) => item.identifier?.startsWith("riddle-quest-d")).map((item) => [item.identifier, item])).values()];
-    expect(new Set(daily.map((item) => item.asset)).size).toBe(3);
-    expect(daily.map((item) => item.scheduledInDays)).toEqual([1, 2, 3, 4, 5, 6, 7]);
-    // Jest batches the seven SDK calls into one request; individually valid
-    // 2MB cards can still make that entire request fail with HTTP 413.
-    expect(Buffer.byteLength(JSON.stringify(daily), "utf8")).toBeLessThan(1024 * 1024);
-    for (const item of schedules) {
-      expect(item.assetReference).toBeUndefined();
-      expect(item.asset).toMatch(/^data:image\/(?:png|jpeg|webp);base64,/);
-      /** Decoded payload size is checked independently of the production validator. */
-      const data = Buffer.from(item.asset!.split(",")[1], "base64");
-      expect(data.length).toBeLessThanOrEqual(2 * 1024 * 1024);
-      expect(await page.evaluate(async (asset) => {
-        /** Browser decoding confirms the image bytes and dimensions. */
-        const image = new Image();
-        image.src = asset;
-        await image.decode();
-        return [image.naturalWidth, image.naturalHeight];
-      }, item.asset!)).toEqual([900, 600]);
-    }
-    /** Race card retains its inbox attribution. */
-    const race = schedules.find((item) => item.identifier === "race_to_10_results_v1")!;
-    expect(race.entryPayload).toMatchObject({challengeId: "inline-card-race", challengeDestination: "inbox"});
-    if (process.env.JEST_NOTIFICATION_IMAGE_REPORT_DIR) {
-      /** Optional artifact destination for operator visual inspection. */
-      const directory = process.env.JEST_NOTIFICATION_IMAGE_REPORT_DIR;
-      await mkdir(directory, {recursive: true});
-      for (const [index, item] of [...daily.slice(0, 3), race].entries()) {
-        /** Artifact extension follows the actual browser encoding. */
-        const extension = item.asset!.startsWith("data:image/jpeg;") ? "jpg" : item.asset!.startsWith("data:image/webp;") ? "webp" : "png";
-        await writeFile(path.join(directory, `notification-${index + 1}.${extension}`), Buffer.from(item.asset!.split(",")[1], "base64"));
-      }
-    }
+    await page.waitForFunction(() => {
+      const state = Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__") as AuthHarnessState;
+      return state.notificationRemovals.includes("race_to_10_results_v1");
+    });
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: {challengeId: "legacy-race"}})));
+    const state = await getHarnessState(page);
+    expect(state.notificationRemovals).toEqual(expect.arrayContaining([...PLAYER_NOTIFICATION_IDS]));
+    expect(state.notificationSchedules).toEqual([]);
     await context.close();
   });
 
-  it("shares a race challenge and schedules its attributed registered-player reminder", async () => {
+  it("shares a race challenge without scheduling an app-authored reminder", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
@@ -1006,24 +941,12 @@ describeBrowser("Jest authentication integration", () => {
         }
       ).__RIDDLE_QUEST_JEST_AUTH_TEST__;
       return (
-        state.notificationSchedules.some((item) => item.identifier === "race_to_10_results_v1") &&
         state.referralShares.some((item) => /^rq_r10_v1_[0-9a-f]{16}$/.test(item.reference ?? ""))
       );
     });
     /** Provides state behavior. */
     let state = await getHarnessState(page);
-    expect(state.notificationSchedules).toContainEqual(
-      expect.objectContaining({
-        identifier: "race_to_10_results_v1",
-        scheduledInDays: 1,
-        asset: expect.stringMatching(/^data:image\/(?:png|jpeg|webp);base64,/),
-        entryPayload: expect.objectContaining({
-          challengeId: "race-challenge-42",
-          challengeDestination: "inbox",
-          reference: "race_to_10_results_d1_v1",
-        }),
-      }),
-    );
+    expect(state.notificationSchedules).toEqual([]);
     expect(state.referralShares).toContainEqual(
       expect.objectContaining({
         reference: expect.stringMatching(/^rq_r10_v1_[0-9a-f]{16}$/),

@@ -76,16 +76,6 @@ export type JestPlayerData = PlayerData;
 /** Client-writable fields merged into the next Jest player snapshot. */
 export type JestPlayerDataUpdate = PlayerDataUpdate;
 
-/** Counters used to schedule engagement notifications and update player progress. */
-export type JestEngagementProgress = {
-  /** Current player level. */
-  level: number;
-  /** Current consecutive-win count. */
-  winStreak: number;
-  /** Total completed-win count. */
-  wins: number;
-};
-
 /** Validated Jest consumable returned by the provider catalog. */
 type JestProduct = {
   /** Provider SKU passed unchanged to checkout. */

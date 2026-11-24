@@ -35,7 +35,7 @@ const gate=createNotificationOperationGate({crossContextLock:null,deletionPendin
 let riddle;const preload=()=>{if(!riddle){record('riddle:start');riddle=wait(320).then(()=>record('riddle:done'));}};
 const hydrate=async session=>{${baseline ? '' : 'preload();'}record('profile:start');await wait(200);record('profile:done');return {...session,playerData:{schemaVersion:1,updatedAt:Date.now(),profile:{coins:300,level:1,xp:0,winStreak:0,wins:0,gamesPlayed:0,achievements:[],classicIndex:1}}};};
 const session=${baseline ? 'await hydrate(result.value)' : 'result.value'};
-await commitJestStartupSession({gate,isActive:()=>true,session,${baseline ? '' : 'prepareSession:hydrate,'}enablePlayerStateWrites:()=>record('writes:enabled'),setEngagementProgress:()=>{},setSession:session=>{window.session=session;record('session:mounted');},trackFunnel:()=>{}});
+await commitJestStartupSession({gate,isActive:()=>true,session,${baseline ? '' : 'prepareSession:hydrate,'}enablePlayerStateWrites:()=>record('writes:enabled'),setSession:session=>{window.session=session;record('session:mounted');},trackFunnel:()=>{}});
 preload();await riddle;
 markJestPlayable(platform);document.getElementById('root').innerHTML='<button>Play</button>';record('playable');window.done=true;
 `);

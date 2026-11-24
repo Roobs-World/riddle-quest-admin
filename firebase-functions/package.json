@@ -49,7 +49,6 @@
     "test:presence-reconciliation": "node --test scripts/presence-visibility-reconcile.test.js",
     "presence:reconcile": "pnpm build && node scripts/runtime/run-with-functions-node.js scripts/maintenance/presence-visibility-reconcile.js",
     "leaderboard:privacy:purge-orphans": "pnpm build && node scripts/runtime/run-with-functions-node.js scripts/maintenance/purge-orphan-leaderboard-rows.js",
-    "notifications:configure": "node scripts/runtime/run-with-functions-node.js scripts/maintenance/notification-copy-configure.js",
     "usernames:migrate": "node scripts/build/prepare-deploy.js && pnpm build && node scripts/runtime/run-with-functions-node.js scripts/maintenance/migrate-username-reservations.js",
     "test:race:rules": "pnpm build && cross-env NODE_OPTIONS=\"--max-old-space-size=6144\" node scripts/verification/run-isolated-emulators.js emulators:exec --project demo-riddle-quest-e2e --only firestore,storage,database \"pnpm jest --config config/testing/jest.rules.config.js --maxWorkers=1 --workerIdleMemoryLimit=1536MB\"",
     "facebook:referrals:retention": "pnpm build && node scripts/runtime/run-with-functions-node.js ../platforms/web/facebook/server/scripts/facebook-referral-retention.js",

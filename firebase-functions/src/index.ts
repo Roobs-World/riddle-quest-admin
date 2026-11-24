@@ -56,7 +56,7 @@ import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "../../platfo
 import {grantFacebookPurchase, facebookPaymentWebhook} from "../../platforms/web/facebook/server/facebookPayments";
 import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "../../platforms/native/android/server/androidReferralCallables";
 import {deliverAndroidReferralPlay} from "../../platforms/native/android/server/androidReferralDelivery";
-import {setAndroidPushSubscription, sendAndroidDailyReminders} from "../../platforms/native/android/server/androidNotifications";
+import {setAndroidPushSubscription} from "../../platforms/native/android/server/androidNotifications";
 import {provisionAndroidAccount} from "../../platforms/native/android/server/provisionAndroidAccount";
 import {grantAndroidPurchase, syncAndroidSubscriptions} from "../../platforms/native/android/server/androidPurchaseEndpoints";
 import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "../../platforms/native/android/server/androidAttestation";
@@ -132,7 +132,6 @@ export {
   bindAndroidReferralEntry,
   getAndroidReferralStatus,
   deliverAndroidReferralPlay,
-  sendAndroidDailyReminders,
   grantAndroidPurchase,
   syncAndroidSubscriptions,
   issueAndroidAttestationNonce,

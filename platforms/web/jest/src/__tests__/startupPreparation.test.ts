@@ -41,7 +41,7 @@ const fixture = () => {
   const prepareSession = jest.fn(() => {started.resolve(); return profile.promise;});
   /** Observes all state exposed by the commit. */
   const effects = {enablePlayerStateWrites: jest.fn(), setSession: jest.fn(),
-    setEngagementProgress: jest.fn(), trackFunnel: jest.fn()};
+    trackFunnel: jest.fn()};
   return {locale, profile, gate, started, prepareSession, effects};
 };
 
@@ -67,7 +67,6 @@ it.each(["locale", "profile"] as const)("starts reads together and waits for bot
   await expect(commit).resolves.toBe(true);
   expect(f.effects.enablePlayerStateWrites).toHaveBeenCalledWith(hydrated.playerData, hydrated.player.playerId);
   expect(f.effects.setSession).toHaveBeenCalledWith({...hydrated, preferences: {locale: "en"}});
-  expect(f.effects.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
 });
 
 it("does not mount or enable writes when the mandatory server profile fails", async () => {

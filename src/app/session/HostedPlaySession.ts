@@ -4,7 +4,7 @@ import type {ActivePresenceState} from "../../presence/PlatformPresenceSession";
 import {coordinateHostServices, type AccountDeletionServiceGate} from "../../accounts/browser/deletion/accountDeletionServiceGate";
 import {createHostAuthorityModules, type HostAuthorityModules} from "./HostAuthorityModules";
 import type {ReferralSharingCapability} from "../../sharing/components/ReferralSharingCapability";
-import type {NotificationSettingsCapability} from "../../notifications/contracts/notificationSettings";
+import type {NotificationProvider} from "../../notifications/contracts/notificationProvider";
 import type {HostServices, ProductSummary, PurchaseResult, WebGameMode} from "../../platform/contracts/hostServices";
 
 /** Target-owned facts required to assemble one hosted-play session. */
@@ -52,7 +52,7 @@ export type HostedPlaySession = Readonly<{
   /** Stores referral sharing. */
   referralSharing?: ReferralSharingCapability | null;
   /** Target-owned delivery operations exposed only in Settings. */
-  notificationSettings?: NotificationSettingsCapability | null;
+  notificationProvider?: NotificationProvider | null;
 }>;
 
 /** Target facts accepted before hosted-play session coherence is resolved. */

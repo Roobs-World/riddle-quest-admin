@@ -116,7 +116,6 @@ them.
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
 | `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Yes | Public reCAPTCHA Enterprise site key used by Firebase App Check; the production security audit rejects an empty value |
 | `VITE_JEST_FUNCTIONS_BASE_URL` | Production | Base URL for the authoritative Jest HTTP endpoints |
-| `VITE_JEST_NOTIFICATION_ASSET_REFERENCE` | No | Approved Jest notification asset reference; the Hero image is the fallback |
 | `VITE_RACE_TO_10_ENABLED` | No | Set to `1` to expose multiplayer in the normal game; rollout rules still apply server-side |
 
 After changing browser values, rebuild the game. Vite values are compile-time settings and do not change an already uploaded artifact.
@@ -235,26 +234,9 @@ gcloud auth application-default login
 gcloud auth application-default set-quota-project riddle-quest-ec2b2
 ```
 
-### Notification copy
+### Notification content
 
-Notification bodies and CTAs originate in every locale's `game.json`; Race notification copy comes from `race.json`. The configuration script validates length, placeholders, and delivery-safe characters, then builds `config/notifications` in Firestore.
-
-Preview:
-
-```bash
-pnpm --dir firebase-functions notifications:configure --project riddle-quest-ec2b2
-```
-
-Apply after reviewing the locale diff and preview:
-
-```bash
-pnpm --dir firebase-functions notifications:configure \
-  --project riddle-quest-ec2b2 \
-  --apply \
-  --confirm-project riddle-quest-ec2b2
-```
-
-Registered players receive a rolling fuzzy D1-D7 schedule. Existing reminders are removed and replaced when progress changes or the player returns. Copy is personalized from real progress, rotated to avoid repeated D1 messages, and attributed through `notification_template` and `notification_offset` entry fields.
+Author notification titles, bodies and images in the [notification manager](../notifications/service.md). The game no longer builds notification copy from locale files or reads `config/notifications` from Firestore. See [platform delivery](../notifications/platform-delivery.md) for the required Jest, Meta and native transport integration paths.
 
 ### Race to 10 content
 

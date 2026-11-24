@@ -58,7 +58,9 @@ import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
 import {hasLiveRaceLobby} from "../../../../src/races/browser/storage/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
-import type {NotificationSettingsCapability} from "../../../../src/notifications/contracts/notificationSettings";
+import type {NotificationPreferenceCommand} from "../../../../src/notifications/contracts/notificationProvider";
+import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
+import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
 
 /** Notification delivery loads after the playable session mounts. */
 const JestNotifications = lazy(() => import("./notifications/JestNotifications")
@@ -176,12 +178,6 @@ export function JestPlayApp() {
   const [accountDeleted, setAccountDeleted] = useState(false);
   /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
-  /** Provides [engagement progress, set engagement progress] behavior. */
-  const [engagementProgress, setEngagementProgress] = useState({
-    level: 1,
-    winStreak: 0,
-    wins: 0,
-  });
   /** Provides [notification operation gate] behavior. */
   const [notificationOperationGate] = useState(createNotificationOperationGate);
   /** Provides deletion cleanup options behavior. */
@@ -211,7 +207,6 @@ export function JestPlayApp() {
     gate: notificationOperationGate,
     sessionRef,
     setSession,
-    setEngagementProgress,
     trackFailure: trackFunnel,
   });
   /** Provides account deletion quiesced behavior. */
@@ -220,18 +215,18 @@ export function JestPlayApp() {
   const isAnalyticsSessionCurrent = useCallback(() => notificationOperationGate.isOpen(), [notificationOperationGate]);
   const notificationsDelegate = useMemo(() => {
     let active = false;
-    let current: NotificationSettingsCapability | null = null;
-    const waiting = new Set<(capability: NotificationSettingsCapability | null) => void>();
-    const resolveWaiting = (capability: NotificationSettingsCapability | null) => {
+    let current: NotificationPreferenceCommand | null = null;
+    const waiting = new Set<(capability: NotificationPreferenceCommand | null) => void>();
+    const resolveWaiting = (capability: NotificationPreferenceCommand | null) => {
       waiting.forEach(resolve => resolve(capability)); waiting.clear();
     };
     return {
       async setEnabled(enabled: boolean) {
         if (!active) return false;
-        const capability = current ?? await new Promise<NotificationSettingsCapability | null>(resolve => waiting.add(resolve));
+        const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
         return active && capability ? capability.setEnabled(enabled) : false;
       },
-      install(capability: NotificationSettingsCapability) {
+      install(capability: NotificationPreferenceCommand) {
         current = capability; if (active) resolveWaiting(capability);
         return () => {if (current === capability) current = null;};
       },
@@ -243,6 +238,14 @@ export function JestPlayApp() {
     notificationsDelegate.activate();
     return () => notificationsDelegate.retire();
   }, [notificationsDelegate]);
+  const notificationProvider = useMemo(() => createPlatformNotificationProvider({
+    preferences: {
+      getEnabled: isPlayerNotificationsEnabled,
+      setEnabled: setPlayerNotificationsEnabled,
+      subscribe: subscribeToPlayerNotifications,
+    },
+    applyEnabled: notificationsDelegate.setEnabled,
+  }), [notificationsDelegate]);
   /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({
     locale,
@@ -428,7 +431,6 @@ export function JestPlayApp() {
                 schemaVersion: 1, updatedAt: Date.now(), profile}};
             },
             enablePlayerStateWrites: playerStateWrites.enable,
-            setEngagementProgress,
             setSession,
             trackFunnel,
           });
@@ -561,8 +563,6 @@ export function JestPlayApp() {
       result: {
         /** Stores is correct. */
         isCorrect: boolean;
-        /** Stores new level. */
-        newLevel?: number;
         /** Stores new win streak. */
         newWinStreak?: number;
       },
@@ -572,11 +572,6 @@ export function JestPlayApp() {
         gameMode: input.gameMode,
         winStreak: result.newWinStreak ?? 0,
       });
-      setEngagementProgress((current) => ({
-        level: result.newLevel ?? current.level,
-        winStreak: result.newWinStreak ?? current.winStreak,
-        wins: current.wins + 1,
-      }));
       /** Records ed. */
       const recorded = await notificationOperationGate.run(() =>
         recordAuthoritativeCompletion(platform, session, {
@@ -630,9 +625,9 @@ export function JestPlayApp() {
   }
   return (
     <>
-      <Suspense fallback={null}><JestNotifications locale={locale} mockRuntime={mockRuntime} authHarness={authHarness}
-        session={session} sessionRef={sessionRef} engagementProgress={engagementProgress} platform={platform}
-        trackFunnel={trackFunnel} gate={notificationOperationGate} install={notificationsDelegate.install} /></Suspense>
+      <Suspense fallback={null}><JestNotifications mockRuntime={mockRuntime} authHarness={authHarness}
+        session={session} sessionRef={sessionRef} platform={platform}
+        gate={notificationOperationGate} install={notificationsDelegate.install} /></Suspense>
       {registrationFailure ? (
         <div
           className="play-alert game-shell-alert"
@@ -687,7 +682,7 @@ export function JestPlayApp() {
               onTogglePresence: togglePresence,
               onPresenceStateChange: setPresenceState,
               referralSharing,
-              notificationSettings: notificationsDelegate,
+              notificationProvider,
             })}
             onPlayable={() => markJestPlayable(platform)}
             onStartupUnavailable={() => markJestPlayable(platform)}

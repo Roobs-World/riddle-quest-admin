@@ -15,6 +15,8 @@ await writeFile(path.join(scratch, "main.tsx"), `
 import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {NotificationSettingsProvider} from ${JSON.stringify(path.join(root, "src/notifications/components/NotificationSettingsContext.ts"))};
+import {createPlatformNotificationProvider} from ${JSON.stringify(path.join(root, "src/notifications/controllers/platformNotificationProvider.ts"))};
+import {isPlayerNotificationsEnabled,setPlayerNotificationsEnabled,subscribeToPlayerNotifications} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
 import {SettingsModalPage} from ${JSON.stringify(path.join(root, "src/settings/components/SettingsModalPage.tsx"))};
 import {ProfileModalPage} from ${JSON.stringify(path.join(root, "src/accounts/components/ProfileModalPage.tsx"))};
 import ${JSON.stringify(path.join(root, "src/app/modals/styles/modal-shell.css"))};
@@ -22,8 +24,8 @@ import ${JSON.stringify(path.join(root, "src/accounts/styles/account.css"))};
 import ${JSON.stringify(path.join(root, "src/progression/styles/rewards.css"))};
 import ${JSON.stringify(path.join(root, "src/accounts/styles/profile-details.css"))};
 window.calls=[];
-const capability={setEnabled:enabled=>{window.calls.push(enabled);return new Promise((resolve,reject)=>{window.finish=resolve;window.fail=reject;});}};
-function App(){const [surface,setSurface]=useState('settings');window.setSurface=setSurface;return <NotificationSettingsProvider capability={location.search.includes('unsupported')?null:capability}><div className="game-modal-backdrop"><div className={"game-modal modal-"+surface}>{surface==='settings'?<SettingsModalPage locale="en" muted={false} onOpenModal={()=>{}} onToggleMute={()=>{}} commerceAvailable={false}/>:<ProfileModalPage profile={null} onOpenModal={()=>{}} onUpdateAvatar={async()=>{}} onDeleteAccount={()=>{}}/>}</div></div></NotificationSettingsProvider>;}
+const provider=createPlatformNotificationProvider({preferences:{getEnabled:isPlayerNotificationsEnabled,setEnabled:setPlayerNotificationsEnabled,subscribe:subscribeToPlayerNotifications},applyEnabled:enabled=>{window.calls.push(enabled);return new Promise((resolve,reject)=>{window.finish=resolve;window.fail=reject;});}});
+function App(){const [surface,setSurface]=useState('settings');window.setSurface=setSurface;return <NotificationSettingsProvider provider={location.search.includes('unsupported')?null:provider}><div className="game-modal-backdrop"><div className={"game-modal modal-"+surface}>{surface==='settings'?<SettingsModalPage locale="en" muted={false} onOpenModal={()=>{}} onToggleMute={()=>{}} commerceAvailable={false}/>:<ProfileModalPage profile={null} onOpenModal={()=>{}} onUpdateAvatar={async()=>{}} onDeleteAccount={()=>{}}/>}</div></div></NotificationSettingsProvider>;}
 createRoot(document.getElementById('root')).render(<App/>);
 `);
 await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOptions: {jsx: "react-jsx"}}));

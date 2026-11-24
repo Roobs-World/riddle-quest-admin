@@ -54,8 +54,6 @@ it("blocks a queued SDK write after deletion and suppresses later local state mu
   });
   /** Provides write player data behavior. */
   const writePlayerData = jest.fn(async () => undefined);
-  /** Sets engagement progress. */
-  const setEngagementProgress = jest.fn();
   /** Tracks failure. */
   const trackFailure = jest.fn();
   /** Provides warn behavior. */
@@ -68,7 +66,6 @@ it("blocks a queued SDK write after deletion and suppresses later local state mu
     gate,
     sessionRef: {current: currentSession},
     setSession: jest.fn(),
-    setEngagementProgress,
     trackFailure,
   });
   writes.enable(null);
@@ -82,7 +79,8 @@ it("blocks a queued SDK write after deletion and suppresses later local state mu
   expect(writePlayerData).not.toHaveBeenCalled();
   expect(trackFailure).toHaveBeenCalledWith("player_data_save_failed");
   writes.savePlayerData({profile: {level: 9, winStreak: 4, wins: 20}});
-  expect(setEngagementProgress).not.toHaveBeenCalled();
+  await new Promise<void>((resolve) => setImmediate(resolve));
+  expect(writePlayerData).not.toHaveBeenCalled();
   warn.mockRestore();
 });
 
@@ -113,7 +111,6 @@ it("serializes rapid checkpoints and eventually flushes the newest snapshot", as
     gate,
     sessionRef: {current: currentSession},
     setSession: jest.fn(),
-    setEngagementProgress: jest.fn(),
     trackFailure: jest.fn(),
   });
   writes.enable(null);
@@ -152,7 +149,7 @@ const owner = (writePlayerData: JestPlatformPort["writePlayerData"], writePrefer
   const setSession = jest.fn();
   /** Hook interface accepts the same port as the Jest application. */
   const writes = useJestPlayerStateWrites({platform: {writePlayerData, writePreferences} as unknown as JestPlatformPort,
-    gate: openGate(), sessionRef, setSession, setEngagementProgress: jest.fn(), trackFailure});
+    gate: openGate(), sessionRef, setSession, trackFailure});
   writes.enable(null);
   return {writes, sessionRef, setSession, trackFailure};
 };

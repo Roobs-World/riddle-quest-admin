@@ -1,7 +1,7 @@
 import {applyPlayerPreferences} from "../../../../src/settings/browser/playerPreferences";
 import {setLocaleAndWait, type Locale} from "../../../../src/localization/browser/i18n";
 import type {NotificationOperationGate} from "./notifications/operationGate";
-import type {JestEngagementProgress, JestPlayerData, JestSession} from "./types";
+import type {JestPlayerData, JestSession} from "./types";
 
 /** Commits a successful startup while deletion still holds a shared cross-tab lock. */
 export async function commitJestStartupSession({
@@ -10,7 +10,6 @@ export async function commitJestStartupSession({
   session,
   prepareSession,
   enablePlayerStateWrites,
-  setEngagementProgress,
   setSession,
   trackFunnel,
 }: {
@@ -24,8 +23,6 @@ export async function commitJestStartupSession({
   prepareSession?: (session: JestSession, locale: Locale) => Promise<JestSession>;
   /** Stores enable player state writes. */
   enablePlayerStateWrites: (playerData: JestPlayerData | null, playerId: string) => JestPlayerData | null | void;
-  /** Stores set engagement progress. */
-  setEngagementProgress: (progress: JestEngagementProgress) => void;
   /** Stores set session. */
   setSession: (session: JestSession) => void;
   /** Stores track funnel. */
@@ -64,13 +61,6 @@ export async function commitJestStartupSession({
       const committedSession = playerData !== undefined && playerData !== readySession.playerData
         ? {...readySession, preferences: {...readySession.preferences, locale: "en"}, playerData}
         : {...readySession, preferences: {...readySession.preferences, locale: "en"}};
-      /** Saves d profile. */
-      const savedProfile = committedSession.playerData?.profile;
-      setEngagementProgress({
-        level: savedProfile?.level ?? 1,
-        winStreak: savedProfile?.winStreak ?? 0,
-        wins: savedProfile?.wins ?? 0,
-      });
       setSession(committedSession);
       trackFunnelSafely("session_started", {
         registered: session.player.registered,

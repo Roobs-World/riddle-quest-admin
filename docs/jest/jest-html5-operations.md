@@ -370,7 +370,7 @@ Owner access to `https://jest.com/developers` is required:
    loading mode, and confirm the game is Approved and Public. The validator is read-only and never changes Console state.
 4. Create the six consumable SKUs and monthly subscription SKU in the manifest. All players must read their signed
    subscription entitlement before the shop renders, and an active subscription must never be offered again.
-5. Keep the approved notification image reference aligned with `VITE_JEST_NOTIFICATION_ASSET_REFERENCE`.
+5. Author notification content in the notification manager. The Jest adapter currently cancels legacy schedules; manager-to-SDK delivery requires the [platform integration](../common/notifications/platform-delivery.md#jest) before it can schedule campaigns.
 6. Create at least two sandbox players. The manifest currently lists no separate onboarding games; referral links enter Riddle Quest directly.
 7. Verify that the activated build matches the receipt's exact version ID and build version, then run the
    acceptance matrix below.
@@ -380,7 +380,7 @@ Owner access to `https://jest.com/developers` is required:
 - Identity: guest and registered startup; dismissal and cancellation; stable player ID; invalid and stale token rejection.
 - Loading: every manual phase advances; no 15-second timeout; retry works; overlay closes only when input is enabled.
 - Analytics: `markGameLoaded()` reports actual readiness; registration and attribution events contain no personal data. Jest's current SDK deprecates `markFirstMilestone()` as a no-op, so use the game's events for win analytics.
-- Notifications: D1-D7 engagement and Race-to-10 reminder replacement/removal; registered-only behavior; Daily Cosmic Riddle and race-inbox payload return.
+- Notifications: registered-only cancellation of every legacy reminder; Settings Off and account deletion cleanup; no automatic app-authored schedules. Validate manager campaigns separately after the manager-to-SDK integration exists.
 - Payments: success, cancellation, internal error, invalid SKU/token, timeout, interruption before completion, and multi-page recovery.
 - Subscriptions: signed entitlement sync, guest-visible offers and Jest-owned signup gating, successful or cancelled checkout, active offer suppression, restoration, and cancellation.
 - Referrals: canceled victory, profile, and Race-to-10 shares; result links remain in the normal game; race links open the exact challenge; first-entry attribution; both players receive 100 coins; duplicate, cross-campaign duplicate, self, tampered, and unrelated-reference rejection.

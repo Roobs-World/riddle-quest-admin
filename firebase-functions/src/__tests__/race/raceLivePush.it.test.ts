@@ -4,12 +4,11 @@ import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
 import {sendLiveRaceChallengeForUser, listLiveRaceChallengesForUser} from "../../race/invitations/raceLiveChallengeNotifications";
-import {deliverLiveRacePush} from "../../race/notifications/raceLivePushDelivery";
+import {retireLegacyLiveRacePush} from "../../race/notifications/raceLivePushDelivery";
 import {sendFacebookLiveChallengePush} from "../../../../platforms/web/facebook/server/notifications/facebookLiveChallengePush";
 import {facebookFirebaseUid} from "../../../../platforms/web/facebook/server/facebookSecurity";
 import * as facebookTransport from "../../../../platforms/web/facebook/server/facebookNotificationTransport";
 import {createUsernameReservationFields, createUsernameReservationId} from "../../profile/usernameReservations";
-import {liveChallengePushCopy} from "../../race/notifications/raceLivePushCopy";
 
 /** Synthetic same-provider account identities for emulator tests. */
 const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
@@ -81,50 +80,28 @@ it("atomically addresses the existing lobby, inbox and one durable event; retrie
   expect((await db.collection("liveRaceMatches").get()).docs[0].id).toBe(seat.ticketId);
 });
 
-it("claims an offline push once across concurrent event redelivery, using recipient-language copy", async () => {
+it("retires duplicate legacy push work without generating content or changing the inbox", async () => {
   const {A, B} = await facebookAccounts();
-  /** Original private lobby receipt. */
   const seat = await reserve(A); await notify(seat.challengeId!, "Bob", A);
-  /** Injected provider boundary never sends to a person. */
-  const send = jest.fn(async () => "submitted" as const);
-  await Promise.all([deliverLiveRacePush(db, seat.ticketId, send, NOW + 2000), deliverLiveRacePush(db, seat.ticketId, send, NOW + 2000)]);
-  await deliverLiveRacePush(db, seat.ticketId, send, NOW + 3000);
-  expect(send).toHaveBeenCalledTimes(1);
-  expect(send.mock.calls[0]).toEqual([{event: expect.objectContaining({recipientId: B, challengeId: seat.challengeId}),
-    title: "Alice vous défie", body: "Accepter le défi"}]);
-  expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()?.status).toBe("submitted");
+  await Promise.all([retireLegacyLiveRacePush(db, seat.ticketId, NOW + 2000), retireLegacyLiveRacePush(db, seat.ticketId, NOW + 2000)]);
+  await retireLegacyLiveRacePush(db, seat.ticketId, NOW + 3000);
+  expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()).toMatchObject({
+    status: "skipped", reason: "manager-content-required", finishedAtMs: NOW + 2000,
+  });
+  expect(await listLiveRaceChallengesForUser(db, B, NOW + 2000)).toHaveLength(1);
 });
 
-it("keeps ambiguous sends terminal so a retry cannot deliver a duplicate", async () => {
-  const {A} = await facebookAccounts();
-  /** Original private lobby receipt. */
-  const seat = await reserve(A); await notify(seat.challengeId!, "Bob", A);
-  /** Injected provider boundary never sends to a person. */
-  const send = jest.fn(async () => {throw new Error("provider-timeout");});
-  await deliverLiveRacePush(db, seat.ticketId, send, NOW + 2000);
-  await deliverLiveRacePush(db, seat.ticketId, send, NOW + 3000);
-  expect(send).toHaveBeenCalledTimes(1);
-  expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()?.status).toBe("unconfirmed");
-});
-
-it.each(["opted-out", "blocked", "recipient-deleted", "creator-deleted", "expired-lobby", "cancelled", "accepted"])("suppresses %s pushes while retaining truthful inbox state", async mode => {
+it("keeps in-game invitations when the recipient disables external notifications", async () => {
   const {A, B} = await facebookAccounts();
-  /** Original private lobby receipt. */
-  const seat = await reserve(A); await notify(seat.challengeId!, "Bob", A);
-  if (mode === "opted-out") await db.doc(`users/${B}`).update({notificationsEnabled: false});
-  if (mode === "blocked") await db.doc(`users/${B}/blockedRivals/${A}`).set({blocked: true});
-  if (mode.endsWith("-deleted")) await db.doc(`jestAccountDeletionTombstones/${mode === "creator-deleted" ? A : B}`).set({deletedAt: NOW});
-  if (mode === "cancelled") await db.doc(`liveRaceTickets/${seat.ticketId}`).update({cancelled: true});
-  if (mode === "accepted") await joinLiveRaceForUser(B, {locale: "en", categoryId: "history", challengeId: seat.challengeId!, requestId: "accepted-before-push"}, {db, nowMs: NOW + 1500});
-  /** Injected provider boundary never sends to a person. */
-  const send = jest.fn(async () => "submitted" as const);
-  await deliverLiveRacePush(db, seat.ticketId, send, mode === "expired-lobby" ? NOW + 900_000 : NOW + 2000);
-  expect(send).not.toHaveBeenCalled();
+  const seat = await reserve(A);
+  await db.doc(`users/${B}`).update({notificationsEnabled: false});
+  await notify(seat.challengeId!, "Bob", A);
+  await retireLegacyLiveRacePush(db, seat.ticketId, NOW + 2000);
   expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()?.status).toBe("skipped");
-  if (mode === "opted-out") expect(await listLiveRaceChallengesForUser(db, B, NOW + 2000)).toHaveLength(1);
+  expect(await listLiveRaceChallengesForUser(db, B, NOW + 2000)).toHaveLength(1);
 });
 
-it("rejects foreign creators, cross-provider recipients, self-invites, stale reservations and forged deadlines", async () => {
+it("rejects foreign creators, self-invites, stale reservations and invitation rate limits", async () => {
   const {A, B, C} = await facebookAccounts();
   /** Original private lobby receipt. */
   const seat = await reserve(A);
@@ -143,17 +120,7 @@ it("rejects foreign creators, cross-provider recipients, self-invites, stale res
   await expect(notify(seat.challengeId!, "Bob", A)).rejects.toMatchObject({code: "resource-exhausted"});
   await db.doc(`users/${B}/liveChallengeInboxRate/current`).delete();
   await notify(seat.challengeId!, "Bob", A);
-  await db.doc(`liveRacePushOutbox/${seat.ticketId}`).update({expiresAtMs: NOW + 99_000_000});
-  /** Injected provider boundary never sends to a person. */
-  const send = jest.fn(async () => "submitted" as const);
-  await deliverLiveRacePush(db, seat.ticketId, send, NOW + 2000);
-  expect(send).not.toHaveBeenCalled();
-});
 
-it("renders localized server copy without leaving substitution placeholders", () => {
-  for (const locale of ["ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi"])
-    expect(liveChallengePushCopy(locale, "Alice").title).toContain("Alice");
-  expect(liveChallengePushCopy("unknown", "Alice")).toEqual(liveChallengePushCopy("en", "Alice"));
 });
 
 it("composes the canonical Facebook identity, consent ledger and one fixed-host native push without guessing acknowledgement", async () => {

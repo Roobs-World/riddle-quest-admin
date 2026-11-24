@@ -25,7 +25,7 @@ The background Sentry worker has its own [runbook](sentry-worker/README.md) and 
 
 Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
 
-The Settings notification toggle and provider delivery rules are documented in [Notification settings](common/notifications/README.md).
+The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling.
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 

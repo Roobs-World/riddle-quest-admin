@@ -31,7 +31,6 @@ const requiredKeys = {
     "RaceTo10.BLOCK_SUCCESS",
     "RaceTo10.REPORT_SUCCESS",
     "RaceTo10.ERROR_LOCALE_MISMATCH",
-    "RaceTo10.RESULTS_NOTIFICATION_BODY",
   ],
   settings: [
     "Settings.ACCOUNT_DELETION_BUTTON",

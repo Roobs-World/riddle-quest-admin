@@ -1,12 +1,14 @@
 import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
+import {hasAuditedHostedNotifications} from "./audit-hosted-notifications.mjs";
 
 const target = process.argv[2];
 if (!new Set(["netflix", "yahoo"]).has(target)) throw new Error("Expected netflix or yahoo target");
 const rootDirectory = process.argv[3] || process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim() || `builds/${target}`;
 const inventory = await inspectWebTargetArtifact({rootDirectory, target});
 const {files, root, textFiles, totalBytes} = inventory;
+const hostedNotifications = await hasAuditedHostedNotifications({target, root, files});
 if (totalBytes >= 30 * 1024 * 1024) throw new Error(`${target} candidate artifact must be below 30 MiB`);
 const indexPath = path.join(root, "index.html");
 if (!files.includes(indexPath)) throw new Error(`${target} candidate is missing index.html`);
@@ -28,7 +30,9 @@ const forbidden = [
   ["YouTube", /youtube\.com\/game_api|\bytgame\b/iu],
   ...(["netflix", "yahoo"].includes(target) ? [["Firebase", /firebaseio\.com|googleapis\.com|cloudfunctions\.net|\bfirebase(?:app|auth|database|firestore|functions|storage)\b/iu]] : []),
   ...(["netflix", "yahoo"].includes(target) ? [["analytics", /\bSentry\b|sentry\.io|google-analytics|googletagmanager|\bgtag\s*\(/iu]] : []),
-  ...(["netflix", "yahoo"].includes(target) ? [["network API", /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
+  ...(["netflix", "yahoo"].includes(target) ? [["network API", hostedNotifications
+    ? /\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u
+    : /\bfetch\s*\(|\bXMLHttpRequest\b|\bWebSocket\b|\bEventSource\b|\bsendBeacon\s*\(/u]] : []),
   ...(["netflix", "yahoo"].includes(target)
     ? [["commerce or advertising", /\b(?:purchaseAsync|checkout|IAP|showInterstitialAd|showRewardedAd|AdMob)\b/iu]]
     : [["advertising", /\b(?:showInterstitialAd|showRewardedAd|AdMob)\b/iu]]),

@@ -1,56 +1,53 @@
 import {trackEvent} from "../../observability/analytics/events";
-import {createContext, createElement, useContext, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode} from "react";
-import type {NotificationSettingsCapability} from "../contracts/notificationSettings";
-import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../settings/browser/playerPreferences";
+import {createContext, createElement, useCallback, useContext, useLayoutEffect, useMemo, useSyncExternalStore, type ReactNode} from "react";
+import type {NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
 
-/** Saved master preference and operation lock for the Settings notification row. */
-function useNotificationSettingsState(capability?: NotificationSettingsCapability | null) {
+type NotificationSettingsState = NotificationSnapshot & {
+  change(enabled: boolean): Promise<boolean>;
+  requestPermission(): Promise<boolean>;
+};
+
+/** Settings observes one selected provider, which owns preference and delivery state. */
+function useNotificationSettingsState(provider?: NotificationProvider | null): NotificationSettingsState | null {
   /** A replaced provider cannot attribute an old permission result to the new visit. */
-  const lifetime = useMemo(() => ({active: false}), [capability]);
+  const lifetime = useMemo(() => ({active: false}), [provider]);
   useLayoutEffect(() => {
     lifetime.active = true;
-    return () => {lifetime.active = false;};
-  }, [lifetime]);
-  const enabled = useSyncExternalStore(subscribeToPlayerNotifications, isPlayerNotificationsEnabled, () => true);
-  /** A pending provider operation survives modal navigation. */
-  const [busy, setBusy] = useState(false);
-  /** A failed provider update leaves the player's desired preference visible. */
-  const [unavailable, setUnavailable] = useState(false);
-  /** Immediate operation lock prevents duplicate clicks. */
-  const lock = useRef(false);
-  /** Settings is the only player-facing entry point for changing notifications. */
-  const change = async (next: boolean) => {
-    if (lock.current || !capability || (!unavailable && next === enabled)) return;
-    lock.current = true; setBusy(true); setUnavailable(false);
-    setPlayerNotificationsEnabled(next);
+    void provider?.restore().catch(() => {
+      if (lifetime.active) trackEvent("notification_preference_restore_failed");
+    });
+    return () => {lifetime.active = false; provider?.retire();};
+  }, [lifetime, provider]);
+  const subscribe = useCallback((listener: () => void) => provider?.subscribe(listener) ?? (() => {}), [provider]);
+  const getSnapshot = useCallback(() => provider?.getSnapshot() ?? null, [provider]);
+  const snapshot = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+  const change = async (next: boolean): Promise<boolean> => {
+    if (!provider) return false;
     if (lifetime.active) trackEvent("notification_preference_requested", {enabled: next});
     try {
-      const saved = await capability.setEnabled(next);
+      const saved = await provider.setEnabled(next);
       if (lifetime.active) trackEvent("notification_preference_result", {enabled: next, success: saved});
-      if (lifetime.active && !saved) setUnavailable(true);
+      return saved;
     } catch {
-      if (lifetime.active) {
-        trackEvent("notification_preference_result", {enabled: next, success: false});
-        setUnavailable(true);
-      }
+      if (lifetime.active) trackEvent("notification_preference_result", {enabled: next, success: false});
+      return false;
     }
-    finally {lock.current = false; setBusy(false);}
   };
-  return {enabled, busy, unavailable, change};
+  return snapshot && provider ? {...snapshot, change, requestPermission: () => provider.requestPermission()} : null;
 }
 
 /** The active account owns notification updates across modal navigation. */
-const NotificationSettingsContext = createContext<ReturnType<typeof useNotificationSettingsState> | null>(null);
+const NotificationSettingsContext = createContext<NotificationSettingsState | null>(null);
 
 /** Keeps notification state independent of referral sharing and multiplayer. */
-export function NotificationSettingsProvider({capability, children}: {
+export function NotificationSettingsProvider({provider, children}: {
   /** Only targets with notification delivery expose the Settings row. */
-  capability?: NotificationSettingsCapability | null;
+  provider?: NotificationProvider | null;
   /** Shared game and Settings content. */
   children: ReactNode;
 }) {
-  const state = useNotificationSettingsState(capability);
-  return createElement(NotificationSettingsContext.Provider, {value: capability ? state : null}, children);
+  const state = useNotificationSettingsState(provider);
+  return createElement(NotificationSettingsContext.Provider, {value: state}, children);
 }
 
 /** Reads the global notification preference exposed in Settings. */

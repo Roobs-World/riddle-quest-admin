@@ -17,7 +17,6 @@ const session: JestSession = {
 /** Creates isolated startup collaborators for each assertion. */
 const createCommitDependencies = () => ({
   enablePlayerStateWrites: jest.fn(),
-  setEngagementProgress: jest.fn(),
   setSession: jest.fn(),
   trackFunnel: jest.fn(),
 });
@@ -67,7 +66,6 @@ it("commits restored progress and attributed invite analytics", async () => {
   })).resolves.toBe(true);
 
   expect(dependencies.enablePlayerStateWrites).toHaveBeenCalledWith(restoredSession.playerData, restoredSession.player.playerId);
-  expect(dependencies.setEngagementProgress).toHaveBeenCalledWith({level: 7, winStreak: 3, wins: 12});
   expect(dependencies.setSession).toHaveBeenCalledWith(restoredSession);
   expect(dependencies.trackFunnel).toHaveBeenCalledWith(
     "viral_invite_opened",
@@ -120,8 +118,6 @@ it("does not reapply startup state after deletion wins the cross-tab lock", asyn
   });
   /** Provides enable player state writes behavior. */
   const enablePlayerStateWrites = jest.fn();
-  /** Sets engagement progress. */
-  const setEngagementProgress = jest.fn();
   /** Sets session. */
   const setSession = jest.fn();
   /** Tracks funnel. */
@@ -132,7 +128,6 @@ it("does not reapply startup state after deletion wins the cross-tab lock", asyn
     isActive: () => true,
     session,
     enablePlayerStateWrites,
-    setEngagementProgress,
     setSession,
     trackFunnel,
   });
@@ -142,7 +137,6 @@ it("does not reapply startup state after deletion wins the cross-tab lock", asyn
 
   await expect(commit).resolves.toBe(false);
   expect(enablePlayerStateWrites).not.toHaveBeenCalled();
-  expect(setEngagementProgress).not.toHaveBeenCalled();
   expect(setSession).not.toHaveBeenCalled();
   expect(trackFunnel).not.toHaveBeenCalled();
 });

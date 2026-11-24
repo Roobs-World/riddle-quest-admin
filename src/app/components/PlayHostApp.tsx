@@ -51,7 +51,7 @@ export function PlayHostApp({
     raceLocalePolicy,
     onPresenceStateChange,
     referralSharing,
-    notificationSettings,
+    notificationProvider,
   },
   raceSurface,
   onPlayable,
@@ -434,7 +434,7 @@ export function PlayHostApp({
 
   return (
     <ReferralSharingProvider key={authSnapshot.user?.uid ?? "guest"} capability={referralSharing}>
-      <NotificationSettingsProvider capability={notificationSettings}>
+      <NotificationSettingsProvider provider={notificationProvider}>
       <div className="play-game-shell">
         {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
         <GameFrameApp

@@ -12,7 +12,7 @@ Use `main` for every platform, shared source folder, release, Jest upload and mo
 | Reddit | `platforms/web/reddit` | Browser adapter, Devvit package and trusted same-origin gateway; Firebase integration in `server` |
 | YouTube | `platforms/web/youtube` | Self-contained Playable entry, YouTube save/lifecycle SDK and release packaging |
 | Netflix | `platforms/web/netflix` | Self-contained candidate entry; approved partner capabilities remain absent |
-| Yahoo | `platforms/web/yahoo` | Self-contained candidate entry; retained server integration does not authorize browser use |
+| Yahoo | `platforms/web/yahoo` | Local game and optional hosted push client; no partner SDK, identity or commerce |
 | GameSnacks | `platforms/web/gamesnacks` | Self-contained target entry and GameSnacks adapter |
 | 42 Neutral Handoff destinations | `platforms/web/<target>/release.json` | Destination-specific release metadata, with shared game implementation |
 
@@ -25,6 +25,8 @@ Common source lives in feature folders such as `src/gameplay`, `src/races`, `src
 These are ordinary folders governed by root `package.json`, `tsconfig.json`, `vite.config.ts`, and `jest.config.cjs`. They have no separate package configuration or generated package builds. Callers import canonical implementations directly. Cross-feature aggregate entry points and files that merely re-exported another implementation have been removed. See the [feature source analysis and rationale](shared-source-layout.md).
 
 Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's referral campaigns live under its `src/referrals`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
+
+The notification management website is a separate top-level workspace at `notification-manager/`. Vercel hosts its React frontend and API routes. Supabase owns its Postgres database, operator authentication and notification image storage. Its server code is outside the game and Firebase deployment graphs. See the [notification service guide](../notifications/service.md).
 
 ## Build and archive contracts
 

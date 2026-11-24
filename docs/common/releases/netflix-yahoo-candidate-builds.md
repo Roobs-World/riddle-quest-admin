@@ -13,6 +13,8 @@ The Netflix artifact is an engineering candidate rather than a submission-ready 
 
 The Yahoo candidate uses the provider-neutral standalone adapter, bundles the audited content pack, and saves progress locally. It makes no provider, authentication, Firebase, analytics, advertising, or purchase requests. The hosted candidate is `https://yahoo.roobsworld.com/`. The previous Yahoo identity/Stripe entry is not a shipping target: live testing exposed disabled anonymous authentication and unauthorized gameplay calls, and those dependencies conflict with the repository's self-contained candidate requirement. Existing remote account data is unchanged; the candidate uses its own local save namespace. Partner identity or commerce requires an approved contract before re-enabling a provider adapter.
 
+Yahoo now has an explicitly requested hosted push extension. Setting `VITE_NOTIFICATION_SERVICE_URL` to the Vercel notification service origin enables only its push enrollment and activity API. Without that setting, the client makes no notification requests. The Settings preference defaults to On; browser permission still requires a player gesture. The service worker receives manager-authored push content after the game closes. The artifact audit checks the exact emitted worker and network module rather than admitting general network access. See [Yahoo notifications](../../yahoo/notifications.md) and the [shared notification service](../notifications/service.md).
+
 The Netflix candidate bundles the same audited 17-locale, 180-riddle production content pack used by the YouTube release. A partner release still needs a target-owned adapter for any required lifecycle, save, identity, or commerce API before submission.
 
 Preview either built artifact locally with:

@@ -5,9 +5,7 @@ import {
   sendAndroidPush,
   sendAndroidLiveChallengePush,
   setAndroidPushSubscription,
-  sendAndroidDailyReminders,
 } from "../androidNotifications";
-import {androidDailyReminderCopy} from "../androidNotificationCopy";
 
 /** Only the external FCM network boundary is replaced; authority and concurrency use real Firestore. */
 const mockSend = jest.fn(async (_input: unknown) => "provider-message-id");
@@ -61,7 +59,9 @@ it("replays consent idempotently and rebinds one installation to its latest auth
     first = (await ref.get()).data();
   await Promise.all([call(A, preferences({daily: true})), call(A, preferences({daily: true}))]);
   expect((await db.collection("androidPushTokens").get()).size).toBe(1);
-  expect((await ref.get()).data()?.nextDailyAtMs).toBe(first?.nextDailyAtMs);
+  expect(first?.nextDailyAtMs).toBeUndefined();
+  expect((await ref.get()).data()?.nextDailyAtMs).toBeUndefined();
+  expect(mockSend).not.toHaveBeenCalled();
   await call(B, preferences());
   await call(A, preferences({invitations: false}));
   expect((await ref.get()).data()?.uid).toBe(B);
@@ -124,17 +124,10 @@ it("treats a transport outage as uncertain and preserves consent for the next ne
   ).toBe("unconfirmed");
   expect((await db.collection("androidPushTokens").get()).size).toBe(1);
 });
-it("claims a Daily reminder before concurrent scheduler redelivery and localizes the body", async () => {
+it("records Daily consent without creating a schedule or app-authored message", async () => {
   await call(A, preferences({daily: true}));
-  /** Private Firestore reference used by this authority or replay scenario. */
-  const ref = db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`);
-  await ref.update({nextDailyAtMs: Date.now() - 1000});
-  await Promise.all([sendAndroidDailyReminders.run({} as never), sendAndroidDailyReminders.run({} as never)]);
-  expect(mockSend).toHaveBeenCalledTimes(1);
-  expect(mockSend).toHaveBeenCalledWith(
-    expect.objectContaining({
-      data: expect.objectContaining({kind: "daily", accountId: A, body: androidDailyReminderCopy("fr")}),
-    }),
-  );
-  expect((await ref.get()).data()?.nextDailyAtMs).toBeGreaterThan(Date.now());
+  const registration = (await db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`).get()).data();
+  expect(registration?.daily).toBe(true);
+  expect(registration?.nextDailyAtMs).toBeUndefined();
+  expect(mockSend).not.toHaveBeenCalled();
 });
