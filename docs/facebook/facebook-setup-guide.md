@@ -48,9 +48,9 @@ The developer prepares this handoff from clean, reviewed `main` using `pnpm rele
 
 ### Enable remote uploading
 
-1. On the same Web Hosting page, click **Get Asset Upload Access Token**.
+1. On the same Web Hosting page, click **Get app access token for uploads**.
 2. Obtain the token using your app admin or developer account.
-3. Keep the complete upload-user token in a private local prompt, secret store, or the ignored root `.env` as `FACEBOOK_APP_ACCESS_TOKEN`. Do not paste it into this chat, a committed source file or a command argument. An app token or app secret is not interchangeable with the documented upload-user token.
+3. Keep the complete credential in a private local prompt, secret store, or the ignored root `.env` as `FACEBOOK_APP_ACCESS_TOKEN`. Include the full `GG|app-id|token` value when that is what Meta provides. Do not paste it into this chat, a committed source file or a command argument.
 4. Use the repository's `facebook:draft upload` command after the candidate is prepared and you have explicitly requested the upload. The [operations guide](facebook-instant-games-operations.md#remote-draft-upload-authorization) gives the exact command and private token prompt.
 
 This is a separate credential from the read-only Meta connector. Meta's [upload guide](https://developers.facebook.com/documentation/games/launch/upload-bundle) documents the two-step API and the token button. The repository command verifies the candidate's exact fingerprint, uploads once, and retains a private submission receipt. It still requires a real token and a live upload to establish that it works with this app.
@@ -160,4 +160,4 @@ Use [the operations guide](facebook-instant-games-operations.md) for release rec
 | Payment methods are unavailable | Check payment approval, payout setup, supported SDK capabilities and the authenticated rollout configuration. |
 | Review says both pending and unsubmitted | Resolve the existing state in the dashboard or with Meta support before another submission. |
 
-Start now with step 1. The first useful checkpoint is seeing this app's **Web Hosting** page and its **Upload Version** and **Get Asset Upload Access Token** controls.
+Start now with step 1. The first useful checkpoint is seeing this app's **Web Hosting** page and its **Upload Version** and **Get app access token for uploads** controls.

@@ -204,11 +204,13 @@ The package-level `preflight:facebook-upload` and `facebook:draft begin` command
 
 The Meta Social Technologies MCP connection currently grants `read` access to Riddle Quest. Its Read and Manage scopes govern developer tools such as configuration inspection and webhook management. Neither scope supplies a game-bundle upload tool. Increasing that connection's permissions does not establish upload authorization. See [Meta's MCP scope reference](https://developers.facebook.com/documentation/mcp/devtools-mcp).
 
-Meta documents a separate [Graph API bundle upload flow](https://developers.facebook.com/documentation/games/launch/upload-bundle). In app `1748953042991569`, open **Instant Games → Web Hosting → Get Asset Upload Access Token**. Obtain a user upload token through the app's admin or developer account. Keep the credential in a private local prompt or secret store. Do not put it in chat, command arguments, source, receipts or logs. The upload token is separate from the MCP consent grant and the server's app secret.
+Meta documents a separate [Graph API bundle upload flow](https://developers.facebook.com/documentation/games/launch/upload-bundle). In app `1748953042991569`, open **Instant Games → Web Hosting → Get app access token for uploads**, as labelled in the current dashboard. Keep the complete credential in a private local prompt or secret store. Do not put it in chat, command arguments, source, receipts or logs. The upload token is separate from the MCP consent grant.
 
 After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `.facebook-upload-receipts/gated-artifact.json`:
 
-The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. Despite the variable name, its value must be a complete supported upload-user or System User token. The upload API documents opaque `GG` and `EAA` credentials; app-token credentials with pipe separators are a different authentication mechanism. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
+The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. It accepts a complete `GG|app-id|token` Gaming credential for this app, opaque `GG` tokens, and `EAA` user/System User tokens. It rejects Gaming app credentials for a different app. Keep the full value, including its prefix and app ID; a token component alone is insufficient. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
+
+On 24 November 2026, Meta accepted this app's complete Gaming credential for app metadata and a metadata-only Graph upload session. The same credential received HTTP 401 from the separate Bundles management API. This establishes session creation, not binary-upload acceptance, processing, Testing assignment or publication. No game bytes were transmitted by that check.
 
 With the token saved in the root `.env`:
 
