@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-24",
+  "checkedAt": "2026-11-24T23:45:39Z",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "activeBuild": {
+    "versionId": "01a20c95-dd01-713b-b291-2e8ee5db350c",
+    "version": "1.0.0-dev.20261124080415.4b0f40a4b341.b36e9542",
+    "sourceCommit": "4b0f40a4b3410d96740e2992ad9cf834dbb156d5",
+    "status": "ready",
+    "isActive": true,
+    "processingError": null,
+    "activatedAt": "2026-11-24T08:33:51.998Z",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a20c95-dd01-713b-b291-2e8ee5db350c",
+    "newerUploadedBuildExists": false
+  },
+  "hostedArtifact": {
+    "reachableModulesRead": 63,
+    "allHttpStatus200": true,
+    "notificationModule": "assets/JestNotifications-D6a3DdWj.js",
+    "notificationModuleSha256": "485ae68165f0790ade0b71d3ea306b4075e33716b84707fe16898f0b7a9aca00",
+    "entryModule": "assets/jest-DMVYKa9D.js",
+    "entryModuleSha256": "1ae2d49cf5410263842a9f9b7f5054736ec013077e9453137d11666ce7ed1dbb",
+    "createNotificationEnrollmentPresent": true,
+    "getNotificationEnrollmentStatusPresent": true,
+    "managerOriginPresent": true,
+    "checkedPopupCompletionPresent": true
+  },
+  "sourceComparison": {
+    "activeAndCurrentJestNotificationsMatch": true,
+    "activeAndCurrentFirebaseEnrollmentMatch": true,
+    "newUploadNeededForCoreEnrollment": false
+  },
+  "reportedIssue": {
+    "message": "Notifications are unavailable in this browser.",
+    "observedBy": "User in the Jest game",
+    "actualLoadedVersionVerified": false,
+    "accountAndRuntimeEligibilityVerified": false,
+    "currentSourceMeaning": "Jest returns unsupported when the Firebase UID or registered-player requirement is missing, or the runtime is a mock or auth harness. This is not a browser feature test.",
+    "nextDiagnostic": "Open the exact active version in a fresh tab and report whether the message persists."
+  },
+  "mutationsPerformed": false,
+  "testsAndBrowserHarnessesRun": false,
+  "deviceDisplayVerified": false
+}

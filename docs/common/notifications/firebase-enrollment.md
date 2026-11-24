@@ -50,6 +50,8 @@ Prepare these values without putting secret values into source, browser variable
 
 The reviewed migration, Firebase functions, website and scheduler are deployed; see [release operations](service.md#notification-service-release-on-november-24-2026). Updated game versions still require activation after their release checks. TTL is configured on `expiresAt` for `accountPushDevices`, `accountPushEndpoints`, `accountPushDeliveries`, `notificationPairings` and `notificationPairingLimits`; runtime expiry checks already fail closed independently of TTL cleanup. Preserve the scheduler setup described in [service operations](service.md).
 
+The [Jest active-build check](../../jest/evidence/jest-notification-enrollment-active-2026-11-24.json) confirmed that version `01a20c95-dd01-713b-b291-2e8ee5db350c` is ready and active, with the external Firebase enrollment flow in its hosted JavaScript. It was activated at 08:33 UTC on November 24. A newer upload is not needed for that core flow. An old version-pinned preview or already-open tab must be distinguished from an account/runtime eligibility failure before diagnosing an unavailable message as browser incompatibility.
+
 Source and build verification do not authorize game uploads, activation or publication. Real-device enrollment and live push delivery remain acceptance work after the updated client is activated or opened through its inactive preview.
 
 ## References
