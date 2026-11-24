@@ -1,7 +1,7 @@
 import {afterEach, describe, expect, it, jest} from "@jest/globals";
-import {render, screen, fireEvent, waitFor} from "@testing-library/react-native";
+import {act, render, screen, fireEvent, waitFor} from "@testing-library/react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
-import {NativeModules, PermissionsAndroid, Platform} from "react-native";
+import {Linking, NativeModules, PermissionsAndroid, Platform} from "react-native";
 import {createAndroidNotificationController} from "../notifications/androidNotificationController";
 import {clearAndroidNotificationAccount, createAndroidNotificationDevice} from "../notifications/androidNotifications";
 import {HostedNotificationScreen} from "../screens/HostedNotificationScreen";
@@ -177,7 +177,8 @@ describe("Android notification settings", () => {
     for (const locale of Object.keys(YOUTUBE_COPY).map(resolveYouTubeLocale))
       expect(Object.keys(notificationCopy(locale))).toEqual(Object.keys(notificationCopy("en")));
   });
-  it("keeps the global preference On while permission is denied and permits a Settings retry", async () => {
+  it("keeps the global preference On and opens device settings when permission is blocked", async () => {
+    const openSettings = jest.spyOn(Linking, "openSettings").mockResolvedValue(undefined);
     const f = fixture();
     f.setPermission(false);
     await show(f.controller);
@@ -185,10 +186,13 @@ describe("Android notification settings", () => {
     await fireEvent.press(screen.getByTestId("notification-permission"));
     await waitFor(() => expect(f.controller.getSnapshot()).toMatchObject({enabled: true, busy: false, delivery: "blocked"}));
     expect(screen.getByTestId("notification-enabled")).toHaveProp("value", true);
+    await fireEvent.press(screen.getByTestId("notification-device-settings"));
+    expect(openSettings).toHaveBeenCalledTimes(1);
     f.setPermission(true);
-    await fireEvent.press(screen.getByTestId("notification-permission"));
+    await act(async () => {await f.controller.restore();});
     await waitFor(() => expect(f.controller.getSnapshot().delivery).toBe("ready"));
     expect(screen.queryByTestId("notification-permission")).toBeNull();
+    openSettings.mockRestore();
   });
   it("shows one global toggle and retains locally saved Off despite a server outage", async () => {
     const f = fixture();

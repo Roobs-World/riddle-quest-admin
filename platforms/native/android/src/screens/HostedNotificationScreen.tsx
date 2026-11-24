@@ -1,4 +1,4 @@
-import {Switch, Text, View} from "react-native";
+import {Linking, Switch, Text, View} from "react-native";
 import {useSyncExternalStore} from "react";
 import type {NotificationProvider, NotificationSnapshot} from "../../../../../src/notifications/contracts/notificationProvider";
 import {getHostedNotificationCopy} from "../../../../../src/notifications/copy/hostedNotificationCopy";
@@ -26,9 +26,11 @@ export function HostedNotificationScreen({locale, controller, onBack}: {
         <Switch accessibilityLabel={copy.title} disabled={state.busy} value={state.enabled}
           testID="notification-enabled" onValueChange={value => {void controller.setEnabled(value);}} />
       </View>
-      {state.enabled && (state.delivery === "permission-required" || state.delivery === "blocked") &&
+      {state.enabled && state.delivery === "permission-required" &&
         <ActionButton label={common.allowNotifications} testID="notification-permission" disabled={state.busy}
           onPress={() => {void controller.requestPermission();}} />}
+      {state.enabled && state.delivery === "blocked" && <ActionButton label={youtubeText(locale, "settings")}
+        testID="notification-device-settings" onPress={() => {void Linking.openSettings().catch(() => undefined);}} />}
       {state.delivery === "not-configured" && <Text accessibilityRole="alert">{common.notConfigured}</Text>}
       {(state.delivery === "save-failed" || state.delivery === "blocked") && <Text accessibilityRole="alert">{copy.failed}</Text>}
     </Panel>}

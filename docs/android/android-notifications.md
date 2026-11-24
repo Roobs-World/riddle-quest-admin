@@ -1,5 +1,7 @@
 # Hosted notifications on Android
 
+When notification permission is blocked, the Notifications screen opens Android's app settings so the player can change the OS permission. The default-On game preference and the operating-system permission remain separate.
+
 Android uses the same hosted notification manager as browser targets. The manager authors campaign titles, bodies and images, and schedules server-side dispatch. Native FCM is the Android device transport. There is no native iOS application in this integration; Safari and Home Screen web apps use the browser transport.
 
 The app has one Notifications preference, controlled on its notification Settings screen. A missing preference defaults to On. Explicit saved Off remains Off, including legacy records whose invitation and Daily flags are both false. A malformed saved record fails closed. Android permission is separate from this preference and only prompts after a Settings action. Startup and foreground restoration never prompt.
