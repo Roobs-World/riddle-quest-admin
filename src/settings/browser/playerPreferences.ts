@@ -16,8 +16,6 @@ export type PlayerPreferences = {
   muted?: boolean;
   /** Whether non-essential motion is reduced. */
   reducedMotion?: boolean;
-  /** Whether the high-contrast theme override is enabled. */
-  highContrast?: boolean;
   /** Master preference for game reminders and challenge notifications. */
   notificationsEnabled?: boolean;
   /** Whether the player has completed onboarding. */
@@ -32,7 +30,6 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   locale: "appLanguage",
   soundEnabled: "riddleQuest:soundEnabled",
   reducedMotion: "riddleQuest:reducedMotion",
-  highContrast: "riddleQuest:highContrast",
   notificationsEnabled: "riddleQuest:notificationsEnabled",
   activeRace: "riddleQuest:activeRaceRun",
   raceRecovery: "riddleQuest:raceRecovery",
@@ -121,13 +118,12 @@ const matchesMedia = (query: string): boolean => {
   return typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(query).matches;
 };
 
-/** Applies accessibility flags to the document before the game surface mounts. */
-const applyAccessibilityPreferences = (reducedMotion: boolean, highContrast: boolean): void => {
+/** Applies the motion preference before the game surface mounts. */
+const applyReducedMotionPreference = (reducedMotion: boolean): void => {
   /** Provides root behavior. */
   const root = typeof document === "undefined" ? undefined : document.documentElement;
   if (!root) return;
   root.dataset.riddleQuestReducedMotion = String(reducedMotion);
-  root.dataset.riddleQuestHighContrast = String(highContrast);
   motionSubscribers.forEach((subscriber) => subscriber());
 };
 
@@ -155,11 +151,6 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
     preferences.reducedMotion ??
     readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ??
     matchesMedia("(prefers-reduced-motion: reduce)");
-  /** Provides high contrast behavior. */
-  const highContrast =
-    preferences.highContrast ??
-    readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast) ??
-    (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"));
   /** Provides onboarding complete behavior. */
   const onboardingComplete = preferences.onboardingComplete ?? false;
   const notificationsEnabled = preferences.notificationsEnabled ?? true;
@@ -167,15 +158,14 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled, String(!muted));
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion, String(reducedMotion));
-  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.highContrast, String(highContrast));
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.notificationsEnabled, String(notificationsEnabled));
   notificationsEnabledOverride = notificationsEnabled;
   notificationSubscribers.forEach(subscriber => subscriber());
   onboardingCompleteOverride =
     typeof preferences.onboardingComplete === "boolean" ? preferences.onboardingComplete : undefined;
   setLocale(locale);
-  applyAccessibilityPreferences(reducedMotion, highContrast);
-  return {locale, muted, reducedMotion, highContrast, notificationsEnabled, onboardingComplete};
+  applyReducedMotionPreference(reducedMotion);
+  return {locale, muted, reducedMotion, notificationsEnabled, onboardingComplete};
 }
 
 /** An absent preference keeps game notifications on by default. */
@@ -228,15 +218,8 @@ export function setPlayerMuted(muted: boolean): void {
 /** Persists and applies a reduced-motion preference for existing or future controls. */
 export function setPlayerReducedMotion(reducedMotion: boolean): void {
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion, String(reducedMotion));
-  applyAccessibilityPreferences(reducedMotion, isPlayerHighContrastEnabled());
+  applyReducedMotionPreference(reducedMotion);
   emitPreferenceChange({reducedMotion});
-}
-
-/** Persists and applies a high-contrast preference for existing or future controls. */
-export function setPlayerHighContrast(highContrast: boolean): void {
-  safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.highContrast, String(highContrast));
-  applyAccessibilityPreferences(isPlayerReducedMotionEnabled(), highContrast);
-  emitPreferenceChange({highContrast});
 }
 
 /** Returns the effective reduced-motion choice currently applied to play. */
@@ -250,21 +233,6 @@ export function isPlayerReducedMotionEnabled(): boolean {
   }
   return (
     readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ?? matchesMedia("(prefers-reduced-motion: reduce)")
-  );
-}
-
-/** Returns the effective high-contrast choice currently applied to play. */
-export function isPlayerHighContrastEnabled(): boolean {
-  /** Provides root behavior. */
-  const root = typeof document === "undefined" ? undefined : document.documentElement;
-  if (root) {
-    /** Provides applied behavior. */
-    const applied = root.dataset.riddleQuestHighContrast;
-    if (applied === "true" || applied === "false") return applied === "true";
-  }
-  return (
-    readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast) ??
-    (matchesMedia("(prefers-contrast: more)") || matchesMedia("(forced-colors: active)"))
   );
 }
 
@@ -302,26 +270,6 @@ export function subscribeToPlayerReducedMotion(subscriber: () => void): () => vo
   };
 }
 
-/** Observes both accessibility choices, including platform restores and OS contrast changes. */
-export function subscribeToPlayerAccessibilityPreferences(subscriber: () => void): () => void {
-  /** Shared application notifications already cover changes to either preference. */
-  const stopObservingMotion = subscribeToPlayerReducedMotion(subscriber);
-  /** OS contrast changes matter until a platform or player choice overrides them. */
-  const contrastMedia = typeof window !== "undefined" && typeof window.matchMedia === "function"
-    ? [window.matchMedia("(prefers-contrast: more)"), window.matchMedia("(forced-colors: active)")] : [];
-  contrastMedia.forEach((media) => {
-    if (media.addEventListener) media.addEventListener("change", subscriber);
-    else media.addListener?.(subscriber);
-  });
-  return () => {
-    stopObservingMotion();
-    contrastMedia.forEach((media) => {
-      if (media.removeEventListener) media.removeEventListener("change", subscriber);
-      else media.removeListener?.(subscriber);
-    });
-  };
-}
-
 /** Removes exact app-owned browser state after authoritative account deletion. */
 export function clearBrowserPlayerState(): void {
   /** Removes keys. */
@@ -350,7 +298,7 @@ export function clearBrowserPlayerState(): void {
   try {
     removeKeys(
       getBrowserStorage("local", true),
-      Object.values(PLAYER_PREFERENCE_STORAGE_KEYS),
+      [...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS), "riddleQuest:highContrast"],
       GUIDANCE_STORAGE_PREFIXES,
     );
   } catch (error) {
@@ -368,7 +316,6 @@ export function clearBrowserPlayerState(): void {
     const root = typeof document === "undefined" ? undefined : document.documentElement;
     if (root) {
       delete root.dataset.riddleQuestReducedMotion;
-      delete root.dataset.riddleQuestHighContrast;
     }
     motionSubscribers.forEach((subscriber) => subscriber());
   }

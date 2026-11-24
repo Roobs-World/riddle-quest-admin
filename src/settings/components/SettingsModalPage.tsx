@@ -8,12 +8,10 @@ import {ProfileSubscriptionContext} from "../../accounts/browser/ProfileSubscrip
 import type {GameModal} from "../../gameplay/session/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../localization/browser/i18n";
 import {
-  isPlayerHighContrastEnabled,
   isPlayerReducedMotionEnabled,
-  setPlayerHighContrast,
   setPlayerLocale,
   setPlayerReducedMotion,
-  subscribeToPlayerAccessibilityPreferences,
+  subscribeToPlayerReducedMotion,
 } from "../browser/playerPreferences";
 
 /** Props required by the settings modal page. */
@@ -43,9 +41,7 @@ export function SettingsModalPage({
   /** Target-specific subscription management shared with Profile. */
   const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Applied accessibility choices also update when the platform restores preferences. */
-  const reducedMotion = useSyncExternalStore(subscribeToPlayerAccessibilityPreferences, isPlayerReducedMotionEnabled, () => false);
-  /** Current contrast choice includes the platform value and browser fallback. */
-  const highContrast = useSyncExternalStore(subscribeToPlayerAccessibilityPreferences, isPlayerHighContrastEnabled, () => false);
+  const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => false);
   /** Android and hosted settings reuse the same translated accessibility labels. */
   const accessibilityLocale = resolveYouTubeLocale(locale);
   /** Persists and immediately activates the selected locale. */
@@ -64,10 +60,6 @@ export function SettingsModalPage({
       <button className="settings-row" aria-pressed={reducedMotion} onClick={() => setPlayerReducedMotion(!reducedMotion)}>
         <span>{youtubeText(accessibilityLocale, "reducedMotion")}</span>
         <strong>{reducedMotion ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
-      </button>
-      <button className="settings-row" aria-pressed={highContrast} onClick={() => setPlayerHighContrast(!highContrast)}>
-        <span>{youtubeText(accessibilityLocale, "highContrast")}</span>
-        <strong>{highContrast ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
       <NotificationSettings />
       <AnalyticsConsentControls />

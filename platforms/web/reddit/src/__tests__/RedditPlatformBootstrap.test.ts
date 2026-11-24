@@ -441,7 +441,7 @@ it("migrates only safe guest preferences after login and discards forged player 
     if (path === "/api/storage/read")
       return reply({
         ok: true,
-        preferences: {locale: "ja", highContrast: true},
+        preferences: {locale: "ja", reducedMotion: true},
         playerData: null,
       });
     if (path === "/api/storage/write") return reply({ok: true, written: true});
@@ -456,7 +456,7 @@ it("migrates only safe guest preferences after login and discards forged player 
       locale: "ja",
       muted: true,
       onboardingComplete: true,
-      highContrast: true,
+      reducedMotion: true,
     });
   expect(global.fetch).toHaveBeenCalledWith(
     "/api/storage/write",
@@ -466,7 +466,7 @@ it("migrates only safe guest preferences after login and discards forged player 
           locale: "ja",
           muted: true,
           onboardingComplete: true,
-          highContrast: true,
+          reducedMotion: true,
         },
       }),
     }),

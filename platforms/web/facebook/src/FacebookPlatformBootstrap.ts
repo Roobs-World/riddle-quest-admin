@@ -32,7 +32,6 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(typeof value.locale === "string" ? {locale: value.locale.slice(0, 32)} : {}),
     ...(typeof value.muted === "boolean" ? {muted: value.muted} : {}),
     ...(typeof value.reducedMotion === "boolean" ? {reducedMotion: value.reducedMotion} : {}),
-    ...(typeof value.highContrast === "boolean" ? {highContrast: value.highContrast} : {}),
     ...(typeof value.onboardingComplete === "boolean" ? {onboardingComplete: value.onboardingComplete} : {}),
     ...(Number.isSafeInteger(value.registrationPromptDismissedAt)
       ? {registrationPromptDismissedAt: value.registrationPromptDismissedAt as number}

@@ -388,12 +388,6 @@ dd {
   height: 1.2rem;
 }
 
-.youtube-high-contrast {
-  --yt-panel: #10122f;
-  --yt-border: rgba(255, 255, 255, 0.72);
-  --yt-accent: #ffe45c;
-}
-
 .youtube-game-paused *,
 .youtube-game-paused *::before,
 .youtube-game-paused *::after {

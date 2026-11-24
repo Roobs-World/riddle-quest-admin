@@ -195,8 +195,6 @@ export type YouTubeSaveV1 = {
   preferences: {
     /** Stores reduced motion. */
     reducedMotion: boolean;
-    /** Stores high contrast. */
-    highContrast: boolean;
     /** Stores guidance complete. */
     guidanceComplete: boolean;
   };

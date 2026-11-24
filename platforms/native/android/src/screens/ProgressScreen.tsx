@@ -112,18 +112,9 @@ export function ProgressScreen({locale, content, authority, snapshot, run, text,
             value={snapshot.save.preferences.reducedMotion}
             disabled={materialDisabled}
             onChange={(value) => {
-              void run(async () => {await authority.setAccessibilityPreference("reducedMotion", value); trackEvent("setting_changed", {setting: "reducedMotion", value});});
+              void run(async () => {await authority.setReducedMotion(value); trackEvent("setting_changed", {setting: "reducedMotion", value});});
             }}
             testID="preference-reduced-motion"
-          />
-          <PreferenceRow
-            label={text("highContrast")}
-            value={snapshot.save.preferences.highContrast}
-            disabled={materialDisabled}
-            onChange={(value) => {
-              void run(async () => {await authority.setAccessibilityPreference("highContrast", value); trackEvent("setting_changed", {setting: "highContrast", value});});
-            }}
-            testID="preference-high-contrast"
           />
         </View>
       </Panel>

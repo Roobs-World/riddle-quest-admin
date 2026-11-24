@@ -228,8 +228,7 @@ describe("progress and preferences", () => {
     expect(screen.getByLabelText("Wins: 10")).toBeTruthy();
     await fireEvent(screen.getByTestId("preference-reduced-motion"), "valueChange", true);
     await waitFor(() => expect(readSave(port.saved()).preferences.reducedMotion).toBe(true));
-    await fireEvent(screen.getByTestId("preference-high-contrast"), "valueChange", true);
-    await waitFor(() => expect(readSave(port.saved()).preferences.highContrast).toBe(true));
+    expect(screen.queryByTestId("preference-high-contrast")).toBeNull();
     await press("back");
     await expectScreen("screen-menu");
   });

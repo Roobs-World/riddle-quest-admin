@@ -16,7 +16,7 @@ jest.mock("react", () => ({
 
 import {createNotificationOperationGate} from "../notifications/operationGate";
 import {useJestPlayerStateWrites} from "../useJestPlayerStateWrites";
-import {setPlayerMuted, setPlayerHighContrast, setPlayerReducedMotion} from "../../../../../src/settings/browser/playerPreferences";
+import {setPlayerMuted, setPlayerReducedMotion} from "../../../../../src/settings/browser/playerPreferences";
 
 /** Provides session behavior. */
 const session = (): JestSession => ({
@@ -280,7 +280,7 @@ it("retires waiting preferences and still drains the new owner's preference chan
   try {
     setPlayerMuted(true);
     await new Promise<void>(resolve => setImmediate(resolve));
-    setPlayerHighContrast(true);
+    setPlayerReducedMotion(false);
     writes.disable();
     sessionRef.current = {...session(), player: {playerId: "new-player", registered: false}};
     writes.enable(null);
@@ -331,11 +331,11 @@ it("retries complete merged preferences after several failed patches", async () 
   try {
     setPlayerMuted(true);
     await jest.advanceTimersByTimeAsync(0);
-    setPlayerHighContrast(true);
+    setPlayerReducedMotion(true);
     await jest.advanceTimersByTimeAsync(0);
     await jest.advanceTimersByTimeAsync(1000);
     expect(preferences).toHaveBeenCalledTimes(3);
-    expect(preferences.mock.calls[2][0]).toEqual({muted: true, highContrast: true});
+    expect(preferences.mock.calls[2][0]).toEqual({muted: true, reducedMotion: true});
     expect(trackFailure).toHaveBeenCalledTimes(2);
     expect(jest.getTimerCount()).toBe(0);
   } finally {for (const cleanup of cleanups) if (typeof cleanup === "function") cleanup();warn.mockRestore();jest.useRealTimers();}

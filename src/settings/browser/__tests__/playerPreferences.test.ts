@@ -5,9 +5,7 @@ import {
   completePlayerOnboarding,
   hasCompletedPlayerOnboarding,
   installBrowserPlayerStateMutationGuard,
-  isPlayerHighContrastEnabled,
   isPlayerReducedMotionEnabled,
-  setPlayerHighContrast,
   setPlayerLocale,
   setPlayerMuted,
   setPlayerReducedMotion,
@@ -155,21 +153,19 @@ it("applies validated platform preferences before play and overrides browser fal
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.locale, "es");
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled, "true");
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion, "false");
-  localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.highContrast, "false");
 
   expect(
     applyPlayerPreferences({
       locale: "fr",
       muted: true,
       reducedMotion: true,
-      highContrast: true,
       onboardingComplete: true,
     }),
   ).toEqual({
     locale: "fr",
     muted: true,
     reducedMotion: true,
-    highContrast: true,
+    notificationsEnabled: true,
     onboardingComplete: true,
   });
 
@@ -178,8 +174,8 @@ it("applies validated platform preferences before play and overrides browser fal
   expect(document.documentElement.lang).toBe("fr");
   expect(document.documentElement.dataset).toMatchObject({
     riddleQuestReducedMotion: "true",
-    riddleQuestHighContrast: "true",
   });
+  expect(document.documentElement.dataset).not.toHaveProperty("riddleQuestHighContrast");
   expect(localStorage.getItem(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled)).toBe("false");
   expect(hasCompletedPlayerOnboarding("riddleQuest:onboarding:user-1")).toBe(true);
 });
@@ -194,11 +190,10 @@ it("uses existing stored preferences and OS accessibility defaults when platform
     locale: "es",
     muted: true,
     reducedMotion: true,
-    highContrast: true,
+    notificationsEnabled: true,
     onboardingComplete: false,
   });
   expect(isPlayerReducedMotionEnabled()).toBe(true);
-  expect(isPlayerHighContrastEnabled()).toBe(true);
   expect(hasCompletedPlayerOnboarding("riddleQuest:onboarding:user-1")).toBe(false);
 });
 
@@ -214,7 +209,7 @@ it("keeps onboarding completion out of browser storage", () => {
 });
 
 it("emits only user-initiated changes for the platform persistence adapter", () => {
-  applyPlayerPreferences({locale: "en", muted: false, reducedMotion: false, highContrast: false});
+  applyPlayerPreferences({locale: "en", muted: false, reducedMotion: false});
   /** Provides changes behavior. */
   const changes: unknown[] = [];
   /** Provides unsubscribe behavior. */
@@ -224,7 +219,6 @@ it("emits only user-initiated changes for the platform persistence adapter", () 
   setPlayerMuted(true);
   setPlayerMuted(true);
   setPlayerReducedMotion(true);
-  setPlayerHighContrast(true);
   completePlayerOnboarding("riddleQuest:onboarding:user-1");
   completePlayerOnboarding("riddleQuest:onboarding:user-1");
   unsubscribe();
@@ -233,7 +227,6 @@ it("emits only user-initiated changes for the platform persistence adapter", () 
     {locale: "de"},
     {muted: true},
     {reducedMotion: true},
-    {highContrast: true},
     {onboardingComplete: true},
   ]);
 });
@@ -242,6 +235,7 @@ it("clears only app-owned user state after authoritative deletion", () => {
   /** Removes d local keys. */
   const removedLocalKeys = [
     ...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS),
+    "riddleQuest:highContrast",
     "riddleQuest:tooltipSeen:gameHint:user-1",
     "riddleQuest:tooltipSequenceSeen:gameTour:1:user-1",
   ];
@@ -250,7 +244,7 @@ it("clears only app-owned user state after authoritative deletion", () => {
   localStorage.setItem("riddleQuest:jestAuthHarness:registered", "1");
   localStorage.setItem("unrelated", "keep");
   sessionStorage.setItem("riddleQuest:jestAuthHarness:initFailed", "1");
-  applyPlayerPreferences({reducedMotion: true, highContrast: true});
+  applyPlayerPreferences({reducedMotion: true});
 
   clearBrowserPlayerState();
 

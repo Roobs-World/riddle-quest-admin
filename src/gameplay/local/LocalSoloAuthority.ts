@@ -178,12 +178,12 @@ export class LocalSoloAuthority {
       this.emit();
     }
   }
-  /** Sets accessibility preference. */
-  async setAccessibilityPreference(preference: "reducedMotion" | "highContrast", enabled: boolean): Promise<void> {
+  /** Sets reduced motion. */
+  async setReducedMotion(enabled: boolean): Promise<void> {
     this.assertMutationAllowed();
-    if (this.save.preferences[preference] === enabled) return;
-    await this.mutate(`preference:${preference}:${enabled}:${this.save.revision + 1}`, (next) => {
-      next.preferences[preference] = enabled;
+    if (this.save.preferences.reducedMotion === enabled) return;
+    await this.mutate(`preference:reducedMotion:${enabled}:${this.save.revision + 1}`, (next) => {
+      next.preferences.reducedMotion = enabled;
       return undefined;
     });
   }

@@ -372,12 +372,9 @@ describeBrowser("YouTube Playables artifact with injected Game API", () => {
     await page.getByRole("button", {name: "Progress"}).click();
     /** Provides reduced motion behavior. */
     const reducedMotion = page.getByRole("checkbox", {name: "Reduced motion"});
-    /** Provides high contrast behavior. */
-    const highContrast = page.getByRole("checkbox", {name: "High contrast"});
     await reducedMotion.check();
     await page.locator("html.youtube-reduced-motion").waitFor();
-    await highContrast.check();
-    await page.locator("html.youtube-high-contrast").waitFor();
+    expect(await page.getByRole("checkbox").count()).toBe(1);
     await context.close();
   }, 45_000);
 

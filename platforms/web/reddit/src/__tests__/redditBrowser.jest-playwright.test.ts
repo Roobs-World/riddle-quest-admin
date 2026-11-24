@@ -426,7 +426,6 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
               preferences: {
                 locale: "ar",
                 reducedMotion: true,
-                highContrast: true,
                 onboardingComplete: true,
                 presenceEnabled: true,
               },
@@ -547,7 +546,7 @@ describeBrowser("Reddit artifact with injected Devvit context", () => {
       }
       expect(await expanded.locator("html").getAttribute("dir")).toBe("rtl");
       expect(await expanded.locator("html").getAttribute("data-riddle-quest-reduced-motion")).toBe("true");
-      expect(await expanded.locator("html").getAttribute("data-riddle-quest-high-contrast")).toBe("true");
+      expect(await expanded.locator("html").getAttribute("data-riddle-quest-high-contrast")).toBeNull();
       expect(await expanded.getByRole("button", {name: /buy coins/i}).count()).toBe(0);
       await expanded.locator(".onboarding-card button").waitFor();
       for (let step = 0; step < 10; step += 1) {

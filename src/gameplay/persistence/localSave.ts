@@ -243,13 +243,12 @@ const parsePreferences = (value: unknown): YouTubeSaveV1["preferences"] | null =
     !isRecord(value) ||
     !hasOnlyKeys(value, ["reducedMotion", "highContrast", "guidanceComplete"]) ||
     !isBoolean(value.reducedMotion) ||
-    !isBoolean(value.highContrast) ||
+    ("highContrast" in value && !isBoolean(value.highContrast)) ||
     !isBoolean(value.guidanceComplete)
   )
     return null;
   return {
     reducedMotion: value.reducedMotion,
-    highContrast: value.highContrast,
     guidanceComplete: value.guidanceComplete,
   };
 };
@@ -312,7 +311,7 @@ export function createEmptyYouTubeSave(contentVersion: string): YouTubeSaveV1 {
     },
     activeGame: null,
     operationReceipts: [],
-    preferences: {reducedMotion: false, highContrast: false, guidanceComplete: false},
+    preferences: {reducedMotion: false, guidanceComplete: false},
   };
 }
 /** Parses only this target's exact schema; unknown/future data is retained for explicit reset. */
@@ -352,7 +351,7 @@ export function parseYouTubeSave(raw: string, contentVersion: string): YouTubeSa
     envelope = {
       ...envelope,
       schemaVersion: 1,
-      preferences: {reducedMotion: false, highContrast: false, guidanceComplete: false},
+      preferences: {reducedMotion: false, guidanceComplete: false},
     };
     migratedFromSchemaVersion = 0;
   }

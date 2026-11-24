@@ -186,8 +186,8 @@ describe("provider projection save recovery", () => {
     owner.attachRecovery(() => true);
     await owner.updatePreferences({muted: true}).catch(() => undefined);
     await owner.update({activeGame: null});
-    await owner.updatePreferences({highContrast: true});
-    expect(preferences).toHaveBeenLastCalledWith({muted: true, highContrast: true});
+    await owner.updatePreferences({reducedMotion: true});
+    expect(preferences).toHaveBeenLastCalledWith({muted: true, reducedMotion: true});
     expect(owner.recovery.getSnapshot()).toBe("quiet");
     await jest.advanceTimersByTimeAsync(15000);
     expect(preferences).toHaveBeenCalledTimes(2);

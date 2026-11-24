@@ -53,8 +53,7 @@ export type YouTubeCopyKey =
   | "answerIncomplete"
   | "dailyUnavailable"
   | "back"
-  | "reducedMotion"
-  | "highContrast";
+  | "reducedMotion";
 /** Describes you tube dictionary. */
 type YouTubeDictionary = Record<YouTubeCopyKey, string>;
 /** Provides en behavior. */
@@ -112,7 +111,6 @@ const en: YouTubeDictionary = {
   dailyUnavailable: "Today's Daily is unavailable.",
   back: "Back",
   reducedMotion: "Reduced motion",
-  highContrast: "High contrast",
 };
 /** Provides es behavior. */
 const es: YouTubeDictionary = {
@@ -169,7 +167,6 @@ const es: YouTubeDictionary = {
   dailyUnavailable: "El reto diario de hoy no está disponible.",
   back: "Atrás",
   reducedMotion: "Movimiento reducido",
-  highContrast: "Alto contraste",
 };
 /** Provides pt behavior. */
 const pt: YouTubeDictionary = {
@@ -226,7 +223,6 @@ const pt: YouTubeDictionary = {
   dailyUnavailable: "O desafio diário de hoje não está disponível.",
   back: "Voltar",
   reducedMotion: "Movimento reduzido",
-  highContrast: "Alto contraste",
 };
 /** Provides fr behavior. */
 const fr: YouTubeDictionary = {
@@ -283,7 +279,6 @@ const fr: YouTubeDictionary = {
   dailyUnavailable: "Le défi du jour est indisponible.",
   back: "Retour",
   reducedMotion: "Mouvements réduits",
-  highContrast: "Contraste élevé",
 };
 /** Provides de behavior. */
 const de: YouTubeDictionary = {
@@ -340,7 +335,6 @@ const de: YouTubeDictionary = {
   dailyUnavailable: "Das heutige Tagesrätsel ist nicht verfügbar.",
   back: "Zurück",
   reducedMotion: "Reduzierte Bewegung",
-  highContrast: "Hoher Kontrast",
 };
 /** Provides ja behavior. */
 const ja: YouTubeDictionary = {
@@ -397,7 +391,6 @@ const ja: YouTubeDictionary = {
   dailyUnavailable: "今日のデイリーは利用できません。",
   back: "戻る",
   reducedMotion: "モーションを減らす",
-  highContrast: "ハイコントラスト",
 };
 /** Provides ko behavior. */
 const ko: YouTubeDictionary = {
@@ -454,7 +447,6 @@ const ko: YouTubeDictionary = {
   dailyUnavailable: "오늘의 데일리를 이용할 수 없습니다.",
   back: "뒤로",
   reducedMotion: "모션 줄이기",
-  highContrast: "고대비",
 };
 /** Provides hi behavior. */
 const hi: YouTubeDictionary = {
@@ -511,7 +503,6 @@ const hi: YouTubeDictionary = {
   dailyUnavailable: "आज की दैनिक पहेली उपलब्ध नहीं है।",
   back: "वापस",
   reducedMotion: "कम गति प्रभाव",
-  highContrast: "उच्च कंट्रास्ट",
 };
 /** Provides ru behavior. */
 const ru: YouTubeDictionary = {
@@ -568,7 +559,6 @@ const ru: YouTubeDictionary = {
   dailyUnavailable: "Сегодняшняя загадка недоступна.",
   back: "Назад",
   reducedMotion: "Уменьшение движения",
-  highContrast: "Высокая контрастность",
 };
 /** Provides tr behavior. */
 const tr: YouTubeDictionary = {
@@ -625,7 +615,6 @@ const tr: YouTubeDictionary = {
   dailyUnavailable: "Bugünün günlüğü kullanılamıyor.",
   back: "Geri",
   reducedMotion: "Azaltılmış hareket",
-  highContrast: "Yüksek kontrast",
 };
 /** Provides ar behavior. */
 const ar: YouTubeDictionary = {
@@ -682,7 +671,6 @@ const ar: YouTubeDictionary = {
   dailyUnavailable: "لغز اليوم غير متاح.",
   back: "رجوع",
   reducedMotion: "تقليل الحركة",
-  highContrast: "تباين عالٍ",
 };
 /** Provides id behavior. */
 const id: YouTubeDictionary = {
@@ -739,7 +727,6 @@ const id: YouTubeDictionary = {
   dailyUnavailable: "Tantangan harian hari ini tidak tersedia.",
   back: "Kembali",
   reducedMotion: "Kurangi gerakan",
-  highContrast: "Kontras tinggi",
 };
 /** Provides it behavior. */
 const it: YouTubeDictionary = {
@@ -796,7 +783,6 @@ const it: YouTubeDictionary = {
   dailyUnavailable: "La sfida di oggi non è disponibile.",
   back: "Indietro",
   reducedMotion: "Movimento ridotto",
-  highContrast: "Contrasto elevato",
 };
 /** Provides nl behavior. */
 const nl: YouTubeDictionary = {
@@ -853,7 +839,6 @@ const nl: YouTubeDictionary = {
   dailyUnavailable: "De dagelijkse puzzel is niet beschikbaar.",
   back: "Terug",
   reducedMotion: "Verminderde beweging",
-  highContrast: "Hoog contrast",
 };
 /** Provides pl behavior. */
 const pl: YouTubeDictionary = {
@@ -910,7 +895,6 @@ const pl: YouTubeDictionary = {
   dailyUnavailable: "Dzisiejsza zagadka jest niedostępna.",
   back: "Wstecz",
   reducedMotion: "Ograniczenie ruchu",
-  highContrast: "Wysoki kontrast",
 };
 /** Provides vi behavior. */
 const vi: YouTubeDictionary = {
@@ -967,7 +951,6 @@ const vi: YouTubeDictionary = {
   dailyUnavailable: "Câu đố hôm nay không khả dụng.",
   back: "Quay lại",
   reducedMotion: "Giảm chuyển động",
-  highContrast: "Độ tương phản cao",
 };
 /** Defines the youtube copy value. */
 export const YOUTUBE_COPY: Readonly<Record<YouTubeLocale, YouTubeDictionary>> = Object.freeze({

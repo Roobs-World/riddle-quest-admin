@@ -433,20 +433,10 @@ function ReadyYouTubeApp({
                 type="checkbox"
                 checked={snapshot.save.preferences.reducedMotion}
                 onChange={(event) => {
-                  void run(() => authority.setAccessibilityPreference("reducedMotion", event.currentTarget.checked));
+                  void run(() => authority.setReducedMotion(event.currentTarget.checked));
                 }}
               />
               {text("reducedMotion")}
-            </label>
-            <label>
-              <input
-                type="checkbox"
-                checked={snapshot.save.preferences.highContrast}
-                onChange={(event) => {
-                  void run(() => authority.setAccessibilityPreference("highContrast", event.currentTarget.checked));
-                }}
-              />
-              {text("highContrast")}
             </label>
           </fieldset>
         </section>

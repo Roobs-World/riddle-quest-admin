@@ -42,7 +42,7 @@ afterAll(() => {
 it("ignores device, browser and platform languages while retaining unrelated restored preferences", async () => {
   localStorage.setItem(PLAYER_PREFERENCE_STORAGE_KEYS.locale, "ar");
   expect(detectDeviceLanguage("ar-SA")).toBe("en");
-  expect(applyPlayerPreferences({locale: "fr", muted: true, highContrast: true})).toMatchObject({locale: "en", muted: true, highContrast: true});
+  expect(applyPlayerPreferences({locale: "fr", muted: true, reducedMotion: true})).toMatchObject({locale: "en", muted: true, reducedMotion: true});
   expect(localStorage.getItem(PLAYER_PREFERENCE_STORAGE_KEYS.locale)).toBe("en");
   await setLocaleAndWait("tr");
   expect(getCurrentLocale()).toBe("en");
@@ -70,5 +70,5 @@ it("hides Jest's language selector while keeping accessibility settings availabl
   expect(html).not.toContain("<select");
   expect(html).not.toContain("Español");
   expect(html).toContain("Reduced motion");
-  expect(html).toContain("High contrast");
+  expect(html).not.toContain("High contrast");
 });

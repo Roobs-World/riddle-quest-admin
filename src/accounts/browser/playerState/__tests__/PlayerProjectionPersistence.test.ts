@@ -24,13 +24,13 @@ describe("player projection persistence", () => {
     const results = await Promise.all([
       persistence.updatePreferences({muted: true}),
       persistence.updatePreferences({presenceEnabled: true}),
-      persistence.updatePreferences({highContrast: true}),
+      persistence.updatePreferences({reducedMotion: true}),
     ]);
 
     expect(results).toEqual([
       {muted: true},
       {muted: true, presenceEnabled: true},
-      {muted: true, presenceEnabled: true, highContrast: true},
+      {muted: true, presenceEnabled: true, reducedMotion: true},
     ]);
     expect(write.mock.calls.at(-1)?.[0]).toEqual(results[2]);
   });

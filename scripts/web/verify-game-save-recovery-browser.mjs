@@ -21,7 +21,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
-import {applyPlayerPreferences,setPlayerHighContrast,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {applyPlayerPreferences,setPlayerNotificationsEnabled,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import {dispatchLocalBridge,HOST_TO_GAME_EVENT} from ${JSON.stringify(path.join(root,"src/platform/bridge/browser/localBridge.ts"))};
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
@@ -39,7 +39,7 @@ window.durableData=()=>structuredClone(durable.get(player.playerId)??{});window.
 const sdk={init:async()=>{window.storageProbe.initializations++;},getPlayer:()=>player,data:{
 set:(key,value)=>{const kind=typeof key==='string'?'state':'preferences',data=structuredClone(typeof key==='string'?value:key);if(kind==='state')getStore()[key]=data;else Object.assign(getStore(),data);lastOperation={kind,playerId:player.playerId,value:data,ack:false};window.storageProbe[kind==='state'?'writes':'preferenceWrites'].push(lastOperation);},
 getAll:()=>structuredClone(getStore()),delete:key=>delete getStore()[key],flush:async()=>{window.storageProbe.flushes++;const entry=lastOperation;if(!released)await heldFlush;const draft=entry.kind==='state'&&entry.value.activeGame?.currentLetters.join('')==='PIAN';const clear=entry.kind==='state'&&entry.value.activeGame===null;
-if((draft&&window.storageProbe.failDraft>0)||(clear&&window.storageProbe.failClear>0)||(entry.kind==='preferences'&&entry.value.highContrast===true&&window.storageProbe.failPreferences>0)){if(draft)window.storageProbe.failDraft--;else if(clear)window.storageProbe.failClear--;else window.storageProbe.failPreferences--;entry.failed=true;throw new Error('injected SDK flush failure');}
+if((draft&&window.storageProbe.failDraft>0)||(clear&&window.storageProbe.failClear>0)||(entry.kind==='preferences'&&entry.value.notificationsEnabled===false&&window.storageProbe.failPreferences>0)){if(draft)window.storageProbe.failDraft--;else if(clear)window.storageProbe.failClear--;else window.storageProbe.failPreferences--;entry.failed=true;throw new Error('injected SDK flush failure');}
 if(holdNext&&entry.kind==='state'&&entry.value.activeGame){holdNext=false;await new Promise(r=>releaseNext=r);}const prior=durable.get(entry.playerId)??{};durable.set(entry.playerId,entry.kind==='state'?{...prior,riddleQuestPlayerState:entry.value}:{...prior,...entry.value});entry.ack=true;}}};
 const platform=new JestSdkPlatform(sdk),gate=createNotificationOperationGate({crossContextLock:null,deletionEpoch:()=>null,deletionPending:()=>false,requireCrossContextLock:false});
 window.releaseStorage=()=>{released=true;release();};
@@ -49,7 +49,7 @@ const setSession=change=>{const next=typeof change==='function'?change(sessionRe
 const writes=useJestPlayerStateWrites({platform,gate,sessionRef,setSession:React.useCallback(setSession,[]),setEngagementProgress:React.useCallback(()=>{},[]),trackFailure:React.useCallback(name=>window.storageProbe.failures.push(name),[])});window.writes=writes;
 React.useEffect(()=>{let active=true;void platform.init().then(()=>{if(!active)return;writes.enable(null,player.playerId);writes.savePlayerData({profile:{username:"Initial authority",coins:300,level:1,xp:0,winStreak:0,gamesPlayed:0,wins:0,achievements:[],classicIndex:1}});setReady(true);});return()=>{active=false;writes.disable();};},[writes]);
 window.writeUpdate=update=>{window.probe.saves.push(update);writes.savePlayerData(update);};
-window.changePreferences=()=>{setPlayerHighContrast(true);setPlayerReducedMotion(false);};
+window.changePreferences=()=>{setPlayerNotificationsEnabled(false);setPlayerReducedMotion(false);};
 window.mergeProfile=()=>window.writeUpdate({profile:{username:'Ada',coins:777,level:1,xp:0,winStreak:0,gamesPlayed:0,wins:0,achievements:[],classicIndex:1}});
 window.restart=async other=>{writes.disable();player={playerId:other?'other-player':'jest-player',registered:true};const incoming=await platform.readPlayerData();const session={...baseSession(),playerData:{...incoming,schemaVersion:1,updatedAt:Date.now(),profile:{username:'Fresh authority',coins:80,level:1,xp:0,winStreak:0,gamesPlayed:0,wins:0,achievements:[],classicIndex:1}}};
 freshProfile=session.playerData.profile;await commitJestStartupSession({gate,isActive:()=>true,session,enablePlayerStateWrites:writes.enable,setEngagementProgress:()=>{},setSession:next=>{setSession(next);window.committed=next;setEpoch(x=>x+1);},trackFunnel:()=>{}});};
@@ -104,7 +104,7 @@ if(id.endsWith('/useJestPlayerStateWrites.ts'))code=code.replace('return useMemo
    metric('two rejected preference flushes',await page.evaluate(()=>window.storageProbe.failures.filter(x=>x==='preference_save_failed').length),2);
    await page.clock.runFor(1001);await page.evaluate(()=>window.awaitQueue());
    metric('unrelated SDK preference metadata survives recovery',await page.evaluate(()=>window.durableData().locale),'fr');
-   metric('merged preference fields retry together',await page.evaluate(()=>({highContrast:window.durableData().highContrast??false,reducedMotion:window.durableData().reducedMotion??true})),{highContrast:true,reducedMotion:false});
+   metric('merged preference fields retry together',await page.evaluate(()=>({notificationsEnabled:window.durableData().notificationsEnabled??true,reducedMotion:window.durableData().reducedMotion??true})),{notificationsEnabled:false,reducedMotion:false});
   } else if(scenario==='disable') {
    await page.evaluate(()=>window.writes.disable());await page.clock.runFor(60000);await page.evaluate(()=>window.dispatchEvent(new Event('online')));await page.clock.runFor(20);
    metric('disabled session never retries',await draftWrites(),1);

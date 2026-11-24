@@ -1,7 +1,7 @@
 import {parseRedditPlayerData, parseRedditPreferences} from "../redditStorageEndpoint";
 
 describe("Reddit storage validation", () => {
-  it("accepts only platform-neutral preferences", () => {
+  it("accepts only platform-neutral preferences and drops the retired contrast setting", () => {
     expect(
       parseRedditPreferences({
         locale: "ar",
@@ -16,7 +16,6 @@ describe("Reddit storage validation", () => {
       locale: "ar",
       muted: true,
       reducedMotion: false,
-      highContrast: true,
       onboardingComplete: true,
       firstMilestoneMarked: false,
       presenceEnabled: true,
@@ -28,6 +27,7 @@ describe("Reddit storage validation", () => {
     [],
     {locale: "EN_us"},
     {locale: "en", muted: "yes"},
+    {highContrast: "yes"},
     {registered: true},
     {jestPlayerId: "player"},
     {facebookPlayerId: "player"},

@@ -353,7 +353,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         const playerData: Record<string, unknown> = {
           riddleQuestPreferences: {
             locale: new URL(location.href).searchParams.get("rewarded") === "on" ? "en" : "fr",
-            muted: true, reducedMotion: true, highContrast: true, onboardingComplete: false, presenceEnabled: false,
+            muted: true, reducedMotion: true, onboardingComplete: false, presenceEnabled: false,
           },
           riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 42, coins: 300},
         };
@@ -591,7 +591,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           reducedMotion: document.documentElement.dataset.riddleQuestReducedMotion,
           highContrast: document.documentElement.dataset.riddleQuestHighContrast,
         })),
-      ).toEqual({locale: "fr", soundEnabled: "true", reducedMotion: "true", highContrast: "true"});
+      ).toEqual({locale: "fr", soundEnabled: "true", reducedMotion: "true", highContrast: undefined});
       expect(
         await successPage.evaluate(() => {
           /** Provides original language behavior. */

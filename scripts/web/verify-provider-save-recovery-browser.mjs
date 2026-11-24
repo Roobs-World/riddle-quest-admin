@@ -30,7 +30,7 @@ import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/Pl
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
 import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root,"src/accounts/browser/deletion/LocalAccountDeletionGate.ts"))};
-import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges,setPlayerHighContrast} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
+import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
@@ -42,7 +42,7 @@ let stored={riddleQuestPreferences:preferences},durable=structuredClone(stored),
 const failed=counter=>{if(window.probe[counter]===0)return false;if(window.probe[counter]>0)window.probe[counter]--;return true;};
 async function save(key,value){const copy=structuredClone(value);if(key==='riddleQuestPlayerState')window.probe.writes.push(copy);else window.probe.preferences.push(copy);
  if(window.probe.holdNext&&value?.activeGame){window.probe.holdNext=false;window.probe.holding=true;await new Promise(r=>release=r);window.probe.holding=false;}
- if((key==='riddleQuestPlayerState'&&value?.activeGame?.currentLetters.join('')==='PIAN'&&failed('failDraft'))||(key==='riddleQuestPreferences'&&value?.highContrast===true&&failed('failPreferences'))){if(key==='riddleQuestPlayerState'&&!('rejectedDraftDurable' in window.probe)){window.probe.firstRejectedWrite=window.probe.writes.length-1;window.probe.rejectedDraftDurable=durable.riddleQuestPlayerState?.activeGame?.currentLetters.join('')==='PIAN';}if(!window.probe.faultSignaled){window.probe.faultSignaled=true;const scenario=new URL(location.href).searchParams.get('scenario');if(scenario==='offline')window.online(false);if(scenario==='hidden'||scenario==='wake-budget')window.visible(false);}throw new Error('injected-provider-write-failure');}
+ if((key==='riddleQuestPlayerState'&&value?.activeGame?.currentLetters.join('')==='PIAN'&&failed('failDraft'))||(key==='riddleQuestPreferences'&&value?.reducedMotion===false&&failed('failPreferences'))){if(key==='riddleQuestPlayerState'&&!('rejectedDraftDurable' in window.probe)){window.probe.firstRejectedWrite=window.probe.writes.length-1;window.probe.rejectedDraftDurable=durable.riddleQuestPlayerState?.activeGame?.currentLetters.join('')==='PIAN';}if(!window.probe.faultSignaled){window.probe.faultSignaled=true;const scenario=new URL(location.href).searchParams.get('scenario');if(scenario==='offline')window.online(false);if(scenario==='hidden'||scenario==='wake-budget')window.visible(false);}throw new Error('injected-provider-write-failure');}
  stored[key]=copy;
 }
 window.durableData=()=>structuredClone(durable.riddleQuestPlayerState??null);window.durablePreferences=()=>structuredClone(durable.riddleQuestPreferences??{});window.release=()=>release?.();
@@ -69,7 +69,7 @@ function App(){const [current,setCurrent]=React.useState(null);window.retire=()=
  return current?<PlayerSaveRecoveryLayout recovery={recovery}><PlayHostApp session={createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:false,onPlayerDataChange:write})}/></PlayerSaveRecoveryLayout>:<p data-testid='initializing'>Initializing injected provider</p>;
 }
 createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></React.StrictMode>);
-window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
+window.preference=()=>setPlayerReducedMotion(false);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
 `;
   await writeFile(path.join(dir,'main.tsx'),source);await writeFile(path.join(dir,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(dir,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
   await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
@@ -85,8 +85,8 @@ window.preference=()=>setPlayerHighContrast(true);window.draft=()=>Array.from(do
   await page.waitForFunction(()=>window.durableData()?.profile!=null);
   const initializations=await page.evaluate(()=>window.probe.initializations);
   if(scenario==='preferences'){
-   await page.evaluate(()=>{window.probe.failPreferences=1;window.preference();});await page.waitForFunction(()=>window.probe.failures.length>0);await page.waitForFunction(()=>window.durablePreferences().highContrast===true);
-   metric('rejected preference recovers without another change',await page.evaluate(()=>window.durablePreferences().highContrast),true);metric('other initialized preferences remain saved',await page.evaluate(()=>window.durablePreferences().locale),'en');
+   await page.evaluate(()=>{window.probe.failPreferences=1;window.preference();});await page.waitForFunction(()=>window.probe.failures.length>0);await page.waitForFunction(()=>window.durablePreferences().reducedMotion===false);
+   metric('rejected preference recovers without another change',await page.evaluate(()=>window.durablePreferences().reducedMotion),false);metric('other initialized preferences remain saved',await page.evaluate(()=>window.durablePreferences().locale),'en');
   }else{
    await waitForAnswerInputReady(page);
    await page.evaluate(persistent=>window.probe.failDraft=persistent?-1:1,['offline','hidden','manual','pause','wake-budget','retire','deletion'].includes(scenario));

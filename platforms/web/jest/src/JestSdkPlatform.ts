@@ -231,7 +231,6 @@ export class JestSdkPlatform implements JestPlatformPort {
       locale: typeof data.locale === "string" ? data.locale : undefined,
       muted: typeof data.muted === "boolean" ? data.muted : undefined,
       reducedMotion: typeof data.reducedMotion === "boolean" ? data.reducedMotion : undefined,
-      highContrast: typeof data.highContrast === "boolean" ? data.highContrast : undefined,
       notificationsEnabled: typeof data.notificationsEnabled === "boolean" ? data.notificationsEnabled : undefined,
       presenceEnabled: typeof data.presenceEnabled === "boolean" ? data.presenceEnabled : undefined,
       onboardingComplete: typeof data.onboardingComplete === "boolean" ? data.onboardingComplete : undefined,

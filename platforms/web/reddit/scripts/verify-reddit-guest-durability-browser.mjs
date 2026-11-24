@@ -16,9 +16,9 @@ const scratch=await mkdtemp(path.join(root,'node_modules/.cache/reddit-guest-'))
 const observations=[];let browser,server;
 try {
  const source=`
-import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/play/guidance/guidanceConfig.ts'))};
-import {setPlayerHighContrast} from ${JSON.stringify(path.join(root,'src/play/playerPreferences.ts'))};
-import {tr,LANGUAGE_OPTIONS,setLocaleAndWait} from ${JSON.stringify(path.join(root,'src/play/i18n.ts'))};
+import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,'src/onboarding/browser/guidanceConfig.ts'))};
+import {setPlayerReducedMotion} from ${JSON.stringify(path.join(root,'src/settings/browser/playerPreferences.ts'))};
+import {tr,LANGUAGE_OPTIONS,setLocaleAndWait} from ${JSON.stringify(path.join(root,'src/localization/browser/i18n.ts'))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 const locale=new URL(location.href).searchParams.get('locale')??'en';
 const key='riddleQuestRedditGuestV1',storage=window.localStorage,nativeSet=Storage.prototype.setItem,nativeGet=Storage.prototype.getItem;
@@ -33,7 +33,7 @@ for(const id of Object.keys(TOOLTIP_KEYS))storage.setItem(createGuidanceStorageK
 Object.defineProperty(window,'localStorage',{configurable:true,get(){if(window.probe.fault==='blocked')throw new DOMException('storage blocked','SecurityError');return storage;}});
 Storage.prototype.setItem=function(k,v){if(this===storage&&k===key){const failed=window.probe.fault==='quota';window.probe.writes.push({failed,value:JSON.parse(v)});if(failed)throw new DOMException('storage full','QuotaExceededError');}return nativeSet.call(this,k,v);};
 window.setFault=value=>window.probe.fault=value;
-window.preference=()=>setPlayerHighContrast(true);
+window.preference=()=>setPlayerReducedMotion(false);
 window.guestCopy=()=>[tr('RedditPlatform.GUEST_LIMITS'),tr('RedditPlatform.CONFIG_WARNING')];
 window.supportedLocales=LANGUAGE_OPTIONS.map(x=>x.code);
 window.durable=()=>JSON.parse(nativeGet.call(storage,key));
@@ -43,11 +43,11 @@ window.fetch=async(input,init)=>{const url=typeof input==='string'?input:input.u
 globalThis.devvit={context:{},entrypoints:{game:location.origin+'/game.html'},token:'injected-browser-fixture',webViewMode:2};
 // Layout cases exercise a settled translated game; cold locale handoff is a separate input-ownership seam.
 if(new URL(location.href).searchParams.has('locale')){
- await import(${JSON.stringify(path.join(root,'../../platforms/web/reddit/src/localeNamespace.ts'))});
+ await import(${JSON.stringify(path.join(root,'platforms/web/reddit/src/localeNamespace.ts'))});
  await setLocaleAndWait(locale);
 }
 window.probe.fault=new URL(location.href).searchParams.get('cold')??'none';
-await import(${JSON.stringify(path.join(root,'../../platforms/web/reddit/src/main.tsx'))});
+await import(${JSON.stringify(path.join(root,'platforms/web/reddit/src/main.tsx'))});
 `;
  await writeFile(path.join(scratch,'main.ts'),source);
  await writeFile(path.join(scratch,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));
@@ -82,9 +82,9 @@ await import(${JSON.stringify(path.join(root,'../../platforms/web/reddit/src/mai
    metric('retry remains reachable beside the guest banner',hit,true);
    await page.evaluate(()=>window.setFault('none'));await page.locator('.player-save-notice button').click();
   }else await page.evaluate(()=>window.setFault('none'));
-  if(baseline)await page.waitForTimeout(1500);else await page.waitForFunction(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')==='PIAN'&&window.durable().preferences.highContrast===true);
+  if(baseline)await page.waitForTimeout(1500);else await page.waitForFunction(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')==='PIAN'&&window.durable().preferences.reducedMotion===false);
   metric('latest draft is recovered without another keystroke',await page.evaluate(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')),'PIAN');
-  metric('preference change survives recovery with the draft',await page.evaluate(()=>window.durable()?.preferences.highContrast===true),true);
+  metric('preference change survives recovery with the draft',await page.evaluate(()=>window.durable()?.preferences.reducedMotion===false),true);
   if(!baseline){
    await page.locator('.player-save-notice').waitFor({state:'hidden'});
    metric('recovery does not restart provider initialization',await page.evaluate(()=>window.probe.sessions),sessions);
@@ -100,7 +100,7 @@ await import(${JSON.stringify(path.join(root,'../../platforms/web/reddit/src/mai
    }
    await page.reload();await page.waitForFunction(()=>window.draft()==='PIAN');
    metric('reload restores the saved draft',await page.evaluate(()=>window.draft()),'PIAN');
-   metric('reload restores the saved preference',await page.evaluate(()=>window.durable().preferences.highContrast),true);
+   metric('reload restores the saved preference',await page.evaluate(()=>window.durable().preferences.reducedMotion),false);
    await page.locator('.keyboard .key:not(:disabled)').first().waitFor();
    await page.evaluate(()=>document.activeElement?.blur());await page.keyboard.type('o');await page.keyboard.press('Enter');
    await page.waitForFunction(()=>window.durable().playerData.activeGame===null&&window.durable().playerData.profile.gamesPlayed===1);
@@ -130,8 +130,8 @@ await import(${JSON.stringify(path.join(root,'../../platforms/web/reddit/src/mai
   await page.evaluate(()=>window.setFault('none'));
   // Onboarding can outlast the bounded retry episode; use the real recovery control if it is already exhausted.
   if(fault==='blocked'&&await page.locator('.player-save-notice button').isVisible())await page.locator('.player-save-notice button').click();
-  await page.waitForFunction(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')==='PIAN'&&window.durable().preferences.highContrast===true);
-  metric('cold startup retries the latest complete guest record',await page.evaluate(()=>({draft:window.durable().playerData.activeGame.currentLetters.join(''),contrast:window.durable().preferences.highContrast})),{draft:'PIAN',contrast:true});
+  await page.waitForFunction(()=>window.durable()?.playerData?.activeGame?.currentLetters.join('')==='PIAN'&&window.durable().preferences.reducedMotion===false);
+  metric('cold startup retries the latest complete guest record',await page.evaluate(()=>({draft:window.durable().playerData.activeGame.currentLetters.join(''),reducedMotion:window.durable().preferences.reducedMotion})),{draft:'PIAN',reducedMotion:false});
   metric('cold startup has no unhandled storage rejection',await page.evaluate(()=>window.probe.unhandled),[]);
   // A restored getter must remain restored on the replacement view; the fault-bearing URL would block reads again.
   if(fault==='blocked')await page.goto(url);else await page.reload();

@@ -24,8 +24,6 @@ const authorityErrorKey = (error: unknown): YouTubeCopyKey => {
 export type YouTubeAccessibilityPreferences = Readonly<{
   /** Stores reduced motion. */
   reducedMotion: boolean;
-  /** Stores high contrast. */
-  highContrast: boolean;
 }>;
 /** Host presentation callbacks for the ready session; every callback is optional. */
 export type YouTubeReadySessionHost = Readonly<{
@@ -67,8 +65,8 @@ export function useYouTubeReadySession(
   useEffect(() => authority.subscribe(() => setSnapshot(authority.getSnapshot())), [authority]);
 
   /** Preference values drive the host effect; the snapshot object itself changes on every save. */
-  const {reducedMotion, highContrast} = snapshot.save.preferences;
-  useEffect(() => hostRef.current.applyPreferences?.({reducedMotion, highContrast}), [highContrast, reducedMotion]);
+  const {reducedMotion} = snapshot.save.preferences;
+  useEffect(() => hostRef.current.applyPreferences?.({reducedMotion}), [reducedMotion]);
 
   useEffect(() => {
     if (!snapshot.paused) sdk.gameReady();

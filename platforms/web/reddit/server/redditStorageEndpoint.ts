@@ -30,27 +30,30 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 /** Parses reddit preferences. */
 export function parseRedditPreferences(value: unknown): Record<string, unknown> {
   if (!isRecord(value)) throw new Error("invalid-reddit-preferences");
+  const {highContrast: obsoleteHighContrast, ...preferences} = value;
+  if (obsoleteHighContrast !== undefined && typeof obsoleteHighContrast !== "boolean") {
+    throw new Error("invalid-reddit-preferences");
+  }
   /** Provides allowed behavior. */
   const allowed = new Set([
     "locale",
     "muted",
     "reducedMotion",
-    "highContrast",
     "onboardingComplete",
     "firstMilestoneMarked",
     "presenceEnabled",
   ]);
-  if (Object.keys(value).some((key) => !allowed.has(key))) throw new Error("invalid-reddit-preferences");
+  if (Object.keys(preferences).some((key) => !allowed.has(key))) throw new Error("invalid-reddit-preferences");
   if (
-    value.locale !== undefined &&
-    (typeof value.locale !== "string" || !/^[a-z]{2}(?:-[A-Z]{2})?$/u.test(value.locale))
+    preferences.locale !== undefined &&
+    (typeof preferences.locale !== "string" || !/^[a-z]{2}(?:-[A-Z]{2})?$/u.test(preferences.locale))
   ) {
     throw new Error("invalid-reddit-preferences");
   }
   for (const key of [...allowed].filter((key) => key !== "locale")) {
-    if (value[key] !== undefined && typeof value[key] !== "boolean") throw new Error("invalid-reddit-preferences");
+    if (preferences[key] !== undefined && typeof preferences[key] !== "boolean") throw new Error("invalid-reddit-preferences");
   }
-  return {...value};
+  return preferences;
 }
 
 /** Parses reddit player data. */

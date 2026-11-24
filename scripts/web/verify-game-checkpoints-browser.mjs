@@ -88,11 +88,11 @@ try {
     await page.evaluate(async () => {
       await Promise.all([window.persistence.updatePreferences({muted: true}), window.persistence.updatePreferences({presenceEnabled: true})]);
       window.failNextPreference = true;
-      await window.persistence.updatePreferences({highContrast: true}).catch(() => undefined);
+      await window.persistence.updatePreferences({notificationsEnabled: false}).catch(() => undefined);
       await window.persistence.updatePreferences({reducedMotion: true});
     });
     assert.deepEqual(await page.evaluate(() => JSON.parse(localStorage.getItem("preferences"))),
-      {muted: true, presenceEnabled: true, highContrast: true, reducedMotion: true});
+      {muted: true, presenceEnabled: true, notificationsEnabled: false, reducedMotion: true});
 
     await page.evaluate(() => localStorage.removeItem("player"));
     await page.goto(url + "/?awaiting");

@@ -659,16 +659,14 @@ describe("LocalSoloAuthority", () => {
     const authority = await createAuthority(async (data) => {
       persisted.push(data);
     });
-    await authority.setAccessibilityPreference("reducedMotion", true);
-    await authority.setAccessibilityPreference("highContrast", true);
+    await authority.setReducedMotion(true);
     await authority.completeGuidance();
     expect(authority.getSnapshot().save.preferences).toEqual({
       reducedMotion: true,
-      highContrast: true,
       guidanceComplete: true,
     });
     expect(JSON.parse(persisted.at(-1) ?? "null")).toMatchObject({
-      preferences: {reducedMotion: true, highContrast: true, guidanceComplete: true},
+      preferences: {reducedMotion: true, guidanceComplete: true},
     });
   });
 

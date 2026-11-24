@@ -17,7 +17,7 @@ Log in through Reddit to use a saved game account. Guest coins or purchases neve
 transfer because guest play does not grant them.
 
 The game includes 16 interface languages, right-to-left layout for Arabic,
-reduced-motion and high-contrast preferences. The Reddit version contains no ads.
+and a reduced-motion preference. The Reddit version contains no ads.
 Gold purchases appear only when server configuration and Reddit approval permit
 them. Push notifications are not integrated and require Reddit's gated beta
 approval before activation.

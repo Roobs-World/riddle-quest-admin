@@ -131,9 +131,6 @@
   color: #fff;
   border-color: var(--feedback-absent);
 }
-:root[data-riddle-quest-high-contrast="true"] .game-app :is(.cell.green, .keyboard .key.green) {
-  color: #fff;
-}
 .game-input-actions {
   width: min(760px, 100%);
   justify-self: center;

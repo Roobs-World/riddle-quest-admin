@@ -60,8 +60,8 @@ describe("MockJestPlatform", () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     platform.preferences = {locale: "en", muted: false};
-    await platform.writePreferences({muted: true, highContrast: true});
-    expect(platform.readPreferences()).toEqual({locale: "en", muted: true, highContrast: true});
+    await platform.writePreferences({muted: true, reducedMotion: true});
+    expect(platform.readPreferences()).toEqual({locale: "en", muted: true, reducedMotion: true});
     /** Provides player data behavior. */
     const playerData = {schemaVersion: 1 as const, updatedAt: 10};
     expect(platform.readPlayerData()).toBeNull();

@@ -9,9 +9,8 @@ import type {YouTubeSdkPort} from "../../../platform/contracts/localGamePolicy";
 /** Applies accessibility preferences as document classes consumed by the Playable stylesheet. */
 const applyPreferences = (preferences: YouTubeAccessibilityPreferences): (() => void) => {
   document.documentElement.classList.toggle("youtube-reduced-motion", preferences.reducedMotion);
-  document.documentElement.classList.toggle("youtube-high-contrast", preferences.highContrast);
   return () => {
-    document.documentElement.classList.remove("youtube-reduced-motion", "youtube-high-contrast");
+    document.documentElement.classList.remove("youtube-reduced-motion");
   };
 };
 /** Coordinates authority, platform, accessibility, focus, and UTC lifecycle for the ready view. */

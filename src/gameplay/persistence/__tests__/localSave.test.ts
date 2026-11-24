@@ -25,6 +25,19 @@ describe("YouTubeSaveV1", () => {
     expect(parseYouTubeSave(JSON.stringify({...save, answer: "rome"}), "content-v1")).toMatchObject({kind: "invalid"});
   });
 
+  it("preserves saved progression while discarding the retired contrast preference", () => {
+    const save = createEmptyYouTubeSave("content-v1");
+    save.revision = 7;
+    save.progression.coins = 777;
+    save.preferences = {reducedMotion: true, guidanceComplete: true};
+    const raw = JSON.stringify({...save, preferences: {...save.preferences, highContrast: true}});
+    const parsed = parseYouTubeSave(raw, "content-v1");
+
+    expect(parsed).toEqual({kind: "valid", save});
+    if (parsed.kind !== "valid") throw new Error("unexpected parse result");
+    expect(serializeYouTubeSave(parsed.save)).not.toContain("highContrast");
+  });
+
   it("preserves malformed and future data for explicit destructive reset", () => {
     expect(parseYouTubeSave("not-json", "content-v1")).toEqual({
       kind: "invalid",
@@ -64,7 +77,7 @@ describe("YouTubeSaveV1", () => {
     expect(parsed).toEqual({
       kind: "valid",
       migratedFromSchemaVersion: 0,
-      save: {...save, preferences: {reducedMotion: false, highContrast: false, guidanceComplete: false}},
+      save: {...save, preferences: {reducedMotion: false, guidanceComplete: false}},
     });
   });
 
