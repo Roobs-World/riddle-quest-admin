@@ -26,7 +26,7 @@ The composer saves working drafts in this browser, including the request ID need
 
 ## Supabase setup
 
-The Supabase Marketplace installation is connected to `riddle-quest-admin` in production. Its project URL is `https://vqyjgcqyudqonfhgymoy.supabase.co`. The integration supplies the standard URL, publishable key and server secret variables. It is not currently connected to Preview or Development environments.
+The Supabase project is named `riddle-quest-notifications`. Its Marketplace installation is connected to `riddle-quest-admin` in production, and its project URL remains `https://vqyjgcqyudqonfhgymoy.supabase.co`. The integration supplies the standard URL, publishable key and server secret variables. It is not currently connected to Preview or Development environments.
 
 A read-only check on November 24, 2026 confirmed that the Auth endpoint responds, Google sign-in is disabled, and the Data API reports `PGRST205` for `notification_operators`. Schema readiness is therefore unconfirmed. The integration connection alone does not apply the schema, enable Google OAuth, approve operators or configure the push scheduler.
 
@@ -39,6 +39,12 @@ A read-only check on November 24, 2026 confirmed that the Auth endpoint responds
 Every notification table enables RLS. Browser clients cannot access installations, push credentials, campaigns, receipts or quotas directly. Server-only RPCs perform atomic subscription, revision, lease and receipt operations. Each management request checks the current Supabase user and database membership. User-editable metadata never grants authority.
 
 No schema, seed, operator membership or scheduled job is applied by a frontend build.
+
+### Agent administration connection
+
+The repository's `.mcp.json` configures Claude and `.codex/config.toml` configures Codex with Supabase's HTTP MCP endpoint. Both are scoped to project reference `vqyjgcqyudqonfhgymoy`, with the feature groups selected during setup. The project display name does not change the reference or connection URL. These files contain no access tokens.
+
+Authenticate the client separately: use `codex mcp login supabase` for Codex, or open Claude in a regular terminal and use `/mcp` to approve and authenticate the `supabase` server. Choose the organization containing `riddle-quest-notifications`. Reload the client session after authentication if its Supabase tools are not available. See [Supabase's MCP setup guide](https://supabase.com/docs/guides/ai-tools/mcp).
 
 ## Vercel setup
 

@@ -1,5 +1,8 @@
 [mcp_servers.jest]
 url = "https://jest.com/mcp"
 
+[mcp_servers.supabase]
+url = "https://mcp.supabase.com/mcp?project_ref=vqyjgcqyudqonfhgymoy&features=docs%2Caccount%2Cdatabase%2Cdebugging%2Cdevelopment%2Cfunctions%2Cbranching%2Cfeedback%2Cnotebooks"
+
 [agents]
 enabled = true
