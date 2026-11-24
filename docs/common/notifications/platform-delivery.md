@@ -25,11 +25,7 @@ A new native Android build and the configured bridge are required. Old clients t
 
 ## Platform exceptions
 
-Facebook uses the default hosted browser provider. No optional Meta A2U/bot delivery integration is active. [Meta hosts Instant Games in iframes or mobile WebViews](https://developers.facebook.com/documentation/games/build/overview), where browser notification features may be unavailable. The game reports that limitation; native Android FCM cannot supply push APIs inside another application's WebView.
-
-Jest has a documented launch requirement for a registered-player D1-D7 notification sequence. Its [launch checklist](https://docs.jest.com/launch-checklist#notifications) allows a developer backend using the Jest API as an alternative to its client SDK. The SDK is not an exclusive platform mandate. Generic FCM or Web Push does not satisfy that documented Jest sequence.
-
-The existing Jest schedule/remove adapter and cancellation remain, but manager-to-Jest campaign authoring and delivery are not enabled. That required sequence needs a manager-authored content handoff before a future Jest launch. Do not add optional platform-specific delivery paths unless a confirmed requirement or explicit request calls for them.
+Jest and Facebook use the shared [Firebase-linked enrollment page](firebase-enrollment.md) outside the embedded game. The existing authenticated game account pairs that browser without another Google login. Their artifacts exclude service workers and Firebase Messaging. Notifications are delivered through our Web Push bridge, not Jest Home/SMS or optional Meta integrations. Legacy Jest cancellation remains to retire old schedules.
 
 Reddit, YouTube, Netflix and GameSnacks retain their existing target restrictions and have no provider in their current build.
 

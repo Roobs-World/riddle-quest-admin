@@ -5,6 +5,8 @@
   "installCommand": "corepack pnpm install --frozen-lockfile",
   "buildCommand": "pnpm build",
   "outputDirectory": "dist",
+  "redirects": [{"source": "/push", "destination": "/push/", "permanent": false}],
+  "rewrites": [{"source": "/push/", "destination": "/index.html"}],
   "functions": {
     "api/**/*.ts": {"maxDuration": 60}
   },

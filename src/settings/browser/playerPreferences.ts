@@ -41,6 +41,7 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
 const GUIDANCE_STORAGE_PREFIXES = [
   "riddleQuest:tooltipSeen:",
   "riddleQuest:tooltipSequenceSeen:",
+  "riddleQuest:notificationEnrollment:",
 ] as const;
 /** Session-storage prefixes containing app-owned transient guidance state. */
 const SESSION_GUIDANCE_STORAGE_PREFIXES = ["riddleQuest:welcomeSession:"] as const;

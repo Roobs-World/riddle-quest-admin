@@ -6,7 +6,7 @@ create table public.notification_operators (
 create table public.notification_installations (
   id text primary key check (id ~ '^[a-f0-9]{64}$'),
   target text not null check (target ~ '^[a-z][a-z0-9-]{0,63}$'),
-  transport text not null default 'web-push' check (transport in ('web-push', 'android')),
+  transport text not null default 'web-push' check (transport in ('web-push', 'android', 'firebase')),
   origin text,
   revision bigint not null check (revision >= -1),
   locale text not null,
@@ -21,10 +21,11 @@ create table public.notification_installations (
   constraint notification_installation_transport check (
     (transport = 'web-push' and origin is not null and target not in ('android', 'all') and native_ref is null)
     or (transport = 'android' and origin is null and target = 'android' and subscription is null)
+    or (transport = 'firebase' and origin is null and target <> 'all' and subscription is null)
   ),
   constraint notification_installation_state check (
     (status = 'active' and endpoint_hash is not null and endpoint_hash ~ '^[a-f0-9]{64}$' and enrolled_at is not null
-      and (transport = 'web-push' and subscription is not null or transport = 'android' and native_ref is not null))
+      and (transport = 'web-push' and subscription is not null or transport in ('android', 'firebase') and native_ref is not null))
     or (status = 'disabled' and subscription is null and native_ref is null and endpoint_hash is null)
   )
 );

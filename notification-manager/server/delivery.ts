@@ -1,6 +1,8 @@
 import {z} from "zod";
 import {notificationRpc} from "./database.js";
-import {admittedOrigins, androidBridgeConfiguration, vapidConfiguration} from "./configuration.js";
+import {admittedOrigins, androidBridgeConfiguration, firebaseBridgeConfiguration, firebaseNotificationTargets, vapidConfiguration} from "./configuration.js";
+import {FirebasePushDispatch, FirebasePushDispatchResult} from "../../src/notifications/contracts/firebasePush.js";
+import {readFirebaseBridgeResponse} from "./firebasePush.js";
 import {Campaign, Installation, permittedPushEndpoint, Revision} from "./model.js";
 import {deadlineSignal, reserveDeadline, type Deadline} from "./deadline.js";
 
@@ -34,6 +36,18 @@ export async function deliverCampaignNotification(campaignId: string, installati
         outcome = (await sendAndroidManagerNotification({version: 1, tokenHash: installation.nativeRef,
           revision: claim.revision, notificationId: campaignId, title: campaign.title, body: campaign.body,
           imageUrl: campaign.imageUrl, expiresAtMs}, configuration, deadlineSignal(workDeadline, 8000))).outcome;
+      }
+    } else if (installation.transport === "firebase") {
+      const configuration = firebaseBridgeConfiguration();
+      if (!configuration || !firebaseNotificationTargets().includes(installation.target)) outcome = "failed";
+      else if (!await admit()) outcome = "skipped";
+      else {
+        const input = FirebasePushDispatch.parse({version: 1, deviceHash: installation.nativeRef, revision: claim.revision,
+          notificationId: campaignId, title: campaign.title, body: campaign.body, imageUrl: campaign.imageUrl, expiresAtMs});
+        const response = await fetch(configuration.dispatchEndpoint, {method: "POST", headers: {
+          Authorization: `Bearer ${configuration.secret}`, "Content-Type": "application/json", Accept: "application/json"},
+          body: JSON.stringify(input), redirect: "error", signal: deadlineSignal(workDeadline, 8000)});
+        outcome = FirebasePushDispatchResult.parse(await readFirebaseBridgeResponse(response)).outcome;
       }
     } else if (admittedOrigins()[installation.target] !== installation.origin || !permittedPushEndpoint(installation.subscription.endpoint)) {
       outcome = "skipped";

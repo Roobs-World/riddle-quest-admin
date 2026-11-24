@@ -1,5 +1,6 @@
 import {ECDH} from "node:crypto";
 import {z} from "zod";
+import {FirebasePushTarget} from "../../src/notifications/contracts/firebasePush.js";
 
 export const DAY_MS = 86_400_000;
 export const Platform = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/u);
@@ -58,6 +59,7 @@ const InstallationBase = z.object({
 });
 const WebInstallationBase = InstallationBase.extend({transport: z.literal("web-push"), target: BrowserPlatform, origin: z.string()});
 const AndroidInstallationBase = InstallationBase.extend({transport: z.literal("android"), target: z.literal("android"), origin: z.null()});
+const FirebaseInstallationBase = InstallationBase.extend({transport: z.literal("firebase"), target: FirebasePushTarget, origin: z.null()});
 export const Installation = z.discriminatedUnion("transport", [
   z.discriminatedUnion("status", [
     WebInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, subscription: Subscription, endpointHash: Hash}).strict(),
@@ -66,6 +68,10 @@ export const Installation = z.discriminatedUnion("transport", [
   z.discriminatedUnion("status", [
     AndroidInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),
     AndroidInstallationBase.extend({status: z.literal("disabled")}).strict(),
+  ]),
+  z.discriminatedUnion("status", [
+    FirebaseInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),
+    FirebaseInstallationBase.extend({status: z.literal("disabled")}).strict(),
   ]),
 ]);
 export type Installation = z.infer<typeof Installation>;

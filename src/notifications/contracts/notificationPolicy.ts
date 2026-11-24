@@ -1,7 +1,8 @@
 /** Requirements override our hosted default only at the platform boundary. */
-export function notificationDeliveryForPlatform(platform: string): "hosted" | "platform-required" | "disabled" {
+export function notificationDeliveryForPlatform(platform: string): "hosted" | "account-enrollment" | "platform-required" | "disabled" {
   switch (platform) {
     case "jest":
+    case "facebook": return "account-enrollment";
     case "android": return "platform-required";
     case "youtube":
     case "netflix":

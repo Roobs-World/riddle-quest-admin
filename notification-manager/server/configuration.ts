@@ -1,6 +1,7 @@
 import {createECDH} from "node:crypto";
 import {z} from "zod";
 import {BrowserPlatform} from "./model.js";
+import {FirebasePushTarget} from "../../src/notifications/contracts/firebasePush.js";
 
 export function localDevelopmentEnabled(): boolean {
   return process.env.NODE_ENV !== "production" && process.env.NOTIFICATION_ALLOW_LOCALHOST === "true";
@@ -25,6 +26,26 @@ export function admittedOrigins(): Record<string, string> {
 
 export interface AndroidBridgeConfiguration {endpoint: string; secret: string}
 
+export interface FirebaseBridgeConfiguration {endpoint: string; dispatchEndpoint: string; secret: string}
+
+/** One authenticated Firebase bridge owns account-linked browser devices on every target. */
+export function firebaseBridgeConfiguration(): FirebaseBridgeConfiguration | null {
+  const endpoint = process.env.FIREBASE_NOTIFICATION_BRIDGE_URL ?? "";
+  const secret = process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET ?? "";
+  if (endpoint.length > 2048 || /[\u0000-\u0020\u007f]/u.test(endpoint) || !/^[A-Za-z0-9_-]{32,256}$/u.test(secret)) return null;
+  try {
+    const url = new URL(endpoint);
+    if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash || url.port ||
+        !/^[a-z0-9-]+\.cloudfunctions\.net$/u.test(url.hostname) || url.pathname !== "/notificationBrowserBridge") return null;
+    return {endpoint, dispatchEndpoint: new URL("/dispatchFirebaseNotification", url).href, secret};
+  } catch {return null;}
+}
+
+export function firebaseNotificationTargets(): string[] {
+  const value: unknown = JSON.parse(process.env.FIREBASE_NOTIFICATION_TARGETS ?? "[]");
+  return [...new Set(z.array(FirebasePushTarget).max(100).parse(value))];
+}
+
 /** Native devices are admitted only through the trusted Firebase server bridge. */
 export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null {
   const endpoint = process.env.ANDROID_NOTIFICATION_BRIDGE_URL ?? "";
@@ -41,6 +62,12 @@ export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null 
 export function admittedPlatforms(): Array<{id: string; origin: string | null}> {
   const platforms: Array<{id: string; origin: string | null}> = Object.entries(admittedOrigins()).map(([id, origin]) => ({id, origin}));
   if (androidBridgeConfiguration()) platforms.push({id: "android", origin: null});
+  if (firebaseBridgeConfiguration()) {
+    for (const id of firebaseNotificationTargets()) {
+      if (platforms.some(platform => platform.id === id && platform.origin !== null)) throw new Error("notification-platform-transport-conflict");
+      if (!platforms.some(platform => platform.id === id)) platforms.push({id, origin: null});
+    }
+  }
   return platforms;
 }
 
@@ -49,7 +76,7 @@ export function requireCampaignTransports(target: string): void {
   if (target !== "all" && !platforms.some(platform => platform.id === target) || !platforms.length) {
     throw new Error("notification-platform-unconfigured");
   }
-  if (target !== "android" && platforms.some(platform => platform.origin !== null)) vapidConfiguration();
+  if (platforms.some(platform => platform.origin !== null && (target === "all" || platform.id === target))) vapidConfiguration();
 }
 
 export type VapidConfiguration = Readonly<{publicKey: string; privateKey: string; subject: string}>;

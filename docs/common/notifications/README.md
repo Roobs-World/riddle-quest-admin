@@ -9,8 +9,8 @@ The game has one global Notifications preference in Settings, using the same On/
 | Platform | Delivery boundary |
 | --- | --- |
 | Android browsers, iOS Home Screen apps and desktop browsers | Hosted Web Push through the Vercel service |
-| Jest | Required Jest SDK |
-| Facebook | Default hosted browser provider where its runtime supports it; no optional Meta delivery integration |
+| Jest | Shared Firebase-linked enrollment page outside the embedded game |
+| Facebook | The same Firebase-linked enrollment page; no optional Meta delivery integration |
 | Android React Native app | Native permission and FCM adapter behind the same hosted campaign service |
 | Reddit, YouTube, Netflix and GameSnacks | No notification provider in the current target |
 
@@ -21,3 +21,5 @@ The hosted provider registers a browser PushSubscription and a private installat
 `VITE_NOTIFICATION_SERVICE_URL` explicitly selects the hosted service. With no URL, the preference reports unconfigured delivery and makes no backend requests. Browser transport is replaceable, and new platforms can supply a provider without importing another platform's SDK.
 
 Read the [service and setup guide](service.md), [API contract](api.md), and [Yahoo client guide](../../yahoo/notifications.md). Source builds do not deploy the service, apply database changes or upload games.
+
+For authenticated players, [Firebase enrollment](firebase-enrollment.md) describes the shared signup action, device ownership, platform adapters and coordinated release. Firebase is the account and device authority; its device count is distinct from configured delivery platforms.

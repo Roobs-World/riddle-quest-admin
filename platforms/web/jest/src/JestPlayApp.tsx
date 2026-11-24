@@ -58,7 +58,7 @@ import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
 import {hasLiveRaceLobby} from "../../../../src/races/browser/storage/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
-import type {NotificationPreferenceCommand} from "../../../../src/notifications/contracts/notificationProvider";
+import type {NotificationDelivery, NotificationPreferenceCommand} from "../../../../src/notifications/contracts/notificationProvider";
 import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
 
@@ -226,6 +226,14 @@ export function JestPlayApp() {
         const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
         return active && capability ? capability.setEnabled(enabled) : false;
       },
+      requestPermission() {
+        return active && current ? current.requestPermission() : Promise.resolve(false);
+      },
+      async restoreDelivery(): Promise<NotificationDelivery> {
+        if (!active) return "inactive";
+        const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
+        return active && capability ? capability.restoreDelivery() : "inactive";
+      },
       install(capability: NotificationPreferenceCommand) {
         current = capability; if (active) resolveWaiting(capability);
         return () => {if (current === capability) current = null;};
@@ -245,6 +253,8 @@ export function JestPlayApp() {
       subscribe: subscribeToPlayerNotifications,
     },
     applyEnabled: notificationsDelegate.setEnabled,
+    applyPermission: notificationsDelegate.requestPermission,
+    restoreDelivery: notificationsDelegate.restoreDelivery,
   }), [notificationsDelegate]);
   /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({

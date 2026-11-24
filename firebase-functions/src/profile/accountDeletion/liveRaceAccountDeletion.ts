@@ -12,6 +12,18 @@ const PAGE_SIZE = 100;
 /** Opaque server ticket IDs are the only permitted match-to-document links. */
 const validTicketId = (value: unknown): value is string => typeof value === "string" && /^[a-f0-9]{64}$/.test(value);
 
+async function deleteOwnedNotificationDocuments(collection: string, uid: string): Promise<void> {
+  const db = admin.firestore();
+  for (;;) {
+    const page = await db.collection(collection).where("uid", "==", uid).limit(PAGE_SIZE).get();
+    if (page.empty) return;
+    for (const row of page.docs) await db.runTransaction(async tx => {
+      const current = await tx.get(row.ref);
+      if (current.data()?.uid === uid) tx.delete(row.ref);
+    });
+  }
+}
+
 /** Sealed matches no longer need command receipts; deleted owners cannot create later receipts. */
 async function clearLiveMatchRequests(ref: FirebaseFirestore.DocumentReference): Promise<void> {
   /** Firestore client used for transactional identity cleanup. */
@@ -196,6 +208,11 @@ export async function removeLiveRaceIdentitySnapshots(userId: string): Promise<v
   await deleteMatchingDocuments("androidPushTokens", "uid", userId);
   await deleteMatchingDocuments("androidPushDeliveries", "uid", userId);
   await deleteMatchingDocuments("androidNotificationDevices", "uid", userId);
+  await deleteOwnedNotificationDocuments("accountPushDevices", userId);
+  await deleteOwnedNotificationDocuments("accountPushEndpoints", userId);
+  await deleteOwnedNotificationDocuments("accountPushDeliveries", userId);
+  await deleteOwnedNotificationDocuments("notificationPairings", userId);
+  await db.doc(`notificationPairingLimits/${userId}`).delete();
   await deleteMatchingCollectionGroupDocuments("entries", "userId", userId);
   /** Atomic batch retires the selected private documents. */
   const batch = db.batch();

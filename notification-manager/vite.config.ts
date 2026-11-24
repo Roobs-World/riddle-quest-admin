@@ -59,7 +59,7 @@ export default defineConfig(({mode}) => {
     root,
     envDir: root,
     envPrefix: "VITE_NOTIFICATION_",
-    publicDir: false,
+    publicDir: "public",
     plugins: [react(), browserBoundary(environment)],
     define: {
       "import.meta.env.VITE_NOTIFICATION_SUPABASE_URL": JSON.stringify(publicSettings?.url ?? ""),

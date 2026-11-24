@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-24",
+  "firebaseProject": "riddle-quest-ec2b2",
+  "firebaseProjectNumber": "329028367192",
+  "identitySource": "Existing verified Firebase game account; no second player sign-in",
+  "sharedEnrollmentClients": [
+    "jest",
+    "facebook"
+  ],
+  "extensibility": "SDK-free enrollment capability with injectable authenticated platform gateway; existing forbidden targets remain restricted",
+  "verified": {
+    "rootTypeScript": true,
+    "managerProductionBuild": true,
+    "vercelProductionPackageBuild": true,
+    "firebaseFunctionsBuild": true,
+    "functionsLayoutAudit": true,
+    "jestArtifactAudit": true,
+    "facebookArtifactAudit": true,
+    "workerSyntaxCheck": true,
+    "localeAudit": true,
+    "sourceDiffWhitespaceCheck": true
+  },
+  "automatedTestsRun": false,
+  "browserHarnessesRun": false,
+  "liveMigrationApplied": false,
+  "firebaseFunctionsReleased": false,
+  "websiteReleased": false,
+  "gamesUploaded": false,
+  "notificationsSent": false,
+  "pending": [
+    "Coordinate secrets and environment settings",
+    "Apply reviewed Supabase firebase_push_devices migration",
+    "Release Firebase functions including deletion handlers",
+    "Deploy enrollment website and manager API",
+    "Upload and activate updated games with explicit authorization",
+    "Configure Supabase scheduler and Firebase TTL cleanup",
+    "Verify real-device enrollment, closed-game delivery, opt-out and account changes"
+  ]
+}

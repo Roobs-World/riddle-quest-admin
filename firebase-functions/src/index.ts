@@ -179,3 +179,7 @@ export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./ridd
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/api/raceLiveCallables";
 export {deliverLiveRaceChallengePush} from "./race/notifications/raceLivePushJobs";
 export {setNotificationPreference} from "./notifications/notificationPreferences";
+
+export {createNotificationEnrollment, getNotificationEnrollmentStatus} from "./notifications/notificationEnrollment";
+export {notificationBrowserBridge} from "./notifications/notificationBrowserBridge";
+export {dispatchFirebaseNotification} from "./notifications/notificationDispatch";

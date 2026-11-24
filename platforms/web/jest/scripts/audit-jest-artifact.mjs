@@ -146,5 +146,5 @@ if (initialResourceBytes > maximumInitialResourceBytes) {
 console.log(
   `Jest artifact audit passed: ${files.length} files, ${(artifactBytes / 1024 / 1024).toFixed(2)} MB, ` +
   `${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, relative entry paths, ` +
-  "consent-controlled analytics; Jest SDK notifications only; no native modules, browser push/FCM, external auth/ads, install copy, secrets, source maps, or missing entry assets",
+  "consent-controlled analytics; separate account-linked push enrollment; no native modules, in-frame browser push/FCM, external auth/ads, install copy, secrets, source maps, or missing entry assets",
 );

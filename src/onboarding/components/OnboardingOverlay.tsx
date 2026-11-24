@@ -1,7 +1,9 @@
-import type {RefObject} from "react";
+import {lazy, Suspense, type RefObject} from "react";
 import logoUrl from "../../../assets/images/main-logo.webp";
 import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
 import {tr} from "../../localization/browser/i18n";
+const NotificationEnrollmentPrompt = lazy(() => import("../../notifications/components/NotificationEnrollmentPrompt")
+  .then(module => ({default: module.NotificationEnrollmentPrompt})));
 
 /** Props required to present one onboarding page. */
 export type OnboardingOverlayProps = {
@@ -56,6 +58,7 @@ export function OnboardingOverlay({
           <>
             <p>{tr("WelcomeModal.SOLVE_RIDDLES_TEXT")}</p>
             <p>{tr("WelcomeModal.EARN_COINS_TEXT")}</p>
+            <Suspense fallback={null}><NotificationEnrollmentPrompt /></Suspense>
           </>
         ) : (
           <>

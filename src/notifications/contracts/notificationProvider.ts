@@ -44,4 +44,6 @@ export type NotificationProviderPolicy =
   | Readonly<{kind: "disabled"}>;
 
 /** A narrow command port used when platform delivery is loaded after the game. */
-export type NotificationPreferenceCommand = Pick<NotificationProvider, "setEnabled">;
+export type NotificationPreferenceCommand = Pick<NotificationProvider, "setEnabled" | "requestPermission"> & {
+  restoreDelivery(): Promise<NotificationDelivery>;
+};

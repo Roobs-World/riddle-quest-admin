@@ -1,6 +1,6 @@
 # Notification management service
 
-The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager has no Firebase SDK dependency. The existing Android game backend retains authenticated FCM token ownership and serves its device adapter.
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager has no Firebase SDK dependency. Firebase retains authenticated account and device ownership for both browser enrollment and native FCM. The manager calls private Firebase bridges rather than importing its SDK. See [Firebase enrollment](firebase-enrollment.md).
 
 Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
 

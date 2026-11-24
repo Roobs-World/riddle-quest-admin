@@ -98,7 +98,7 @@ returns jsonb language sql stable security invoker set search_path = '' as $$
     select i.id from public.notification_installations i join public.notification_campaigns c on c.id = p_campaign_id
     where i.status = 'active' and i.expires_at > statement_timestamp()
       and c.status = 'sending' and (p_cursor is null or i.id > p_cursor) and (c.target = 'all' or i.target = c.target)
-      and i.created_at <= c.started_at and (i.transport <> 'android' or i.enrolled_at <= c.started_at)
+      and i.created_at <= c.started_at and (i.transport not in ('android', 'firebase') or i.enrolled_at <= c.started_at)
     order by i.id limit greatest(0, least(p_limit, 50))
   ) q;
 $$;

@@ -23,6 +23,11 @@ export type Campaign = z.infer<typeof Campaign>;
 export const ManagementConfiguration = z.object({
   platforms: z.array(z.object({id: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/u), origin: z.url().nullable()}).strict()).max(100),
   pushOnly: z.literal(true),
+  firebaseAudience: z.discriminatedUnion("status", [
+    z.object({status: z.literal("unconfigured")}).strict(),
+    z.object({status: z.literal("unavailable")}).strict(),
+    z.object({status: z.literal("connected"), accounts: Count, registeredDevices: Count}).strict(),
+  ]),
 }).strict();
 export type ManagementConfiguration = z.infer<typeof ManagementConfiguration>;
 

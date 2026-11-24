@@ -2,8 +2,9 @@ import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import type {NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
 import {createNotificationProvider} from "../../../../src/notifications/controllers/notificationProvider";
-import {createHostedPushController} from "../../../../src/notifications/browser/hostedPushController";
-import {createConfiguredHostedPushTransportFactory} from "../../../../src/notifications/browser/hostedPush/api";
+import {createFirebaseNotificationEnrollment} from "../../../../src/notifications/browser/firebaseEnrollment";
+import {createFirebaseEnrollmentBackend} from "../../../../src/notifications/browser/firebaseEnrollmentBackend";
+import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
 import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {getCurrentLocale, tr} from "../../../../src/localization/browser/i18n";
@@ -150,6 +151,7 @@ export function FacebookPlatformEntry() {
     let unsubscribeCommerceResume: (() => void) | undefined;
     /** Payment lifecycle controller for the authenticated Facebook account. */
     let commerceSession: FacebookCommerceSession | undefined;
+    let sessionNotifications: NotificationProvider | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -248,19 +250,36 @@ export function FacebookPlatformEntry() {
           }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
-            let transport: ReturnType<typeof createConfiguredHostedPushTransportFactory>;
-            try {transport = createConfiguredHostedPushTransportFactory(import.meta.env.VITE_NOTIFICATION_SERVICE_URL);}
-            catch {transport = undefined;}
-            notificationProvider = createNotificationProvider({platform: "facebook", hosted: ({platform}) => createHostedPushController({
-              target: platform,
-              transport,
-              isAccountActive: () => active && deletionGateRef.current.isOpen(),
+            const {auth, setNotificationPreference} = await import("../../../../src/platform/firebase/browserClient");
+            const isAccountActive = () => active && deletionGateRef.current.isOpen() && auth.currentUser?.uid === userId;
+            const applyEnabled = (enabled: boolean) => deletionGateRef.current.run(async () => {
+              if (!isAccountActive() || isPlayerNotificationsEnabled() !== enabled) return false;
+              await setNotificationPreference({enabled});
+              return isAccountActive() && isPlayerNotificationsEnabled() === enabled;
+            });
+            const backend = createFirebaseEnrollmentBackend({expectedUid: userId, isCurrent: isAccountActive,
+              run: operation => deletionGateRef.current.run(operation)});
+            const enrollment = createFirebaseNotificationEnrollment({accountId: userId,
+              managerOrigin: import.meta.env.VITE_NOTIFICATION_SERVICE_URL || "https://riddle-quest-admin.vercel.app",
+              locale: getCurrentLocale, isCurrent: () => isAccountActive() && isPlayerNotificationsEnabled(),
+              backend: {...backend, createEnrollment: async input => {
+                if (!await applyEnabled(true)) throw new Error("notification-enrollment-preference-unavailable");
+                return backend.createEnrollment(input);
+              }},
+            });
+            const notifications = createPlatformNotificationProvider({
               preferences: {
                 getEnabled: isPlayerNotificationsEnabled,
                 setEnabled: setPlayerNotificationsEnabled,
                 subscribe: subscribeToPlayerNotifications,
               },
+              applyEnabled, applyPermission: enrollment.requestPermission, restoreDelivery: enrollment.restoreDelivery,
+            });
+            notificationProvider = createNotificationProvider({platform: "facebook", hosted: () => ({...notifications,
+              restore() {enrollment.activate(); return notifications.restore();},
+              retire() {enrollment.retire(); notifications.retire();},
             })}) ?? undefined;
+            sessionNotifications = notificationProvider;
           }
           referralsEnabled = ageCategory === "13_plus" && clientConfiguration.referralsEnabled;
           matchmakingEnabled = ageCategory === "13_plus" && clientConfiguration.matchmakingEnabled;
@@ -509,6 +528,7 @@ export function FacebookPlatformEntry() {
       unsubscribeResume?.();
       unsubscribeCommerceResume?.();
       commerceSession?.retire();
+      sessionNotifications?.retire();
       unsubscribePreferences?.();
       unsubscribeContext?.();
       void stopPresence?.();
