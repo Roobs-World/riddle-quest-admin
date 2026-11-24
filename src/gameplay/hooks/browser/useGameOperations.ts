@@ -1,4 +1,5 @@
 import {useCallback, useLayoutEffect, useMemo, useRef} from "react";
+import {trackEvent} from "../../../observability/analytics/events";
 import type {GameToHostMessage} from "../../../platform/bridge/messages";
 import {prepareAvatarImage} from "../../../accounts/browser/avatarImage";
 import {createRequestId} from "../../session/requestIds";
@@ -33,6 +34,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   const requestPurchase = useCallback(
     (productId: string) => {
       if (!recovery.canPurchase) return;
+      trackEvent("shop_item_selected", {product_id: productId});
       postToHost({
         type: "game:requestPurchase",
         requestId: createRequestId("purchase"),
@@ -47,6 +49,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
       /** Correlates ranking success or failure with this exact selection and retry. */
       const requestId = createRequestId("leaderboard");
       dispatch({type: "leaderboardRequested", leaderboardType, requestId});
+      trackEvent("leaderboard_requested", {leaderboard_type: leaderboardType});
       postToHost({
         type: "game:loadLeaderboard",
         requestId,
@@ -58,6 +61,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   /** Updates username. */
   const updateUsername = useCallback(
     (username: string) => {
+      trackEvent("profile_update_requested", {field: "username"});
       postToHost({
         type: "game:updateUsername",
         requestId: createRequestId("username"),
@@ -94,6 +98,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
         if (owner.preparation === preparation) owner.preparation = null;
       }
       if (!isCurrent()) return;
+      trackEvent("profile_update_requested", {field: "avatar"});
       postToHost({
         type: "game:updateAvatar",
         requestId: createRequestId("avatar"),
@@ -104,6 +109,7 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   );
   /** Deletes account. */
   const deleteAccount = useCallback(() => {
+    trackEvent("account_deletion_requested");
     postToHost({
       type: "game:deleteAccount",
       requestId: createRequestId("delete-account"),

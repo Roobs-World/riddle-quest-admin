@@ -23,7 +23,7 @@ it("delivers native events independently of external collection and sanitizes pu
   /** Retires the native owner. */
   const stop = configurePlatformAnalytics(native);
   trackEvent("Game Won", {playerId: "private", mode: "classic"});
-  trackPurchase({productId: "coins", purchaseType: "consumable", price: 1.99, currency: "USD"});
+  trackPurchase({transactionId: "receipt-coins", productId: "coins", purchaseType: "consumable", price: 1.99, currency: "USD"});
   expect(native).toHaveBeenCalledWith("screen_view", expect.objectContaining({screen_name: "startup"}));
   expect(native).toHaveBeenCalledWith("game_won", {mode: "classic"});
   expect(native).toHaveBeenCalledWith("purchase", expect.objectContaining({items: [{item_id: "coins", item_category: "consumable", price: 1.99, quantity: 1}]}));
@@ -288,7 +288,7 @@ it.each([
   [new TestButton({classes: ["key"]}), "keyboard_letter", "unknown_screen"],
   [new TestButton({classes: ["guess-cell"]}), "guess_slot", "unknown_screen"],
   [new TestButton({classes: ["active-state", "primary-action"]}), "primary_action", "unknown_screen"],
-  [new TestButton({label: "Open Profile"}), "open_profile", "unknown_screen"],
+  [new TestButton({label: "Open Profile"}), "button", "unknown_screen"],
   [new TestButton({}), "button", "unknown_screen"],
 ])("tracks delegated button identifiers", (button, buttonId, screenName) => {
   /** Provides original element behavior. */
@@ -409,43 +409,27 @@ it("installs global error analytics on the default window", () => {
   Object.defineProperty(globalThis, "window", {configurable: true, value: originalWindow});
 });
 
-it("tracks purchases with generated transaction identifiers and default prices", () => {
+it("tracks purchases with stable transaction identifiers and default prices", () => {
   /** Provides sink behavior. */
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
 
-  trackPurchase({productId: "coins-100", purchaseType: "consumable", currency: "GBP"});
+  trackPurchase({transactionId: "receipt-coins-100", productId: "coins-100", purchaseType: "consumable", currency: "GBP"});
 
   expect(sink).toHaveBeenCalledWith(
     "purchase",
     expect.objectContaining({
-      transaction_id: expect.any(String),
+      transaction_id: "receipt-coins-100",
       items: [{item_id: "coins-100", item_category: "consumable", price: 0, quantity: 1}],
     }),
   );
 });
 
-it("falls back to a web transaction identifier where randomUUID is unavailable", () => {
-  /** Provides original crypto behavior. */
-  const originalCrypto = globalThis.crypto;
-  Object.defineProperty(globalThis, "crypto", {configurable: true, value: {}});
-  jest.spyOn(Date, "now").mockReturnValue(1234);
-  jest.spyOn(Math, "random").mockReturnValue(0.5);
-  /** Provides sink behavior. */
+it("records confirmation without revenue when a stable receipt identity is unavailable", () => {
   const sink = jest.fn();
   setAnalyticsCollectionEnabled(true);
   configureAnalytics(sink);
-
   trackPurchase({productId: "membership", purchaseType: "subscription", price: 3.99});
-
-  expect(sink).toHaveBeenCalledWith(
-    "purchase",
-    expect.objectContaining({
-      transaction_id: expect.stringMatching(/^web-1234-/),
-      value: 3.99,
-    }),
-  );
-  Object.defineProperty(globalThis, "crypto", {configurable: true, value: originalCrypto});
-  jest.restoreAllMocks();
+  expect(sink).toHaveBeenCalledWith("purchase_confirmed", {product_id: "membership", purchase_type: "subscription"});
 });

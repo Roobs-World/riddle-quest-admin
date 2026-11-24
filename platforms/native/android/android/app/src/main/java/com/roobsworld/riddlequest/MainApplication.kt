@@ -13,6 +13,7 @@ import com.roobsworld.riddlequest.avatar.AvatarPickerPackage
 import com.roobsworld.riddlequest.billing.PlayBillingPackage
 import com.roobsworld.riddlequest.integrity.PlayIntegrityPackage
 import com.roobsworld.riddlequest.installreferrer.InstallReferrerPackage
+import com.roobsworld.riddlequest.analytics.AnalyticsPackage
 
 class MainApplication : Application(), ReactApplication {
 
@@ -27,6 +28,7 @@ class MainApplication : Application(), ReactApplication {
           add(NotificationPackage())
           add(PlayIntegrityPackage())
           add(InstallReferrerPackage())
+          add(AnalyticsPackage())
         },
     )
   }

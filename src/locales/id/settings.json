@@ -2,6 +2,8 @@
   "Settings": {
     "ABOUT_BUTTON": "Tentang",
     "ACCOUNT_DELETION_BUTTON": "Hapus Akun",
+    "ANALYTICS_DESCRIPTION": "Analisis penggunaan opsional dengan Google untuk membantu meningkatkan game. Menggunakan cookie analitik. Nonaktif secara default; nonaktifkan di sini kapan saja.",
+    "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Tutup",
     "CREDITS_BUTTON": "Kredit",
     "DATA_EXPORT_BUTTON": "Ekspor Data Saya",

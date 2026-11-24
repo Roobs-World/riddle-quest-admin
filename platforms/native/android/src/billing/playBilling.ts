@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {DeviceEventEmitter, Linking, NativeModules} from "react-native";
 import {ANDROID_PACKAGE_NAME} from "./catalog";
 export type {PlayProductType, PlayProduct, PlayPurchase, PlayCheckoutResult, PlayBillingPort} from "./playBillingTypes";
@@ -52,6 +53,7 @@ export function createPlayBillingPort(native: NativePlayBilling, openUrl: (url: 
     getOwnedPurchases: async (type) => toList(await native.getOwnedPurchases(type), toPurchase),
     consume: (purchaseToken) => native.consume(purchaseToken),
     manageSubscription: async (productId) => {
+      trackEvent("subscription_manage_requested", {product_id: productId});
       await openUrl(
         `https://play.google.com/store/account/subscriptions?sku=${encodeURIComponent(productId)}&package=${ANDROID_PACKAGE_NAME}`,
       );

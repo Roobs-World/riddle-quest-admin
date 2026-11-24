@@ -155,6 +155,7 @@
         "src/progression/hooks/**",
         "src/progression/styles/**",
         "src/races/__tests__/**",
+        "src/races/analytics/**",
         "src/races/browser/**",
         "src/races/components/**",
         "src/races/controllers/__tests__/RaceSessionConfirmedOutcome.test.ts",

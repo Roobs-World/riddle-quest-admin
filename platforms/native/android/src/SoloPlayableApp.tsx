@@ -1,8 +1,9 @@
+import {trackEvent, trackScreen} from "../../../../src/observability/analytics/eventsRuntime";
 import {youtubeText, type YouTubeCopyKey} from "../../../../src/localization/copy/localGameCopy";
 import {type YouTubeContentSource} from "../../../../src/content/catalog/bundledContent";
 import {type YouTubeSdkPort} from "../../../../src/gameplay/local/types";
 import {useYouTubePlayableBoot, useYouTubeReadySession, type YouTubeRuntime} from "../../../../src/gameplay/local/hooks/index";
-import {useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import type {AnswerEditor} from "./screens/AnswerInput";
 import {FailureScreen, LoadingScreen, ResetScreen} from "./screens/BootScreens";
 import {GameScreen} from "./screens/GameScreen";
@@ -49,7 +50,7 @@ export function SoloPlayableApp({sdk, contentSource, online}: SoloPlayableAppPro
         reason={boot.reset.kind}
         confirming={boot.confirming}
         setConfirming={setResetConfirmation}
-        onReset={resetSave}
+        onReset={() => {trackEvent("offline_save_reset_requested"); void resetSave();}}
         paused={platformPaused}
       />
     );
@@ -83,6 +84,14 @@ function ReadySoloApp({runtime, sdk, online}: ReadySoloAppProps) {
   const text = (key: YouTubeCopyKey): string => youtubeText(locale, key);
   /** Active puzzle state. */
   const active = snapshot.save.activeGame;
+  const analyticsScreen = snapshot.lastResult ? "offline_result" : active ? `offline_game_${active.mode}` : `offline_${screen}`;
+  useEffect(() => {trackScreen(analyticsScreen, {play_surface: "offline"});}, [analyticsScreen]);
+  const resumed = useRef(false);
+  useEffect(() => {
+    if (resumed.current) return;
+    resumed.current = true;
+    if (active) trackEvent("game_resumed", {game_mode: active.mode === "daily" ? "challenge" : active.mode, play_surface: "offline"});
+  }, [active]);
   if (snapshot.lastResult) {
     return <ResultScreen locale={locale} authority={authority} snapshot={snapshot} result={snapshot.lastResult} run={run} text={text} />;
   }

@@ -1,3 +1,5 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
+import {withLiveRaceAnalytics} from "../../../../../src/races/analytics/liveRaceAnalytics";
 import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/races/contracts/index";
 import {createFirebaseLiveTransport} from "../../../../../src/races/transport/firebaseLiveTransport";
 import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
@@ -34,8 +36,10 @@ const categoryKeys: Record<RaceCategoryId, RaceCopyKey> = {
 };
 /** Opens one immutable account, locale and invitation journey. */
 export function HostedRaceScreen(props: HostedRaceScreenProps) {
+  const active = useRef(false);
+  useLayoutEffect(() => {active.current = true; return () => {active.current = false;};}, []);
   /** Target-authenticated live port kept stable across native renders. */
-  const transport = useMemo(() => createFirebaseLiveTransport(props.client.functions), [props.client]);
+  const transport = useMemo(() => withLiveRaceAnalytics(createFirebaseLiveTransport(props.client.functions), () => active.current), [props.client]);
   return <HostedRaceView key={JSON.stringify([props.accountUid, props.locale, props.challengeId ?? null])} {...props} transport={transport}
     categories={async language => (await props.client.functions.listRaceCategories({locale: language})).data} />;
 }
@@ -101,9 +105,11 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
   /** Opens Android's native share sheet for the existing private lobby. */
   const share = async () => {
     if (!view?.challengeId) return;
+    trackEvent("live_race_share_requested");
     setShareFailed(false);
     /** Native share outcome does not imply invitation acceptance. */
     const result = await shareAndroidRaceChallenge(view.challengeId, text("CHALLENGE_FRIEND"), text("LIVE_INVITE_MESSAGE", {name: view.player.displayName}), locale);
+    trackEvent("live_race_share_result", {status: result});
     setShareFailed(result === "error");
   };
   /** Queues an addressed invitation without claiming push delivery. */
@@ -160,7 +166,7 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
         <Text style={styles.body}>{text(categoryKeys[invitation.categoryId])}</Text>
         {invitation.status === "unavailable" ? <Notice>{text("INVITATION_EXPIRED")}</Notice> :
           <ActionButton label={text("ACCEPT_CHALLENGE")} disabled={state.busy} onPress={() => {void controller.play(false, invitation);}}
-            testID={`race-accept-${invitation.challengeId}`} />}
+            analyticsId="race-accept" testID={`race-accept-${invitation.challengeId}`} />}
       </Panel>)}
     </> : terminal ? <Panel>
       <Heading testID="race-result-title">{text(view.result === "win" ? "RESULT_PLAYER_WIN" : view.result === "loss" ? "RESULT_OPPONENT_WIN" :

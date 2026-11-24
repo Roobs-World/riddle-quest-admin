@@ -39,6 +39,9 @@ import {usePlayerProjectionRecovery} from "../../../../src/accounts/hooks/usePla
 import {PlayerSaveRecoveryLayout} from "../../../../src/accounts/components/recovery/PlayerSaveRecoveryLayout";
 import {createHostedPlaySession} from "../../../../src/app/session/HostedPlaySession";
 import {installFacebookAnalytics} from "./analytics";
+import {trackEvent} from "../../../../src/observability/analytics/events";
+import {GoogleAnalyticsConsent} from "../../../../src/observability/analytics/GoogleAnalyticsConsent";
+import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvironment";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
 
 /** Native tournament presentation loads only when Facebook multiplayer opens. */
@@ -64,6 +67,7 @@ type StartupState =
       status: "ready"; /** Stores session. */
       /** Stores session. */
       session: PlatformSession; /** Stores player data. */
+      analyticsAvailable: boolean;
       /** Stores player data. */
       playerData: PlayerData | null;
       /** Target-owned native sharing, absent when Meta or the server disallows it. */
@@ -129,6 +133,8 @@ export function FacebookPlatformEntry() {
   const notificationPromptRef = useRef<FacebookNotificationPromptCoordinator | null>(null);
   /** Provides deletion gate ref behavior. */
   const deletionGateRef = useRef(new LocalAccountDeletionGate());
+  const analyticsLifetimeRef = useRef(new AbortController());
+  const isAnalyticsSessionCurrent = useCallback(() => deletionGateRef.current.isOpen(), []);
   /** Recovery follows the initialized owner and rechecks the Facebook deletion epoch. */
   const saveRecovery = usePlayerProjectionRecovery(startup.status === "ready" ? playerPersistenceRef.current : null, {
     lifecycle: startup.status === "ready" ? startup.session.capabilities.lifecycle : undefined,
@@ -253,7 +259,7 @@ export function FacebookPlatformEntry() {
           }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
-            notifications = createFacebookNotificationCapability(sdk);
+            notifications = createFacebookNotificationCapability(sdk, () => active && deletionGateRef.current.isOpen());
             notificationLeaseApi = {
               claim: async () => (await claimFacebookNotificationPermissionPrompt()).data,
               accept: acceptFacebookNotificationPermissionPrompt,
@@ -272,6 +278,7 @@ export function FacebookPlatformEntry() {
           ) {
             ads = createFacebookAdsCapability({
               sdk,
+              isActive: () => active && deletionGateRef.current.isOpen(),
               placementId: clientConfiguration.interstitialsEnabled
                 ? import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || ""
                 : "",
@@ -505,7 +512,8 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch});
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, launch,
+            analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
         if (active) setStartup({status: "error"});
@@ -545,6 +553,7 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready" || !presenceRef.current || !deletionGateRef.current.isOpen()) return;
     /** Provides next behavior. */
     const next = !presenceEnabled;
+    trackEvent("presence_preference_requested", {enabled: next});
     void playerPersistenceRef.current?.updatePreferences({presenceEnabled: next})
       .then(async preferences => {
         if (!preferences) return;
@@ -568,10 +577,12 @@ export function FacebookPlatformEntry() {
             },
           });
           setPresenceEnabled(next);
+          trackEvent("presence_preference_changed", {enabled: next});
         });
       })
       .catch((error) => {
         if (deletionGateRef.current.isOpen()) {
+          trackEvent("presence_preference_failed", {enabled: next});
           captureBrowserException(error, {component: "facebook_presence", operation: "toggle"});
         }
       });
@@ -580,6 +591,7 @@ export function FacebookPlatformEntry() {
   /** Requests account deletion. */
   const requestAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
+    analyticsLifetimeRef.current.abort();
     deletionGateRef.current.close();
     await presenceRef.current?.stop();
     await playerPersistenceRef.current?.closeAndFlush();
@@ -679,6 +691,13 @@ export function FacebookPlatformEntry() {
     );
   }
   return (
+    <GoogleAnalyticsConsent
+      platform="facebook"
+      measurementId={firebaseEnvironment.measurementId}
+      available={firebaseEnvironment.production && hostServicesMode === "firebase" && startup.analyticsAvailable}
+      isCurrent={isAnalyticsSessionCurrent}
+      lifetimeSignal={analyticsLifetimeRef.current.signal}
+    >
     <PlayerSaveRecoveryLayout recovery={saveRecovery}>
       <PlayHostApp
         raceSurface={raceSurface}
@@ -706,5 +725,6 @@ export function FacebookPlatformEntry() {
         onAuthoritativeRaceResult={handleAuthoritativeRaceResult}
       />
     </PlayerSaveRecoveryLayout>
+    </GoogleAnalyticsConsent>
   );
 }

@@ -1,3 +1,4 @@
+import {trackOfflineGameAction} from "../analytics/offlineGameAnalytics";
 import {canShowLatinShortcut} from "../../../../../src/gameplay/input/localInput";
 import {YOUTUBE_CLASSIC_SKIP_COST, YOUTUBE_CONTINUE_COST, YOUTUBE_HINT_COST} from "../../../../../src/progression/economy/localEconomy";
 import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
@@ -66,7 +67,7 @@ export function GameScreen({locale, authority, snapshot, active, riddle, display
   const focusAnswer = (): void => inputRef.current?.focus();
   /** Submits the answer when material actions are allowed. */
   const submit = (): void => {
-    if (!materialDisabled) void run(() => authority.submitGuess());
+    if (!materialDisabled) void run(() => trackOfflineGameAction(authority, "submit", () => authority.submitGuess()));
   };
   return (
     <Screen paused={snapshot.paused} testID="screen-game">
@@ -141,7 +142,7 @@ export function GameScreen({locale, authority, snapshot, active, riddle, display
             label={`${text("buyContinue")} · ${YOUTUBE_CONTINUE_COST} ${text("coins")}`}
             disabled={materialDisabled || progression.coins < YOUTUBE_CONTINUE_COST}
             onPress={() => {
-              void run(() => authority.buyContinue());
+              void run(() => trackOfflineGameAction(authority, "continue", () => authority.buyContinue()));
             }}
             testID="buy-continue"
           />
@@ -149,7 +150,7 @@ export function GameScreen({locale, authority, snapshot, active, riddle, display
             label={text("finishRun")}
             disabled={materialDisabled}
             onPress={() => {
-              void run(() => authority.finishWithoutContinue());
+              void run(() => trackOfflineGameAction(authority, "finish", () => authority.finishWithoutContinue()));
             }}
             testID="finish-run"
           />
@@ -172,7 +173,7 @@ export function GameScreen({locale, authority, snapshot, active, riddle, display
               disabled={materialDisabled || progression.coins < YOUTUBE_HINT_COST}
               onPress={() => {
                 focusAnswer();
-                void run(() => authority.requestHint());
+                void run(() => trackOfflineGameAction(authority, "hint", () => authority.requestHint()));
               }}
               style={styles.secondaryAction}
               testID="hint"
@@ -182,7 +183,7 @@ export function GameScreen({locale, authority, snapshot, active, riddle, display
                 label={`${text("skip")} · ${YOUTUBE_CLASSIC_SKIP_COST}`}
                 disabled={materialDisabled || progression.coins < YOUTUBE_CLASSIC_SKIP_COST}
                 onPress={() => {
-                  void run(() => authority.skipClassic());
+                  void run(() => trackOfflineGameAction(authority, "skip", () => authority.skipClassic()));
                 }}
                 style={styles.secondaryAction}
                 testID="skip"

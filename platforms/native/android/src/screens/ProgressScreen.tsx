@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
 import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
 import {type YouTubeContent, type YouTubeLocale} from "../../../../../src/gameplay/local/types";
@@ -111,7 +112,7 @@ export function ProgressScreen({locale, content, authority, snapshot, run, text,
             value={snapshot.save.preferences.reducedMotion}
             disabled={materialDisabled}
             onChange={(value) => {
-              void run(() => authority.setAccessibilityPreference("reducedMotion", value));
+              void run(async () => {await authority.setAccessibilityPreference("reducedMotion", value); trackEvent("setting_changed", {setting: "reducedMotion", value});});
             }}
             testID="preference-reduced-motion"
           />
@@ -120,7 +121,7 @@ export function ProgressScreen({locale, content, authority, snapshot, run, text,
             value={snapshot.save.preferences.highContrast}
             disabled={materialDisabled}
             onChange={(value) => {
-              void run(() => authority.setAccessibilityPreference("highContrast", value));
+              void run(async () => {await authority.setAccessibilityPreference("highContrast", value); trackEvent("setting_changed", {setting: "highContrast", value});});
             }}
             testID="preference-high-contrast"
           />

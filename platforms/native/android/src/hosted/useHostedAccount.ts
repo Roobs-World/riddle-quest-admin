@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {useCallback, useEffect, useRef, useState} from "react";
 import type {HostedFirebaseClient, ProvisionedAccount} from "./firebaseClient";
 /** Observable account state for the hosted account screen. */
@@ -66,11 +67,13 @@ export function useHostedAccount(client: HostedFirebaseClient, options: HostedAc
     /** Superseded callbacks cannot rewind the root to a previous uid. */
     const current = () => mounted.current && activeClient.current === client && attempt === connection.current;
     setState({kind: "connecting"});
+    trackEvent("account_connect_requested");
     void (async () => {
       try {
         await client.signInAnonymously();
         if (!current()) return;
       } catch (error) {
+        if (current()) trackEvent("account_connect_failed", {stage: "sign_in"});
         if (current()) setState({kind: "failed", code: "sign-in", detail: error instanceof Error ? error.message : String(error)});
         return;
       }
@@ -79,8 +82,9 @@ export function useHostedAccount(client: HostedFirebaseClient, options: HostedAc
         const account = await client.provisionAccount();
         if (!current()) return;
         await onConfirmed?.(account.uid);
-        if (current()) setState({kind: "ready", account});
+        if (current()) {setState({kind: "ready", account}); trackEvent("account_connected", {created: account.created});}
       } catch (error) {
+        if (current()) trackEvent("account_connect_failed", {stage: "provision"});
         if (current()) setState({kind: "failed", code: "provision", detail: error instanceof Error ? error.message : String(error)});
       }
     })();

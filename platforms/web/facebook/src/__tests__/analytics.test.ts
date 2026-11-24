@@ -14,7 +14,7 @@ it("sends supported native events with bounded primitive properties and purchase
   /** Owns this session's native connection. */
   const stop = installFacebookAnalytics(sdk, () => active);
   trackEvent("game_won", {registered: true, guess: "SECRET"});
-  trackPurchase({productId: "coins", purchaseType: "consumable", price: 1.99, currency: "USD"});
+  trackPurchase({transactionId: "receipt-coins", productId: "coins", purchaseType: "consumable", price: 1.99, currency: "USD"});
   expect(logEvent).toHaveBeenCalledWith("session_started", null, {platform: "facebook"});
   expect(logEvent).toHaveBeenCalledWith("game_won", null, {registered: "true"});
   expect(logEvent).toHaveBeenCalledWith("purchase", 1.99, expect.objectContaining({currency: "USD", item_id: "coins", price: "1.99"}));

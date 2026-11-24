@@ -23,6 +23,8 @@ Other web destinations use the [shared release guides](common/releases/README.md
 
 The background Sentry worker has its own [runbook](sentry-worker/README.md) and [evidence](sentry-worker/evidence/).
 
+Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
+
 ## Documentation placement
 
 Move callers and links with a document so it has one canonical location. Add shared module documentation beneath `common/`, and provider-specific documentation beneath that provider's folder.

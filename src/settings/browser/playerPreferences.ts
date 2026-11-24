@@ -1,5 +1,6 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "../../localization/browser/i18n";
 import {isJestWebTarget} from "../../platform/browser/webTargetEnvironment";
+import {trackEvent} from "../../observability/analytics/events";
 import {
   readBrowserStorage,
   removeBrowserStorage,
@@ -125,6 +126,9 @@ const applyAccessibilityPreferences = (reducedMotion: boolean, highContrast: boo
 
 /** Notifies the active platform integration of a user-initiated preference change. */
 const emitPreferenceChange = (change: PlayerPreferenceChange): void => {
+  for (const [setting, value] of Object.entries(change)) {
+    if (setting !== "onboardingComplete") trackEvent("setting_changed", {setting, value});
+  }
   preferenceSubscribers.forEach((subscriber) => subscriber(change));
 };
 

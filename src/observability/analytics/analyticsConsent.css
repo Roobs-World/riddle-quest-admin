@@ -1,0 +1,14 @@
+.analytics-consent > p {
+  margin: 6px 10px 12px;
+  color: var(--text-secondary, inherit);
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+.analytics-consent input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  flex-shrink: 0;
+  accent-color: var(--accent, #375edd);
+}

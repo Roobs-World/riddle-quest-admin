@@ -95,7 +95,9 @@ const viteConfiguration = [
 const portalTargetSourceEntries = portalTargetSourceEntryPaths
   .map((path) => readFileSync(path, "utf8"))
   .join("\n");
-const analyticsAdapterPath = `${repositoryRoot}/src/observability/analytics/firebaseAnalytics.ts`;
+const googleAnalytics = readFileSync(`${repositoryRoot}/src/observability/analytics/googleAnalytics.ts`, "utf8");
+const analyticsConsent = readFileSync(`${repositoryRoot}/src/observability/analytics/GoogleAnalyticsConsentRuntime.tsx`, "utf8");
+const analyticsRuntime = readFileSync(`${repositoryRoot}/src/observability/analytics/eventsRuntime.ts`, "utf8");
 const browserSentry = readFileSync(`${repositoryRoot}/src/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
 const jestReleaseScript = readFileSync(
@@ -126,12 +128,20 @@ const requirements = [
     "CSP must not allow plaintext HTTP or WebSocket origins."],
   [encryptedJestBackend, "The production Jest backend URL must use HTTPS."],
   [encryptedSentryDsn, "The production Sentry DSN must use an official encrypted Sentry endpoint."],
-  [!googleAnalyticsMeasurementId,
-    "The Jest production environment must not configure Google Analytics before a consent/opt-out design exists."],
-  [!/(?:google-analytics|googletagmanager)\.com/iu.test(contentSecurityPolicy),
-    "The production CSP must not authorize Google Analytics or Tag Manager endpoints."],
-  [!portalTargetSourceEntries.includes("initializeGoogleAnalytics") && !existsSync(analyticsAdapterPath),
-  "The unused Firebase Analytics adapter must remain absent until an affirmative consent design exists."],
+  [googleAnalyticsMeasurementId === "G-7CWWGNE52Q",
+    "The Jest production environment must select its registered Google Analytics stream."],
+  [contentSecurityPolicy.includes("https://www.googletagmanager.com") &&
+    contentSecurityPolicy.includes("https://*.google-analytics.com"),
+    "The production CSP must authorize the consent-controlled Google tag and encrypted Analytics ingestion."],
+  [analyticsConsent.includes('=== "granted"') && analyticsConsent.includes("decision.current") &&
+    analyticsConsent.includes("!configured || !enabled") && analyticsConsent.includes("stop.current()") &&
+    analyticsRuntime.includes("let collectionEnabled = false") &&
+    googleAnalytics.includes('analytics_storage: "denied"') && googleAnalytics.includes('ad_storage: "denied"') &&
+    googleAnalytics.includes("allow_google_signals: false") && googleAnalytics.includes("allow_ad_personalization_signals: false") &&
+    googleAnalytics.includes("!isCurrent()") && googleAnalytics.includes("isBrowserTelemetryRuntimeAllowed()") &&
+    !portalTargetSourceEntries.includes("initializeGoogleAnalytics") &&
+    portalTargetHtmlPaths.every(path => !/(?:google-analytics|googletagmanager)\.com/u.test(readFileSync(path, "utf8"))),
+    "Google Analytics requires affirmative persisted consent, immediate revocation, production/session guards and disabled advertising; entry documents must never load it eagerly."],
   [/tracesSampleRate:\s*0/u.test(browserSentry) && /tracesSampleRate:\s*0/u.test(functionSentry) &&
     !/captureConsoleIntegration/u.test(browserSentry),
   "Sentry must remain essential errors-only without performance tracing or console-event capture."],

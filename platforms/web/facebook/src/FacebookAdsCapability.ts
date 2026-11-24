@@ -1,6 +1,7 @@
 import type {AdsCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
+import {trackEvent} from "../../../../src/observability/analytics/events";
 import {
   canShowFacebookInterstitial,
   createFacebookInterstitialState,
@@ -22,6 +23,7 @@ export function createFacebookAdsCapability({
   rewardedPlacementId = "",
   rewardedEnabled = false,
   adFree,
+  isActive = () => true,
   now = Date.now,
 }: {
   /** Stores sdk. */
@@ -34,6 +36,7 @@ export function createFacebookAdsCapability({
   rewardedEnabled?: boolean;
   /** Stores ad free. */
   adFree: boolean | (() => boolean);
+  isActive?: () => boolean;
   /** Stores now. */
   now?: () => number;
 }): AdsCapability | undefined {
@@ -90,6 +93,7 @@ export function createFacebookAdsCapability({
         return {status: "unavailable", message: "facebook-interstitial-suppressed"};
       }
       showingInterstitial = true;
+      if (isActive()) trackEvent("ad_requested", {ad_format: "interstitial", placement});
       /** Provides impression displayed behavior. */
       let impressionDisplayed = false;
       return runFacebookSdkDialog(sdk, async () => {
@@ -99,6 +103,7 @@ export function createFacebookAdsCapability({
           await ad.loadAsync();
           if (hasAdFreeEntitlement()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           await ad.showAsync();
+          if (isActive()) trackEvent("ad_completed", {ad_format: "interstitial", placement});
           impressionDisplayed = true;
           /** Completes d at ms. */
           const completedAtMs = now();
@@ -108,6 +113,7 @@ export function createFacebookAdsCapability({
           state = recordFacebookInterstitialShown(state, completedAtMs);
           return {status: "success", value: undefined};
         } catch (error) {
+          if (isActive()) trackEvent("ad_failed", {ad_format: "interstitial", placement});
           // Meta may have displayed the impression even when local bookkeeping became unsafe.
           // Suppress the rest of the session instead of risking a frequency-policy violation.
           if (impressionDisplayed) interstitialsDisabled = true;
@@ -121,6 +127,7 @@ export function createFacebookAdsCapability({
         return {status: "unavailable", message: "facebook-rewarded-unavailable"};
       }
       showingRewarded = true;
+      if (isActive()) trackEvent("ad_requested", {ad_format: "rewarded", placement});
       return runFacebookSdkDialog(sdk, async () => {
         try {
           /** Provides started at ms behavior. */
@@ -132,6 +139,7 @@ export function createFacebookAdsCapability({
           const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
           await ad.loadAsync();
           await ad.showAsync();
+          if (isActive()) trackEvent("ad_completed", {ad_format: "rewarded", placement});
           /** Provides completed at ms behavior. */
           const completedAtMs = now();
           if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
@@ -141,8 +149,10 @@ export function createFacebookAdsCapability({
           return {status: "success", value: undefined};
         } catch (error) {
           if (typeof error === "object" && error !== null && "code" in error && error.code === "USER_INPUT") {
+            if (isActive()) trackEvent("ad_cancelled", {ad_format: "rewarded", placement});
             return {status: "cancelled"};
           }
+          if (isActive()) trackEvent("ad_failed", {ad_format: "rewarded", placement});
           return failure(error);
         }
       }).finally(() => {showingRewarded = false;});

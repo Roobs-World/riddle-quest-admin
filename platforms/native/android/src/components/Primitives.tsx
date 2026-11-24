@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import type {ReactNode} from "react";
 import {Pressable, ScrollView, StyleSheet, Text, View, type StyleProp, type ViewStyle} from "react-native";
 import {useSafeAreaInsets} from "react-native-safe-area-context";
@@ -16,18 +17,20 @@ export type ActionButtonProps = Readonly<{
   tone?: ActionTone;
   /** Stable automation identifier. */
   testID?: string;
+  /** Stable action name when the automation identifier contains an opaque record ID. */
+  analyticsId?: string;
   /** Extra container style. */
   style?: StyleProp<ViewStyle>;
 }>;
 /** Shared button that mirrors the Playable's primary, secondary, and danger controls. */
-export function ActionButton({label, onPress, disabled = false, tone = "secondary", testID, style}: ActionButtonProps) {
+export function ActionButton({label, onPress, disabled = false, tone = "secondary", testID, analyticsId, style}: ActionButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{disabled}}
       disabled={disabled}
-      onPress={onPress}
+      onPress={() => {trackEvent("button_press", {button_id: analyticsId ?? testID ?? "action_button"}); onPress();}}
       testID={testID}
       style={({pressed}) => [
         styles.button,

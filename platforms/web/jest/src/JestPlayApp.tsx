@@ -25,6 +25,8 @@ import {createNotificationOperationGate} from "./notifications/operationGate";
 import {useJestSharing} from "./sharing/useJestSharing";
 import {resolveJestRuntimeMode, shouldEnableJestSubscriptions} from "./runtimeMode";
 import {configurePlatformAnalytics, trackScreen} from "../../../../src/observability/analytics/events";
+import {GoogleAnalyticsConsent} from "../../../../src/observability/analytics/GoogleAnalyticsConsent";
+import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvironment";
 import {hasTrustedTestHarnessMarker} from "../../../../src/app/testing/testHarness";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
@@ -211,6 +213,8 @@ export function JestPlayApp() {
   });
   /** Provides account deletion quiesced behavior. */
   const accountDeletionQuiesced = useAccountDeletionQuiescence(notificationOperationGate);
+  const analyticsLifetimeRef = useRef(new AbortController());
+  const isAnalyticsSessionCurrent = useCallback(() => notificationOperationGate.isOpen(), [notificationOperationGate]);
   /** Bundled locale copy keeps the Jest notification lifecycle independent of remote configuration availability. */
   const notificationFallbackCopy = useMemo<NotificationCopy>(
     () => ({
@@ -636,6 +640,13 @@ export function JestPlayApp() {
           />
         </Suspense>
       ) : null}
+      <GoogleAnalyticsConsent
+        platform="jest"
+        measurementId={firebaseEnvironment.measurementId}
+        available={firebaseEnvironment.production && hostServicesMode === "firebase" && !authHarness && !mockRuntime}
+        isCurrent={isAnalyticsSessionCurrent}
+        lifetimeSignal={analyticsLifetimeRef.current.signal}
+      >
       <PlayerSaveRecoveryLayout recovery={playerStateWrites.recovery}>
       <ProviderProfileContext.Provider
         value={{username: session.profile?.username ?? null, avatarUrl: session.profile?.avatarUrl ?? null}}
@@ -669,13 +680,17 @@ export function JestPlayApp() {
             onStartupUnavailable={() => markJestPlayable(platform)}
             onAuthoritativeGuessWin={handleAuthoritativeGuessWin}
             onAuthoritativeComplete={handleAuthoritativeComplete}
-            onAccountDeletionRequested={() => markAccountDeletionRequested(platform.getPlayer().playerId)}
+            onAccountDeletionRequested={() => {
+              analyticsLifetimeRef.current.abort();
+              markAccountDeletionRequested(platform.getPlayer().playerId);
+            }}
             onAccountDeleted={clearPlayerState}
           />
           </ProfileSubscriptionContext.Provider>
         </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>
       </PlayerSaveRecoveryLayout>
+      </GoogleAnalyticsConsent>
     </>
   );
 }

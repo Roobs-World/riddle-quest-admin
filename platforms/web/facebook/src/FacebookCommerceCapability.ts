@@ -18,7 +18,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 /** Parses facebook catalog. */
-export function parseFacebookCatalog(value: unknown): FacebookInstantProduct[] {
+export function parseFacebookCatalog(value: unknown): Array<FacebookInstantProduct & {priceAmount: number}> {
   if (!Array.isArray(value) || value.length !== Object.keys(FACEBOOK_PRODUCTS).length) {
     throw new Error("facebook-catalog-invalid");
   }
@@ -97,7 +97,7 @@ export class FacebookCommerceCapability implements CommerceCapability {
   }
 
   /** Lists products. */
-  async listProducts(): Promise<PlatformResult<CommerceProduct[]>> {
+  async listProducts(): Promise<PlatformResult<Array<CommerceProduct & {priceAmount: number; currency: string}>>> {
     try {
       /** Provides products behavior. */
       const products = parseFacebookCatalog(await this.payments.getCatalogAsync());
@@ -108,6 +108,8 @@ export class FacebookCommerceCapability implements CommerceCapability {
           title: product.title,
           description: product.description,
           price: product.price,
+          priceAmount: product.priceAmount,
+          currency: product.priceCurrencyCode,
           kind: FACEBOOK_PRODUCTS[product.productID].kind,
         })),
       };

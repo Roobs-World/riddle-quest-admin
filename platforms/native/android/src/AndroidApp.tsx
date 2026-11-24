@@ -1,3 +1,4 @@
+import {trackEvent, trackScreen} from "../../../../src/observability/analytics/eventsRuntime";
 import {useAuthSnapshot} from "./hosted/useAuthSnapshot";
 import {HostedReferralScreen} from "./screens/HostedReferralScreen";
 import {createPurchaseRecovery} from "../../../../src/commerce/recovery/purchaseRecovery";
@@ -168,6 +169,10 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
       cancelled = true;
     };
   }, [onLocaleResolved, sdk]);
+  const analyticsScreen = surface === "offline" ? null : !locale ? "loading" : account.state.kind !== "ready" ? "connect" :
+    typeof route === "string" ? route : "hosted" in route ? `game_${route.hosted}` : "race" in route ? "race" : "referrals";
+  useEffect(() => {if (analyticsScreen) trackScreen(analyticsScreen, {play_surface: "online"});}, [analyticsScreen]);
+  useEffect(() => {trackEvent("play_surface_selected", {play_surface: surface});}, [surface]);
   if (!locale) return <LoadingScreen paused={false} />;
   if (surface === "offline") {
     return <SoloPlayableApp sdk={sdk} contentSource={contentSource} online={{label: hostedText(locale, "playOnline"), onPress: () => setSurface("online")}} />;

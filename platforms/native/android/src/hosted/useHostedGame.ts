@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import type {BridgeRiddle} from "../../../../../src/platform/bridge/messages";
 import type {AuthSnapshot, CompletionResult, HostServices, WebGameMode} from "../../../../../src/platform/contracts/hostServices";
 import {createInitialGameSession, gameSessionReducer} from "../../../../../src/gameplay/session/gameSession";
@@ -274,6 +275,9 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
   );
   /** Redelivers the journaled guess once the restored question is on screen. */
   const redeliverRef = useRef<() => void>(() => undefined);
+  const loadedRounds = useRef(new Set<string>());
+  const completedRounds = useRef(new Set<string>());
+  const deliveredGuesses = useRef(new Set<string>());
   /** Loads the current puzzle for the mode. */
   const load = useCallback(() => {
     /** Load generation that owns the response. */
@@ -308,10 +312,16 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
           busy: false,
           notice: null,
         });
+        const roundKey = `${riddle.riddleId}:${riddle.sessionToken ?? ""}`;
+        if (!loadedRounds.current.has(roundKey)) {
+          loadedRounds.current.add(roundKey);
+          trackEvent("level_start", {game_mode: mode, play_surface: "online", resumed: riddle.attemptsUsed > 0});
+        }
         if (pendingRef.current) redeliverRef.current();
       })
       .catch((error: unknown) => {
         if (!mounted.current || token !== generation.current) return;
+        trackEvent("game_load_failed", {game_mode: mode, play_surface: "online"});
         setState({kind: "unavailable", code: errorCode(error) === "daily-completed" ? "daily-completed" : "load-failed"});
       });
   }, [locale, mode, recover, services]);
@@ -319,14 +329,16 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
 
   /** Runs one server operation against the active riddle with busy and notice bookkeeping. */
   const operate = useCallback(
-    (operation: (riddle: BridgeRiddle, rows: readonly HostedGuessRow[]) => Promise<void>) => {
+    (action: string, operation: (riddle: BridgeRiddle, rows: readonly HostedGuessRow[]) => Promise<void>) => {
       setState((current) => {
         if (current.kind !== "playing" || busyRef.current) return current;
         busyRef.current = true;
         /** Generation that owns the operation. */
         const token = generation.current;
+        trackEvent("game_action_requested", {action, game_mode: mode, play_surface: "online"});
         void operation(current.riddle, current.rows)
           .catch((error: unknown) => {
+            trackEvent("game_action_failed", {action, game_mode: mode, play_surface: "online"});
             if (mounted.current && token === generation.current) {
               setState((latest) => (latest.kind === "playing" ? {...latest, notice: noticeFor(error)} : latest));
             }
@@ -340,7 +352,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         return {...current, busy: true, notice: null};
       });
     },
-    [],
+    [mode],
   );
   /** Settles the riddle with the server and shows the confirmed outcome. */
   const complete = useCallback(
@@ -348,6 +360,14 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
       /** Confirmed completion. */
       const result = await services.completeGame({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken});
       forget();
+      const completionKey = `${riddle.riddleId}:${riddle.sessionToken ?? ""}`;
+      if (!completedRounds.current.has(completionKey)) {
+        completedRounds.current.add(completionKey);
+        trackEvent("level_end", {game_mode: riddle.gameMode, play_surface: "online", success: result.isCorrect, attempts: rows.length});
+        if (result.coinsEarned > 0) trackEvent("earn_virtual_currency", {virtual_currency_name: "coins", value: result.coinsEarned, source: "puzzle", game_mode: riddle.gameMode});
+        if (result.leveledUp) trackEvent("level_up", {level: result.newLevel});
+        for (const achievement of result.newlyUnlockedAchievementIds) trackEvent("unlock_achievement", {achievement_id: achievement});
+      }
       if (mounted.current) setState({kind: "complete", riddle, rows, result});
     },
     [forget, services],
@@ -373,7 +393,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
   /** Delivers the draft, or redelivers the journaled guess, with one replay-safe request id. */
   const submit = useCallback(
     () =>
-      operate(async (riddle, rows) => {
+      operate("submit", async (riddle, rows) => {
         /** Letters as the player sees them. */
         const letters = project(draftRef.current, hintsRef.current, riddle.answerLength);
         if (!pendingRef.current && letters.some((letter) => !letter)) {
@@ -409,6 +429,11 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
           throw error;
         }
         pendingRef.current = null;
+        const guessKey = `${riddle.riddleId}:${riddle.sessionToken ?? ""}:${result.attempts}`;
+        if (!deliveredGuesses.current.has(guessKey)) {
+          deliveredGuesses.current.add(guessKey);
+          trackEvent("guess_submitted", {game_mode: riddle.gameMode, play_surface: "online", success: result.isCorrect, attempts: result.attempts});
+        }
         /** Rows including this guess. */
         const nextRows = [...rows, {letters: result.feedback.map((cell) => cell.letter), feedback: result.feedback.map((cell) => cell.status)}];
         draftRef.current = [];
@@ -456,7 +481,7 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
         }),
       submit,
       hint: () =>
-        operate(async (riddle, rows) => {
+        operate("hint", async (riddle, rows) => {
           /** Purchased hint. */
           const hint = await services.requestHint({
             riddleId: riddle.riddleId,
@@ -466,13 +491,14 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
             currentAttempt: project(draftRef.current, hintsRef.current, riddle.answerLength),
           });
           if (!hint) return;
+          trackEvent("hint_used", {game_mode: riddle.gameMode, play_surface: "online"});
           hintsRef.current = new Map(hintsRef.current).set(hint.index, hint.revealedLetter);
           if (slotRef.current === hint.index) slotRef.current = firstEditable(project(draftRef.current, hintsRef.current, riddle.answerLength), hintsRef.current);
           record(riddle);
           publish(riddle, rows);
         }),
       buyContinue: () =>
-        operate(async (riddle, rows) => {
+        operate("continue", async (riddle, rows) => {
           await services.spendCoins({
             reason: "continue",
             gameMode: riddle.gameMode,
@@ -480,12 +506,14 @@ export function useHostedGame(services: HostServices, mode: WebGameMode, locale:
             sessionToken: riddle.sessionToken,
             requestId: createHostedRequestId("continue"),
           });
+          trackEvent("continue_used", {game_mode: riddle.gameMode, play_surface: "online"});
           publish(riddle, rows, {awaitingContinue: false, hasUsedContinue: true});
         }),
-      finish: () => operate((riddle, rows) => complete(riddle, rows)),
+      finish: () => operate("finish", (riddle, rows) => complete(riddle, rows)),
       skip: () =>
-        operate(async (riddle) => {
+        operate("skip", async (riddle) => {
           await services.skipRiddle({riddleId: riddle.riddleId, gameMode: riddle.gameMode, sessionToken: riddle.sessionToken, requestId: createHostedRequestId("skip")});
+          trackEvent("riddle_skipped", {game_mode: riddle.gameMode, play_surface: "online"});
           forget();
           load();
         }),

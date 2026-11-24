@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 /** Explicit consent retained independently for each Global Game Account on this device. */
 export type AndroidNotificationPreferences = Readonly<{
   /** Whether this account explicitly accepts race invitation notifications. */
@@ -123,7 +124,13 @@ export function createAndroidNotificationController(input: {
       const expected = ++epoch;
       updating = true;
       try {
-        return await update(preferences, true);
+        trackEvent("notification_preferences_requested", {invitations: preferences.invitations, daily: preferences.daily});
+        const result = await update(preferences, true);
+        trackEvent("notification_preferences_result", {status: "success", invitations: result.invitations, daily: result.daily});
+        return result;
+      } catch (error) {
+        trackEvent("notification_preferences_result", {status: "failed"});
+        throw error;
       } finally {
         if (epoch === expected) updating = false;
       }

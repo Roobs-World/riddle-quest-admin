@@ -1,10 +1,17 @@
-import {createContext, useContext, useRef, useState} from "react";
+import {trackEvent} from "../../observability/analytics/events";
+import {createContext, useContext, useLayoutEffect, useMemo, useRef, useState} from "react";
 import type {ReferralSharingCapability} from "../../sharing/components/ReferralSharingCapability";
 
 /** Shared acknowledged consent and operation lock for every notification control. */
 export function usePushConsentState(capability?: ReferralSharingCapability | null) {
   /** Only the active target can supply notification permission. */
   const sharing = capability;
+  /** A replaced provider cannot attribute an old permission result to the new visit. */
+  const lifetime = useMemo(() => ({active: false}), [capability]);
+  useLayoutEffect(() => {
+    lifetime.active = true;
+    return () => {lifetime.active = false;};
+  }, [lifetime]);
   /** Local presentation state for this mounted invitation or consent flow. */
   const [enabled, setEnabled] = useState(false);
   /** Local presentation state for this mounted invitation or consent flow. */
@@ -19,11 +26,13 @@ export function usePushConsentState(capability?: ReferralSharingCapability | nul
   const change = async (next: boolean) => {
     if (lock.current || (acknowledged.current && next === enabled) || !sharing?.setLiveRacePush) return;
     lock.current = true; setBusy(true); setUnavailable(false);
+    if (lifetime.active) trackEvent("notification_preference_requested", {enabled: next});
     try {
       /** Acknowledged consent outcome, separate from notification delivery. */
       const saved = await sharing.setLiveRacePush(next);
+      if (lifetime.active) trackEvent("notification_preference_result", {enabled: next, success: saved});
       if (saved) {acknowledged.current = true; setEnabled(next);} else setUnavailable(true);
-    } catch {setUnavailable(true);}
+    } catch {if (lifetime.active) trackEvent("notification_preference_result", {enabled: next, success: false}); setUnavailable(true);}
     finally {lock.current = false; setBusy(false);}
   };
   return {enabled, busy, unavailable, change};

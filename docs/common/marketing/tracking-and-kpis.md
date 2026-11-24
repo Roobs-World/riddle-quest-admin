@@ -1,6 +1,8 @@
 # Tracking And KPIs
 
-Last updated: 2026-05-23
+Last updated: 2026-11-24
+
+The current implementation, exact event catalogue and platform collection restrictions are in [Google Analytics and action events](../observability/google-analytics.md). The product-event list below is the original marketing plan; use the implementation catalogue for actual event names.
 
 ## Link Taxonomy
 

@@ -1,5 +1,5 @@
 import {type YouTubeLocale} from "../../../../src/gameplay/local/types";
-import {useCallback, useMemo, useRef} from "react";
+import {useCallback, useEffect, useMemo, useRef} from "react";
 import {StatusBar} from "react-native";
 import {SafeAreaProvider} from "react-native-safe-area-context";
 import {AndroidApp} from "./AndroidApp";
@@ -10,8 +10,21 @@ import {createHostedFirebaseClient} from "./hosted/firebaseClient";
 import {createAndroidHostServices} from "./hosted/hostedServices";
 import {createAndroidPendingPlayStorage} from "./hosted/pendingPlayStorage";
 import {hostedConfig} from "./hosted/hostedConfig";
+import {initializeAndroidAnalytics} from "./analytics/androidAnalytics";
+import {configureAnalyticsContext, trackEvent} from "../../../../src/observability/analytics/eventsRuntime";
+import {AppState} from "react-native";
 /** Root component registered with React Native. */
 export function App() {
+  useEffect(() => {
+    const cleanup = configureAnalyticsContext({platform: "android", screen_class: "RiddleQuestAndroid"});
+    void initializeAndroidAnalytics(hostedConfig);
+    let previous = AppState.currentState;
+    const subscription = AppState.addEventListener("change", next => {
+      if (next !== previous) trackEvent("app_lifecycle", {state: next});
+      previous = next;
+    });
+    return () => {subscription.remove(); cleanup();};
+  }, []);
   /** Device-bound host port created once for the app lifetime. */
   const sdk = useMemo(() => createAndroidSdkPort(), []);
   /** Hosted Firebase client created once for the app lifetime. */

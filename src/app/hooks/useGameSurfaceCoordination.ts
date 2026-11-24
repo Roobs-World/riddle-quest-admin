@@ -1,6 +1,6 @@
 import type {RaceLocale} from "../../races/contracts/index";
-import {useCallback, useEffect, useState} from "react";
-import {trackScreen} from "../../observability/analytics/events";
+import {useCallback, useEffect, useRef, useState} from "react";
+import {trackEvent, trackScreen} from "../../observability/analytics/events";
 import {resolveActivityPresence} from "../../presence/activityPresence";
 import type {ActivePresenceState} from "../../presence/PlatformPresenceSession";
 import type {GameSessionState} from "../../gameplay/session/gameSessionTypes";
@@ -81,6 +81,7 @@ export function useGameSurfaceCoordination({
   const entryAvailable = dismissedEntry !== entryKey;
   /** Tracks dismissal of this incoming destination when the player closes multiplayer. */
   const setRaceOpen = useCallback((open: boolean) => {
+    trackEvent(open ? "multiplayer_opened" : "multiplayer_closed");
     if (!open) setDismissedEntry(entryKey);
     setRaceOpenState(open);
   }, [entryKey]);
@@ -90,6 +91,21 @@ export function useGameSurfaceCoordination({
   const hasActiveRiddle = Boolean(session.riddle);
   /** Whether a modal currently owns the overlay surface. */
   const modalOpen = isBlockingGameModal(session.modal);
+
+  /** Mode changes describe deliberate navigation separately from screen views. */
+  const previousMode = useRef(session.gameMode);
+  useEffect(() => {
+    if (previousMode.current === session.gameMode) return;
+    previousMode.current = session.gameMode;
+    trackEvent("game_mode_selected", {game_mode: session.gameMode});
+  }, [session.gameMode]);
+
+  const previousModal = useRef<typeof session.modal>(undefined);
+  useEffect(() => {
+    if (previousModal.current === session.modal) return;
+    previousModal.current = session.modal;
+    if (session.modal) trackEvent("modal_opened", {modal: session.modal});
+  }, [session.modal]);
 
   useEffect(() => {
     /** Stable analytics name for the currently visible surface. */

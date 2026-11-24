@@ -1,9 +1,10 @@
 import type {NotificationCapability, PlatformResult} from "../../../../src/platform/contracts/capabilities";
 import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
+import {trackEvent} from "../../../../src/observability/analytics/events";
 
 /** Creates the Meta-owned subscription prompt only when all required v8 APIs are supported. */
-export function createFacebookNotificationCapability(sdk: FacebookInstantSdk): NotificationCapability | undefined {
+export function createFacebookNotificationCapability(sdk: FacebookInstantSdk, isActive = () => true): NotificationCapability | undefined {
   /** APIs advertised by the current Meta host, rather than assumed from SDK presence. */
   const supported = new Set(sdk.getSupportedAPIs());
   /** Player-scoped bot APIs remain behind the Facebook adapter. */
@@ -26,12 +27,19 @@ export function createFacebookNotificationCapability(sdk: FacebookInstantSdk): N
       if (await player.canSubscribeBotAsync!() !== true) {
         return {status: "unavailable", message: "facebook-notification-prompt-unavailable"};
       }
+      if (isActive()) trackEvent("notification_permission_requested", {source: "facebook_bot"});
       await player.subscribeBotAsync!();
-      if (await player.isSubscribedBotAsync!() !== true) return {status: "cancelled"};
+      if (await player.isSubscribedBotAsync!() !== true) {
+        if (isActive()) trackEvent("notification_permission_result", {source: "facebook_bot", status: "cancelled"});
+        return {status: "cancelled"};
+      }
+      if (isActive()) trackEvent("notification_permission_result", {source: "facebook_bot", status: "granted"});
       return {status: "success", value: undefined};
     } catch (error) {
       /** Meta distinguishes player dismissal from transport or host errors. */
       const code = typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
+      if (isActive()) trackEvent("notification_permission_result", {source: "facebook_bot",
+        status: code === "USER_INPUT" || code === "USER_CANCELLED" ? "cancelled" : "failed"});
       if (code === "USER_INPUT" || code === "USER_CANCELLED") return {status: "cancelled"};
       return {status: "retryable-failure", message: "facebook-notification-prompt-failed"};
     }

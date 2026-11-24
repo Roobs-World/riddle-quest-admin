@@ -7,6 +7,7 @@ import type {HostedAccountController} from "../hosted/useHostedAccount";
 import {hostedText} from "../i18n/hostedCopy";
 import {GoogleAccountLink} from "../components/GoogleAccountLink";
 import {palette, spacing} from "../theme";
+import {AnalyticsPreference} from "../components/AnalyticsPreference";
 /** Props for {@link AccountScreen}. */
 export type AccountScreenProps = Readonly<{
   /** Active locale. */
@@ -56,6 +57,7 @@ export function AccountScreen({locale, client, account, onBack, confirmedCoins}:
         )}
       </Panel>
       {state.kind === "ready" && <GoogleAccountLink locale={locale} client={client} ownerId={state.account.uid} onChanged={connect} />}
+      <AnalyticsPreference locale={locale} />
     </Screen>
   );
 }

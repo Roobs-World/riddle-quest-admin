@@ -2,6 +2,8 @@
   "Settings": {
     "ABOUT_BUTTON": "Об игре",
     "ACCOUNT_DELETION_BUTTON": "Удалить аккаунт",
+    "ANALYTICS_DESCRIPTION": "Необязательная аналитика использования с Google для улучшения игры. Использует аналитические cookie. По умолчанию отключена; отключить её здесь можно в любое время.",
+    "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Закрыть",
     "CREDITS_BUTTON": "Авторы",
     "DATA_EXPORT_BUTTON": "Экспортировать мои данные",

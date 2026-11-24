@@ -1,4 +1,5 @@
 import {useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
+import {trackEvent} from "../../observability/analytics/events";
 import {tr, useLocale} from "../../localization/browser/i18n";
 import type {GameModal, GameSessionState} from "../../gameplay/session/gameSession";
 import {
@@ -79,6 +80,18 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   const activeTooltip = sequenceName === "profileTour" && modal !== "profile" ? undefined : sequence[sequenceIndex];
   /** Provides guidance active behavior. */
   const guidanceActive = !suspended && (onboardingStep !== null || Boolean(activeTooltip));
+
+  /** Only a visible guidance transition emits a view, including after effect replay. */
+  const viewedGuidance = useRef<{owner: string | undefined; step: string} | null>(null);
+  useEffect(() => {
+    if (!guidanceActive || interactionBlocked) return;
+    const step = onboardingStep !== null ? `onboarding_${onboardingStep}` : activeTooltip;
+    const previous = viewedGuidance.current;
+    if (!step || previous && previous.owner === userId && previous.step === step) return;
+    viewedGuidance.current = {owner: userId, step};
+    if (onboardingStep === 0) trackEvent(welcomeOnly ? "welcome_viewed" : "tutorial_begin");
+    trackEvent("tutorial_step_viewed", {step, sequence: onboardingStep !== null ? "onboarding" : sequenceName ?? "tooltip"});
+  }, [activeTooltip, guidanceActive, interactionBlocked, onboardingStep, sequenceName, userId, welcomeOnly]);
 
   /** Explicit dismissal captures committed winning context before fast successor delivery clears it. */
   const committedStateRef = useRef(state);
@@ -386,6 +399,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   }, [activeTooltip, locale, state.gameMode]);
   /** Provides finish sequence behavior. */
   const finishSequence = () => {
+    trackEvent("tutorial_sequence_completed", {sequence: sequenceName ?? "tooltip"});
     if (sequenceName?.startsWith("contextual:")) {
       seenMarkers.markSeen(
         "local",
@@ -413,6 +427,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
         totalSteps={totalSteps}
         welcomeOnly={welcomeOnly}
         onAdvance={() => {
+          trackEvent("tutorial_step_completed", {step: `onboarding_${onboardingStep}`, sequence: "onboarding"});
           if (isWelcome) {
             seenMarkers.markSeen("session", createGuidanceStorageKey("welcomeSession", userId));
             if (welcomeOnly) {
@@ -423,6 +438,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
             return;
           }
           completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
+          trackEvent("tutorial_complete");
           setOnboardingStep(null);
         }}
       />
@@ -442,6 +458,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       sequenceLength={sequence.length}
       targetRect={targetRect}
       onAdvance={() => {
+        trackEvent("tutorial_step_completed", {step: activeTooltip, sequence: sequenceName ?? "tooltip"});
         seenMarkers.markSeen("local", createGuidanceStorageKey(`tooltipSeen:${activeTooltip}`, userId));
         if (sequenceIndex + 1 >= sequence.length) {
           finishSequence();

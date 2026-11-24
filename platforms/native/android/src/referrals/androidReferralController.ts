@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {androidReferralUrl, type AndroidReferralBackend, type AndroidReferralStatus} from "./androidReferrals";
 /** Native-independent invite state, with rewards supplied only by the backend. */
 export type AndroidReferralState = Readonly<{
@@ -63,8 +64,9 @@ export class AndroidReferralController {
     const lifetime = this.lifetime;
     this.publish({...this.state, busy: true, failed: false});
     if (!this.owns(lifetime)) return;
-    try {await this.backend.bind(token, this.ownerId); if (this.owns(lifetime)) await this.refresh();}
-    catch {if (this.owns(lifetime)) this.publish({...this.state, busy: false, failed: true});}
+    trackEvent("referral_accept_requested");
+    try {await this.backend.bind(token, this.ownerId); trackEvent("referral_accept_result", {status: "success"}); if (this.owns(lifetime)) await this.refresh();}
+    catch {trackEvent("referral_accept_result", {status: "failed"}); if (this.owns(lifetime)) this.publish({...this.state, busy: false, failed: true});}
   }
   /** Mints an opaque server invite before opening the target's share sheet. */
   readonly invite = async (): Promise<void> => {
@@ -75,10 +77,11 @@ export class AndroidReferralController {
     if (!this.owns(lifetime)) return;
     try {
       /** Retains entry for this operation. */
+      trackEvent("referral_share_requested");
       const entry = await this.backend.create(this.ownerId);
-      if (this.owns(lifetime)) await this.share(androidReferralUrl(entry.token));
+      if (this.owns(lifetime)) {await this.share(androidReferralUrl(entry.token)); trackEvent("referral_share_opened");}
       if (this.owns(lifetime)) this.publish({...this.state, busy: false});
-    } catch {if (this.owns(lifetime)) this.publish({...this.state, busy: false, failed: true});}
+    } catch {trackEvent("referral_share_failed"); if (this.owns(lifetime)) this.publish({...this.state, busy: false, failed: true});}
   };
   /** A retired or replaced view cannot dispatch or publish account work. */
   private owns(lifetime: number): boolean {return this.active && this.lifetime === lifetime;}

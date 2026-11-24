@@ -1,10 +1,16 @@
-import {useContext, useEffect, useRef, useState} from "react";
+import {trackEvent} from "../../observability/analytics/events";
+import {useContext, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
 import {ShopSubscriptionContext} from "./ShopSubscriptionContext";
 
 /** Refreshes authoritative offers and tracks cancellation without revoking current access. */
 export function useSubscriptionManagement() {
   /** Reads the current target’s subscription operations. */
   const subscriptions = useContext(ShopSubscriptionContext);
+  const lifetime = useMemo(() => ({active: false}), [subscriptions]);
+  useLayoutEffect(() => {
+    lifetime.active = true;
+    return () => {lifetime.active = false;};
+  }, [lifetime]);
   /** Current target's authoritative catalog refresh operation. */
   const refreshCatalog = subscriptions?.refresh;
   /** Exposes the opening provider refresh to assistive technology. */
@@ -52,15 +58,18 @@ export function useSubscriptionManagement() {
   const cancel = async (sku: string) => {
     if (!subscriptions || busy.current) return;
     busy.current = true;
+    if (lifetime.active) trackEvent("subscription_cancellation_requested", {product_id: sku});
     setPending(sku);
     setError(false);
     try {
       /** Distinguishes confirmation, dismissal and failure. */
       const result = await subscriptions.cancel(sku);
+      if (lifetime.active) trackEvent("subscription_cancellation_result", {product_id: sku, status: result});
       if (result === "success") setCancelled((current) => [...current, sku]);
       if (result === "unavailable") setUnavailable((current) => [...current, sku]);
       if (result === "error") setError(true);
     } catch {
+      if (lifetime.active) trackEvent("subscription_cancellation_result", {product_id: sku, status: "error"});
       setError(true);
     } finally {
       busy.current = false;

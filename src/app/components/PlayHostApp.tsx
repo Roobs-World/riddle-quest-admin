@@ -1,5 +1,5 @@
 import {deliverHostRaceResult} from "../../races/browser/hostRaceResultEffects";
-import {createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "../../progression/browser/hostCompletionEffects";
+import {createHostCoinActionEffects, createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "../../progression/browser/hostCompletionEffects";
 import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
 import type {BridgeProfile, HostToGameMessage} from "../../platform/bridge/messages";
 import {BRIDGE_PROTOCOL_VERSION} from "../../platform/bridge/constants";
@@ -309,6 +309,8 @@ export function PlayHostApp({
     deliver: ReturnType<typeof createHostCompletionEffects>;
     /** Accepted guess effects retain the same visit ownership as completion effects. */
     guess: ReturnType<typeof createHostGuessEffects>;
+    /** Confirmed coin receipts survive profile updates and command-module replacement. */
+    coin: ReturnType<typeof createHostCoinActionEffects>;
   } | null>(null);
   if (singlePlayerEffectsRef.current?.owner !== captureAccount) {
     /** One captured guard rejects old callbacks before a replacement render commits. */
@@ -317,10 +319,11 @@ export function PlayHostApp({
       owner: captureAccount,
       deliver: createHostCompletionEffects(owned),
       guess: createHostGuessEffects(owned),
+      coin: createHostCoinActionEffects(owned),
     };
   }
   /** Old handlers retain their retired consumer while new handlers own a fresh one. */
-  const {deliver: deliverCompletionEffects, guess: deliverGuessEffects} = singlePlayerEffectsRef.current;
+  const {deliver: deliverCompletionEffects, guess: deliverGuessEffects, coin: deliverCoinActionEffects} = singlePlayerEffectsRef.current;
   /** Accepted guess retries cannot prompt a different account or duplicate telemetry. */
   const handleAuthoritativeGuess = useCallback(
     (input: HostCompletionInput, result: SinglePlayerGuessResult) =>
@@ -363,6 +366,7 @@ export function PlayHostApp({
         persistAchievementProjection,
         onPlayable,
         onAuthoritativeGuess: handleAuthoritativeGuess,
+        onAuthoritativeCoinAction: deliverCoinActionEffects,
         onAuthoritativeComplete: handleAuthoritativeComplete,
         onAuthoritativeRaceResult: handleAuthoritativeRaceResult,
         onAccountDeleted,
@@ -382,6 +386,7 @@ export function PlayHostApp({
       onResultScreen,
       onPlayable,
       handleAuthoritativeGuess,
+      deliverCoinActionEffects,
       postOperation,
       runRaceOperation,
       sendInit,

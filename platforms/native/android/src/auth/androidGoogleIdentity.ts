@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 /** Linking preserves the account; a conflicting existing account requires a separate explicit choice. */
 export type GoogleLinkOutcome = "linked" | "cancelled" | "conflict";
 /** A committed authentication change must reconcile the root even if its originating screen retired. */
@@ -156,12 +157,14 @@ export function createGoogleAccountController(options: {
     let notified = false;
     /** Publish account changes before another screen can dispatch against the previous uid. */
     const notify = () => {notified = true; options.onChanged();};
+    trackEvent("identity_action_requested", {action});
     update("working");
     if (!current()) return;
     try {
       if (action !== "link") {
         /** Once Firebase commits, screen retirement cannot suppress root ownership reconciliation. */
         const change = action === "signOut" ? await identity.signOut(options.ownerId, current) : await identity.openExisting(options.ownerId, current);
+        trackEvent("identity_action_result", {action, status: change.kind});
         if (change.kind === "committed" && identity.currentUserId() === change.uid) {
           if (current()) update(change.uid === null ? "anonymous" : "linked");
           notify();
@@ -170,10 +173,11 @@ export function createGoogleAccountController(options: {
       }
       /** Initial linking preserves the uid and never admits a conflicting account switch. */
       const outcome = await identity.link(options.ownerId, current);
+      trackEvent("identity_action_result", {action, status: outcome});
       if (!current()) return;
       update(outcome === "conflict" ? "conflict" : outcome === "cancelled" ? initial() : "linked");
       if (outcome === "linked") notify();
-    } catch {if (current()) update("failed");}
+    } catch {trackEvent("identity_action_result", {action, status: "failed"}); if (current()) update("failed");}
     finally {
       if (action === "link" && !notified && identity.currentUserId() === options.ownerId && identity.isLinked() !== wasLinked) notify();
     }
@@ -185,7 +189,7 @@ export function createGoogleAccountController(options: {
     /** Leaving never retains a credential that could silently switch a future account. */ dispose() {active = false; generation++; options.identity?.cancelConflict(options.ownerId);},
     /** Initial selection only attempts to protect the existing uid. */ link: () => run("link"),
     /** Called only after the player reads and accepts the account-switch warning. */ openExisting: () => run("existing"),
-    /** Cancelling the conflict preserves the original anonymous account. */ keepCurrent() {if (active && status === "conflict") {options.identity?.cancelConflict(options.ownerId); update(initial());}},
+    /** Cancelling the conflict preserves the original anonymous account. */ keepCurrent() {if (active && status === "conflict") {trackEvent("identity_conflict_cancelled"); options.identity?.cancelConflict(options.ownerId); update(initial());}},
     /** Google-linked progress remains on its durable account after explicit sign-out. */ signOut: () => run("signOut"),
   };
 }

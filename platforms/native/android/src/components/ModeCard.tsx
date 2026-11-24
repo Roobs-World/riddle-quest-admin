@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {Pressable, StyleSheet, Text} from "react-native";
 import {palette, radius, spacing} from "../theme";
 /** Props for {@link ModeCard}. */
@@ -23,7 +24,7 @@ export function ModeCard({glyph, title, caption, disabled, onPress, testID}: Mod
       accessibilityLabel={`${title}: ${caption}`}
       accessibilityState={{disabled}}
       disabled={disabled}
-      onPress={onPress}
+      onPress={() => {trackEvent("game_mode_selected", {game_mode: testID.includes("daily") ? "challenge" : "classic"}); onPress();}}
       testID={testID}
       style={({pressed}) => [styles.modeCard, disabled && styles.modeCardDisabled, pressed && !disabled && styles.modeCardPressed]}
     >

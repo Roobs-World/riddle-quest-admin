@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import type {BridgeLeaderboardEntry} from "../../../../../src/platform/bridge/messages";
 import type {HostServices, LeaderboardType} from "../../../../../src/platform/contracts/hostServices";
 import {useCallback, useEffect, useRef, useState} from "react";
@@ -82,6 +83,7 @@ export function useHostedProfile(services: HostServices, onDeleted: () => void):
   /** Loads one leaderboard. */
   const selectBoard = useCallback(
     (next: LeaderboardType) => {
+      trackEvent("leaderboard_viewed", {board: next});
       requested.current = next;
       setBoard(next);
       setLeaderboard({kind: "loading"});
@@ -106,17 +108,20 @@ export function useHostedProfile(services: HostServices, onDeleted: () => void):
         setUsernameNotice("tooShort");
         return;
       }
+      trackEvent("profile_update_requested", {field: "username"});
       setSavingUsername(true);
       setUsernameNotice(null);
       services.updateUsername(trimmed).then(
         () => {
           if (!mounted.current) return;
           setSavingUsername(false);
+          trackEvent("profile_update_result", {field: "username", status: "success"});
           setUsernameNotice("updated");
         },
         (error: unknown) => {
           if (!mounted.current) return;
           setSavingUsername(false);
+          trackEvent("profile_update_result", {field: "username", status: "failed"});
           setUsernameNotice(errorCode(error) === "already-exists" ? "taken" : "failed");
         },
       );
@@ -125,13 +130,16 @@ export function useHostedProfile(services: HostServices, onDeleted: () => void):
   );
   /** Deletes the account. */
   const confirmDeletion = useCallback(() => {
+    trackEvent("account_delete_requested");
     setDeletion("deleting");
     services.deleteAccount().then(
       () => {
         if (mounted.current) setDeletion("idle");
+        trackEvent("account_delete_result", {status: "success"});
         onDeleted();
       },
       () => {
+        trackEvent("account_delete_result", {status: "failed"});
         if (mounted.current) setDeletion("failed");
       },
     );

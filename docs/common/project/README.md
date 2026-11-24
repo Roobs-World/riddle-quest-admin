@@ -112,7 +112,7 @@ them.
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | Yes | Firebase messaging sender ID |
 | `VITE_FIREBASE_PROJECT_ID` | Yes | Firebase project ID |
 | `VITE_FIREBASE_DATABASE_URL` | For presence | Realtime Database URL used by opt-in rival presence |
-| `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | No | Reserved public GA4 web stream ID. The committed Jest environment deliberately omits it, and runtime collection remains disabled until a future owner-approved consent/opt-out design supplies an affirmative decision |
+| `VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID` | No | Public GA4 web stream ID for the selected Jest or Facebook target. Collection requires an affirmative player opt-in in Settings |
 | `VITE_FIREBASE_FUNCTIONS_REGION` | No | Functions region; defaults to `us-central1` |
 | `VITE_FIREBASE_APP_CHECK_SITE_KEY` | Yes | Public reCAPTCHA Enterprise site key used by Firebase App Check; the production security audit rejects an empty value |
 | `VITE_JEST_FUNCTIONS_BASE_URL` | Production | Base URL for the authoritative Jest HTTP endpoints |
@@ -126,7 +126,7 @@ retain the subscription UI, while the direct live sandbox script exercises the c
 to production players until the full activation, restoration, cancellation, and entitlement-benefit lifecycle passes against
 Jest's live sandbox checkout.
 
-Google Analytics is disabled in uploaded Jest builds: the dedicated environment has no measurement ID, startup does not import the Firebase Analytics adapter, the event sink defaults closed, pre-consent events are discarded, and the production CSP does not authorize GA or Tag Manager endpoints. Do not add a measurement ID or initialize collection until an owner-approved consent/opt-out design has been implemented and tested for every supported audience. If that work is later authorized, do not add player names, riddle answers, guesses, email addresses, Jest player IDs, or purchase tokens to event parameters.
+Jest and Facebook builds configure their existing Google Analytics streams through an off-by-default consent control in Settings. The Google tag loads only after opt-in in an authenticated production session. Withdrawal cancels initialization, disconnects collection and clears GA cookies. Pre-consent actions are discarded. Never add names, answers, guesses, email addresses, account IDs or purchase tokens to event parameters. See [Google Analytics and action events](../observability/google-analytics.md) for the event catalogue, native Android transport and restricted-platform boundaries.
 
 Sentry remains optional essential error reporting. Browser reporting excludes product/session-context integrations, console capture, performance traces, default PII, and free-form messages. Firebase Functions also use zero performance-trace sampling. Provider retention, access, and production envelope review remain deployment-owner responsibilities.
 

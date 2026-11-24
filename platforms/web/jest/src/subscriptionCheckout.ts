@@ -2,6 +2,7 @@ import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort} from "./types";
 import type {JestPurchaseCoordinator} from "./purchases";
 import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
+import {createPurchaseAnalyticsId} from "../../../../src/observability/analytics/purchaseAnalyticsId";
 
 /** Dependencies and account scope required for a serialized subscription checkout. */
 type SubscriptionCheckoutOptions = {
@@ -70,6 +71,7 @@ async function subscribeWithPreflight({
       status: "success",
       value: {
         activeSku: subscriptionSku,
+        analyticsTransactionId: await createPurchaseAnalyticsId("jest", started.value.subscriptionSigned),
         blockedSkus: verified.blockedSkus ?? [],
         premiumCoinsAwarded: verified.premiumCoinsAwarded ?? 0,
         newCoins: verified.newCoins,

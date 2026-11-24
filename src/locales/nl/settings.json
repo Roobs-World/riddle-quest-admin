@@ -2,6 +2,8 @@
   "Settings": {
     "ABOUT_BUTTON": "Over",
     "ACCOUNT_DELETION_BUTTON": "Account verwijderen",
+    "ANALYTICS_DESCRIPTION": "Optionele gebruiksanalyse met Google om het spel te verbeteren. Gebruikt analysecookies. Standaard uit; je kunt dit hier op elk moment uitschakelen.",
+    "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Sluiten",
     "CREDITS_BUTTON": "Credits",
     "DATA_EXPORT_BUTTON": "Mijn gegevens exporteren",

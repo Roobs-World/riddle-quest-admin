@@ -55,10 +55,6 @@ const forbidden = [
   ],
   ["Vibration API", /\bnavigator\.vibrate\b/],
   ["Haptics UI", /\bhaptic(?:s| feedback)\b/i],
-  [
-    "Nonessential Google Analytics collection",
-    /["'`]G-[A-Z0-9]{6,}["'`]|(?:google-analytics|googletagmanager)\.com/i,
-  ],
   ["App-install prompt", /\bbeforeinstallprompt\b/i],
   ["External social link", /https?:\/\/(?:www\.)?(?:facebook|instagram|tiktok)\.com\b/i],
   [
@@ -73,6 +69,8 @@ const forbidden = [
   ["External in-game hyperlink", /\bhref\s*:\s*["'](?:https?:|mailto:)/i],
   ["Native app-install copy", /\b(?:install|download)\s+(?:the|our|this)\s+(?:mobile\s+)?app\b/i],
 ];
+const analyticsIds = [...content.matchAll(/["'`](G-[A-Z0-9]{6,})["'`]/g)].map(match => match[1]);
+if (analyticsIds.some(id => id !== "G-7CWWGNE52Q")) throw new Error("Foreign Google Analytics stream found in Jest artifact");
 for (const [label, pattern] of forbidden) if (pattern.test(content)) throw new Error(`${label} found in Jest artifact`);
 if (!content.includes("grindheadgames@gmail.com")) {
   throw new Error("Jest artifact is missing the verified Grindhead Games support contact");
@@ -146,5 +144,5 @@ if (initialResourceBytes > maximumInitialResourceBytes) {
 console.log(
   `Jest artifact audit passed: ${files.length} files, ${(artifactBytes / 1024 / 1024).toFixed(2)} MB, ` +
   `${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, relative entry paths, ` +
-  "no native modules, external auth/ads, Google Analytics, install copy, secrets, source maps, or missing entry assets",
+  "consent-controlled analytics; no native modules, external auth/ads, install copy, secrets, source maps, or missing entry assets",
 );

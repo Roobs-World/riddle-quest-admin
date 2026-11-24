@@ -1,3 +1,4 @@
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {createAvatarUploadController} from "../../../../../src/accounts/avatar/avatarUpload";
 import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
 import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
@@ -21,11 +22,14 @@ export function AvatarEditor({locale, services, accountUid, avatarUrl}: {
   const controller = useMemo(() => createAvatarUploadController({pick: pickAvatar, upload: image => services.updateAvatar(image)}), [services, accountUid]);
   /** Shared controller snapshots drive only native rendering. */
   const status = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
+  useEffect(() => {
+    if (status === "updated" || status === "selectionFailed" || status === "uploadFailed") trackEvent("avatar_update_result", {status});
+  }, [status]);
   useEffect(() => {controller.enter(); return () => controller.dispose();}, [controller]);
   return <View style={styles.editor}>
     {avatarUrl && <Image source={{uri: deviceAvatarUrl(avatarUrl, hostedConfig.emulators?.host)}} style={styles.avatar} accessible={false} testID="profile-avatar" />}
     <ActionButton label={status === "picking" || status === "uploading" ? youtubeText(locale, "loading") : avatarText(locale, "UPLOAD_FROM_LIBRARY_BUTTON")}
-      disabled={status === "picking" || status === "uploading"} onPress={() => {void controller.select();}} testID="profile-avatar-select" />
+      disabled={status === "picking" || status === "uploading"} onPress={() => {trackEvent("avatar_update_requested"); void controller.select();}} testID="profile-avatar-select" />
     {status === "updated" && <Notice testID="profile-avatar-notice">{avatarText(locale, "ALERT_AVATAR_UPDATE_SUCCESS")}</Notice>}
     {status === "selectionFailed" && <Notice error testID="profile-avatar-notice">{avatarText(locale, "ALERT_AVATAR_SELECT_FAIL")}</Notice>}
     {status === "uploadFailed" && <Notice error testID="profile-avatar-notice">{avatarText(locale, "ALERT_AVATAR_UPDATE_ERROR")}</Notice>}

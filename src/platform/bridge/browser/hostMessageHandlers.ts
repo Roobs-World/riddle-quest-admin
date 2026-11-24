@@ -6,7 +6,8 @@ import type {RaceOutcome} from "../../../races/contracts/index";
 import type {AuthSnapshot, CompletionResult, PurchaseResult, SinglePlayerGuessResult, WebGameMode} from "../../contracts/hostServices";
 import type {HostAuthorityModules} from "../../../app/session/HostAuthorityModules";
 import {captureBrowserException} from "../../../observability/browserErrorReporter";
-import type {HostCompletionInput} from "../../../progression/browser/hostCompletionEffects";
+import {createHostCoinActionEffects, type HostCoinActionInput, type HostCompletionInput} from "../../../progression/browser/hostCompletionEffects";
+import {CONTINUE_COIN_COST} from "../../../commerce/browser/commerceCosts";
 /** Describes host operation name. */
 export type HostOperationName =
   | "loadRiddle"
@@ -61,6 +62,7 @@ export const getHostNoticeMessage = (notice: string): string =>
 /** Reports a failed host operation before its safe message is returned to the game frame. */
 const reportHostOperationError = (error: unknown, operation: HostOperationName): void => {
   captureBrowserException(error, {component: "play_host", operation});
+  trackEvent("operation_error", {operation});
 };
 /** Keeps ambiguous transport failures replayable with the original paid request ID. */
 const coinActionErrorKind = (error: unknown): "retryable" | "rejected" => {
@@ -166,6 +168,8 @@ export type CreateHostMessageHandlersOptions = {
   onPlayable?: () => void;
   /** Runs optional account-owned effects after an accepted single-player guess. */
   onAuthoritativeGuess?: (input: HostCompletionInput, result: SinglePlayerGuessResult) => void | Promise<void>;
+  /** Consumes a server-confirmed paid action within its originating account visit. */
+  onAuthoritativeCoinAction?: (input: HostCoinActionInput) => void;
   /** Stores on authoritative complete. */
   onAuthoritativeComplete?: (
     input: HostCompletionInput,
@@ -203,6 +207,7 @@ export const createPlayHostMessageHandlers = ({
   persistAchievementProjection,
   onPlayable,
   onAuthoritativeGuess,
+  onAuthoritativeCoinAction = createHostCoinActionEffects(() => true),
   onAuthoritativeComplete,
   onAuthoritativeRaceResult,
   onAccountDeleted,
@@ -278,12 +283,7 @@ export const createPlayHostMessageHandlers = ({
       /** Provides result behavior. */
       const result = await economy.requestHint(message.payload);
       postOperation(message.requestId, "hint", true, result);
-      trackEvent("spend_virtual_currency", {
-        virtual_currency_name: "coins",
-        item_name: "hint",
-        value: result?.coinsCost,
-        game_mode: message.payload.gameMode,
-      });
+      if (result) onAuthoritativeCoinAction({...message.payload, kind: "hint", index: result.index, cost: result.coinsCost});
     } catch (error) {
       reportHostOperationError(error, "hint");
       postOperation(
@@ -308,12 +308,7 @@ export const createPlayHostMessageHandlers = ({
         }),
       );
       postOperation(message.requestId, "spendCoins", true, result);
-      trackEvent("spend_virtual_currency", {
-        virtual_currency_name: "coins",
-        item_name: message.payload.reason,
-        value: message.payload.amount,
-        game_mode: message.payload.gameMode,
-      });
+      onAuthoritativeCoinAction({...message.payload, kind: "continue", cost: message.payload.amount ?? CONTINUE_COIN_COST});
     } catch (error) {
       reportHostOperationError(error, "spendCoins");
       postOperation(
@@ -352,7 +347,7 @@ export const createPlayHostMessageHandlers = ({
     }
     postOperation(message.requestId, "skip", true, result);
     try {
-      trackEvent("riddle_skipped", {game_mode: skipGameMode, value: result.costDeducted});
+      if (result.success) onAuthoritativeCoinAction({...message.payload, kind: "skip", cost: result.costDeducted});
     } catch (error) {
       reportHostOperationError(error, "skip");
     }
@@ -371,6 +366,7 @@ export const createPlayHostMessageHandlers = ({
       const commerce = requireAuthority(authority.commerce, "host-commerce-capability-unavailable");
       /** Provides result behavior. */
       const result = await withServerActivity(() => commerce.requestPurchase(message.payload.productId));
+      trackEvent("checkout_result", {product_id: message.payload.productId, success: result.success});
       if (!result.success) {
         postOperation(message.requestId, "purchase", true, result);
         return;
@@ -393,6 +389,7 @@ export const createPlayHostMessageHandlers = ({
     try {
       /** Provides entries behavior. */
       const entries = await authority.leaderboard.loadLeaderboard(message.payload.leaderboardType);
+      trackEvent("leaderboard_viewed", {leaderboard_type: message.payload.leaderboardType, result_count: entries.length});
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
         entries,
@@ -408,6 +405,7 @@ export const createPlayHostMessageHandlers = ({
       const updateUsername = requireAuthority(authority.account?.updateUsername, "host-account-capability-unavailable");
       /** Provides profile behavior. */
       const profile = await withServerActivity(() => updateUsername(message.payload.username));
+      trackEvent("profile_updated", {field: "username"});
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "profile");
@@ -420,6 +418,7 @@ export const createPlayHostMessageHandlers = ({
       const updateAvatar = requireAuthority(authority.account?.updateAvatar, "host-account-capability-unavailable");
       /** Provides profile behavior. */
       const profile = await withServerActivity(() => updateAvatar(message.payload.imageDataUrl));
+      trackEvent("profile_updated", {field: "avatar"});
       postOperation(message.requestId, "profile", true, {profile});
     } catch (error) {
       reportHostOperationError(error, "avatar");
@@ -435,6 +434,7 @@ export const createPlayHostMessageHandlers = ({
         /** Provides account behavior. */
         await withServerActivity(() => deleteAccount());
         accountDeletionCompletedRef.current = true;
+        trackEvent("account_deleted");
       }
       await onAccountDeleted?.();
       postOperation(message.requestId, "accountDeletion", true, {success: true});

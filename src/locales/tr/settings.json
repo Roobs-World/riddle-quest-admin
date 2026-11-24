@@ -2,6 +2,8 @@
   "Settings": {
     "ABOUT_BUTTON": "Hakkında",
     "ACCOUNT_DELETION_BUTTON": "Hesabı Sil",
+    "ANALYTICS_DESCRIPTION": "Oyunu geliştirmek için Google ile isteğe bağlı kullanım analizi. Analiz çerezleri kullanır. Varsayılan olarak kapalıdır; buradan istediğiniz zaman kapatabilirsiniz.",
+    "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Kapat",
     "CREDITS_BUTTON": "Emeği Geçenler",
     "DATA_EXPORT_BUTTON": "Verilerimi Dışa Aktar",

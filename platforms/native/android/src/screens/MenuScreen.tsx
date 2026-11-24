@@ -1,3 +1,6 @@
+import {trackOfflineGameAction} from "../analytics/offlineGameAnalytics";
+import {AnalyticsPreference} from "../components/AnalyticsPreference";
+import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
 import {type LocalSoloAuthority} from "../../../../../src/gameplay/local/LocalSoloAuthority";
 import {type YouTubeAuthoritySnapshot} from "../../../../../src/gameplay/local/LocalSoloAuthority.contract.ts";
 import {type YouTubeContent, type YouTubeLocale} from "../../../../../src/gameplay/local/types";
@@ -64,7 +67,7 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
           message={`${text("chooseMode")}: ${text("classic")} · ${text("daily")}`}
           actionLabel={text("dismiss")}
           onAction={() => {
-            void run(() => authority.completeGuidance());
+            void run(async () => {await authority.completeGuidance(); trackEvent("tutorial_complete");});
           }}
           disabled={materialDisabled}
           testID="guidance-banner"
@@ -86,7 +89,7 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
           caption={classicComplete ? text("classicComplete") : `${progression.classicIndex + 1}/${content.classicOrder.length}`}
           disabled={materialDisabled || classicComplete}
           onPress={() => {
-            void run(() => authority.start("classic"));
+            void run(() => trackOfflineGameAction(authority, "start", () => authority.start("classic"), "classic"));
           }}
           testID="start-classic"
         />
@@ -96,13 +99,14 @@ export function MenuScreen({locale, content, authority, snapshot, today, notice,
           caption={dailyComplete ? text("dailyComplete") : today}
           disabled={materialDisabled || dailyComplete}
           onPress={() => {
-            void run(() => authority.start("daily"));
+            void run(() => trackOfflineGameAction(authority, "start", () => authority.start("daily"), "daily"));
           }}
           testID="start-daily"
         />
       </View>
       <ActionButton label={text("progress")} onPress={onShowProgress} disabled={materialDisabled} testID="show-progress" />
       {online && <ActionButton label={online.label} onPress={online.onPress} disabled={materialDisabled} testID="play-online" />}
+      <AnalyticsPreference locale={locale} />
     </Screen>
   );
 }

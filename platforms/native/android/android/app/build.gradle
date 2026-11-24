@@ -81,6 +81,17 @@ if (uploadKeystorePropertiesFile.exists()) {
 }
 def uploadKeystore = uploadKeystoreProperties['storeFile'] ? file(uploadKeystoreProperties['storeFile']) : file("missing.keystore")
 
+// The native analytics SDK can initialize before JavaScript. Emulator builds must stay deactivated.
+def hostedConfigFile = file("../../hosted.config.json")
+if (!hostedConfigFile.exists()) hostedConfigFile = file("../../hosted.config.example.json")
+def hostedBuildConfig = new groovy.json.JsonSlurper().parse(hostedConfigFile)
+def firebaseBuildConfig = hostedBuildConfig.firebase
+def nativeFirebaseAppId = firebaseBuildConfig.androidAppId
+if (nativeFirebaseAppId != null && !(nativeFirebaseAppId ==~ /1:[0-9]+:android:[a-f0-9]+/)) {
+    throw new GradleException("hosted.config requires a registered Firebase Android app ID")
+}
+def analyticsDeactivated = hostedBuildConfig.emulators != null || nativeFirebaseAppId == null
+
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
@@ -95,6 +106,14 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0.0"
+        manifestPlaceholders = [analyticsDeactivated: analyticsDeactivated]
+        if (nativeFirebaseAppId != null) {
+            // Analytics resolves google_app_id from Android resources, independently of FirebaseOptions.
+            resValue "string", "google_app_id", nativeFirebaseAppId
+            resValue "string", "google_api_key", firebaseBuildConfig.androidApiKey ?: firebaseBuildConfig.apiKey
+            resValue "string", "gcm_defaultSenderId", firebaseBuildConfig.messagingSenderId
+            resValue "string", "project_id", firebaseBuildConfig.projectId
+        }
     }
     signingConfigs {
         debug {
@@ -121,6 +140,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
+            manifestPlaceholders.analyticsDeactivated = true
         }
         release {
             signingConfig signingConfigs.release
@@ -137,6 +157,7 @@ dependencies {
     implementation("com.google.android.play:integrity:1.6.0")
     implementation("com.android.installreferrer:installreferrer:2.2")
     implementation("com.google.firebase:firebase-messaging:26.0.2")
+    implementation("com.google.firebase:firebase-analytics:23.2.0")
     implementation("androidx.credentials:credentials:1.6.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")

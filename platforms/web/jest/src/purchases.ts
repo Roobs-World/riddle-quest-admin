@@ -1,6 +1,5 @@
 import type {JestBackendPort} from "./backend";
 import type {JestPlatformPort, PlatformResult} from "./types";
-import {DEFAULT_PRODUCT_PRICING} from "../../../../src/commerce/pricing/catalog";
 import type {ProductSummary} from "../../../../src/platform/contracts/hostServices";
 import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 
@@ -19,23 +18,7 @@ type IncompletePurchasePage = {
   hasMore: boolean;
 };
 
-/** Indicates whether is currency. */
-const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
-
-/**
- * Returns a locale Intl accepts, or undefined for the runtime default.
- *
- * Browsers can report non-BCP 47 tags such as "en-US@posix"; passing one to
- * Intl.NumberFormat throws and would fail the whole shop catalog.
- */
-export const priceLocale = (locale?: string): string | undefined => {
-  if (!locale) return undefined;
-  try {
-    return Intl.getCanonicalLocales(locale)[0];
-  } catch {
-    return undefined;
-  }
-};
+export {priceLocale} from "./priceLocale";
 
 /** Provides jest purchase coordinator behavior. */
 export class JestPurchaseCoordinator {
@@ -57,91 +40,14 @@ export class JestPurchaseCoordinator {
     /** Provides result behavior. */
     const result = await this.platform.getProducts();
     if (result.status !== "success") return result;
-    /** Provides local catalog behavior. */
-    const localCatalog = new Map(DEFAULT_PRODUCT_PRICING.map((product) => [product.productId, product]));
-    return {
-      status: "success",
-      value: result.value.flatMap((product) => {
-        /** Provides local behavior. */
-        const local = localCatalog.get(product.sku);
-        if (!local || !Number.isFinite(product.price) || !isCurrency(product.currency)) return [];
-        return [
-          {
-            productId: product.sku,
-            name: product.name || local.name,
-            description: product.description || local.description,
-            coins: local.coins,
-            displayPrice: new Intl.NumberFormat(priceLocale(locale), {
-              style: "currency",
-              currency: product.currency,
-            }).format(product.price),
-            price: product.price,
-            currency: product.currency,
-            featuredBadge: local.featuredBadge,
-          },
-        ];
-      }),
-    };
+    const {projectProductCatalog} = await import("./productCatalog");
+    return projectProductCatalog(result.value, locale);
   }
 
-  /** Gets subscriptions. */
+  /** Keeps subscription-only verification and projection out of ordinary game startup. */
   async getSubscriptions(playerId: string, locale?: string): Promise<PlatformResult<ProductSummary[]>> {
-    /** Provides result behavior. */
-    const result = await this.platform.getSubscriptions();
-    if (result.status !== "success") return result;
-    if (typeof result.value.subscriptionsSigned !== "string") {
-      return {status: "retryable-failure", message: "Jest returned unsigned subscription data"};
-    }
-    /** Provides active skus behavior. */
-    let activeSkus: Set<string>;
-    /** Provides blocked skus behavior. */
-    let blockedSkus: Set<string>;
-    try {
-      /** Provides verified behavior. */
-      const verified = await this.backend.syncSubscriptions(result.value.subscriptionsSigned, playerId);
-      activeSkus = new Set(verified.activeSkus);
-      blockedSkus = new Set(verified.blockedSkus ?? []);
-    } catch (error) {
-      captureBrowserException(error, {component: "jest_purchases", operation: "sync_subscriptions"});
-      return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
-    }
-    /** Any existing holding suppresses alternative offers for the same Premium entitlement. */
-    const hasActiveSubscription = activeSkus.size > 0 || result.value.subscriptions.some((entry) =>
-      entry.status === "active");
-    return {
-      status: "success",
-      value: result.value.subscriptions.flatMap((subscription) => {
-        // SDK state can suppress a sale; only the backend grants paid access.
-        /** Suppresses checkout when either source reports an existing holding. */
-        const active = activeSkus.has(subscription.sku) || subscription.status === "active";
-        if (!active && (hasActiveSubscription || blockedSkus.has(subscription.sku))) return [];
-        if (
-          !Number.isFinite(subscription.price) ||
-          !isCurrency(subscription.currency) ||
-          !["weekly", "monthly", "yearly"].includes(subscription.billingPeriod)
-        ) {
-          return [];
-        }
-        return [
-          {
-            productId: subscription.sku,
-            productType: "subscription" as const,
-            name: subscription.displayName,
-            description: subscription.displayDescription ?? "",
-            coins: 0,
-            displayPrice: new Intl.NumberFormat(priceLocale(locale), {
-              style: "currency",
-              currency: subscription.currency,
-            }).format(subscription.price),
-            price: subscription.price,
-            currency: subscription.currency,
-            billingPeriod: subscription.billingPeriod,
-            subscriptionStatus: active ? "active" as const : "inactive" as const,
-            trialEligible: !active && subscription.trialEligible,
-          },
-        ];
-      }),
-    };
+    const {loadSubscriptionCatalog} = await import("./subscriptionCatalog");
+    return loadSubscriptionCatalog({platform: this.platform, backend: this.backend, playerId, locale});
   }
 
   /** Provides subscribe behavior. */
@@ -168,6 +74,7 @@ export class JestPurchaseCoordinator {
       sandbox?: boolean;
       /** Distinguishes restored access from a newly completed checkout. */
       recoveredExistingSubscription?: true;
+      analyticsTransactionId?: string;
     }>
   > {
     if (this.subscriptionCheckoutPending) return {status: "cancelled"};
@@ -209,38 +116,11 @@ export class JestPurchaseCoordinator {
       newlyUnlockedAchievementIds?: string[];
       /** Excludes provider test transactions from revenue reporting. */
       sandbox?: boolean;
+      analyticsTransactionId?: string;
     }>
   > {
-    /** Starts ed. */
-    const started = await this.platform.beginPurchase(productSku);
-    if (started.status !== "success") return started;
-    try {
-      /** Provides grant behavior. */
-      const grant = await this.backend.grantPurchase(
-        started.value.purchaseSigned,
-        playerId,
-        started.value.purchase.purchaseToken,
-      );
-      try {
-        /** Provider confirmation cannot undo a grant already accepted by the game authority. */
-        const completed = await this.platform.completePurchase(started.value.purchase.purchaseToken);
-        if (completed.status !== "success") throw new Error("message" in completed ? completed.message : completed.status);
-      } catch (error) {
-        captureBrowserException(error, {component: "jest_purchases", operation: "complete_purchase"});
-      }
-      return {
-        status: "success",
-        value: {
-          coinsAwarded: grant.coinsAwarded,
-          newCoins: grant.newCoins,
-          newlyUnlockedAchievementIds: grant.newlyUnlockedAchievementIds,
-          ...(started.value.purchase.sandbox === true ? {sandbox: true} : {}),
-        },
-      };
-    } catch (error) {
-      captureBrowserException(error, {component: "jest_purchases", operation: "purchase"});
-      return {status: "retryable-failure", message: error instanceof Error ? error.message : String(error)};
-    }
+    const {checkoutConsumable} = await import("./purchaseCheckout");
+    return checkoutConsumable({platform: this.platform, backend: this.backend, productSku, playerId});
   }
 
   /** Provides reconcile behavior. */

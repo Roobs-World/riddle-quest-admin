@@ -1,4 +1,4 @@
-import {useEffect, useLayoutEffect, useRef, useState, type CSSProperties} from "react";
+import {useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties} from "react";
 import {parseHostToGameMessage} from "../../../platform/bridge/messages";
 import {ListRaceCategoriesResponseSchema, type LiveRaceCapability, type RaceCategoryId, type RaceLocale} from "../../contracts/index";
 import "../../styles/lobby.css";
@@ -16,11 +16,23 @@ import {RaceTopbar} from "../gameplay/RaceHeader";
 import {RaceCategoryIcon} from "../lobby/RaceCategoryIcon";
 import {useRaceDialogFocus} from "../../hooks/useRaceDialogFocus";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "./RaceTo10Game.types.ts";
+import {trackEvent, trackScreen} from "../../../observability/analytics/events";
+import {withLiveRaceAnalytics} from "../../analytics/liveRaceAnalytics";
 import {readLiveRaceLobby} from "../../browser/storage/liveRaceLobbyStorage";
 
 /** Shared invitations enter their private lobby; ordinary multiplayer entries open category selection. */
 export function RaceTo10Game(props: RaceTo10GameProps) {
-  return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale, props.challengeId ?? null])} {...props} />;
+  const provider = props.matchmaking?.live;
+  const telemetry = useMemo(() => {
+    const lifetime = {active: false};
+    return {lifetime, live: provider ? withLiveRaceAnalytics(provider, () => lifetime.active) : undefined};
+  }, [provider, props.ownerId]);
+  useLayoutEffect(() => {
+    telemetry.lifetime.active = true;
+    return () => {telemetry.lifetime.active = false;};
+  }, [telemetry]);
+  const matchmaking = useMemo(() => props.matchmaking ? {...props.matchmaking, live: telemetry.live} : undefined, [props.matchmaking, telemetry]);
+  return <LiveRaceEntry key={JSON.stringify([props.ownerId ?? null, props.locale, props.challengeId ?? null])} {...props} matchmaking={matchmaking} />;
 }
 
 /** Immutable entry selection for public searches, private lobbies and incoming acceptances. */
@@ -171,6 +183,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
   const selected = categories.find(category => category.categoryId === selection)?.categoryId ??
     categories.find(category => category.categoryId === "mixed")?.categoryId ?? categories[0]?.categoryId;
   /** An explicit native audience starts a reserved lobby in the already selected content category. */
+  useEffect(() => {trackScreen("multiplayer_live_intro");}, []);
   const chooseFriends = async () => {
     /** Capture exact category, provider and effect lifetime before native UI opens. */
     const categoryId = selected, provider = matchmaking?.live, choose = provider?.chooseChallenge, signal = choiceLifetime.current?.signal;
@@ -199,7 +212,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       <div className="race-category-grid">
         {categories.map(category => <button key={category.categoryId} aria-pressed={selected === category.categoryId}
           disabled={loading || choosingFriends || !matchmaking?.live} style={{"--race-color": category.colorToken} as CSSProperties}
-          onClick={() => setSelection(category.categoryId)}>
+          onClick={() => {setSelection(category.categoryId); trackEvent("race_category_selected", {category_id: category.categoryId});}}>
           <RaceCategoryIcon categoryId={category.categoryId} />
           <strong>{tr(category.nameKey)}</strong><span>{tr(category.descriptionKey)}</span>
         </button>)}
@@ -210,12 +223,12 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
         {failed && <button onClick={() => setRetry(current => current + 1)}>{tr("RaceTo10.RETRY")}</button>}
       </div>}
       <button className="race-primary live-race-start" disabled={loading || choosingFriends || failed || !selected || !matchmaking?.live}
-        onClick={() => {if (!choosing.current && selected && matchmaking?.live) onStart({categoryId: selected, locale});}}>{tr("RaceTo10.LIVE_START")}</button>
+        onClick={() => {if (!choosing.current && selected && matchmaking?.live) {trackEvent("live_race_search_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale});}}}>{tr("RaceTo10.LIVE_START")}</button>
       {matchmaking?.live?.chooseChallenge && <button className="race-secondary live-race-context-challenge" aria-busy={choosingFriends}
         disabled={loading || choosingFriends || failed || !selected} onClick={() => void chooseFriends()}>{tr("RaceTo10.CHOOSE_CONTEXT")}</button>}
       {chooseFailed && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
       {(matchmaking?.live?.shareChallenge || sharing?.shareLiveRace) && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || choosingFriends || failed || !selected}
-        onClick={() => {if (!choosing.current && selected) onStart({categoryId: selected, locale, createChallenge: true});}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
+        onClick={() => {if (!choosing.current && selected) {trackEvent("live_race_challenge_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale, createChallenge: true});}}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
       <LiveRacePushConsent />
     </div>
   </section>;

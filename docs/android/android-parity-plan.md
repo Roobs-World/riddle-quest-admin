@@ -56,7 +56,7 @@ Scale for context: the hosted browser game is roughly 36,000 lines of host, play
 ## Phase 4 — Release
 
 - [x] 4.1 Keep the self-contained solo screens as an explicitly selected offline fallback. Connection failure offers Play offline; the hosted home also allows choosing it. Offline saves and currency stay separate from the server account, never grant purchasable currency, and never merge into confirmed progress. Cold-relaunch device verification passed on 20 November 2026.
-- [x] 4.2a Prepare Android privacy and Data safety inventory from actual code in `android-privacy-and-data-safety.md`; Android has no analytics SDK.
+- [x] 4.2a Prepare Android privacy and Data safety inventory from actual code in `android-privacy-and-data-safety.md`; updated on 24 November 2026 for optional, consent-controlled native Firebase Analytics.
 - [ ] 4.2b Publish the Android privacy notice and complete the Play Console Data safety declaration after the developer account exists. The draft is not a published policy or submitted form.
 - [ ] 4.3 Full gate: unit, hosted emulator e2e, two-device race, and Play internal testing, including real install-referrer handoff. Local tests do not complete the Store transport, OAuth or payment gates.
 

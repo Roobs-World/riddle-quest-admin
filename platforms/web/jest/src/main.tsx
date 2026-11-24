@@ -1,6 +1,6 @@
 import {StrictMode} from "react";
 import {createRoot} from "react-dom/client";
-import {installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../src/observability/analytics/events";
+import {configureAnalyticsContext, installButtonAnalytics, installGlobalErrorAnalytics, trackScreen} from "../../../../src/observability/analytics/events";
 import {resetDevelopmentFirstRunState} from "../../../../src/app/startup/developmentFirstRun";
 import {FatalErrorBoundary} from "../../../../src/app/components/recovery/FatalErrorBoundary";
 import {initializeBrowserSentryFromEnvironment} from "../../../../src/observability/sentryEnvironment";
@@ -14,6 +14,7 @@ if (import.meta.env.DEV) {
   resetDevelopmentFirstRunState();
 }
 
+configureAnalyticsContext({platform: "jest", screen_class: "RiddleQuestWeb"});
 installButtonAnalytics();
 installGlobalErrorAnalytics();
 trackScreen("startup");

@@ -1,5 +1,6 @@
+import {trackEvent} from "../../observability/analytics/events";
 import {PushConsentContext, usePushConsentState} from "../../notifications/components/PushConsentContext";
-import {createContext, useContext, type ReactNode} from "react";
+import {createContext, useContext, useLayoutEffect, useMemo, type ReactNode} from "react";
 
 /** Result data that a platform may turn into an attributed referral share. */
 export type ReferralResultShareInput = {
@@ -69,9 +70,43 @@ export function ReferralSharingProvider({
   /** Stores children. */
   children: ReactNode;
 }) {
+  /** Pending provider dialogs cannot emit into a replacement account's visit. */
+  const telemetry = useMemo(() => {
+    const lifetime = {active: false};
+    if (!capability) return {lifetime, capability: null};
+    const shareLiveRace = capability.shareLiveRace?.bind(capability);
+    const tracked: ReferralSharingCapability = {
+      ...capability,
+      shareInvite: () => {
+        if (lifetime.active) trackEvent("share_requested", {surface: "profile"});
+        capability.shareInvite();
+      },
+      shareResult: input => {
+        if (lifetime.active) trackEvent("share_requested", {surface: "victory", game_mode: input.gameMode});
+        capability.shareResult(input);
+      },
+      shareRace: async input => {
+        if (lifetime.active) trackEvent("share_requested", {surface: "race"});
+        const status = await capability.shareRace(input);
+        if (lifetime.active) trackEvent("share_result", {surface: "race", status});
+        return status;
+      },
+      ...(shareLiveRace ? {shareLiveRace: async (input: Parameters<NonNullable<ReferralSharingCapability["shareLiveRace"]>>[0]) => {
+        if (lifetime.active) trackEvent("share_requested", {surface: "live_race"});
+        const status = await shareLiveRace(input);
+        if (lifetime.active) trackEvent("share_result", {surface: "live_race", status});
+        return status;
+      }} : {}),
+    };
+    return {lifetime, capability: tracked};
+  }, [capability]);
+  useLayoutEffect(() => {
+    telemetry.lifetime.active = true;
+    return () => {telemetry.lifetime.active = false;};
+  }, [telemetry]);
   /** One acknowledged consent state serves all controls under this target. */
   const consent = usePushConsentState(capability);
-  return <ReferralSharingContext.Provider value={capability ?? null}>
+  return <ReferralSharingContext.Provider value={telemetry.capability}>
     <PushConsentContext.Provider value={consent}>{children}</PushConsentContext.Provider>
   </ReferralSharingContext.Provider>;
 }

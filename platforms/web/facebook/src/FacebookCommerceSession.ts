@@ -4,6 +4,7 @@ import {FacebookCommerceCapability} from "./FacebookCommerceCapability";
 import type {FacebookInstantPayments, FacebookInstantSdk} from "./fbinstant";
 import type {FacebookPurchaseGrant} from "./FacebookPurchaseRecovery";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
+import {trackEvent, trackPurchase} from "../../../../src/observability/analytics/events";
 
 /** Server-confirmed checkout readiness and ad-removal entitlement. */
 type Configuration = {
@@ -124,6 +125,8 @@ export class FacebookCommerceSession {
           description: product.description,
           coins: FACEBOOK_PRODUCTS[product.id].coins,
           displayPrice: product.price,
+          price: product.priceAmount,
+          currency: product.currency,
         }));
         this.publishProducts();
       } catch (error) {
@@ -152,11 +155,27 @@ export class FacebookCommerceSession {
       await this.configuration();
       if (!this.products.some(product => product.productId === productId) ||
         (this.adFree && FACEBOOK_PRODUCTS[productId]?.kind === "durable")) throw new Error("facebook-product-unavailable");
+      const product = this.products.find(candidate => candidate.productId === productId);
+      trackEvent("begin_checkout", {
+        currency: product?.currency,
+        value: product?.price,
+        items: [{item_id: productId, item_category: FACEBOOK_PRODUCTS[productId].kind, quantity: 1}],
+      });
       /** SDK dialog result after the authoritative grant and optional consumption. */
       const purchase = await runFacebookSdkDialog(this.options.sdk, () => this.capability.purchase(productId));
-      if (purchase.status === "cancelled") return {success: false, cancelled: true, productId, purchaseType: FACEBOOK_PRODUCTS[productId].kind};
+      if (purchase.status === "cancelled") {
+        if (this.isActive()) trackEvent("purchase_cancelled", {product_id: productId});
+        return {success: false, cancelled: true, productId, purchaseType: FACEBOOK_PRODUCTS[productId].kind};
+      }
       if (purchase.status !== "success") throw new Error(purchase.message);
       this.requireActive();
+      trackPurchase({
+        productId,
+        transactionId: purchase.value.providerReceiptId,
+        purchaseType: FACEBOOK_PRODUCTS[productId].kind,
+        price: product?.price,
+        currency: product?.currency,
+      });
       this.publishProducts();
       return {
         success: true,
