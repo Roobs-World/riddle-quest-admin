@@ -97,8 +97,9 @@
   font-size: 34px;
   box-shadow: 0 5px 0 rgba(91, 45, 101, 0.2);
 }
-.shop-subscription-card .shop-product-description {
+.game-shop-grid .shop-subscription-card .shop-product-description {
   max-width: 34rem;
+  color: #401f40;
   text-align: center;
 }
 .shop-subscription-benefits {
