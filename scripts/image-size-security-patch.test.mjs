@@ -33,7 +33,8 @@ test("Devvit uses the upstream fixed parser without obsolete advisory exceptions
   assert.ok(major > 2 || (major === 2 && (minor > 0 || patch >= 4)),
     `Devvit must use image-size 2.0.4 or newer; installed ${manifest.version}`);
   assert.doesNotMatch(workspaceConfig, /image-size@2\.0\.2|GHSA-5p2g-fcmc-qvqq|GHSA-w3rx-r6r6-pgpr/u);
-  assert.equal(existsSync(join(repositoryRoot, "patches/image-size@2.0.2.patch")), false);
+  for (const directory of ["config/security-patches", "patches"])
+    assert.equal(existsSync(join(repositoryRoot, directory, "image-size@2.0.2.patch")), false);
 });
 
 test("malformed HEIF, ICNS, and JXL inputs terminate without looping", () => {

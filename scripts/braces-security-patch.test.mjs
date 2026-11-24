@@ -74,9 +74,10 @@ test("ordinary glob compilation, ranges and escaping retain their behavior", () 
 
 test("the audit exception is bound to the installed backport and required gate", () => {
   const config = readFileSync(join(root, "pnpm-workspace.yaml"), "utf8");
-  const patch = readFileSync(join(root, "config/security-patches/braces@3.0.3.patch"), "utf8");
+  const patchPath = /^ {2}braces@3\.0\.3: (\S+)$/mu.exec(config)?.[1];
+  assert.ok(patchPath, "braces must use a declared dependency patch");
+  const patch = readFileSync(join(root, patchPath), "utf8");
   const manifest = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
-  assert.match(config, /braces@3\.0\.3: patches\/braces@3\.0\.3\.patch/u);
   assert.match(config, /GHSA-vfj7-8cjw-p6xm/u);
   assert.match(realpathSync(bracesEntry), /braces@3\.0\.3_patch_hash=/u);
   for (const file of ["parse", "compile", "expand", "stringify", "constants"])
