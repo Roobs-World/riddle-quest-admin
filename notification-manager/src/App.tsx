@@ -4,7 +4,7 @@ import {createManagementApi} from "./api";
 import {Calendar} from "./Calendar";
 import {campaignStatus, CampaignDetails, CampaignList} from "./CampaignList";
 import {Composer} from "./Composer";
-import {type Campaign, type CampaignRequest, type ManagementConfiguration} from "./contracts";
+import {type Campaign, type CampaignRequest, type ManagementOverview} from "./contracts";
 import {localDay, operatorTimeZone} from "./dates";
 import {createManagementConnection, managementError, type ManagementConnection} from "./supabase";
 import {Icon} from "./Icons";
@@ -13,7 +13,7 @@ import {DraftWorkspace} from "./DraftWorkspace";
 type Page = "compose" | "calendar" | "history";
 type Connection = {kind: "configured"; value: ManagementConnection} | {kind: "setup"; message: string};
 type AuthState = {kind: "loading"} | {kind: "signed-out"} | {kind: "signed-in"; user: User};
-type WorkspaceData = {configuration: ManagementConfiguration; campaigns: Campaign[]; activeCursor: string | null; historyCursor: string | null};
+type WorkspaceData = {configuration: ManagementOverview; campaigns: Campaign[]; activeCursor: string | null; historyCursor: string | null};
 
 const pageCopy: Record<Page, {eyebrow: string; title: string; body: string}> = {
   compose: {eyebrow: "NOTIFICATION COMPOSER", title: "Send a push notification.", body: "Write your message, choose an audience, and send it now or schedule a time."},
@@ -77,10 +77,11 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
   const api = useMemo(() => createManagementApi(connection, user.id, onAccessDenied), [connection, user.id, onAccessDenied]);
   const refreshRef = useRef<() => Promise<void>>(async () => {});
   useEffect(() => {
-    let active = true, inFlight = false;
+    let active = true, inFlight = false, pendingRefresh = false;
     const controller = new AbortController();
     const refresh = async () => {
-      if (!active || inFlight) return;
+      if (!active) return;
+      if (inFlight) {pendingRefresh = true; return;}
       inFlight = true; setRefreshing(true);
       const revision = version.current;
       try {
@@ -108,6 +109,10 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
       } finally {
         inFlight = false;
         if (active) {setLoading(false); setRefreshing(false);}
+        if (active && (pendingRefresh || revision !== version.current)) {
+          pendingRefresh = false;
+          void refresh();
+        }
       }
     };
     refreshRef.current = refresh;
@@ -134,7 +139,10 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
       const campaign = await api.create(input, controller.signal);
       if (mounted.current && !controller.signal.aborted) upsert(campaign);
       return campaign;
-    } finally {actionControllers.current.delete(controller);}
+    } finally {
+      actionControllers.current.delete(controller);
+      if (mounted.current && !controller.signal.aborted) void refreshRef.current();
+    }
   };
   const cancel = async (campaign: Campaign) => {
     const controller = new AbortController();
@@ -142,7 +150,10 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
     try {
       const updated = await api.cancel(campaign.id, controller.signal);
       if (mounted.current && !controller.signal.aborted) upsert(updated);
-    } finally {actionControllers.current.delete(controller);}
+    } finally {
+      actionControllers.current.delete(controller);
+      if (mounted.current && !controller.signal.aborted) void refreshRef.current();
+    }
   };
   const upload = async (file: File) => {
     const controller = new AbortController();
@@ -177,7 +188,6 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
   const campaigns = data?.campaigns ?? [];
   const active = campaigns.filter(campaign => campaign.status === "queued" || campaign.status === "sending");
   const today = localDay(new Date());
-  const todayAccepted = campaigns.filter(campaign => localDay(new Date(campaign.sendAt)) === today).reduce((sum, campaign) => sum + campaign.counts.accepted, 0);
   const upcoming = [...active].sort((a, b) => Date.parse(a.sendAt) - Date.parse(b.sendAt));
   const dayCampaigns = campaigns.filter(campaign => localDay(new Date(campaign.sendAt)) === selectedDay).sort((a, b) => Date.parse(a.sendAt) - Date.parse(b.sendAt));
   const history = campaigns.filter(campaign => (filter === "all" || filter === "active" && ["queued", "sending"].includes(campaign.status) || campaign.status === filter) && `${campaign.title} ${campaign.body}`.toLowerCase().includes(search.toLowerCase()));
@@ -188,7 +198,7 @@ function Workspace({connection, user, onAccessDenied}: {connection: ManagementCo
     <div className="workspace"><header className="topbar"><span className="breadcrumb">Workspace <span>/</span> Notifications</span><div className="topbar-right"><span className="service-badge"><span />PUSH ONLY</span><div className="operator"><span className="avatar">{initials}</span><div><strong>{displayName}</strong><small>{user.email}</small></div></div><button type="button" className="icon-button" aria-label="Sign out" onClick={() => {void connection.signOut().catch(failure => setError(managementError(failure)));}}><Icon name="logout" size={18} /></button></div></header>
       <main id="main" className="main-content">
         <div className="page-heading"><div><span className="eyebrow">{pageCopy[page].eyebrow}</span><h1>{pageCopy[page].title}</h1><p>{pageCopy[page].body}</p></div><span className="timezone-label"><Icon name="clock" size={16} />{operatorTimeZone}</span></div>
-        <div className="summary-grid"><article><span className="summary-icon purple"><Icon name="calendar" /></span><div><span>Loaded upcoming</span><strong>{data ? active.length : "—"}<small>queued or sending</small></strong></div></article><article><span className="summary-icon orange"><Icon name="send" /></span><div><span>Accepted today</span><strong>{data ? todayAccepted.toLocaleString() : "—"}<small>in loaded campaigns</small></strong></div></article><article><span className="summary-icon green"><Icon name="bell" /></span><div><span>Registered browser devices</span><strong>{data?.configuration.firebaseAudience.status === "connected" ? data.configuration.firebaseAudience.registeredDevices.toLocaleString() : "—"}<small>{data?.configuration.firebaseAudience.status === "connected" ? `${data.configuration.firebaseAudience.accounts.toLocaleString()} Firebase accounts` : data?.configuration.firebaseAudience.status === "unavailable" ? "Firebase connection unavailable" : "Firebase push not connected"}</small></strong></div></article></div>
+        <div className="summary-grid"><article><span className="summary-icon purple"><Icon name="calendar" /></span><div><span>Upcoming notifications</span><strong>{data ? data.configuration.campaignSummary.upcoming.toLocaleString() : "—"}<small>queued or sending</small></strong></div></article><article><span className="summary-icon orange"><Icon name="send" /></span><div><span>Accepted today</span><strong>{data ? data.configuration.campaignSummary.acceptedToday.toLocaleString() : "—"}<small>push-service acceptances</small></strong></div></article><article><span className="summary-icon green"><Icon name="bell" /></span><div><span>Registered browser devices</span><strong>{data?.configuration.firebaseAudience.status === "connected" ? data.configuration.firebaseAudience.registeredDevices.toLocaleString() : "—"}<small>{data?.configuration.firebaseAudience.status === "connected" ? `${data.configuration.firebaseAudience.accounts.toLocaleString()} Firebase accounts` : data?.configuration.firebaseAudience.status === "unavailable" ? "Firebase connection unavailable" : "Firebase push not connected"}</small></strong></div></article></div>
         {data?.activeCursor && <div className="pagination-note" role="status"><span>More scheduled notifications are available. Load them to include every date in the calendar.</span><button type="button" className="button-secondary compact-button" disabled={Boolean(loadingMore) || refreshing} onClick={() => {void loadMore("active");}}>{loadingMore === "active" ? "Loading…" : "Load more scheduled"}</button></div>}
         {error && <div className="workspace-error" role="alert"><span>{error}</span><button type="button" disabled={refreshing} onClick={() => {void refreshRef.current();}}>Try again</button></div>}
         {loading && !data ? <div className="panel loading-state" role="status"><span className="spinner" /> Loading your notification workspace…</div> : !data ? <div className="panel empty-state"><Icon name="shield" size={30} /><h2>We couldn't open this workspace.</h2><p>Check your access and the service configuration, then try again.</p><button className="button-secondary" type="button" onClick={() => {void refreshRef.current();}}>Retry connection</button></div> : <>

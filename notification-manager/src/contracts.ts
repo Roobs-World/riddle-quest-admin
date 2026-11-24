@@ -31,6 +31,15 @@ export const ManagementConfiguration = z.object({
 }).strict();
 export type ManagementConfiguration = z.infer<typeof ManagementConfiguration>;
 
+export const CampaignSummary = z.object({
+  upcoming: Count,
+  acceptedToday: Count,
+  dayStart: z.iso.datetime({offset: true}),
+  dayEnd: z.iso.datetime({offset: true}),
+}).strict();
+export const ManagementOverview = ManagementConfiguration.extend({campaignSummary: CampaignSummary});
+export type ManagementOverview = z.infer<typeof ManagementOverview>;
+
 export const CampaignEnvelope = z.object({campaign: Campaign}).strict();
 export const CampaignList = z.object({campaigns: z.array(Campaign).max(100), nextCursor: z.string().max(2048).nullable()}).strict();
 

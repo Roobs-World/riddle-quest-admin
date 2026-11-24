@@ -1,4 +1,5 @@
-import {CampaignEnvelope, CampaignList, ManagementConfiguration, type CampaignRequest} from "./contracts";
+import {CampaignEnvelope, CampaignList, ManagementOverview, type CampaignRequest} from "./contracts";
+import {localDayBounds} from "./dates";
 import type {ManagementConnection} from "./supabase";
 import {z} from "zod";
 
@@ -11,6 +12,7 @@ const errorMessages: Record<string, string> = {
   "campaign-platform-not-admitted": "This platform is no longer available. Refresh the audience list.",
   "campaign-not-found": "This notification is no longer available. Refresh the list.",
   "notification-service-unavailable": "The push service is unavailable. Your draft is safe; please try again.",
+  "notification-summary-unavailable": "Notification totals could not be loaded. Please try refreshing the workspace.",
   "operator-authentication-unavailable": "The server could not verify your sign-in. Please try again shortly. Signing out is not required.",
   "operator-membership-unavailable": "The server could not check workspace access. Please try again shortly.",
 };
@@ -97,7 +99,10 @@ export function createManagementApi(connection: ManagementConnection, expectedUi
     }
   };
   return {
-    async configuration(signal: AbortSignal) {return parseResponse(ManagementConfiguration, await request("/api/management/config", signal));},
+    async configuration(signal: AbortSignal) {
+      const query = new URLSearchParams(localDayBounds());
+      return parseResponse(ManagementOverview, await request(`/api/management/config?${query}`, signal));
+    },
     async campaigns(view: "active" | "history", signal: AbortSignal, cursor?: string) {
       const query = new URLSearchParams({view, limit: "100", ...(cursor ? {cursor} : {})});
       return parseResponse(CampaignList, await request(`/api/management/campaigns?${query}`, signal));

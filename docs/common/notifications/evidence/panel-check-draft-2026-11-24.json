@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "draft": {
+    "title": "Draft notification panel check",
+    "body": "Draft check for the notification composer and previews. Save this draft to check the library; it has not been sent or scheduled.",
+    "imageUrl": "",
+    "target": "all",
+    "mode": "now",
+    "day": "2026-11-25",
+    "time": "12:00"
+  }
+}

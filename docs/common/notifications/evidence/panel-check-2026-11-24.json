@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-24",
+  "draft": {
+    "file": "panel-check-draft-2026-11-24.json",
+    "state": "ready to import and save in the operator browser",
+    "countsTowardUpcoming": false
+  },
+  "scheduled": {
+    "id": "5c7932aaaf4553ba7a0fe869705dcbc70cb3ad10fe476d5395ed36e986c09e36",
+    "requestId": "panel-check-20261124-scheduled-01",
+    "title": "Scheduled notification panel check",
+    "body": "Scheduled Riddle Quest notification check. No action is needed.",
+    "target": "all",
+    "sendAt": "2026-11-25T12:00:00.000Z",
+    "timeZone": "Europe/London",
+    "status": "queued",
+    "createdThrough": "existing notification_create_campaign RPC with the sole approved operator",
+    "attempted": 0,
+    "accepted": 0,
+    "failed": 0,
+    "uncertain": 0,
+    "skipped": 0
+  },
+  "databaseVerification": {
+    "upcoming": 1,
+    "acceptedToday": 0,
+    "activeInstallations": 0,
+    "dayStart": "2026-11-24T00:00:00.000Z",
+    "dayEnd": "2026-11-25T00:00:00.000Z"
+  },
+  "build": {
+    "command": "pnpm build:notification-manager",
+    "result": "passed"
+  },
+  "browserVerification": "Blocked at operator Google sign-in. No authenticated panel verification claimed.",
+  "dashboardFixDeployment": "pending explicit user authorization"
+}

@@ -6,7 +6,7 @@ Operators write a title and message, upload an image or supply a public HTTPS im
 
 Calendar times use the operator's displayed browser timezone. The frontend converts them to an absolute UTC instant and rejects nonexistent daylight-saving times or past times. The server independently rejects a new schedule in the past. There is no arbitrary one-year limit.
 
-Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. Counts cover loaded rows.
+Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. The summary cards count all queued or sending campaigns and all accepted delivery receipts completed during the operator's local day, independently of loaded pages. Local day boundaries preserve daylight-saving changes. Totals refresh after creating or cancelling a campaign and during polling. Saved drafts remain in the browser and do not change delivery totals. Registered browser devices come from Firebase enrollment, separately from Firebase account totals.
 
 ## Local commands
 
@@ -23,6 +23,8 @@ Vite serves the frontend on port 5180. For local API routes, use Vercel's develo
 The development login screen offers a local drafts workspace while external services are unconfigured. It makes no management API calls, and its send/upload controls stay disabled. Calendar dates describe draft plans, not scheduled delivery. This entry point is excluded from production builds. Production requires sign-in and a successful server operator check before opening the workspace; a later 401 or 403 closes it again.
 
 The composer saves working drafts in this browser, including the request ID needed to recover an unchanged pending send. Operators can keep up to 25 saved drafts, reload or delete them, and import/export versioned JSON files. Signed-in drafts use a user-specific storage namespace. Draft files contain only form values, with no credentials or delivery authority. Browser storage failures leave the editor intact and show an export reminder. Android, iOS and desktop previews illustrate layout differences without promising an exact device appearance.
+
+The [panel check record](evidence/panel-check-2026-11-24.json) records the draft and scheduled notification prepared on November 24, 2026. Use **Import draft** to open the [draft file](evidence/panel-check-draft-2026-11-24.json), then **Save draft** to add it to the signed-in browser's library. The scheduled check is queued for November 25 at 12:00 Europe/London for all registered platforms. Database verification found one upcoming campaign, zero acceptances today and zero active installations. Authenticated panel verification still requires operator sign-in, and the summary correction requires an authorized deployment.
 
 ## Supabase setup
 

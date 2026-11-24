@@ -2,6 +2,14 @@ export const operatorTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
 export const localDay = (date: Date): string => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
 export const localTime = (date: Date): string => `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
 
+export function localDayBounds(date = new Date()): {dayStart: string; dayEnd: string} {
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(start);
+  end.setDate(end.getDate() + 1);
+  return {dayStart: start.toISOString(), dayEnd: end.toISOString()};
+}
+
 /** The browser must preserve every local calendar component, including across DST transitions. */
 export function scheduledInstant(day: string, time: string): string | null {
   const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/u.exec(`${day}T${time}`);
