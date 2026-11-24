@@ -19,6 +19,9 @@ export class FacebookUploadError extends Error {
 
 /** Selects the upload namespace without accepting an app-secret credential or changing the token. */
 export function validateFacebookAssetUploadToken(token) {
+  if (typeof token === "string" && token.includes("|")) {
+    throw new FacebookUploadError("An app access token cannot be used by this upload flow. Supply a Gaming-domain user token or Facebook-domain user/System User token.", "validation");
+  }
   if (typeof token !== "string" || token.length < 16 || token.length > 16_384 ||
       !/^(?:GG|EAA)[A-Za-z0-9._~+/-]+=*$/u.test(token)) {
     throw new FacebookUploadError("A valid Facebook asset-upload user token is required.", "validation");

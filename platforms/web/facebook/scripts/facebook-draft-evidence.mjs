@@ -2,6 +2,7 @@ import {spawnSync} from "node:child_process";
 import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
+import {parseEnv} from "node:util";
 import {
   createFacebookPromotionRecord,
   createFacebookHandoffArchive,
@@ -46,7 +47,9 @@ const parseOptions = (values) => {
 };
 
 const runGit = (args) => {
-  const result = spawnSync("/usr/bin/git", args, {cwd: repositoryDirectory, encoding: "utf8"});
+  const environment = {...process.env};
+  delete environment.FACEBOOK_APP_ACCESS_TOKEN;
+  const result = spawnSync("/usr/bin/git", args, {cwd: repositoryDirectory, encoding: "utf8", env: environment});
   if (result.status !== 0) fail(`git ${args.join(" ")} failed.`);
   return result.stdout.trim();
 };
@@ -64,17 +67,27 @@ const hashEvidenceFile = async (filePath) => {
   return facebookArtifactSha256(await readFile(filePath));
 };
 
-/** Reads a separately granted upload credential without placing it in arguments or receipts. */
+/** Reads one upload credential without exporting the environment file to child processes. */
 const readAssetUploadToken = async () => {
-  if (process.stdin.isTTY) fail("Pipe the Meta Asset Upload Access Token to stdin.");
-  const chunks = [];
-  let bytes = 0;
-  for await (const chunk of process.stdin) {
-    bytes += chunk.length;
-    if (bytes > 16386) fail("The Meta upload token is too long.");
-    chunks.push(Buffer.from(chunk));
+  let token = process.env.FACEBOOK_APP_ACCESS_TOKEN?.trim();
+  if (!token) {
+    try {
+      token = parseEnv(await readFile(path.join(repositoryDirectory, ".env"), "utf8")).FACEBOOK_APP_ACCESS_TOKEN?.trim();
+    } catch (error) {
+      if (error?.code !== "ENOENT") fail("Unable to read the Facebook upload credential from the root .env file.");
+    }
   }
-  const token = Buffer.concat(chunks).toString("utf8").trim();
+  if (!token && !process.stdin.isTTY) {
+    const chunks = [];
+    let bytes = 0;
+    for await (const chunk of process.stdin) {
+      bytes += chunk.length;
+      if (bytes > 16386) fail("The Meta upload token is too long.");
+      chunks.push(Buffer.from(chunk));
+    }
+    token = Buffer.concat(chunks).toString("utf8").trim();
+  }
+  if (!token) fail("Set FACEBOOK_APP_ACCESS_TOKEN in the root .env or pipe an upload-user token to stdin.");
   validateFacebookAssetUploadToken(token);
   return token;
 };

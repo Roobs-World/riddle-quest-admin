@@ -1,8 +1,8 @@
 import {readdirSync, readFileSync, statSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
-const META_SECRET_PATTERN = /\b(?:FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET|META_APP_SECRET)\b/u;
-const CI_SECRET_VALUE_PATTERN = /\$\{\{\s*secrets\.(?:FACEBOOK_APP_SECRET|FACEBOOK_UID_SECRET)\s*\}\}/u;
+const META_SECRET_PATTERN = /\b(?:VITE_)?(?:FACEBOOK_APP_SECRET|FACEBOOK_APP_ACCESS_TOKEN|FACEBOOK_UID_SECRET|META_APP_SECRET)\b/u;
+const CI_SECRET_VALUE_PATTERN = /\$\{\{\s*secrets\.(?:FACEBOOK_APP_SECRET|FACEBOOK_APP_ACCESS_TOKEN|FACEBOOK_UID_SECRET)\s*\}\}/u;
 
 const collectFiles = (directory, predicate, output = []) => {
   for (const name of readdirSync(directory)) {

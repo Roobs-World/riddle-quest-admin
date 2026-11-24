@@ -208,12 +208,24 @@ Meta documents a separate [Graph API bundle upload flow](https://developers.face
 
 After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `.facebook-upload-receipts/gated-artifact.json`:
 
+The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. Despite the variable name, its value must be a complete supported upload-user or System User token. The upload API documents opaque `GG` and `EAA` credentials; app-token credentials with pipe separators are a different authentication mechanism. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
+
+With the token saved in the root `.env`:
+
+```sh
+pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256
+```
+
+When the setting is absent from both the process environment and root `.env`, supply a token privately through stdin:
+
 ```sh
 read -r -s -p "Meta asset upload token: " facebook_asset_upload_token
 printf '\n'
 printf '%s' "$facebook_asset_upload_token" | pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256
 unset facebook_asset_upload_token
 ```
+
+The process environment takes precedence over the root `.env`; stdin is a fallback when neither setting exists. A saved token therefore does not require waiting for stdin to close. A local format check does not establish the token's permissions; Meta must accept the credential for the relevant operation.
 
 This command verifies the clean source and archive, creates the immutable handoff and retry barrier, then transmits those exact bytes. It uses Graph API v24.0 for the upload session and selects `gg_graph_api` for `GG` tokens or `fb_game_bundle` for `EAA` tokens. Requests have bounded timeouts and no automatic retries. It records only response hashes, HTTP status and validated bundle metadata in the private `remote-upload-SHA.json` receipt.
 
