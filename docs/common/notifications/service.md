@@ -20,6 +20,10 @@ pnpm build:notification-manager
 
 Vite serves the frontend on port 5180. For local API routes, use Vercel's development runtime with `notification-manager/` as the project root. Vite alone serves only the frontend. Builds emit `notification-manager/dist/` and reject browser imports of server modules, Web Push server code, Firebase or private credentials.
 
+The development login screen offers a local drafts workspace while external services are unconfigured. It makes no management API calls, and its send/upload controls stay disabled. Calendar dates describe draft plans, not scheduled delivery. This entry point is excluded from production builds. Production requires sign-in and a successful server operator check before opening the workspace; a later 401 or 403 closes it again.
+
+The composer saves working drafts in this browser, including the request ID needed to recover an unchanged pending send. Operators can keep up to 25 saved drafts, reload or delete them, and import/export versioned JSON files. Signed-in drafts use a user-specific storage namespace. Draft files contain only form values, with no credentials or delivery authority. Browser storage failures leave the editor intact and show an export reminder. Android, iOS and desktop previews illustrate layout differences without promising an exact device appearance.
+
 ## Supabase setup
 
 1. Create or select the notification service's Supabase project. The game's existing account database stays separate.

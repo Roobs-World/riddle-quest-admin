@@ -20,6 +20,9 @@ function browserBoundary(): Plugin {
         .filter((value): value is string => Boolean(value && value.length >= 16));
       for (const item of Object.values(bundle)) {
         if (item.type !== "chunk") continue;
+        if (Object.entries(item.modules).some(([id, module]) => id.replaceAll("\\", "/").endsWith("/src/DraftWorkspace.tsx") && module.renderedLength > 0)) {
+          this.error("The development drafts workspace cannot ship in a production build.");
+        }
         if (/\b(?:SUPABASE_SECRET_KEY|HOSTED_PUSH_VAPID_PRIVATE_KEY|CRON_SECRET|NOTIFICATION_MANAGER_BRIDGE_SECRET)\b/u.test(item.code) ||
             secrets.some(secret => item.code.includes(secret))) {
           this.error("A server credential entered the notification manager browser bundle.");

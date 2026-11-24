@@ -13,7 +13,13 @@ const errorMessages: Record<string, string> = {
   "notification-service-unavailable": "The push service is unavailable. Your draft is safe; please try again.",
 };
 
+class WorkspaceAccessError extends Error {}
+
 async function readResponse(response: Response): Promise<unknown> {
+  if (response.status === 401 || response.status === 403) {
+    void response.body?.cancel().catch(() => undefined);
+    throw new WorkspaceAccessError(response.status === 401 ? "Your sign-in has expired. Sign in again." : "Your account does not have permission to manage notifications.");
+  }
   if (!response.headers.get("Content-Type")?.toLowerCase().startsWith("application/json")) {
     throw new Error("The management API is unavailable. Check the service deployment and try again.");
   }
@@ -56,7 +62,7 @@ function parseResponse<T extends z.ZodType>(schema: T, value: unknown): z.output
 }
 
 /** Credentials never leave this same-origin management boundary. */
-export function createManagementApi(connection: ManagementConnection, expectedUid: string) {
+export function createManagementApi(connection: ManagementConnection, expectedUid: string, onAccessDenied?: (message: string) => void) {
   const request = async (path: string, signal: AbortSignal, method = "GET", input?: CampaignRequest) => {
     const url = new URL(path, window.location.origin);
     if (url.origin !== window.location.origin || !/^\/api\/management\/(?:config|campaigns(?:\/[a-f0-9]{64})?)$/u.test(url.pathname))
@@ -76,6 +82,7 @@ export function createManagementApi(connection: ManagementConnection, expectedUi
       if (!connection.isCurrentUser(expectedUid) || signal.aborted) throw new Error("The signed-in account changed. Please try again.");
       return await readResponse(response);
     } catch (error) {
+      if (error instanceof WorkspaceAccessError && !signal.aborted) onAccessDenied?.(error.message);
       if (controller.signal.aborted && !signal.aborted) throw new Error("The request took too long. Check the queue before retrying; your request ID is preserved.");
       throw error;
     } finally {

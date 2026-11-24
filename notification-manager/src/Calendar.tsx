@@ -12,10 +12,11 @@ function monthStart(day: string): Date {
 }
 
 /** A keyboard-operable month grid, shared by the composer and schedule view. */
-export function Calendar({selectedDay, onSelect, campaigns = [], disallowPast = false, compact = false, disabled = false}: {
+export function Calendar({selectedDay, onSelect, campaigns = [], draftDays = [], disallowPast = false, compact = false, disabled = false}: {
   selectedDay: string;
   onSelect(day: string): void;
   campaigns?: readonly Campaign[];
+  draftDays?: readonly string[];
   disallowPast?: boolean;
   compact?: boolean;
   disabled?: boolean;
@@ -31,8 +32,9 @@ export function Calendar({selectedDay, onSelect, campaigns = [], disallowPast = 
       const day = localDay(new Date(campaign.sendAt));
       map.set(day, (map.get(day) ?? 0) + 1);
     });
+    draftDays.forEach(day => {map.set(day, (map.get(day) ?? 0) + 1);});
     return map;
-  }, [campaigns]);
+  }, [campaigns, draftDays]);
   const days = useMemo(() => {
     const start = new Date(month);
     start.setDate(1 - (month.getDay() + 6) % 7);
@@ -76,6 +78,9 @@ export function Calendar({selectedDay, onSelect, campaigns = [], disallowPast = 
     <div className="calendar-toolbar">
       <h3 id={headingId}>{monthLabel}</h3>
       <div className="calendar-navigation">
+        <input type="month" aria-label="Calendar month" value={`${month.getFullYear()}-${String(month.getMonth() + 1).padStart(2, "0")}`}
+          min={disallowPast ? today.slice(0, 7) : undefined} disabled={disabled}
+          onChange={event => {if (/^\d{4}-\d{2}$/u.test(event.target.value)) {const next = monthStart(`${event.target.value}-01`); if (!disallowPast || next >= monthStart(today)) setMonth(next);}}} />
         <button type="button" className="icon-button" aria-label="Previous month" disabled={disabled || disallowPast && month <= monthStart(today)} onClick={() => moveMonth(-1)}><Icon name="left" size={17} /></button>
         <button type="button" className="today-button" disabled={disabled} onClick={() => select(today)}>Today</button>
         <button type="button" className="icon-button" aria-label="Next month" disabled={disabled} onClick={() => moveMonth(1)}><Icon name="right" size={17} /></button>

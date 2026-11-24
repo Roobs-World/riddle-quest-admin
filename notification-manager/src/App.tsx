@@ -8,6 +8,7 @@ import {type Campaign, type CampaignRequest, type ManagementConfiguration} from 
 import {localDay, operatorTimeZone} from "./dates";
 import {createManagementConnection, managementError, type ManagementConnection} from "./supabase";
 import {Icon} from "./Icons";
+import {DraftWorkspace} from "./DraftWorkspace";
 
 type Page = "compose" | "calendar" | "history";
 type Connection = {kind: "configured"; value: ManagementConnection} | {kind: "setup"; message: string};
@@ -31,7 +32,7 @@ function Brand() {
   return <a className="brand" href="#main"><span className="app-mark"><Icon name="bell" size={24} /></span><span>riddle quest<small>NOTIFICATION STUDIO</small></span></a>;
 }
 
-function Login({connection}: {connection: Connection}) {
+function Login({connection, onDrafts}: {connection: Connection; onDrafts(): void}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const signIn = async () => {
@@ -45,8 +46,9 @@ function Login({connection}: {connection: Connection}) {
     <aside className="sidebar"><Brand /><span className="sidebar-section">WORKSPACE</span><Navigation page="compose" onChange={() => {}} disabled /><div className="sidebar-footer"><Icon name="shield" size={18} /><span>Private team workspace<small>Push delivery only</small></span></div></aside>
     <div className="workspace"><header className="topbar"><span className="breadcrumb">Workspace <span>/</span> Notifications</span><span className="service-badge"><span />PUSH ONLY</span></header><main id="main" className="main-content login-content">
       <div className="login-intro"><span className="eyebrow">HELLO, GOOD TIMING.</span><h1>Small messages.<br />More moments of play.</h1><p>A dedicated place to send your next notification, plan ahead, and follow every push.</p><div className="login-features"><span><Icon name="send" />Send in the moment</span><span><Icon name="calendar" />Plan it on the calendar</span><span><Icon name="history" />Keep a clear record</span></div></div>
-      <section className="panel login-panel"><span className="app-mark"><Icon name="shield" size={25} /></span><h2>{connection.kind === "configured" ? "Your workspace is ready." : "Connect your workspace."}</h2><p>{connection.kind === "configured" ? "Sign in with an approved team account to manage Riddle Quest notifications." : "Connect this website to Supabase and enable Google sign-in to open the notification workspace."}</p>
-        {connection.kind === "configured" ? <button type="button" className="button-primary google-sign-in" disabled={busy} onClick={() => {void signIn();}}><span className="google-letter" aria-hidden="true">G</span>{busy ? "Opening sign-in…" : "Continue with Google"}</button> : <div className="setup-note"><strong>Configuration needed</strong><p>{connection.message}</p></div>}
+      <section className="panel login-panel"><span className="app-mark"><Icon name="shield" size={25} /></span><h2>Sign in to Notification Studio.</h2><p>{connection.kind === "configured" ? "Sign in with an approved team account to manage Riddle Quest notifications." : "Sign-in is not available yet. Please contact the workspace administrator."}</p>
+        {connection.kind === "configured" ? <button type="button" className="button-primary google-sign-in" disabled={busy} onClick={() => {void signIn();}}><span className="google-letter" aria-hidden="true">G</span>{busy ? "Opening sign-in…" : "Continue with Google"}</button> : <div className="setup-note"><strong>Sign-in unavailable</strong><p>The administrator needs to finish connecting the sign-in service.</p>{import.meta.env.DEV && <details><summary>Development configuration</summary><p>{connection.message}</p></details>}</div>}
+        {import.meta.env.DEV && <button type="button" className="button-secondary" onClick={onDrafts}>Open local drafts workspace</button>}
         {error && <p className="inline-message error-message" role="alert">{error}</p>}
         <div className="login-security"><Icon name="shield" size={16} /><span>Only approved administrators can send messages.</span></div>
       </section>
@@ -54,7 +56,7 @@ function Login({connection}: {connection: Connection}) {
   </div>;
 }
 
-function Workspace({connection, user}: {connection: ManagementConnection; user: User}) {
+function Workspace({connection, user, onAccessDenied}: {connection: ManagementConnection; user: User; onAccessDenied(message: string): void}) {
   const [page, setPage] = useState<Page>("compose");
   const [data, setData] = useState<WorkspaceData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -72,7 +74,7 @@ function Workspace({connection, user}: {connection: ManagementConnection; user: 
   const mounted = useRef(true);
   const selectedId = useRef<string | null>(null);
   selectedId.current = selected?.id ?? null;
-  const api = useMemo(() => createManagementApi(connection, user.id), [connection, user.id]);
+  const api = useMemo(() => createManagementApi(connection, user.id, onAccessDenied), [connection, user.id, onAccessDenied]);
   const refreshRef = useRef<() => Promise<void>>(async () => {});
   useEffect(() => {
     let active = true, inFlight = false;
@@ -190,7 +192,7 @@ function Workspace({connection, user}: {connection: ManagementConnection; user: 
         {data?.activeCursor && <div className="pagination-note" role="status"><span>More scheduled notifications are available. Load them to include every date in the calendar.</span><button type="button" className="button-secondary compact-button" disabled={Boolean(loadingMore) || refreshing} onClick={() => {void loadMore("active");}}>{loadingMore === "active" ? "Loading…" : "Load more scheduled"}</button></div>}
         {error && <div className="workspace-error" role="alert"><span>{error}</span><button type="button" disabled={refreshing} onClick={() => {void refreshRef.current();}}>Try again</button></div>}
         {loading && !data ? <div className="panel loading-state" role="status"><span className="spinner" /> Loading your notification workspace…</div> : !data ? <div className="panel empty-state"><Icon name="shield" size={30} /><h2>We couldn't open this workspace.</h2><p>Check your access and the service configuration, then try again.</p><button className="button-secondary" type="button" onClick={() => {void refreshRef.current();}}>Retry connection</button></div> : <>
-          <section hidden={page !== "compose"} aria-label="Compose notification"><Composer configuration={data.configuration} campaigns={campaigns} scheduleRequest={scheduleRequest} onCreate={create} onUpload={upload} /><section className="panel upcoming-panel"><div className="section-heading"><div><h2>Up next</h2><p>Your next scheduled moments.</p></div><button type="button" className="text-button" onClick={() => setPage("calendar")}>View calendar <Icon name="right" size={16} /></button></div><CampaignList campaigns={upcoming.slice(0, 4)} onSelect={setSelected} /></section></section>
+          <section hidden={page !== "compose"} aria-label="Compose notification"><Composer draftOwner={user.id} configuration={data.configuration} campaigns={campaigns} scheduleRequest={scheduleRequest} onCreate={create} onUpload={upload} /><section className="panel upcoming-panel"><div className="section-heading"><div><h2>Up next</h2><p>Your next scheduled moments.</p></div><button type="button" className="text-button" onClick={() => setPage("calendar")}>View calendar <Icon name="right" size={16} /></button></div><CampaignList campaigns={upcoming.slice(0, 4)} onSelect={setSelected} /></section></section>
           <section hidden={page !== "calendar"} aria-label="Notification calendar" className="calendar-layout"><div className="panel calendar-panel"><Calendar selectedDay={selectedDay} onSelect={setSelectedDay} campaigns={campaigns} /><div className="calendar-legend"><span><i /> Scheduled notification</span><span>All times in {operatorTimeZone}</span></div></div><aside className="panel day-panel"><div className="section-heading"><div><span className="eyebrow">SELECTED DAY</span><h2>{new Intl.DateTimeFormat(undefined, {month: "long", day: "numeric"}).format(new Date(`${selectedDay}T12:00:00`))}</h2><p>{dayCampaigns.length} notification{dayCampaigns.length === 1 ? "" : "s"}</p></div></div>{dayCampaigns.length ? <ul className="day-campaigns">{dayCampaigns.map(campaign => <li key={campaign.id}><time dateTime={campaign.sendAt}>{new Intl.DateTimeFormat(undefined, {hour: "numeric", minute: "2-digit"}).format(new Date(campaign.sendAt))}</time><button type="button" onClick={() => setSelected(campaign)}><strong>{campaign.title}</strong><span className={`status status-${campaign.status}`}>{campaignStatus(campaign)}</span></button></li>)}</ul> : <div className="day-empty"><Icon name="calendar" size={32} /><strong>A little room for something good.</strong><p>No notifications are planned for this day.</p></div>}<button className="button-primary" type="button" disabled={selectedDay < today} onClick={scheduleDay}><Icon name="plus" size={18} /> Schedule on this day</button></aside></section>
           <section hidden={page !== "history"} aria-label="Notification history" className="panel history-panel"><div className="section-heading"><div><h2>Notification history</h2><p>Loaded campaigns and their push-service outcomes.</p></div><button className="button-secondary compact-button" type="button" disabled={refreshing} onClick={() => {void refreshRef.current();}}><Icon name="refresh" size={16} />{refreshing ? "Refreshing…" : "Refresh"}</button></div><div className="history-filters"><label className="search-field"><Icon name="search" size={17} /><span className="visually-hidden">Search notifications</span><input placeholder="Find a notification…" value={search} onChange={event => setSearch(event.target.value)} /></label><label><span className="visually-hidden">Filter notification status</span><select value={filter} onChange={event => setFilter(event.target.value)}><option value="all">All statuses</option><option value="active">Queued and sending</option><option value="complete">Complete</option><option value="cancelled">Cancelled</option></select></label></div><CampaignList campaigns={history} onSelect={setSelected} emptyTitle={search || filter !== "all" ? "No matching notifications." : undefined} emptyBody={search || filter !== "all" ? "Try another search or status filter." : undefined} />{data.historyCursor && <div className="load-more-row"><button type="button" className="button-secondary compact-button" disabled={Boolean(loadingMore) || refreshing} onClick={() => {void loadMore("history");}}>{loadingMore === "history" ? "Loading history…" : "Load older history"}</button></div>}<div className="table-note"><Icon name="shield" size={15} /> Accepted counts confirm a push-service response, not delivery to a device.</div></section>
         </>}
@@ -200,7 +202,28 @@ function Workspace({connection, user}: {connection: ManagementConnection; user: 
   </div>;
 }
 
+function OperatorWorkspace({connection, user}: {connection: ManagementConnection; user: User}) {
+  const [access, setAccess] = useState<{kind: "checking"} | {kind: "allowed"} | {kind: "denied"; message: string}>({kind: "checking"});
+  const [attempt, setAttempt] = useState(0);
+  const onAccessDenied = useCallback((message: string) => setAccess({kind: "denied", message}), []);
+  useEffect(() => {
+    const controller = new AbortController();
+    setAccess({kind: "checking"});
+    void createManagementApi(connection, user.id).configuration(controller.signal).then(() => {
+      if (!controller.signal.aborted && connection.isCurrentUser(user.id)) setAccess({kind: "allowed"});
+    }).catch(failure => {
+      if (!controller.signal.aborted) setAccess({kind: "denied", message: managementError(failure)});
+    });
+    return () => controller.abort();
+  }, [connection, user.id, attempt]);
+  if (access.kind === "allowed") return <Workspace connection={connection} user={user} onAccessDenied={onAccessDenied} />;
+  return <main className="boot-state"><span className="app-mark"><Icon name="shield" /></span>
+    {access.kind === "checking" ? <><span className="spinner" /><p>Checking workspace access…</p></> : <><h1>Workspace access required</h1><p role="alert">{access.message}</p><p>Only approved team accounts can open the notification workspace.</p><button className="button-secondary" onClick={() => setAttempt(value => value + 1)}>Try again</button><button className="text-button" onClick={() => {void connection.signOut().catch(failure => setAccess({kind: "denied", message: managementError(failure)}));}}>Sign out</button></>}
+  </main>;
+}
+
 export function App() {
+  const [localDrafts, setLocalDrafts] = useState(false);
   const [connection] = useState<Connection>(() => {
     try {return {kind: "configured", value: createManagementConnection()};}
     catch (failure) {return {kind: "setup", message: failure instanceof Error ? failure.message : "The notification workspace is not configured."};}
@@ -218,7 +241,8 @@ export function App() {
     }).catch(() => {if (active && !observed) setAuth({kind: "signed-out"});});
     return () => {active = false; data.subscription.unsubscribe();};
   }, [connection]);
-  if (connection.kind === "configured" && auth.kind === "signed-in") return <Workspace key={auth.user.id} connection={connection.value} user={auth.user} />;
+  if (connection.kind === "configured" && auth.kind === "signed-in") return <OperatorWorkspace key={auth.user.id} connection={connection.value} user={auth.user} />;
   if (connection.kind === "configured" && auth.kind === "loading") return <main className="boot-state"><span className="app-mark"><Icon name="bell" size={26} /></span><span className="spinner" /><p>Opening Notification Studio…</p></main>;
-  return <Login connection={connection} />;
+  if (import.meta.env.DEV && localDrafts) return <DraftWorkspace onBack={() => setLocalDrafts(false)} />;
+  return <Login connection={connection} onDrafts={() => setLocalDrafts(true)} />;
 }
