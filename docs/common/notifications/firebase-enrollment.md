@@ -6,6 +6,8 @@ Firebase project `riddle-quest-ec2b2` owns player identity, browser subscription
 
 An eligible account sees the existing translated notification action during the welcome shown once per account/browser session, including returning players who completed onboarding earlier. The same action remains in Settings. The action appears when the saved preference is On and this device needs permission; Off, blocked, unsupported and already connected states do not show another welcome signup action. Default On preserves the global preference but does not grant browser permission. Guests and platforms without an eligible notification provider do not see the enrollment action.
 
+Jest guests see the Settings notification control disabled and displayed as Off, without a browser compatibility error or permission action. The existing platform registration state enables the control after registration through Profile.
+
 If opening or completing signup fails, the welcome action remains visible with the translated failure message and a retry button. A failed signup does not imply that a browser subscription or manager registration exists.
 
 The game opens a window synchronously from that action and calls `createNotificationEnrollment`. Firebase validates the current account, deletion boundary, provider claims and global preference, then issues a random one-time code. The code expires after ten minutes and is stored only as a hash in Firebase. It travels in the enrollment URL fragment, which is removed from the visible URL after loading.

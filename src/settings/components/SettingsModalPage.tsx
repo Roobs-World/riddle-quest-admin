@@ -20,6 +20,8 @@ export type SettingsModalPageProps = {
   locale: string;
   /** Stores muted. */
   muted: boolean;
+  /** Keeps account-linked notifications disabled for platform guests. */
+  platformRegistered?: boolean;
   /** Stores on open modal. */
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
@@ -32,6 +34,7 @@ export type SettingsModalPageProps = {
 export function SettingsModalPage({
   locale,
   muted,
+  platformRegistered,
   onOpenModal,
   onToggleMute,
   commerceAvailable = true,
@@ -61,7 +64,7 @@ export function SettingsModalPage({
         <span>{youtubeText(accessibilityLocale, "reducedMotion")}</span>
         <strong>{reducedMotion ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
-      <NotificationSettings />
+      <NotificationSettings disabled={platformRegistered === false} />
       <AnalyticsConsentControls />
       {!isJestWebTarget && <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>

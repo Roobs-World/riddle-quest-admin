@@ -117,6 +117,7 @@ export function GameModalPages({
         <SettingsModalPage
           locale={state.locale}
           muted={state.muted}
+          platformRegistered={state.user?.platformRegistered}
           onOpenModal={onOpenModal}
           onToggleMute={onToggleMute}
           commerceAvailable={commerceAvailable}
