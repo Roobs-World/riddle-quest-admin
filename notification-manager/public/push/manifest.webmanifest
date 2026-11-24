@@ -1,1 +1,1 @@
-{"name":"Riddle Quest notifications","short_name":"Riddle Quest","id":"/push/","start_url":"/push/","scope":"/push/","display":"standalone","background_color":"#f7f5f0","theme_color":"#35233f","icons":[{"src":"/push/icon.png","sizes":"1254x1254","type":"image/png","purpose":"any"}]}
+{"name":"Riddle Quest","short_name":"Riddle Quest","id":"/push/","start_url":"/push/","scope":"/push/","display":"standalone","background_color":"#f7f5f0","theme_color":"#35233f","icons":[{"src":"/push/icon.png","sizes":"1254x1254","type":"image/png","purpose":"any"}]}

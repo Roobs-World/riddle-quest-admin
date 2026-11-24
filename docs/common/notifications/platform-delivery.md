@@ -2,6 +2,8 @@
 
 One hosted notification service owns campaign content, scheduling, the queue and delivery history. Clients implement the same NotificationProvider contract. Device adapters account for operating-system and browser APIs without creating separate management websites or content stores.
 
+Game platforms enroll player devices and maintain consent. The notification manager sends every campaign to the eligible registered devices in its selected audience. Selecting all platforms includes every supported enrolled transport; it does not turn historical account profiles into device registrations. Browser delivery uses system notifications through `ServiceWorkerRegistration.showNotification`, with the Riddle Quest icon. The installed web app is named Riddle Quest. The browser and operating system control the final layout and source attribution. Android uses its native notification receiver through FCM.
+
 | Client | Default device adapter |
 | --- | --- |
 | Android React Native app | Native FCM through the authenticated game backend |
@@ -28,6 +30,18 @@ A new native Android build and the configured bridge are required. Old clients t
 Jest and Facebook use the shared [Firebase-linked enrollment page](firebase-enrollment.md) outside the embedded game. The existing authenticated game account pairs that browser without another Google login. Their artifacts exclude service workers and Firebase Messaging. Notifications are delivered through our Web Push bridge, not Jest Home/SMS or optional Meta integrations. Legacy Jest cancellation remains to retire old schedules.
 
 Reddit, YouTube, Netflix and GameSnacks retain their existing target restrictions and have no provider in their current build.
+
+## Signup coverage
+
+| Game client | Device signup |
+| --- | --- |
+| Jest and Facebook | Shared Firebase-linked enrollment, offered during the welcome shown to eligible new and returning accounts and in Settings |
+| Native Android | Native permission and FCM registration through the app's notification screen |
+| Yahoo hosted-push client | Browser permission and an anonymous hosted device registration |
+| Reddit | No released enrollment adapter; an external enrollment flow requires the Devvit gateway and Reddit approval for off-site navigation and collection |
+| YouTube, Netflix and GameSnacks | No device signup under the current self-contained target restrictions |
+
+An existing player can enroll on their next visit. Playing previously, signing in, or leaving the game's notification preference On does not grant operating-system permission or create a missing browser subscription. Each browser or native device must complete its permitted signup once. Existing registrations can be renewed without asking again while permission and account consent remain valid.
 
 ## Release transition
 

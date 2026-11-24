@@ -4,7 +4,7 @@ Firebase project `riddle-quest-ec2b2` owns player identity, browser subscription
 
 ## Player flow
 
-An eligible new account sees the existing translated notification action during welcome onboarding. The same action remains in Settings. Default On preserves the global preference but does not grant browser permission. Guests and platforms without an eligible notification provider do not see the enrollment action.
+An eligible account sees the existing translated notification action during the welcome shown once per account/browser session, including returning players who completed onboarding earlier. The same action remains in Settings. The action appears when the saved preference is On and this device needs permission; Off, blocked, unsupported and already connected states do not show another welcome signup action. Default On preserves the global preference but does not grant browser permission. Guests and platforms without an eligible notification provider do not see the enrollment action.
 
 The game opens a window synchronously from that action and calls `createNotificationEnrollment`. Firebase validates the current account, deletion boundary, provider claims and global preference, then issues a random one-time code. The code expires after ten minutes and is stored only as a hash in Firebase. It travels in the enrollment URL fragment, which is removed from the visible URL after loading.
 
@@ -19,6 +19,8 @@ Previously granted permission does not require another prompt. Opening a fresh c
 Jest and Facebook currently use this shared capability. Their game artifacts contain neither a notification worker nor Firebase Messaging; enrollment and browser push run on the separately hosted page. Native Android retains its FCM adapter. Yahoo retains its independent anonymous hosted subscription because its candidate build has no account identity. Reddit requires a Devvit gateway adapter, while YouTube, Netflix and GameSnacks retain their existing notification restrictions. A generic enrollment page does not grant a platform permission to add forbidden SDKs or network traffic.
 
 The Firebase pairing authority resolves trusted provider claims against the canonical account profile. It accepts the existing verified Jest, Facebook, Reddit and Android account forms, conventional Firebase account providers, and future custom providers with matching trusted claims and server-owned profile data. It never infers ownership from email or user-supplied metadata. Provider identities remain separate unless an explicit account-linking flow unifies them.
+
+Enrollment is the platform's role. Campaign authoring, scheduling and sending remain in the notification manager. The platform that originally identified a player does not receive the push on their behalf; the enrolled browser or native Android device receives it through its device transport.
 
 ## Delivery and device ownership
 

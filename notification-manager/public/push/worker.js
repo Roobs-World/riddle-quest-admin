@@ -36,7 +36,7 @@ self.addEventListener("push", event => {
     const latestGate = await cache.match("/push/display-permission");
     const latest = latestGate ? await latestGate.json() : null;
     if (latest?.enabled !== true || latest.deviceHash !== message.deviceHash || latest.revision !== message.registrationRevision) return;
-    await self.registration.showNotification(message.title, {body: message.body, tag: message.notificationId,
+    await self.registration.showNotification(message.title, {body: message.body, icon: "/push/icon.png", tag: message.notificationId,
       ...(image ? {image} : {}), data: {launchUrl: message.launchUrl}});
     // Retain only live receipt markers so long-running installations stay bounded.
     for (const request of await cache.keys()) {
