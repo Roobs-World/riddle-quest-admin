@@ -3,7 +3,7 @@ import {usePushConsent} from "../../../notifications/components/PushConsentConte
 import {tr} from "../../../localization/browser/i18n";
 import "./LiveRacePushConsent.css";
 
-/** Explicit notification consent shared by multiplayer, Settings and Profile. */
+/** Explicit notification consent shared by Settings and Profile. */
 export function LiveRacePushConsent() {
   /** Only the active target can supply notification permission. */
   const sharing = useReferralSharing();

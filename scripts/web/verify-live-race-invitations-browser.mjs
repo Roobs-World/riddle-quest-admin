@@ -36,7 +36,7 @@ const entry=params.has('challenge')?JSON.parse(params.get('challenge')):{};
 const challengeId=isFacebook?facebookLaunchFromEntryData(entry).initialRaceChallengeId:resolveRaceChallengeId(parseEntryIntent(entry));
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
 const activity=async operation=>operation();const track=()=>{};const backend={};const sharingEnabled=()=>true;
-function App(){const jest=useJestSharing({locale:'en',session,platform,backend,sharingEnabled,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=isFacebook?undefined:jest;const push=params.has('push')?{...capability,setLiveRacePush:async enabled=>{window.pushCalls??=[];window.pushCalls.push(enabled);return window.pushAllowed??false;}}:capability;return <ReferralSharingProvider capability={push}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
+function App(){const jest=useJestSharing({locale:'en',session,platform,backend,sharingEnabled,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=isFacebook?undefined:jest;return <ReferralSharingProvider capability={capability}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
@@ -131,7 +131,7 @@ try {
       await sender.goto(`${base}/?target=${target}&user=Alice`);
       await sender.getByRole("button", {name: "Challenge a friend", exact: true}).click();
       await sender.getByLabel("Player username", {exact: true}).fill("Bob");
-      await recipient.goto(`${base}/?target=${target}&user=Bob&push=1`);
+      await recipient.goto(`${base}/?target=${target}&user=Bob`);
       await recipient.waitForFunction(() => window.commands.some(command => command.action === "inbox"));
       assert.equal(await recipient.locator(".live-race-invitation").count(), 0);
       await sender.getByRole("button", {name: "Send challenge", exact: true}).click();
@@ -145,33 +145,13 @@ try {
       await recipient.getByRole("button", {name: "Accept challenge", exact: true}).waitFor();
       assert.equal(await recipient.locator(".live-race-invitation").count(), 1);
       assert.equal(await recipient.evaluate(() => window.commands.some(command => command.action === "join")), false);
-      const enablePush = recipient.getByRole("button", {name: "Enable challenge notifications", exact: true});
-      const disablePush = recipient.getByRole("button", {name: "Disable challenge notifications", exact: true});
-      assert.equal(await enablePush.getAttribute("aria-pressed"), "false");
-      assert.equal(await disablePush.getAttribute("aria-pressed"), "true");
-      await disablePush.click();
-      assert.deepEqual(await recipient.evaluate(() => window.pushCalls ?? []), [false]);
-      await recipient.getByRole("button", {name: "Enable challenge notifications", exact: true}).click();
-      await recipient.getByText("Browser notifications are unavailable here. Your invitations will still appear in multiplayer.", {exact: true}).waitFor();
-      assert.equal(await enablePush.getAttribute("aria-pressed"), "false");
-      assert.equal(await disablePush.getAttribute("aria-pressed"), "true");
-      await recipient.evaluate(() => window.pushAllowed = true);
-      await recipient.getByRole("button", {name: "Enable challenge notifications", exact: true}).click();
-      await recipient.waitForFunction(() => document.querySelector('.live-race-push-consent button')?.getAttribute('aria-pressed') === 'true');
-      assert.equal(await disablePush.getAttribute("aria-pressed"), "false");
-      await enablePush.click();
-      await recipient.getByRole("button", {name: "Disable challenge notifications", exact: true}).click();
-      await recipient.waitForFunction(() => document.querySelector('.live-race-push-consent button')?.getAttribute('aria-pressed') === 'false');
-      assert.equal(await disablePush.getAttribute("aria-pressed"), "true");
-      assert.deepEqual(await recipient.evaluate(() => window.pushCalls), [false, true, true, false]);
-      for (const button of await recipient.locator(".live-race-push-consent button").all()) assert.ok((await button.boundingBox()).height >= 48);
       await recipient.locator(".race-screen").evaluate(element => {element.scrollTop = 0;});
       await recipient.screenshot({path: path.join(output, `${target}-direct-inbox-${viewport.width}.png`), fullPage: true});
       await recipient.getByRole("button", {name: "Accept challenge", exact: true}).click();
       await recipient.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
       await sender.locator(".friend-lobby-seat[data-occupied=true]").nth(1).waitFor();
       assert.equal(await sender.locator(".friend-lobby-seat strong").nth(1).innerText(), "Bob");
-      console.log(`${target} ${viewport.width}px: incoming alert while open, one durable alert after reload, push permission fallback/revocation and original lobby acceptance passed.`);
+      console.log(`${target} ${viewport.width}px: incoming alert while open, one durable alert after reload and original lobby acceptance passed.`);
       await Promise.all(direct.map(context => context.close()));
     }
   }

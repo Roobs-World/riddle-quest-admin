@@ -14,7 +14,6 @@ const scratch = await mkdtemp(path.join(root, "node_modules/.cache/push-toggle-"
 await writeFile(path.join(scratch, "main.tsx"), `
 import React,{useState} from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
-import {LiveRacePushConsent} from ${JSON.stringify(path.join(root, "src/races/components/social/LiveRacePushConsent.tsx"))};
 import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
 import {SettingsModalPage} from ${JSON.stringify(path.join(root, "src/settings/components/SettingsModalPage.tsx"))};
 import {ProfileModalPage} from ${JSON.stringify(path.join(root, "src/accounts/components/ProfileModalPage.tsx"))};
@@ -24,7 +23,7 @@ import ${JSON.stringify(path.join(root, "src/progression/styles/rewards.css"))};
 import ${JSON.stringify(path.join(root, "src/accounts/styles/profile-details.css"))};
 window.calls=[];
 const capability={setLiveRacePush:enabled=>{window.calls.push(enabled);return new Promise((resolve,reject)=>{window.finish=resolve;window.fail=reject;});}};
-function App(){const [surface,setSurface]=useState('multiplayer');window.setSurface=setSurface;return <ReferralSharingProvider capability={location.search.includes('unsupported')?null:capability}><div className="game-modal-backdrop"><div className={"game-modal modal-"+surface}>{surface==='settings'?<SettingsModalPage locale="en" muted={false} onOpenModal={()=>{}} onToggleMute={()=>{}} commerceAvailable={false}/>:surface==='profile'?<ProfileModalPage profile={null} onOpenModal={()=>{}} onUpdateAvatar={async()=>{}} onDeleteAccount={()=>{}}/>:<LiveRacePushConsent/>}</div></div></ReferralSharingProvider>;}
+function App(){const [surface,setSurface]=useState('settings');window.setSurface=setSurface;return <ReferralSharingProvider capability={location.search.includes('unsupported')?null:capability}><div className="game-modal-backdrop"><div className={"game-modal modal-"+surface}>{surface==='settings'?<SettingsModalPage locale="en" muted={false} onOpenModal={()=>{}} onToggleMute={()=>{}} commerceAvailable={false}/>:<ProfileModalPage profile={null} onOpenModal={()=>{}} onUpdateAvatar={async()=>{}} onDeleteAccount={()=>{}}/>}</div></div></ReferralSharingProvider>;}
 createRoot(document.getElementById('root')).render(<App/>);
 `);
 await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOptions: {jsx: "react-jsx"}}));
@@ -58,7 +57,7 @@ try {
     await page.waitForFunction(() => !document.querySelector('.live-race-push-consent button').disabled);
     await disable.click();assert.deepEqual(await page.evaluate(() => window.calls), [false]);
     await enable.click();assert.equal(await enable.isDisabled(), true);assert.equal(await disable.isDisabled(), true);
-    await page.evaluate(() => window.setSurface('settings'));await page.locator('.settings-page').waitFor();
+    await page.evaluate(() => window.setSurface('profile'));await page.locator('.profile-page').waitFor();
     assert.equal(await enable.isDisabled(), true);assert.equal(await disable.isDisabled(), true);
     await page.evaluate(() => window.finish(false));await page.getByRole("status").waitFor();await selected(false);
     await enable.click();await page.evaluate(() => window.finish(true));await selected(true);
@@ -73,7 +72,7 @@ try {
     await page.getByRole("status").waitFor();await selected(true);
     await disable.click();await page.evaluate(() => window.finish(true));await selected(false);
     assert.deepEqual(await page.evaluate(() => window.calls), [false, true, true, false, false]);
-    await page.evaluate(() => window.setSurface('multiplayer'));await page.locator('.profile-page').waitFor({state: 'hidden'});await selected(false);
+    await page.evaluate(() => window.setSurface('settings'));await page.locator('.settings-page').waitFor();await selected(false);
     for (const button of [enable, disable]) {
       const box = await button.boundingBox();assert.ok(box.height >= 48);assert.ok(box.x >= 0 && box.x + box.width <= width);
     }

@@ -380,7 +380,6 @@
 }
 .race-screen .race-primary,
 .race-screen .race-secondary,
-.race-screen .live-race-push-consent button,
 .race-screen .live-race-invitation button {
   min-height: 50px;
   padding: 12px 22px;
@@ -401,24 +400,6 @@
 .race-screen .race-secondary:not(:disabled):active {
   transform: translateY(2px);
   box-shadow: 0 1px 0 #b76e20;
-}
-.race-screen .live-race-push-consent {
-  justify-content: center;
-  padding-top: 16px;
-  margin-top: 22px;
-  border-top: 1px solid #e4ccab;
-}
-.race-screen .live-race-push-consent p {
-  margin-bottom: 0;
-  font-size: 0.8rem;
-}
-.race-screen .live-race-push-consent button {
-  min-height: 48px;
-  font: 600 0.8rem/1.4 var(--rq-font-body);
-}
-.race-screen .live-race-push-consent button[aria-pressed="true"] {
-  color: #fff;
-  background: var(--race-ink);
 }
 .race-primary[aria-busy="true"]::after,
 .live-race-invite-share button[aria-busy="true"]::after,

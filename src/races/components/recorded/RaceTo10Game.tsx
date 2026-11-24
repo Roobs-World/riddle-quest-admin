@@ -10,7 +10,6 @@ import {useReferralSharing} from "../../../sharing/components/ReferralSharingCap
 import {LiveRaceInvitationCard} from "../invitations/LiveRaceInvitationCard";
 import {LiveRaceIdentity} from "../social/LiveRaceIdentity";
 import {LiveRaceInbox} from "../invitations/LiveRaceInbox";
-import {LiveRacePushConsent} from "../social/LiveRacePushConsent";
 import {LiveRaceGame} from "../live/LiveRaceGame";
 import {RaceTopbar} from "../gameplay/RaceHeader";
 import {RaceCategoryIcon} from "../lobby/RaceCategoryIcon";
@@ -208,7 +207,6 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       <LiveRaceInbox transport={matchmaking.live} excludeId={challengeId} locale={locale} onAccept={onStart} />}
     <div className="race-panel race-category-panel">
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
-      <p>{tr("RaceTo10.FIRST_TO_TEN")}</p>
       <div className="race-category-grid">
         {categories.map(category => <button key={category.categoryId} aria-pressed={selected === category.categoryId}
           disabled={loading || choosingFriends || !matchmaking?.live} style={{"--race-color": category.colorToken} as CSSProperties}
@@ -229,7 +227,6 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       {chooseFailed && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
       {(matchmaking?.live?.shareChallenge || sharing?.shareLiveRace) && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || choosingFriends || failed || !selected}
         onClick={() => {if (!choosing.current && selected) {trackEvent("live_race_challenge_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale, createChallenge: true});}}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
-      <LiveRacePushConsent />
     </div>
   </section>;
 }
