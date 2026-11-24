@@ -34,7 +34,7 @@ No schema, seed, operator membership or scheduled job is applied by a frontend b
 
 ## Vercel setup
 
-Create a Vercel project for this repository with Root Directory `notification-manager`, Node.js 24 and access to workspace files outside that root. The checked-in `vercel.json` selects Vite, `pnpm build`, `dist` and 60-second API Functions. Source pushes do not authorize a deployment or automatic production release.
+The Vercel project is [riddle-quest-admin](https://vercel.com/craig-beswethericks-projects-d44935d2/riddle-quest-admin), project ID `prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz` in team `team_Q3bXo2jPBKdjs3tuoKLtqUe2`. Its Root Directory is `notification-manager`, with Node.js 24 and access to workspace files outside that root. The checked-in `vercel.json` selects Vite, `pnpm build`, `dist` and 60-second API Functions. Automatic Git deployments are disabled; source pushes do not authorize a deployment or production release.
 
 Use `notification-manager/.env.example` for the required environment settings:
 
