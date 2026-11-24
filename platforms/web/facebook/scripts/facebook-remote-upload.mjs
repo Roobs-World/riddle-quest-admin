@@ -52,6 +52,9 @@ export function validateFacebookAssetUploadToken(token) {
 
 /** Classifies provider text without retaining the text or identifiers it may contain. */
 function providerFailureReason(message) {
+  if (/\buser must be (?:an? )?(?:admin(?:istrator)?|developer)(?: or (?:an? )?(?:admin(?:istrator)?|developer))? of (?:the |this )?app(?:lication)?\b/iu.test(message)) {
+    return "app-role-required";
+  }
   if (/\bapp(?:lication)?(?: access)? tokens?\b.*\b(?:not allowed|not supported|cannot|unsupported)\b/iu.test(message) ||
       /\b(?:user|system user)(?: access)? tokens?\b.*\brequired\b|\brequires?\b.*\b(?:user|system user)(?: access)? tokens?\b/iu.test(message)) {
     return "user-token-required";

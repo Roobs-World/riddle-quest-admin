@@ -2,6 +2,18 @@
 
 App: Riddle Quest (`1748953042991569`). Owner-approved boundary: prepare and verify the release, then obtain final approval before public publication.
 
+## Restore programmatic uploads
+
+On 24 November 2026, both Node and curl binary uploads received HTTP 403. Meta's nested error says the user must be an admin or developer of the app. The MCP confirms the signed-in owner is an admin, but the saved `GG|app-id|…` credential is an App Access Token and carries no user role. Meta accepts it for session creation; that does not authorize the binary transfer. See the [diagnosis evidence](evidence/facebook-upload-diagnosis-2026-11-24.json).
+
+1. Open [Access Token Tool](https://developers.facebook.com/tools/accesstoken/) while signed in as an admin or developer of Riddle Quest.
+2. Locate the **User Token** above the **App Access Token**. If the User Token is absent, follow the request link to [Graph API Explorer](https://developers.facebook.com/tools/explorer/), select **Riddle Quest**, and obtain a **User Access Token** through the account's consent flow.
+3. Replace the value of `FACEBOOK_APP_ACCESS_TOKEN` in the ignored root `.env` with that complete User Token. Keep the existing variable name. Save the file and keep the value out of chat and Git.
+4. Run `pnpm preflight:facebook-upload` from the project root. Use the SHA-256 it prints with `pnpm facebook:draft upload --archive-hash EXACT_64_HEX_SHA256` only for an explicitly requested upload. An unchanged valid App Access Token will reach the same role check.
+5. Confirm the new bundle appears in **Instant Games → Web Hosting** and finishes processing before recording acceptance or assigning it to production. A successful session or transfer alone does not prove processing completion.
+
+For durable automation, Meta also supports a System User token assigned **Manage app** access to this app in the owning Business Portfolio. That `EAA` token uses the `fb_game_bundle` upload namespace. Follow [Meta's System User setup](https://developers.facebook.com/documentation/games/launch/upload-bundle#setting-up-a-system-user-access-token-for-cicd); its guide says no additional permissions are needed for bundle uploads. The uploader selects the namespace from the saved token's prefix.
+
 ## Current order of work
 
 | Step | Current state | Next action | Responsibility |

@@ -46,7 +46,47 @@
     "confirmationAt": "2026-11-24T12:04:16.808Z",
     "finalBarrierStatus": "reconciled-absent"
   },
-  "nextControlledVariable": "Match curl --data-binary's application/x-www-form-urlencoded Content-Type; this is not established as the rejection cause.",
+  "contentTypeComparison": {
+    "sourceCommit": "829a2a8f7a95824b624f880002b735154a700f3f",
+    "archiveSha256": "14a098fd28200ab506eb73b4e5e6356b62d6cd52e3a000d9d0f242c5bdb9c43a",
+    "archiveBytes": 2897859,
+    "contentType": "application/x-www-form-urlencoded",
+    "binaryAttempts": 1,
+    "recordedAt": "2026-11-24T12:05:08.092Z",
+    "archiveHttpStatus": 403,
+    "responseSha256": "e99de958c47a2d98e7007a5abf1fc0867f074f27ed230cbaaa9ae7e8f1f830cc",
+    "responseUnchanged": true,
+    "providerAcceptance": false,
+    "inventoryVersionsBeforeAfterAndConfirmed": [6, 5, 4, 3, 2, 1],
+    "confirmationAt": "2026-11-24T12:06:19.063Z",
+    "finalBarrierStatus": "reconciled-absent"
+  },
+  "curlTransportComparison": {
+    "sourceCommit": "829a2a8f7a95824b624f880002b735154a700f3f",
+    "archiveSha256": "0e67329e556f63297b3f5bafc4e045e458f68ab5d8ae664efc95936f4c33a0f6",
+    "archiveBytes": 2897859,
+    "binaryAttempts": 1,
+    "transport": "curl with verified immutable ZIP; authentication and signed URL supplied through private stdin configuration",
+    "archiveHttpStatus": 403,
+    "responseSha256": "e99de958c47a2d98e7007a5abf1fc0867f074f27ed230cbaaa9ae7e8f1f830cc",
+    "responseUnchanged": true,
+    "providerAcceptance": false,
+    "inventoryVersionsBeforeAfterAndConfirmed": [6, 5, 4, 3, 2, 1],
+    "confirmationAt": "2026-11-24T12:08:04.140Z",
+    "finalBarrierStatus": "reconciled-absent"
+  },
+  "finding": {
+    "providerReason": "app-role-required",
+    "providerErrorType": "ProcessingFailedError",
+    "messageEnvelope": "debug_info.message contains JSON whose error string requires the user to be an admin or developer of the app",
+    "messageLength": 54,
+    "currentCredentialType": "Gaming App Access Token",
+    "requiredCredential": "User or System User upload token with admin or developer access to this app",
+    "tokenValidityIsSeparateFromUploadAuthorization": true,
+    "nodeTransportAndContentTypeDoNotExplainThis403": true,
+    "allAttemptBarriersSettled": true,
+    "userAskedToSaveUploadUserCredential": true
+  },
   "rawResponsesRetained": false,
   "credentialsExposed": false,
   "productionChanged": false
