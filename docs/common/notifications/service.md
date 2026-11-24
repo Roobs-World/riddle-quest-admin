@@ -26,7 +26,11 @@ The composer saves working drafts in this browser, including the request ID need
 
 ## Supabase setup
 
-1. Create or select the notification service's Supabase project. The game's existing account database stays separate.
+The Supabase Marketplace installation is connected to `riddle-quest-admin` in production. Its project URL is `https://vqyjgcqyudqonfhgymoy.supabase.co`. The integration supplies the standard URL, publishable key and server secret variables. It is not currently connected to Preview or Development environments.
+
+A read-only check on November 24, 2026 confirmed that the Auth endpoint responds, Google sign-in is disabled, and the Data API reports `PGRST205` for `notification_operators`. Schema readiness is therefore unconfirmed. The integration connection alone does not apply the schema, enable Google OAuth, approve operators or configure the push scheduler.
+
+1. Use the notification service's connected Supabase project. The game's existing account database stays separate.
 2. Review the declarative schema files in `notification-manager/supabase/config.toml`. Generate and review the initial migration with the current Supabase CLI before applying it. Follow [Supabase's declarative schema workflow](https://supabase.com/docs/guides/local-development/declarative-database-schemas).
 3. Apply `notification-manager/supabase/seed.sql` to configure the public `notification-images` bucket. It allows PNG, JPEG and WebP images up to 2 MB. Approved operators can upload into their own user folder. Notification images are public.
 4. Enable Google in Supabase Authentication and configure its callback with Google. Set the site URL and allowed redirects to the management website origin. Add local origins explicitly for development. See [Google OAuth setup](https://supabase.com/docs/guides/auth/social-sign-in/auth-google).
@@ -40,13 +44,18 @@ No schema, seed, operator membership or scheduled job is applied by a frontend b
 
 The Vercel project is [riddle-quest-admin](https://vercel.com/craig-beswethericks-projects-d44935d2/riddle-quest-admin), project ID `prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz` in team `team_Q3bXo2jPBKdjs3tuoKLtqUe2`. Its Root Directory is `notification-manager`, with Node.js 24 and access to workspace files outside that root. The checked-in `vercel.json` selects Vite, `pnpm build`, `dist` and 60-second API Functions. Automatic Git deployments are disabled; source pushes do not authorize a deployment or production release.
 
-Use `notification-manager/.env.example` for the required environment settings:
+The build reads the standard `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY` pair supplied by the [Supabase Marketplace integration](https://supabase.com/docs/guides/integrations/vercel-marketplace). Only these two validated public values enter the browser bundle. It also accepts the integration's `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` pair when the standard pair is absent. No broad public environment prefix is enabled.
+
+For local overrides, set both `VITE_NOTIFICATION_SUPABASE_URL` and `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY`. A partial or invalid pair fails the build instead of mixing settings from different sources. When a server URL exists, the browser URL must refer to the same project. Modern `sb_publishable_` keys are required for public configuration; secret and legacy service-role keys are rejected. Production builds passed both without configured settings and with the connected project's public integration settings.
+
+Use `notification-manager/.env.example` for the environment settings:
 
 | Setting | Visibility and purpose |
 | --- | --- |
-| `VITE_NOTIFICATION_SUPABASE_URL` | Public frontend Supabase URL |
-| `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY` | Public frontend publishable key |
-| `SUPABASE_URL` | API Supabase URL, matching the frontend |
+| `SUPABASE_URL` | Integration-managed API and frontend Supabase URL |
+| `SUPABASE_PUBLISHABLE_KEY` | Integration-managed public frontend key |
+| `VITE_NOTIFICATION_SUPABASE_URL` | Optional public frontend URL override |
+| `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY` | Optional public frontend key override; set with its URL |
 | `SUPABASE_SECRET_KEY` | API-only secret key |
 | `HOSTED_PUSH_VAPID_PUBLIC_KEY` | Stable Web Push application public key |
 | `HOSTED_PUSH_VAPID_PRIVATE_KEY` | API-only matching private key |

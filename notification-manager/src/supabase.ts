@@ -1,20 +1,12 @@
 import {createClient} from "@supabase/supabase-js";
-import {z} from "zod";
-
-const Settings = z.object({
-  url: z.url().refine(value => {
-    const url = new URL(value);
-    return url.protocol === "https:" && !url.username && !url.password && !url.search && !url.hash && url.pathname === "/";
-  }),
-  key: z.string().regex(/^sb_publishable_[A-Za-z0-9_-]+$/u).max(4096),
-});
+import {PublicSupabaseSettings} from "./publicConfiguration";
 
 function initializeManagementConnection() {
-  const parsed = Settings.safeParse({
+  const parsed = PublicSupabaseSettings.safeParse({
     url: import.meta.env.VITE_NOTIFICATION_SUPABASE_URL,
     key: import.meta.env.VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY,
   });
-  if (!parsed.success) throw new Error("Set VITE_NOTIFICATION_SUPABASE_URL and VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY to this project's public Supabase settings. Enable Google sign-in and allow this website's redirect URL in Supabase Authentication.");
+  if (!parsed.success) throw new Error("Connect this Vercel project to Supabase and rebuild, or set VITE_NOTIFICATION_SUPABASE_URL and VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY. Enable Google sign-in and allow this website's redirect URL in Supabase Authentication.");
   const settings = parsed.data;
   const client = createClient(settings.url, settings.key, {auth: {flowType: "pkce", storageKey: "riddle-quest-notification-studio"}});
   let currentUserId: string | null = null;

@@ -1,10 +1,11 @@
 import {fileURLToPath} from "node:url";
-import {defineConfig, type Plugin} from "vite";
+import {defineConfig, loadEnv, type Plugin} from "vite";
 import react from "@vitejs/plugin-react";
+import {PublicSupabaseSettings} from "./src/publicConfiguration.ts";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 
-function browserBoundary(): Plugin {
+function browserBoundary(environment: Readonly<Record<string, string>>): Plugin {
   return {
     name: "notification-manager-browser-boundary",
     generateBundle(_options, bundle) {
@@ -15,8 +16,9 @@ function browserBoundary(): Plugin {
           this.error("A server module entered the notification manager browser bundle.");
         }
       }
-      const secrets = [process.env.SUPABASE_SECRET_KEY, process.env.HOSTED_PUSH_VAPID_PRIVATE_KEY, process.env.CRON_SECRET,
-        process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET]
+      const secrets = [environment.SUPABASE_SECRET_KEY, environment.SUPABASE_SERVICE_ROLE_KEY, environment.SUPABASE_JWT_SECRET,
+        environment.POSTGRES_PASSWORD, environment.POSTGRES_URL, environment.POSTGRES_PRISMA_URL, environment.POSTGRES_URL_NON_POOLING,
+        environment.HOSTED_PUSH_VAPID_PRIVATE_KEY, environment.CRON_SECRET, environment.NOTIFICATION_MANAGER_BRIDGE_SECRET]
         .filter((value): value is string => Boolean(value && value.length >= 16));
       for (const item of Object.values(bundle)) {
         if (item.type !== "chunk") continue;
@@ -32,16 +34,42 @@ function browserBoundary(): Plugin {
   };
 }
 
-export default defineConfig({
-  root,
-  envDir: root,
-  envPrefix: "VITE_NOTIFICATION_",
-  publicDir: false,
-  plugins: [react(), browserBoundary()],
-  server: {host: "127.0.0.1", port: 5180, strictPort: true},
-  build: {
-    outDir: fileURLToPath(new URL("./dist", import.meta.url)),
-    emptyOutDir: true,
-    sourcemap: false,
-  },
+export default defineConfig(({mode}) => {
+  // Read integration settings on the build host, then expose exactly two validated public values.
+  const environment = loadEnv(mode, root, "");
+  const explicit = environment.VITE_NOTIFICATION_SUPABASE_URL || environment.VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY;
+  const integration = environment.SUPABASE_URL || environment.SUPABASE_PUBLISHABLE_KEY;
+  const settings = explicit
+    ? {url: environment.VITE_NOTIFICATION_SUPABASE_URL, key: environment.VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY}
+    : integration ? {url: environment.SUPABASE_URL, key: environment.SUPABASE_PUBLISHABLE_KEY}
+      : {url: environment.NEXT_PUBLIC_SUPABASE_URL, key: environment.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY};
+  const configured = settings.url || settings.key;
+  const parsed = configured ? PublicSupabaseSettings.safeParse(settings) : null;
+  if (parsed && !parsed.success) {
+    throw new Error("Notification manager Supabase configuration requires a complete HTTPS project URL and modern publishable-key pair. Server credentials cannot be used as public keys.");
+  }
+  const publicSettings = parsed?.success ? parsed.data : null;
+  if (publicSettings && environment.SUPABASE_URL) {
+    const serverUrl = PublicSupabaseSettings.shape.url.safeParse(environment.SUPABASE_URL);
+    if (!serverUrl.success || new URL(publicSettings.url).origin !== new URL(serverUrl.data).origin) {
+      throw new Error("Notification manager browser and server Supabase URLs must refer to the same project.");
+    }
+  }
+  return {
+    root,
+    envDir: root,
+    envPrefix: "VITE_NOTIFICATION_",
+    publicDir: false,
+    plugins: [react(), browserBoundary(environment)],
+    define: {
+      "import.meta.env.VITE_NOTIFICATION_SUPABASE_URL": JSON.stringify(publicSettings?.url ?? ""),
+      "import.meta.env.VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(publicSettings?.key ?? ""),
+    },
+    server: {host: "127.0.0.1", port: 5180, strictPort: true},
+    build: {
+      outDir: fileURLToPath(new URL("./dist", import.meta.url)),
+      emptyOutDir: true,
+      sourcemap: false,
+    },
+  };
 });
