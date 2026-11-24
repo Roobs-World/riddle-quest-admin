@@ -23,6 +23,7 @@ import {fileURLToPath} from "node:url";
 
 import {
   assertAllowedReleaseCredentialFileKeys,
+  assertJestBuildStateMigrated,
   BUBBLEWRAP_PATH,
   createReleaseChildEnvironment,
   createReleaseSandboxArguments,
@@ -38,7 +39,9 @@ import {
 const packageDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
 const gitExecutable = "/usr/bin/git";
-const receiptDirectory = join(packageDirectory, ".jest-upload-receipts");
+const gameBuildDirectory = join(packageDirectory, "platforms/web/jest/build");
+const receiptDirectory = join(gameBuildDirectory, ".jest-upload-receipts");
+assertJestBuildStateMigrated({packageDirectory, receiptDirectory});
 mkdirSync(receiptDirectory, {mode: 0o700, recursive: true});
 chmodSync(receiptDirectory, 0o700);
 const ignoredSensitiveDirectoryPaths = [
@@ -68,7 +71,9 @@ const operatorHomeDirectory = homedir();
 if (process.platform !== "linux") {
   throw new Error("Secure Jest releases require Linux and functional bubblewrap; refusing an unsandboxed fallback");
 }
-const releaseSandboxDirectory = mkdtempSync("/var/tmp/riddle-quest-release-sandbox-");
+const releaseWorkspaceDirectory = join(gameBuildDirectory, ".jest-release-workspaces");
+mkdirSync(releaseWorkspaceDirectory, {mode: 0o700, recursive: true});
+const releaseSandboxDirectory = mkdtempSync(join(releaseWorkspaceDirectory, "release-"));
 const releaseDebugLogQuarantineDirectory = join(
   repositoryDirectory,
   ".firebase",
@@ -534,7 +539,7 @@ mkdirSync(gatePreflightDirectory, {mode: 0o700});
 Object.assign(gateEnvironment, {
   RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: join(gatePreflightDirectory, "target-dependencies"),
   JEST_ARCHIVE_PATH: join(gatePreflightDirectory, "build.zip"),
-  JEST_BUILD_DIRECTORY: join(packageDirectory, "builds/jest"),
+  JEST_BUILD_DIRECTORY: join(gameBuildDirectory, "dist"),
   JEST_GATE_RECEIPT_PATH: join(gatePreflightDirectory, "gated-artifact.json"),
   JEST_RECEIPT_DIRECTORY: gatePreflightDirectory,
 });

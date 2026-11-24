@@ -53,10 +53,10 @@ pnpm release:youtube
 
 The expected outputs are:
 
-- `builds/youtube/` — audited expanded artifact.
-- `build-youtube.test-report.json` — build-and-audit results plus the repository and external certification checklist. The filename is retained for existing output consumers; schema version 2 contains `checks` and does not claim that tests ran.
-- `build-youtube.zip` — repository-root upload ZIP with `index.html` at archive root.
-- `build-youtube.manifest.json` — repository-root source/content/model/verification identity, file inventory, and ZIP SHA-256 evidence.
+- `platforms/web/youtube/build/dist/` — audited expanded artifact.
+- `platforms/web/youtube/build/build-youtube.test-report.json` — build-and-audit results plus the repository and external certification checklist. The filename is retained for existing output consumers; schema version 2 contains `checks` and does not claim that tests ran.
+- `platforms/web/youtube/build/build-youtube.zip` — repository-root upload ZIP with `index.html` at archive root.
+- `platforms/web/youtube/build/build-youtube.manifest.json` — repository-root source/content/model/verification identity, file inventory, and ZIP SHA-256 evidence.
 
 The manifest records the exact Git commit, clean/dirty state, a content-sensitive dirty-tree fingerprint, every artifact file hash, all locale/model hashes, the `canonicalAuthoring` generator/critic and append-receipt binding, and an embedded copy plus hash of the exact verification report. Packaging must be reproducible: rerunning it from unchanged inputs and the same report produces the same ZIP and manifest. Never edit source, the expanded artifact, content audit, verification report, or ZIP after evidence capture; any such drift requires rerunning the full preflight.
 
@@ -89,7 +89,7 @@ The release preflight retains the isolated Jest, Facebook and Reddit builds and 
 ## Portal ingestion and certification
 
 1. Create a draft and enter the current Portal metadata.
-2. Upload the exact `build-youtube.zip` and its required thumbnails.
+2. Upload the exact `platforms/web/youtube/build/build-youtube.zip` and its required thumbnails.
 3. Record the ingested release identifier, ZIP SHA-256, Dev link, and Test Suite link.
 4. Run Google's [bundle analyzer](https://developers.google.com/youtube/gaming/playables/samples/bundle_analyzer) against the exact ZIP and retain its output.
 5. Run the hosted [Test Suite](https://developers.google.com/youtube/gaming/playables/reference/test_suite_guide), including the production CSP override.

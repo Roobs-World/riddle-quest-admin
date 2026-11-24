@@ -12,7 +12,7 @@
       "newgrounds"
     ]
   },
-  "handoff": "Use build-newgrounds.zip only after the authenticated project requirements are reviewed.",
+  "handoff": "Use platforms/web/newgrounds/build/build-newgrounds.zip only after the authenticated project requirements are reviewed.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Newgrounds",
   "delivery": "neutral-html5",

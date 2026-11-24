@@ -12,7 +12,7 @@
       "armor"
     ]
   },
-  "handoff": "Send the playable URL and retain build-armor-pitch.zip if Armor requests the archive.",
+  "handoff": "Send the playable URL and retain platforms/web/armor/build/build-armor-pitch.zip if Armor requests the archive.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Armor Games",
   "delivery": "neutral-html5",

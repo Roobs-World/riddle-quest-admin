@@ -14,7 +14,7 @@ pnpm build:facebook
 pnpm audit:facebook-artifact
 ```
 
-The build writes `builds/facebook`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
+The build writes `platforms/web/facebook/build/dist`. It must load only `fbinstant.8.0.js`, contain root `fbapp-config.json`, remain below 5 MiB of critical initial resources and 200 MiB total, contain no source maps or private credentials, and pass the reciprocal Jest-leakage audit. The Jest build remains independently available through `build:jest`; never combine both SDKs in one artifact.
 
 When using a private output directory, each of the six target builds and its audit
 honours that target's `TARGET_BUILD_OUT_DIR` variable (for example,
@@ -42,7 +42,7 @@ Run the interactive setup/evidence guide from the repository root when the real 
 pnpm facebook:setup
 ```
 
-The wizard stores the Meta app ID, origins, and deletion-status URL under the ignored, owner-local `.facebook-setup-receipts` directory. It deliberately never accepts secret values, does not collect `FACEBOOK_FIREBASE_APP_ID`, does not write the Functions deployment environment, and never changes tracker statuses. Treat `setup.env` as evidence input only: obtain the canonical Firebase web app ID separately, review all four non-secret values, and deliberately copy them into `firebase-functions/.env.riddle-quest-ec2b2` before backend preflight. Meta approvals remain deferred until the production gate, as requested.
+The wizard stores the Meta app ID, origins, and deletion-status URL under the ignored, owner-local `platforms/web/facebook/build/.facebook-setup-receipts` directory. It deliberately never accepts secret values, does not collect `FACEBOOK_FIREBASE_APP_ID`, does not write the Functions deployment environment, and never changes tracker statuses. Treat `setup.env` as evidence input only: obtain the canonical Firebase web app ID separately, review all four non-secret values, and deliberately copy them into `firebase-functions/.env.riddle-quest-ec2b2` before backend preflight. Meta approvals remain deferred until the production gate, as requested.
 
 Private values belong in Firebase/Google Secret Manager and CI secret bindings, never `VITE_*`, source files, logs, fixtures, ZIPs, or Meta configuration exports:
 
@@ -192,7 +192,7 @@ Selected-context private Live PvP is prepared in the [3 October context challeng
 - If an upload result is ambiguous, retain its hash-scoped retry barrier and reconcile the dashboard state before transmitting again. Preparation and draft commands share an exclusive local lock across every hash in the receipt directory. Preparation/begin scan all retained attempts and refuse transmitting, ambiguous, malformed or interrupted handoffs; reconcile the existing attempt before another artifact.
 - During an incident, disable only the affected Facebook feature, preserve Jest/core play where safe, record timestamps/revisions/hashes, and retain sanitized evidence for review.
 
-The dashboard handoff preserves the exact gated bytes. From a clean reviewed commit, use the canonical command below. It runs the existing preflight and then opens one hash-scoped handoff; it never contacts Meta. The build performs its normal artifact audit first; the preparer then runs the source secret-boundary audit, reruns the artifact audit, and creates the ZIP. This path does not run local tests or browser harnesses. Complete manual gameplay acceptance through Meta's Testing version after the upload. `begin` copies the verified bytes once to an owner-private, read-only, hash-named snapshot under `.facebook-upload-receipts`; upload only that printed snapshot path:
+The dashboard handoff preserves the exact gated bytes. From a clean reviewed commit, use the canonical command below. It runs the existing preflight and then opens one hash-scoped handoff; it never contacts Meta. The build performs its normal artifact audit first; the preparer then runs the source secret-boundary audit, reruns the artifact audit, and creates the ZIP. This path does not run local tests or browser harnesses. Complete manual gameplay acceptance through Meta's Testing version after the upload. `begin` copies the verified bytes once to an owner-private, read-only, hash-named snapshot under `platforms/web/facebook/build/.facebook-upload-receipts`; upload only that printed snapshot path:
 
 ```sh
 pnpm release:facebook
@@ -206,7 +206,7 @@ The Meta Social Technologies MCP connection currently grants `read` access to Ri
 
 Meta documents a separate [Graph API bundle upload flow](https://developers.facebook.com/documentation/games/launch/upload-bundle). In app `1748953042991569`, open **Instant Games → Web Hosting → Get app access token for uploads**, as labelled in the current dashboard. Archive transfer requires the **User Access Token** shown above the App Access Token, or an authorized System User access token. If no User Access Token appears, use the panel's Graph API Explorer link. Keep the complete credential in a private local prompt or secret store. Do not put it in chat, command arguments, source, receipts or logs. The upload token is separate from the MCP consent grant.
 
-After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `.facebook-upload-receipts/gated-artifact.json`:
+After an explicit upload request, use `upload` instead of `begin` for a clean, reviewed and gated `main` candidate. Supply its exact hash from `platforms/web/facebook/build/.facebook-upload-receipts/gated-artifact.json`:
 
 The command also reads `FACEBOOK_APP_ACCESS_TOKEN` from the ignored repository-root `.env`. It accepts complete `GG|app-id|token` credentials only for this app, opaque `GG` credentials, and `EAA` User/System User credentials. Meta decides whether the supplied credential authorizes the operation; a valid Token Debugger result or upload-session response alone does not establish archive-transfer permission. The command reads only this setting after the artifact checks and does not export the `.env` file to build tools or Git. Do not add a `VITE_` prefix.
 
@@ -281,7 +281,7 @@ pnpm facebook:draft promote \
   --evidence /absolute/path/to/redacted-promotion-evidence
 ```
 
-The evidence paths must be absolute, evidence files remain outside source control, and receipts remain under the ignored owner-private `.facebook-upload-receipts` directory. Commands hold the shared receipt-directory lock; barrier transitions also retain their exclusive per-hash lock. Promotion writes an exclusive `promotion-SHA.json` for those exact bytes, preserving earlier receipts and permitting later accepted releases. A mistaken receipt requires manual investigation rather than overwriting history. See [handoff verification evidence](evidence/facebook-handoff-safety-2026-10-01.md). These commands verify local consistency only; their existence is not evidence that Meta accepted or promoted anything.
+The evidence paths must be absolute, evidence files remain outside source control, and receipts remain under the ignored owner-private `platforms/web/facebook/build/.facebook-upload-receipts` directory. Commands hold the shared receipt-directory lock; barrier transitions also retain their exclusive per-hash lock. Promotion writes an exclusive `promotion-SHA.json` for those exact bytes, preserving earlier receipts and permitting later accepted releases. A mistaken receipt requires manual investigation rather than overwriting history. See [handoff verification evidence](evidence/facebook-handoff-safety-2026-10-01.md). These commands verify local consistency only; their existence is not evidence that Meta accepted or promoted anything.
 
 The [2026-10-01 SDK follow-up evidence](evidence/facebook-sdk-followup-2026-10-01.md) records the Facebook MCP registration/authentication blocker, verified Audience Network placement IDs, bot-subscription integration, current Meta setup gaps, and isolated platform regression results.
 

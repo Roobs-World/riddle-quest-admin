@@ -15,6 +15,7 @@ async function collect(directory) {
   for (const entry of entries) {
     if (entry.name.startsWith(".") || ignoredDirectories.has(entry.name)) continue;
     const absolute = path.join(directory, entry.name);
+    if (entry.isDirectory() && /^platforms\/web\/[^/]+\/build$/u.test(path.relative(root, absolute).split(path.sep).join("/"))) continue;
     if (entry.isDirectory()) files.push(...(await collect(absolute)));
     else if (/\.(?:ts|tsx)$/.test(entry.name) && !/\.d\.ts$/.test(entry.name)) {
       files.push(absolute);

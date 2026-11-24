@@ -2,7 +2,7 @@
   "$schema": "https://developers.reddit.com/schema/config-file.v1.json",
   "name": "riddle-quest",
   "post": {
-    "dir": "dist/client",
+    "dir": "build/devvit/client",
     "entrypoints": {
       "default": {
         "inline": true,
@@ -14,7 +14,7 @@
     }
   },
   "server": {
-    "dir": "dist/server",
+    "dir": "build/devvit/server",
     "entry": "index.cjs"
   },
   "permissions": {

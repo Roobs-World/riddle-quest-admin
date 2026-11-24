@@ -46,6 +46,7 @@ async function createReleaseFixture(context) {
     "/build-*.zip",
     "/build-*.manifest.json",
     "/build-youtube.test-report.json",
+    "/platforms/web/youtube/build/",
     "",
   ].join("\n"));
   await writeFile(path.join(repositoryDirectory, "source.txt"), "release source\n");
@@ -102,7 +103,7 @@ async function createReleaseFixture(context) {
     },
     runtime: {sha256: contentSha256, localeCount: 16, riddleCountPerLocale: 180},
   })}\n`);
-  const reportPath = path.join(repositoryDirectory, "build-youtube.test-report.json");
+  const reportPath = path.join(repositoryDirectory, "platforms/web/youtube/build/build-youtube.test-report.json");
   const writeReport = (overrides = {}) => writeYouTubeVerificationReport({
     repositoryDirectory,
     distDirectory,
@@ -250,15 +251,13 @@ test("packaging rejects missing, malformed, failed, and incomplete evidence", as
     await writeFile(fixture.contentAuditPath, `${JSON.stringify(audit)}\n`);
     await assert.rejects(fixture.writeReport(), /approved translator and critic/u);
   });
-  await context.test("non-root output", async (subcontext) => {
+  await context.test("output inside the runtime artifact", async (subcontext) => {
     const fixture = await createReleaseFixture(subcontext);
     await fixture.writeReport();
-    const nested = path.join(fixture.repositoryDirectory, "nested");
-    await mkdir(nested);
     await assert.rejects(packageYouTubeArtifact({
       ...fixture,
-      archivePath: path.join(nested, "build-youtube.zip"),
-    }), /root-level outputs/u);
+      archivePath: path.join(fixture.distDirectory, "build-youtube.zip"),
+    }), /outside the runtime artifact/u);
   });
 });
 

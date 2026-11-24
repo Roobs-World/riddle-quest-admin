@@ -7,7 +7,7 @@ pnpm build:netflix
 pnpm build:yahoo
 ```
 
-The resulting upload directories are `builds/netflix/` and `builds/yahoo/`. Each build runs target-boundary, locale, TypeScript, size, portability, SDK, advertising, commerce, and content-manifest checks. The Netflix audit also prohibits network and analytics code.
+The resulting upload directories are `platforms/web/netflix/build/dist/` and `platforms/web/yahoo/build/dist/`. Each build runs target-boundary, locale, TypeScript, size, portability, SDK, advertising, commerce, and content-manifest checks. The Netflix audit also prohibits network and analytics code.
 
 The Netflix artifact is an engineering candidate rather than a submission-ready partner build. Netflix does not provide a public HTML5 game SDK or submission contract that this repository can safely install. Until partner documentation and credentials are supplied, it uses the provider-neutral standalone adapter, makes no network calls, and saves progress in browser local storage. No SDK from another target is included.
 

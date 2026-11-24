@@ -12,7 +12,7 @@
       "playkovo"
     ]
   },
-  "handoff": "Submit the hosted build or build-playkovo-review.zip through the provider review channel.",
+  "handoff": "Submit the hosted build or platforms/web/playkovo/build/build-playkovo-review.zip through the provider review channel.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "PlayKovo",
   "delivery": "neutral-html5",

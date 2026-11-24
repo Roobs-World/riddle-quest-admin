@@ -58,6 +58,7 @@
     "facebook:setup": "bash platforms/web/facebook/scripts/setup-facebook-instant-games.sh",
     "jest:build-upload": "pnpm release:jest",
     "licenses:generate": "node scripts/web/generate-third-party-licenses.mjs --write",
+    "migrate:game-builds": "node scripts/web/migrate-game-build-outputs.mjs",
     "package:youtube": "node platforms/web/youtube/scripts/youtube-release-artifact.mjs",
     "preflight:all-platforms": "pnpm verify:all-targets && pnpm release:plan",
     "preflight:facebook-backend": "pnpm check:facebook-secrets && pnpm --dir firebase-functions preflight:facebook-backend",

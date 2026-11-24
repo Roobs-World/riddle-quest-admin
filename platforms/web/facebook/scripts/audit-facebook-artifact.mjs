@@ -4,7 +4,7 @@ import {inspectWebTargetArtifact} from "../../../../scripts/web/web-target-artif
 import {hasAuditedHostedNotifications} from "../../../../scripts/web/audit-hosted-notifications.mjs";
 
 const inventory = await inspectWebTargetArtifact({
-  rootDirectory: process.argv[2] || process.env.FACEBOOK_BUILD_OUT_DIR?.trim() || "builds/facebook",
+  rootDirectory: process.argv[2] || process.env.FACEBOOK_BUILD_OUT_DIR?.trim() || "platforms/web/facebook/build/dist",
   target: "facebook",
 });
 const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;

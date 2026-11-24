@@ -62,7 +62,7 @@ test("a finding in a later target blocks the entire batch and identifies the doc
   }
 });
 
-test("the default gate requires all six artifacts in the repository builds folder", () => {
+test("the default gate requires all six artifacts in their project build folders", () => {
   const repository = mkdtempSync(path.join(tmpdir(), "rq-html-targets-"));
   try {
     const portal = path.join(repository, ".");
@@ -70,7 +70,7 @@ test("the default gate requires all six artifacts in the repository builds folde
     writeFileSync(path.join(portal, "package.json"), "{}");
     symlinkSync(path.join(packageDirectory, "node_modules"), path.join(portal, "node_modules"), "dir");
     for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo"]) {
-      const directory = path.join(repository, "builds", target);
+      const directory = path.join(repository, "platforms", "web", target, "build", "dist");
       mkdirSync(directory, {recursive: true});
       writeFileSync(path.join(directory, "index.html"), '<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Game</main></body></html>');
       if (target === "reddit") writeFileSync(path.join(directory, "reddit-inline.html"), '<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Play</main></body></html>');
@@ -78,9 +78,9 @@ test("the default gate requires all six artifacts in the repository builds folde
     const run = () => spawnSync(process.execPath, [script], {cwd: portal, encoding: "utf8"});
     const success = run();
     assert.equal(success.status, 0, success.stderr);
-    assert.match(success.stdout, /builds\/yahoo\/index\.html/);
-    assert.match(success.stdout, /builds\/reddit\/reddit-inline\.html/);
-    rmSync(path.join(repository, "builds/yahoo/index.html"));
+    assert.match(success.stdout, /platforms\/web\/yahoo\/build\/dist\/index\.html/);
+    assert.match(success.stdout, /platforms\/web\/reddit\/build\/dist\/reddit-inline\.html/);
+    rmSync(path.join(repository, "platforms/web/yahoo/build/dist/index.html"));
     assert.notEqual(run().status, 0, "A missing candidate artifact must block the full gate");
   } finally {
     rmSync(repository, {recursive: true, force: true});

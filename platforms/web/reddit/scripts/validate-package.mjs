@@ -20,6 +20,9 @@ if (config.post?.entrypoints?.default?.inline !== true) errors.push("default ent
 if (config.post?.entrypoints?.default?.entry !== "splash.html") errors.push("inline entrypoint must be splash.html");
 if (config.post?.entrypoints?.game?.entry !== "game.html") errors.push("expanded entrypoint must be game.html");
 if (config.server?.entry !== "index.cjs") errors.push("server entrypoint must be index.cjs");
+if (config.post?.dir !== "build/devvit/client" || config.server?.dir !== "build/devvit/server") {
+  errors.push("client and server output must remain in this project's build/devvit folder");
+}
 const required = [
   path.join(config.post?.dir ?? "", "splash.html"),
   path.join(config.post?.dir ?? "", "game.html"),

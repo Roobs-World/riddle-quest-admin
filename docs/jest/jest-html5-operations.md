@@ -165,7 +165,7 @@ uncertain attempt. Reconcile it through the [Developer Console build status and 
 After a documented `202`, both receipts transition to accepted-pending and record the version ID and exact ZIP checksum;
 the source-wide barrier deliberately remains. Only after the Console or completion email reports an authoritative final
 status may an owner manually remove the corresponding `<game-id>.<source-commit>.unresolved-upload.json` file from
-`.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
+`platforms/web/jest/build/.jest-upload-receipts`; retain the accepted build-specific receipt as the audit record, or reconcile it
 before ever retrying that exact version. Do not delete either barrier and retry blindly: Jest may already have accepted
 the first request. Jest does not currently document an authoritative build-status polling endpoint, so the tooling
 deliberately does not infer readiness from elapsed time or poll an unofficial URL. Use the Developer Console or completion

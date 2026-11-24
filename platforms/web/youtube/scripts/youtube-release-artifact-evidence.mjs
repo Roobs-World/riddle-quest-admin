@@ -2,6 +2,7 @@ import {createHash} from "node:crypto";
 import {spawn} from "node:child_process";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {getWebBuildPaths} from "../../../../scripts/release/release-registry.mjs";
 import {
   captureSourceIdentity,
   writeYouTubeVerificationReport,
@@ -9,6 +10,7 @@ import {
 } from "./youtube-release-artifact.mjs";
 
 const repositoryDirectory = fileURLToPath(new URL("../../../..", import.meta.url));
+const youtubePaths = getWebBuildPaths("youtube");
 
 const invocations = Object.freeze([
   Object.freeze({args: ["--filter", "riddle-quest", "build:web"]}),
@@ -51,12 +53,12 @@ export async function runVerificationCommand(suite, invocation, {cwd = repositor
 
 export async function runYouTubeReleaseVerification({
   repository = repositoryDirectory,
-  distDirectory = path.join(repository, "builds/youtube"),
+  distDirectory = path.join(repository, youtubePaths.outputDirectory),
   contentAuditPath = path.join(
     repository,
     "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",
   ),
-  reportPath = path.join(repository, "build-youtube.test-report.json"),
+  reportPath = path.join(repository, youtubePaths.buildDirectory, "build-youtube.test-report.json"),
   commandRunner = runVerificationCommand,
   capturedAt = new Date().toISOString(),
 } = {}) {

@@ -12,7 +12,7 @@
       "telegram"
     ]
   },
-  "handoff": "Create the bot and game in BotFather, then use build-telegram-review.zip as the isolated integration baseline.",
+  "handoff": "Create the bot and game in BotFather, then use platforms/web/telegram/build/build-telegram-review.zip as the isolated integration baseline.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Telegram",
   "delivery": "neutral-html5",

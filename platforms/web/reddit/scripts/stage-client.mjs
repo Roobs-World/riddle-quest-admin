@@ -1,9 +1,12 @@
 import {cp, readFile, rm, writeFile} from "node:fs/promises";
 import path from "node:path";
+import {getWebBuildPaths} from "../../../../scripts/release/release-registry.mjs";
 
 const packageRoot = path.resolve(import.meta.dirname, "..");
-const portalArtifact = path.resolve(packageRoot, "../../../builds/reddit");
-const clientOutput = path.join(packageRoot, "dist/client");
+const redditPaths = getWebBuildPaths("reddit");
+const repository = path.resolve(packageRoot, "../../..");
+const portalArtifact = path.join(repository, redditPaths.outputDirectory);
+const clientOutput = path.join(repository, redditPaths.buildDirectory, "devvit/client");
 const redditLicenseNotice = path.join(packageRoot, "third-party-licenses.reddit.txt");
 
 await rm(clientOutput, {recursive: true, force: true});

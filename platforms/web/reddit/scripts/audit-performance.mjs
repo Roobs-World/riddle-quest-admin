@@ -5,7 +5,7 @@ import lighthouse from "lighthouse";
 import {launch} from "chrome-launcher";
 
 const root = path.resolve(import.meta.dirname, "..");
-const clientRoot = path.join(root, "dist/client");
+const clientRoot = path.join(root, "build/devvit/client");
 const port = 4183;
 const contentTypes = new Map([
   [".css", "text/css"], [".html", "text/html"], [".js", "text/javascript"],

@@ -12,7 +12,7 @@
       "gamedistribution"
     ]
   },
-  "handoff": "Apply with the production playable URL and retain build-gamedistribution-review.zip for technical review.",
+  "handoff": "Apply with the production playable URL and retain platforms/web/gamedistribution/build/build-gamedistribution-review.zip for technical review.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "GameDistribution",
   "delivery": "neutral-html5",

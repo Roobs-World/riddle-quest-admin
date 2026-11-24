@@ -34,7 +34,7 @@ test("release preparation checks clean source before building and requires both 
   const source = await readFile(new URL("./prepare-reddit-release.mjs", import.meta.url), "utf8");
   assert.ok(source.indexOf("assertSourceUnchanged()") < source.indexOf('["build:package"]'));
   assert.ok(source.lastIndexOf("assertSourceUnchanged()") > source.indexOf("createRedditHandoff"));
-  for (const required of ["devvit.json", "dist/server/index.cjs", "dist/client/splash.html", "dist/client/game.html"]) {
+  for (const required of ["devvit.json", "build/devvit/server/index.cjs", "build/devvit/client/splash.html", "build/devvit/client/game.html"]) {
     assert.match(source, new RegExp(required.replaceAll(".", "\\."), "u"));
   }
 });

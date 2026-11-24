@@ -1,6 +1,6 @@
-import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/build/jestArtifactPlugins.ts";
-import {redditArtifactPlugin} from "../../../platforms/web/reddit/build/redditArtifactPlugin.ts";
-import {facebookArtifactPlugin} from "../../../platforms/web/facebook/build/facebookArtifactPlugin.ts";
+import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/tooling/jestArtifactPlugins.ts";
+import {redditArtifactPlugin} from "../../../platforms/web/reddit/tooling/redditArtifactPlugin.ts";
+import {facebookArtifactPlugin} from "../../../platforms/web/facebook/tooling/facebookArtifactPlugin.ts";
 import {webBuildFacts} from "../../release/release-registry.mjs";
 import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";

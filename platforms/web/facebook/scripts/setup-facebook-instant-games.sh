@@ -188,7 +188,11 @@ TOTAL_STAGES=6
 
 REPO_ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../../../.." && pwd)
 cd "$REPO_ROOT"
-RECEIPT_DIR="./.facebook-setup-receipts"
+if [[ -e "./.facebook-setup-receipts" || -e "./platforms/web/facebook/.facebook-setup-receipts" ]]; then
+  warn "Legacy Facebook setup state remains; run node scripts/web/migrate-game-build-outputs.mjs first"
+  exit 1
+fi
+RECEIPT_DIR="./platforms/web/facebook/build/.facebook-setup-receipts"
 mkdir -p "$RECEIPT_DIR"
 ENV_FILE="${FACEBOOK_SETUP_ENV_FILE:-$RECEIPT_DIR/setup.env}"
 

@@ -6,10 +6,17 @@ const sharedRuntimePackages = ["react", "react-dom", "scheduler", "three", "zod"
 /** Packages permitted only in Firebase-backed provider adapters. */
 const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb", "tslib"];
 const providerRuntimePackages = {jest: [...firebaseRuntimePackages, "html2canvas-pro"], facebook: firebaseRuntimePackages, reddit: ["@devvit/*", "valibot", "jwt-decode"]};
+/** Keeps generated game files inside the provider that owns them. */
+export function getWebBuildPaths(target) {
+  if (typeof target !== "string" || !/^[a-z][a-z0-9-]*$/.test(target)) throw new Error("Invalid web build target");
+  const projectDirectory = `platforms/web/${target}`;
+  const buildDirectory = `${projectDirectory}/build`;
+  return Object.freeze({projectDirectory, buildDirectory, outputDirectory: `${buildDirectory}/dist`});
+}
 /** Canonical build facts consumed by Vite, dependency enforcement and release evidence. */
 export const webBuildFacts = Object.freeze(Object.fromEntries(
   ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"].map(target => [target,
-    Object.freeze({outputDirectory: `builds/${target}`, runtimePackages: Object.freeze([...sharedRuntimePackages, ...(providerRuntimePackages[target] ?? [])])})]),
+    Object.freeze({...getWebBuildPaths(target), runtimePackages: Object.freeze([...sharedRuntimePackages, ...(providerRuntimePackages[target] ?? [])])})]),
 ));
 // Canonical release facts consumed by commands, CI, packaging and release evidence.
 

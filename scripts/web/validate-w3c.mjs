@@ -10,7 +10,7 @@ const checkerPackage = path.dirname(requireFromPackage.resolve("vnu-jar/package.
 const documents = process.argv.slice(2);
 const documentPaths = (documents.length ? documents : ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo"]
   .flatMap(target => (target === "reddit" ? ["index.html", "reddit-inline.html"] : ["index.html"])
-    .map(document => `builds/${target}/${document}`))).map(document => path.resolve(process.cwd(), document));
+    .map(document => `platforms/web/${target}/build/dist/${document}`))).map(document => path.resolve(process.cwd(), document));
 // Nu can silently skip nonexistent inputs; require every requested artifact first.
 for (const document of documentPaths) {
   if (!statSync(document).isFile()) throw new Error(`W3C validation requires a document file: ${document}`);

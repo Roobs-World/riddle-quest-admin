@@ -49,7 +49,7 @@
     "rules": "firebase-functions/database.rules.json"
   },
   "hosting": {
-    "public": "./dist-jest",
+    "public": "./platforms/web/jest/build/dist",
     "ignore": [
       "firebase.json",
       "**/.*",

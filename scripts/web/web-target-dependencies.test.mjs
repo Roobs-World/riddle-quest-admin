@@ -199,7 +199,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   const path = await import('node:path');
   const {fileURLToPath} = await import('node:url');
   const repository = fileURLToPath(new URL('../..', import.meta.url));
-  const output = path.join(repository, 'builds/facebook');
+  const output = path.join(repository, 'platforms/web/facebook/build/dist');
   const original = process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
   t.after(() => {
     if (original === undefined) delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
@@ -207,6 +207,7 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   });
   delete process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
   const canonical = targetDependencyEvidencePath('facebook', output);
+  assert.equal(canonical, path.join(repository, 'platforms/web/facebook/build/evidence/target-dependencies.json'));
   const isolated = path.join(repository, 'temporary-release-evidence');
   process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR = isolated;
   assert.equal(targetDependencyEvidencePath('facebook', output), path.join(isolated, 'facebook.json'));
@@ -290,7 +291,7 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
       ? JSON.stringify({storeDir: path.join(root, 'package-store')})
       : 'fixture marketing asset');
   }
-  const output = path.join(root, 'builds/gamesnacks');
+  const output = path.join(root, 'platforms/web/gamesnacks/build/dist');
   await mkdir(path.join(output, 'assets'), {recursive: true});
   const runtime = 'globalThis.GameSnacks;';
   const content = new Map([
@@ -302,7 +303,7 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
     packages: [], modules: [], chunks: [],
     files: [...content].map(([file, bytes]) => ({file,
       sha256: createHash('sha256').update(bytes).digest('hex')}))};
-  const defaultInventory = path.join(root, 'artifacts/target-dependencies/gamesnacks.json');
+  const defaultInventory = path.join(root, 'platforms/web/gamesnacks/build/evidence/target-dependencies.json');
   const evidenceDirectory = path.join(root, 'release-evidence');
   const relocatedInventory = path.join(evidenceDirectory, 'gamesnacks.json');
   await mkdir(path.dirname(defaultInventory), {recursive: true});
@@ -328,8 +329,8 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
     assert.equal(row.sha256, createHash('sha256')
       .update(await readFile(path.join(output, row.file))).digest('hex'));
   }
-  const archive = await readFile(path.join(root, 'build-gamesnacks.zip'));
-  const archiveManifest = JSON.parse(await readFile(path.join(root, 'build-gamesnacks.zip.manifest.json'), 'utf8'));
+  const archive = await readFile(path.join(root, 'platforms/web/gamesnacks/build/build-gamesnacks.zip'));
+  const archiveManifest = JSON.parse(await readFile(path.join(root, 'platforms/web/gamesnacks/build/build-gamesnacks.zip.manifest.json'), 'utf8'));
   assert.equal(archiveManifest.sha256, createHash('sha256').update(archive).digest('hex'));
   assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
   await writeFile(relocatedInventory, JSON.stringify(inventory));

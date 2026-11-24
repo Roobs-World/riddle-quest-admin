@@ -7,7 +7,7 @@ import path from 'node:path';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const out=path.resolve(process.env.REVIEW_FEEDBACK_REPORT_DIR??path.join(root,'artifacts/review-feedback-2026-10-25/solo'));
 await mkdir(out,{recursive:true});
-const artifact=path.resolve(process.env.PORTAL_JEST_BUILD_DIR??path.join(root,'builds/jest'));
+const artifact=path.resolve(process.env.PORTAL_JEST_BUILD_DIR??path.join(root,'platforms/web/jest/build/dist'));
 const hosted=process.env.REVIEW_FEEDBACK_HOSTED_URL;
 const server=createServer(async(req,res)=>{try{const p=new URL(req.url,'http://localhost').pathname;const file=path.join(artifact,p==='/'?'index.html':p);res.setHeader('Content-Type',({'.js':'text/javascript','.css':'text/css','.html':'text/html','.json':'application/json','.svg':'image/svg+xml','.woff2':'font/woff2','.webp':'image/webp'})[path.extname(file)]??'application/octet-stream');res.end(await readFile(file));}catch{res.writeHead(404).end();}});
 if(!hosted)await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));

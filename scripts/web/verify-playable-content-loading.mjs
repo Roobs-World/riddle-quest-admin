@@ -5,7 +5,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {chromium} from '@playwright/test';
 
-const directory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../builds/youtube');
+const directory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../platforms/web/youtube/build/dist');
 const server = createServer(async (request, response) => {
   try {
     const file = path.join(directory, new URL(request.url, 'http://localhost').pathname === '/' ? 'index.html' : new URL(request.url, 'http://localhost').pathname);

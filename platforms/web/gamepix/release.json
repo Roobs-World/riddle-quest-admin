@@ -12,7 +12,7 @@
       "gamepix"
     ]
   },
-  "handoff": "Upload build-gamepix-review.zip without enabling syndication until the current terms are accepted.",
+  "handoff": "Upload platforms/web/gamepix/build/build-gamepix-review.zip without enabling syndication until the current terms are accepted.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "GamePix",
   "delivery": "neutral-html5",

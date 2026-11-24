@@ -12,7 +12,7 @@
       "crazygames"
     ]
   },
-  "handoff": "Upload build-crazygames-basic.zip in the Developer Portal and retain its manifest digest.",
+  "handoff": "Upload platforms/web/crazygames/build/build-crazygames-basic.zip in the Developer Portal and retain its manifest digest.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "CrazyGames",
   "delivery": "neutral-html5",

@@ -12,7 +12,7 @@ await mkdir(evidence, {recursive: true});
 const server = createServer(async (request, response) => {
   try {
     const pathname = new URL(request.url, "http://localhost").pathname;
-    const file = path.join(root, "builds/jest", pathname === "/" ? "index.html" : pathname);
+    const file = path.join(root, "platforms/web/jest/build/dist", pathname === "/" ? "index.html" : pathname);
     const types = {".js": "text/javascript", ".css": "text/css", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2"};
     response.setHeader("Content-Type", types[path.extname(file)] ?? "application/octet-stream");
     response.end(await readFile(file));

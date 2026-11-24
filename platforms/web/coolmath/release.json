@@ -12,7 +12,7 @@
       "coolmath"
     ]
   },
-  "handoff": "Submit the playable URL and retain build-coolmath-pitch.zip for requested review.",
+  "handoff": "Submit the playable URL and retain platforms/web/coolmath/build/build-coolmath-pitch.zip for requested review.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Coolmath Games",
   "delivery": "neutral-html5",

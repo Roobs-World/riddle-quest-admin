@@ -5,7 +5,7 @@ import {hasAuditedHostedNotifications} from "./audit-hosted-notifications.mjs";
 
 const target = process.argv[2];
 if (!new Set(["netflix", "yahoo"]).has(target)) throw new Error("Expected netflix or yahoo target");
-const rootDirectory = process.argv[3] || process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim() || `builds/${target}`;
+const rootDirectory = process.argv[3] || process.env[`${target.toUpperCase()}_BUILD_OUT_DIR`]?.trim() || `platforms/web/${target}/build/dist`;
 const inventory = await inspectWebTargetArtifact({rootDirectory, target});
 const {files, root, textFiles, totalBytes} = inventory;
 const hostedNotifications = await hasAuditedHostedNotifications({target, root, files});

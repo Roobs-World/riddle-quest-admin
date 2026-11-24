@@ -7,14 +7,15 @@ import {tmpdir} from "node:os";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {listHtml5DistributionDefinitions} from "./package-html5-platform.mjs";
+import {getWebBuildPaths} from "./release-registry.mjs";
 import {chromium, serveArtifact, verifySoloArtifact} from "./browser-artifact-support.mjs";
 
 const root = fileURLToPath(new URL("../..", import.meta.url));
 const execute = promisify(execFile);
 const allTargets = [...listHtml5DistributionDefinitions(),
   {target: "gamesnacks", artifact: "build-gamesnacks.zip", gamesnacks: true},
-  {target: "netflix", directory: "builds/netflix"},
-  {target: "yahoo", directory: "builds/yahoo"}];
+  {target: "netflix", directory: getWebBuildPaths("netflix").outputDirectory},
+  {target: "yahoo", directory: getWebBuildPaths("yahoo").outputDirectory}];
 // `--target <name>` gates one release handoff on its own packaged gameplay.
 const targetFlag = process.argv.indexOf("--target");
 const only = targetFlag === -1 ? undefined : process.argv[targetFlag + 1];
@@ -31,8 +32,9 @@ try {
     let server;
     try {
       let sha256;
+      const artifact = target.artifact && path.join(getWebBuildPaths(target.target).buildDirectory, target.artifact);
       if (target.artifact) {
-        const archive = path.join(root, target.artifact);
+        const archive = path.join(root, artifact);
         const bytes = await readFile(archive);
         sha256 = createHash("sha256").update(bytes).digest("hex");
         const manifest = JSON.parse(await readFile(`${archive}.manifest.json`, "utf8"));
@@ -41,7 +43,7 @@ try {
       }
       server = await serveArtifact(target.directory ? path.join(root, target.directory) : temporary);
       const checks = await verifySoloArtifact(browser, server.url, target);
-      results.push({target: target.target, artifact: target.artifact, sha256, status: "passed", ...checks});
+      results.push({target: target.target, artifact, sha256, status: "passed", ...checks});
       console.log(`PASS ${target.target}: solve, reward, reload${target.offline ? ", offline" : ""}`);
     } catch (error) {
       results.push({target: target.target, status: "failed", error: error.message});

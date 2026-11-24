@@ -150,7 +150,10 @@ gha-creds-*.json
 # Local recovery snapshots from production content regeneration
 artifacts/content-reset-backup-*.json
 
-# Isolated web target artifacts
+# Game outputs, archives and private release state
+/platforms/web/*/build/
+
+# Historical shared test evidence
 /builds/
 
 # Verification runs copy whole target builds into artifacts/<run>/built/.

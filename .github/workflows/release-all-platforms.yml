@@ -67,12 +67,12 @@ jobs:
           if-no-files-found: error
           retention-days: 3
           path: |
-            build-*.zip
-            build-*.manifest.json
-            build-html5.sha256
-            build-html5.zip.source.json
-            builds/
-            platforms/web/reddit/dist/
+            platforms/web/*/build/build-*.zip
+            platforms/web/*/build/build-*.manifest.json
+            platforms/web/netflix/build/build-html5.sha256
+            platforms/web/netflix/build/build-html5.zip.source.json
+            platforms/web/*/build/dist/
+            platforms/web/reddit/build/devvit/
 
   youtube:
     name: Verify and package the YouTube Playable
@@ -103,9 +103,9 @@ jobs:
           if-no-files-found: error
           retention-days: 3
           path: |
-            build-youtube.zip
-            build-youtube.manifest.json
-            build-youtube.test-report.json
+            platforms/web/youtube/build/build-youtube.zip
+            platforms/web/youtube/build/build-youtube.manifest.json
+            platforms/web/youtube/build/build-youtube.test-report.json
 
   finalize:
     name: Verify every release target and publish the handoffs
@@ -126,9 +126,11 @@ jobs:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: release-workspace-${{ github.sha }}
+          path: platforms/web
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: release-youtube-${{ github.sha }}
+          path: platforms/web/youtube/build
       - name: Audit every release archive and manifest
         run: node scripts/release/verify-release-target-e2e.mjs
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
@@ -137,15 +139,13 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           path: |
-            build-*.zip
-            build-*.manifest.json
-            build-youtube.test-report.json
-            build-html5.sha256
-            build-html5.zip.source.json
-            builds/facebook
-            builds/reddit
-            builds/yahoo
-            builds/gamesnacks
+            platforms/web/*/build/build-*.zip
+            platforms/web/*/build/build-*.manifest.json
+            platforms/web/youtube/build/build-youtube.test-report.json
+            platforms/web/netflix/build/build-html5.sha256
+            platforms/web/netflix/build/build-html5.zip.source.json
+            platforms/web/*/build/dist/
+            platforms/web/reddit/build/devvit/
 
   itch:
     name: Publish itch.io when configured
@@ -160,6 +160,7 @@ jobs:
       - uses: actions/download-artifact@634f93cb2916e3fdff6788551b99b062d0335ce0 # v5.0.0
         with:
           name: riddle-quest-release-${{ github.sha }}
+          path: platforms/web
       - name: Publish the verified HTML5 archive
         shell: bash
         run: |
@@ -173,4 +174,4 @@ jobs:
             --output /tmp/butler.zip
           unzip -q /tmp/butler.zip -d /tmp/butler
           chmod +x /tmp/butler/butler
-          /tmp/butler/butler push build-itch.zip "${ITCH_GAME_TARGET}:html5" --userversion "${GITHUB_REF_NAME}-${GITHUB_SHA::12}"
+          /tmp/butler/butler push platforms/web/itch/build/build-itch.zip "${ITCH_GAME_TARGET}:html5" --userversion "${GITHUB_REF_NAME}-${GITHUB_SHA::12}"

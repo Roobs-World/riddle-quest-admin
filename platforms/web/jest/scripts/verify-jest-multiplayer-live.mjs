@@ -15,7 +15,7 @@ const states = [
   process.env.JEST_PLAYER_TWO_STORAGE_STATE || "/tmp/riddle-quest-jest-sandbox-state-player-2.json",
 ];
 const evidenceDirectory = process.env.JEST_MULTIPLAYER_EVIDENCE_DIR ||
-  fileURLToPath(new URL("../.jest-upload-receipts/multiplayer-qa/", import.meta.url));
+  fileURLToPath(new URL("../build/.jest-upload-receipts/multiplayer-qa/", import.meta.url));
 if (!expectedBuildVersion) throw new Error("JEST_EXPECTED_BUILD_VERSION is required for exact-build verification.");
 for (const state of states) await assertPrivateJestStorageState(state);
 mkdirSync(evidenceDirectory, {recursive: true, mode: 0o700});

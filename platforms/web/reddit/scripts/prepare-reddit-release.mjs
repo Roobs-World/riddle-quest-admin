@@ -1,14 +1,15 @@
 import {cp, mkdtemp, mkdir, readFile, rm} from "node:fs/promises";
-import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
 import {fileURLToPath} from "node:url";
-import {createRedditArtifactRecord, createRedditHandoff, redditArtifactSha256, verifyGatedRedditArtifact, writePrivateRedditJson} from "./reddit-release-artifact.mjs";
+import {assertRedditBuildStateMigrated, createRedditArtifactRecord, createRedditHandoff, redditArtifactSha256, verifyGatedRedditArtifact, writePrivateRedditJson} from "./reddit-release-artifact.mjs";
 
 const packageDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repository = path.resolve(packageDirectory, "../../..");
-const receipts = path.join(packageDirectory, ".reddit-release-receipts");
-const archivePath = path.join(packageDirectory, "build-reddit.zip");
+const buildDirectory = path.join(packageDirectory, "build");
+const receipts = path.join(buildDirectory, ".reddit-release-receipts");
+const archivePath = path.join(buildDirectory, "build-reddit.zip");
+assertRedditBuildStateMigrated(receipts);
 const receiptPath = path.join(receipts, "gated-artifact.json");
 const run = (command, args, options = {}) => {
   const result = spawnSync(command, args, {cwd: options.cwd ?? repository, encoding: "utf8", stdio: options.capture ? "pipe" : "inherit"});
@@ -30,10 +31,11 @@ const sourceDirty = assertSourceUnchanged();
 
 run("pnpm", ["build:package"], {cwd: packageDirectory});
 assertSourceUnchanged();
-const staging = await mkdtemp(path.join(tmpdir(), "riddle-quest-reddit-package-"));
+await mkdir(buildDirectory, {recursive: true});
+const staging = await mkdtemp(path.join(buildDirectory, ".package-"));
 try {
   await Promise.all([
-    cp(path.join(packageDirectory, "dist"), path.join(staging, "dist"), {recursive: true, dereference: false}),
+    cp(path.join(buildDirectory, "devvit"), path.join(staging, "build/devvit"), {recursive: true, dereference: false}),
     cp(path.join(packageDirectory, "devvit.json"), path.join(staging, "devvit.json")),
     cp(path.join(packageDirectory, "products.json"), path.join(staging, "products.json")),
     cp(path.join(repository, "docs/reddit/README.md"), path.join(staging, "README.md")),
@@ -47,7 +49,7 @@ try {
 
 const contents = await readFile(archivePath);
 const entries = run("/usr/bin/unzip", ["-Z1", archivePath], {capture: true}).split("\n").filter(Boolean);
-if (!entries.includes("devvit.json") || !entries.includes("products.json") || !entries.includes("dist/server/index.cjs") || !entries.includes("dist/client/splash.html") || !entries.includes("dist/client/game.html")) {
+if (!entries.includes("devvit.json") || !entries.includes("products.json") || !entries.includes("build/devvit/server/index.cjs") || !entries.includes("build/devvit/client/splash.html") || !entries.includes("build/devvit/client/game.html")) {
   throw new Error("Reddit archive is missing required package entries");
 }
 await mkdir(receipts, {recursive: true, mode: 0o700});

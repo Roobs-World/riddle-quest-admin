@@ -5,12 +5,13 @@ import {copyFile, mkdir, readFile, readdir, stat, unlink, writeFile} from "node:
 import {promisify} from "node:util";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
+import {getWebBuildPaths} from "../../../../scripts/release/release-registry.mjs";
 import {targetDependencyEvidencePath} from "../../../../scripts/web/build/webTargetDependencies.ts";
 
 const execute = promisify(execFile);
-const portal = fileURLToPath(new URL("../../../..", import.meta.url));
 const repository = fileURLToPath(new URL("../../../..", import.meta.url));
-const output = path.join(portal, "builds/gamesnacks");
+const gamesnacksPaths = getWebBuildPaths("gamesnacks");
+const output = path.join(repository, gamesnacksPaths.outputDirectory);
 
 async function filesBelow(root, directory = root) {
   const entries = await readdir(directory, {withFileTypes: true});
@@ -88,13 +89,13 @@ for (const file of packagedFiles) {
 inventory.files = await Promise.all(packagedFiles.map(async file => ({file,
   sha256: createHash("sha256").update(await readFile(path.join(output, file))).digest("hex")})));
 await writeFile(inventoryPath, `${JSON.stringify(inventory, null, 2)}\n`);
-const archivePath = path.join(repository, "build-gamesnacks.zip");
+const archivePath = path.join(repository, gamesnacksPaths.buildDirectory, "build-gamesnacks.zip");
 await unlink(archivePath).catch((error) => {
   if (error?.code !== "ENOENT") throw error;
 });
 await execute("zip", ["-q", "-r", archivePath, "."], {cwd: output});
 const archive = await readFile(archivePath);
-await writeFile(path.join(repository, "build-gamesnacks.zip.manifest.json"), `${JSON.stringify({
+await writeFile(path.join(repository, gamesnacksPaths.buildDirectory, "build-gamesnacks.zip.manifest.json"), `${JSON.stringify({
   schemaVersion: 1,
   platform: "gamesnacks",
   artifact: "build-gamesnacks.zip",

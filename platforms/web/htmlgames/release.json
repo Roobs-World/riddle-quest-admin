@@ -12,7 +12,7 @@
       "htmlgames"
     ]
   },
-  "handoff": "Use the official developer form and retain build-htmlgames-pitch.zip for requested delivery.",
+  "handoff": "Use the official developer form and retain platforms/web/htmlgames/build/build-htmlgames-pitch.zip for requested delivery.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "HTMLGames.com",
   "delivery": "neutral-html5",

@@ -3,7 +3,7 @@ import {fileURLToPath} from "node:url";
 import {resolveRedditPlaytest} from "./reddit-playtest-state.mjs";
 
 /** Records an inspected upload outcome locally; this command never calls Devvit. */
-export function resolveRedditPlaytestArgs(args, directory = fileURLToPath(new URL("../.reddit-release-receipts", import.meta.url))) {
+export function resolveRedditPlaytestArgs(args, directory = fileURLToPath(new URL("../build/.reddit-release-receipts", import.meta.url))) {
   const [version, status, flag, confirmVersion] = args;
   if (args.length !== 4 || flag !== "--confirm-version") {
     throw new Error("Usage: playtest:resolve VERSION accepted|confirmed-absent --confirm-version VERSION");

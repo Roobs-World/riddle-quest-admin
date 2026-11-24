@@ -12,7 +12,7 @@
       "famobi"
     ]
   },
-  "handoff": "Pitch the hosted demo and retain build-famobi-pitch.zip until compatible non-exclusive terms are offered.",
+  "handoff": "Pitch the hosted demo and retain platforms/web/famobi/build/build-famobi-pitch.zip until compatible non-exclusive terms are offered.",
   "runbook": "docs/common/releases/research/further-html5-release-targets-2026-09-21.md",
   "displayName": "Famobi",
   "delivery": "neutral-html5",

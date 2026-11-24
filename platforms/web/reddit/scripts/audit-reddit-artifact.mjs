@@ -3,7 +3,7 @@ import path from "node:path";
 import {inspectWebTargetArtifact} from "../../../../scripts/web/web-target-artifact-inventory.mjs";
 
 const inventory = await inspectWebTargetArtifact({
-  rootDirectory: process.argv[2] || process.env.REDDIT_BUILD_OUT_DIR?.trim() || "builds/reddit",
+  rootDirectory: process.argv[2] || process.env.REDDIT_BUILD_OUT_DIR?.trim() || "platforms/web/reddit/build/dist",
   target: "reddit",
 });
 const {files, root, sizedFiles, totalBytes} = inventory;

@@ -85,7 +85,7 @@ Required owner setup:
 - All 16 credentialed translation bundles and the release-ready content/model audit; the current English engineering fixture cannot be submitted.
 - Portal bundle analysis, hosted Test Suite, desktop/mobile web testing, physical Android/iOS testing, and certification submission.
 
-Run `pnpm release:youtube`, upload `build-youtube.zip`, and bind all portal evidence to the generated SHA-256. The public portal does not expose a supported upload API, so ingestion and certification remain portal actions.
+Run `pnpm release:youtube`, upload `platforms/web/youtube/build/build-youtube.zip`, and bind all portal evidence to the generated SHA-256. The public portal does not expose a supported upload API, so ingestion and certification remain portal actions.
 
 ## Netflix Games
 
@@ -96,7 +96,7 @@ Request from the Netflix Games partner contact:
 - Game Service ID and access credentials, identity-token verification contract, cloud-save contract, lifecycle requirements, certification suite, supported devices, localization list, packaging limits, and upload/promotion procedure.
 - Written policy for commerce, achievements, leaderboards, social features, telemetry, and advertising. Do not enable ads without explicit approval.
 
-The current `builds/netflix` output is an engineering candidate. Replace its standalone adapter only after these contracts are available.
+The current `platforms/web/netflix/build/dist` output is an engineering candidate. Replace its standalone adapter only after these contracts are available.
 
 ## Yahoo Games
 
@@ -106,4 +106,4 @@ Ask the Yahoo Games publishing/partner contact for:
 - Partner account invitation, app/game ID, SDK package and documentation, OAuth/identity contract, cloud-save contract, lifecycle API, packaging limits, certification tests, and upload/promotion procedure.
 - Written commerce, social, telemetry, and advertising policy plus any ad SDK and placement identifiers.
 
-Do not install Yahoo Search SDK or Flurry as a substitute for a Yahoo Games SDK. The current `builds/yahoo` output remains an engineering candidate until Yahoo supplies a game-specific contract.
+Do not install Yahoo Search SDK or Flurry as a substitute for a Yahoo Games SDK. The current `platforms/web/yahoo/build/dist` output remains an engineering candidate until Yahoo supplies a game-specific contract.

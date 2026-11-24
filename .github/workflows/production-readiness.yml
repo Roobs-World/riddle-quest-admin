@@ -92,7 +92,7 @@ jobs:
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
       - run: pnpm build:jest-facebook
-      - run: pnpm --filter riddle-quest validate:w3c builds/jest/index.html builds/facebook/index.html
+      - run: pnpm --filter riddle-quest validate:w3c platforms/web/jest/build/dist/index.html platforms/web/facebook/build/dist/index.html
       - run: pnpm --filter riddle-quest preflight:jest-upload
       - name: Package the audited Facebook build
         run: node platforms/web/facebook/scripts/prepare-facebook-draft.mjs

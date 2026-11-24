@@ -7,6 +7,15 @@ const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}
 const gitCommitPattern = /^[0-9a-f]{40}$/;
 const unresolvedUploadSuffix = ".unresolved-upload.json";
 
+/** Requires an explicit state migration rather than bypassing retained upload barriers. */
+export function assertJestBuildStateMigrated({packageDirectory, receiptDirectory}) {
+  const canonical = join(packageDirectory, "platforms/web/jest/build/.jest-upload-receipts");
+  if (resolve(receiptDirectory) === canonical &&
+      [".jest-upload-receipts", "platforms/web/jest/.jest-upload-receipts"].some(relative => existsSync(join(packageDirectory, relative)))) {
+    throw new Error("Legacy Jest upload state remains; run node scripts/web/migrate-game-build-outputs.mjs before opening another release");
+  }
+}
+
 /** Fixed host executable used for the fail-closed Linux release sandbox. */
 export const BUBBLEWRAP_PATH = "/usr/bin/bwrap";
 
@@ -95,8 +104,8 @@ export const createReleaseChildEnvironment = (
 /**
  * Produces a fixed-order bubblewrap mount plan for every untrusted release
  * child. Later mounts intentionally narrow earlier ones: the operator home is
- * hidden before approved runtimes/caches and the repository are restored, Git
- * metadata is made read-only after the writable repository bind, and the
+ * hidden before the repository and private scratch are restored. Approved
+ * runtimes/caches and Git metadata are made read-only after those binds, and the
  * credential path is masked last.
  */
 export const createReleaseSandboxArguments = ({
@@ -158,9 +167,14 @@ export const createReleaseSandboxArguments = ({
     "--cap-drop", "ALL",
     "--perms", "0700", "--tmpfs", operatorHomeDirectory,
     "--perms", "1777", "--tmpfs", "/tmp",
+  ];
+
+  sandboxArguments.push(
+    "--dir", dirname(repositoryDirectory),
+    repositoryReadOnly ? "--ro-bind" : "--bind", repositoryDirectory, repositoryDirectory,
     "--dir", dirname(sandboxDirectory),
     "--bind", sandboxDirectory, sandboxDirectory,
-  ];
+  );
 
   for (const binding of readOnlyBinds) {
     requireAbsolutePath("A release runtime/cache bind source", binding?.source);
@@ -174,10 +188,6 @@ export const createReleaseSandboxArguments = ({
     );
   }
 
-  sandboxArguments.push(
-    "--dir", dirname(repositoryDirectory),
-    repositoryReadOnly ? "--ro-bind" : "--bind", repositoryDirectory, repositoryDirectory,
-  );
   for (const maskedDirectoryPath of additionalMaskedDirectoryPaths) {
     requireAbsolutePath("An additional release directory mask path", maskedDirectoryPath);
     sandboxArguments.push(

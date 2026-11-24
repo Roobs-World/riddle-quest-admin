@@ -13,7 +13,7 @@
       "preflight:youtube-upload"
     ]
   },
-  "handoff": "Upload build-youtube.zip and retain its manifest and build/audit report for manual certification.",
+  "handoff": "Upload platforms/web/youtube/build/build-youtube.zip and retain its manifest and build/audit report for manual certification.",
   "runbook": "docs/youtube/youtube-playables-operations.md",
   "displayName": "YouTube",
   "delivery": "web-target"

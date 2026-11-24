@@ -2,7 +2,7 @@ import {readFile} from "node:fs/promises";
 import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {validateRedditHostedEvidence} from "./reddit-hosted-evidence.mjs";
-import {verifyRedditHandoff} from "./reddit-release-artifact.mjs";
+import {assertRedditBuildStateMigrated, verifyRedditHandoff} from "./reddit-release-artifact.mjs";
 
 const packageDirectory = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const repositoryDirectory = path.resolve(packageDirectory, "../../..");
@@ -10,9 +10,10 @@ const repositoryDirectory = path.resolve(packageDirectory, "../../..");
 /** Verifies that hosted Reddit evidence names the exact retained candidate handoff. */
 export async function verifyRedditPromotion({
   evidencePath = path.join(repositoryDirectory, "docs/reddit/evidence/reddit-hosted-evidence.json"),
-  receiptPath = path.join(packageDirectory, ".reddit-release-receipts/gated-artifact.json"),
+  receiptPath = path.join(packageDirectory, "build/.reddit-release-receipts/gated-artifact.json"),
   receiptsDirectory = path.dirname(receiptPath),
 } = {}) {
+  assertRedditBuildStateMigrated(receiptsDirectory);
   const [evidenceText, receiptText] = await Promise.all([
     readFile(evidencePath, "utf8"),
     readFile(receiptPath, "utf8"),

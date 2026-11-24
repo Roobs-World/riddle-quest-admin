@@ -52,7 +52,7 @@ it never retries an uncertain upload. Inspect that exact version with
 not update an existing installation: use `devvit install <test-subreddit>
 riddle-quest@<version>` to install the confirmed private version.
 
-The private uploader now holds `.reddit-release-receipts/playtest.lock` through
+The private uploader now holds `platforms/web/reddit/build/.reddit-release-receipts/playtest.lock` through
 validation and transmission. It persists an immutable attempt before invoking
 Devvit and retains the CLI outcome separately. An uncertain or interrupted attempt
 blocks every later version, and an attempted version is never reused. A failed

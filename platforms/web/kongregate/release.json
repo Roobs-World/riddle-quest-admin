@@ -12,7 +12,7 @@
       "kongregate"
     ]
   },
-  "handoff": "Apply for developer status, review the upload agreement, then upload build-kongregate.zip for review.",
+  "handoff": "Apply for developer status, review the upload agreement, then upload platforms/web/kongregate/build/build-kongregate.zip for review.",
   "runbook": "docs/common/releases/research/html5-publishing-platforms-2026-09-20.md",
   "displayName": "Kongregate",
   "delivery": "neutral-html5",

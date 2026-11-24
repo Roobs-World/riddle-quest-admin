@@ -160,7 +160,7 @@ git rev-parse HEAD
 pnpm facebook:setup
 ```
 
-7. Read its receipt under `.facebook-setup-receipts`. The wizard does not obtain the Firebase App ID or deploy configuration. A developer must deliberately enter reviewed non-secrets in the Functions environment.
+7. Read its receipt under `platforms/web/facebook/build/.facebook-setup-receipts`. The wizard does not obtain the Firebase App ID or deploy configuration. A developer must deliberately enter reviewed non-secrets in the Functions environment.
 8. Verify each allowed game origin is exactly the HTTPS origin the game uses. An origin is scheme plus hostname and optional port, not an arbitrary page path.
 9. Have the developer confirm the Facebook entry/build loads SDK v8 and root `fbapp-config.json`. SDK version is selected by the artifact; do not assume a dashboard dropdown controls it.
 10. Check the dashboard's Zero Permission Access status and the recorded 13+ audience. Reconcile any discrepancy with the built configuration.

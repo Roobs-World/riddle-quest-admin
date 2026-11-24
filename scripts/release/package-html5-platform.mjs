@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import {getReleaseDefinition, releaseRegistry} from "./release-registry.mjs";
+import {getReleaseDefinition, getWebBuildPaths, releaseRegistry} from "./release-registry.mjs";
 import {createHtml5HandoffPreparation, loadPreparedHtml5Source, copyPreparedHtml5Handoff} from "./html5-handoff-preparation.mjs";
 import {execFile} from "node:child_process";
 import {promisify} from "node:util";
@@ -25,7 +25,7 @@ export async function packageHtml5Platform(target, {run = execute, root = reposi
     ? await loadPreparedHtml5Source({root, run})
     : await (preparation ?? createHtml5HandoffPreparation({root, run})).prepare());
   const manifest = await copyPreparedHtml5Handoff(getReleaseDefinition(target), prepared, {root});
-  console.log(`Prepared ${target} HTML5 handoff ${manifest.artifact} (${manifest.sha256}).`);
+  console.log(`Prepared ${target} HTML5 handoff ${path.join(getWebBuildPaths(target).buildDirectory, manifest.artifact)} (${manifest.sha256}).`);
   return manifest;
 }
 

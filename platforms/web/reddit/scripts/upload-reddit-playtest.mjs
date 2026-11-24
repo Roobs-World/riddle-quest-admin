@@ -6,7 +6,7 @@ import {runRedditPlaytestAttempt, validateRedditPlaytestVersion} from "./reddit-
 const packageDirectory = fileURLToPath(new URL("..", import.meta.url));
 
 /** Uploads one explicitly numbered private playtest without automatic version bumps or retries. */
-export function uploadRedditPlaytest(args, run = spawnSync, receiptsDirectory = path.join(packageDirectory, ".reddit-release-receipts")) {
+export function uploadRedditPlaytest(args, run = spawnSync, receiptsDirectory = path.join(packageDirectory, "build/.reddit-release-receipts")) {
   const [version] = args;
   if (
     args.length !== 1 ||

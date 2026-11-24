@@ -16,5 +16,5 @@ for (const target of ['youtube', 'netflix', 'yahoo']) {
   config.plugins = config.plugins.filter(plugin => plugin?.name !== 'riddle-quest-playable-content');
   config.resolve.alias['#youtube-content'] = path.join(root,"src/content/generated/youtube-content-v1.json");
   await build({...config, root, mode:target, configFile:false});
-  await cp(path.join(root, `builds/${target}`), path.join(output, `dist-${target}`), {recursive:true, force:true});
+  await cp(path.join(root, `platforms/web/${target}/build/dist`), path.join(output, `dist-${target}`), {recursive:true, force:true});
 }

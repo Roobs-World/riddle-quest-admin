@@ -23,6 +23,6 @@ test("workspace build and verification assemble the trusted Reddit package from 
 
 test("the Reddit server build replaces its target directory instead of retaining stale release files", async () => {
   const {default: config} = await import("../vite.config.ts");
-  assert.equal(config.build?.outDir, "dist/server");
+  assert.equal(config.build?.outDir, "build/devvit/server");
   assert.equal(config.build?.emptyOutDir, true);
 });

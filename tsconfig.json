@@ -47,9 +47,10 @@
     "vite.config.ts",
     "scripts/web/build",
     "platforms/web/*/src",
-    "platforms/web/*/build"
+    "platforms/web/*/tooling"
   ],
   "exclude": [
+    "platforms/web/*/build",
     "src/**/__tests__/**",
     "src/**/test/**",
     "src/**/*.test.ts",

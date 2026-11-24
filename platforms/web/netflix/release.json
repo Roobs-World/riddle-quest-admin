@@ -11,7 +11,7 @@
       "build:netflix"
     ]
   },
-  "handoff": "Use builds/netflix with the Netflix partner delivery tooling.",
+  "handoff": "Use platforms/web/netflix/build/dist with the Netflix partner delivery tooling.",
   "runbook": "docs/common/releases/netflix-yahoo-candidate-builds.md",
   "displayName": "Netflix",
   "delivery": "web-target"

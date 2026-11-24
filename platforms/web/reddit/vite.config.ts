@@ -8,8 +8,8 @@ export default defineConfig({
   },
   build: {
     ssr: "src/server/index.ts",
-    outDir: "dist/server",
-    // The client is staged in dist/client, so the server build can and must
+    outDir: "build/devvit/server",
+    // The client is staged in build/devvit/client, so the server build can and must
     // replace its own directory without retaining files from an older release.
     emptyOutDir: true,
     rolldownOptions: {

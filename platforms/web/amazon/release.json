@@ -12,7 +12,7 @@
       "amazon"
     ]
   },
-  "handoff": "Test build-amazon-webapp-review.zip with Fire Web App Tester before adding isolated Amazon IAP.",
+  "handoff": "Test platforms/web/amazon/build/build-amazon-webapp-review.zip with Fire Web App Tester before adding isolated Amazon IAP.",
   "runbook": "docs/common/releases/research/additional-html5-release-targets-2026-09-21.md",
   "displayName": "Amazon Appstore Web App",
   "delivery": "neutral-html5",

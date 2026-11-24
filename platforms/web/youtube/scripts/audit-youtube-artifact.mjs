@@ -279,7 +279,7 @@ async function runCli() {
   if (unknownFlags.length > 0 || positional.length > 1) {
     throw new Error("Usage: audit-youtube-artifact.mjs [artifact-directory] [--allow-incomplete-fixture]");
   }
-  const rootDirectory = positional[0] ?? (process.env.YOUTUBE_BUILD_OUT_DIR?.trim() || "builds/youtube");
+  const rootDirectory = positional[0] ?? (process.env.YOUTUBE_BUILD_OUT_DIR?.trim() || "platforms/web/youtube/build/dist");
   const result = await auditYouTubeArtifact(rootDirectory, {allowIncompleteFixture});
   console.log(
     `YouTube artifact audit passed: ${result.files.length} files, ` +

@@ -178,37 +178,37 @@ test("the Web Target config resolves one isolated build profile for every releas
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
   const expectations = {
     jest: {
-      outDir: path.join(repositoryDirectory, "builds/jest"),
+      outDir: path.join(repositoryDirectory, "platforms/web/jest/build/dist"),
       htmlEntry: "/platforms/web/jest/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
       artifactPlugin: "riddle-quest-jest-firebase-script-policy",
     },
     facebook: {
-      outDir: path.join(repositoryDirectory, "builds/facebook"),
+      outDir: path.join(repositoryDirectory, "platforms/web/facebook/build/dist"),
       htmlEntry: "/platforms/web/facebook/index.html",
       shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
       artifactPlugin: "riddle-quest-facebook-artifact",
     },
     reddit: {
-      outDir: path.join(repositoryDirectory, "builds/reddit"),
+      outDir: path.join(repositoryDirectory, "platforms/web/reddit/build/dist"),
       htmlEntry: undefined,
       shopEntry: "/platforms/web/reddit/src/RedditShopModalPage.tsx",
       artifactPlugin: "riddle-quest-reddit-artifact",
     },
     youtube: {
-      outDir: path.join(repositoryDirectory, "builds/youtube"),
+      outDir: path.join(repositoryDirectory, "platforms/web/youtube/build/dist"),
       htmlEntry: "/platforms/web/youtube/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
     },
     netflix: {
-      outDir: path.join(repositoryDirectory, "builds/netflix"),
+      outDir: path.join(repositoryDirectory, "platforms/web/netflix/build/dist"),
       htmlEntry: "/platforms/web/netflix/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
     },
     yahoo: {
-      outDir: path.join(repositoryDirectory, "builds/yahoo"),
+      outDir: path.join(repositoryDirectory, "platforms/web/yahoo/build/dist"),
       htmlEntry: "/platforms/web/yahoo/index.html",
       shopEntry: "virtual:youtube-forbidden-shop-entry",
       artifactPlugin: "riddle-quest-youtube-artifact",
@@ -376,7 +376,7 @@ test("the build contract rejects roots, repository paths, and another target's c
   for (const unsafeDirectory of [
     path.join(packageDirectory, "src"),
     path.join(repositoryDirectory, "docs", "generated-web-target"),
-    path.join(packageDirectory, "builds/jest", "nested"),
+    path.join(packageDirectory, "platforms/web/jest/build/dist", "nested"),
   ]) {
     const config = createWebTargetViteConfig({
       command: "build",
@@ -392,10 +392,10 @@ test("the build contract rejects roots, repository paths, and another target's c
   const crossTarget = createWebTargetViteConfig({
     command: "build",
     mode: "jest",
-    environment: {JEST_BUILD_OUT_DIR: "builds/facebook"},
+    environment: {JEST_BUILD_OUT_DIR: "platforms/web/facebook/build/dist"},
   });
   assert.throws(
-    () => runBuildContract(crossTarget, {outDir: path.join(repositoryDirectory, "builds/facebook")}),
+    () => runBuildContract(crossTarget, {outDir: path.join(repositoryDirectory, "platforms/web/facebook/build/dist")}),
     /collides with the facebook canonical artifact/u,
   );
 });
@@ -577,7 +577,7 @@ for (const platform of ["netflix", "yahoo"]) {
       try {
         const portalDirectory = path.join(workspace, ".");
         await mkdir(portalDirectory, {recursive: true});
-        const defaultDirectory = path.join(workspace, `builds/${platform}`);
+        const defaultDirectory = path.join(workspace, `platforms/web/${platform}/build/dist`);
         const contaminatedDirectory = path.join(workspace, "contaminated");
         await cp(directory, defaultDirectory, {recursive: true});
         await cp(directory, contaminatedDirectory, {recursive: true});

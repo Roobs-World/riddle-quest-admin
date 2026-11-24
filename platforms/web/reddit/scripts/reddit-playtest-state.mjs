@@ -1,5 +1,6 @@
 import {closeSync, fsyncSync, lstatSync, mkdirSync, openSync, readFileSync, readdirSync, unlinkSync, writeFileSync} from "node:fs";
 import path from "node:path";
+import {assertRedditBuildStateMigrated} from "./reddit-release-artifact.mjs";
 
 const PREFIXES = ["playtest-attempt-", "playtest-outcome-", "playtest-resolution-"];
 const TERMINAL = new Set(["accepted", "confirmed-absent"]);
@@ -68,6 +69,7 @@ function readRecords(directory) {
 
 /** Serializes journal inspection, validation and the entire provider transmission. */
 function withPlaytestLock(directory, operation) {
+  assertRedditBuildStateMigrated(directory);
   mkdirSync(directory, {recursive: true, mode: 0o700});
   if (!lstatSync(directory).isDirectory()) throw new Error("Invalid Reddit playtest receipt directory");
   const lockPath = path.join(directory, "playtest.lock");

@@ -1,8 +1,19 @@
 import {createHash} from "node:crypto";
 import {chmod, lstat, mkdir, open, readFile, rename, unlink, writeFile} from "node:fs/promises";
 import path from "node:path";
+import {existsSync} from "node:fs";
+import {fileURLToPath} from "node:url";
 
 const HASH = /^[0-9a-f]{64}$/u;
+const packageDirectory = fileURLToPath(new URL("../", import.meta.url));
+const canonicalReceiptDirectory = path.join(packageDirectory, "build/.reddit-release-receipts");
+
+/** Keeps old upload journals visible until the explicit build-output migration settles them. */
+export function assertRedditBuildStateMigrated(directory) {
+  if (path.resolve(directory) === canonicalReceiptDirectory && existsSync(path.join(packageDirectory, ".reddit-release-receipts"))) {
+    throw new Error("Legacy Reddit release state remains; run node scripts/web/migrate-game-build-outputs.mjs from the repository root before opening another release");
+  }
+}
 export const redditArtifactSha256 = (contents) => createHash("sha256").update(contents).digest("hex");
 
 export const createRedditArtifactRecord = ({archivePath, archiveBytes, archiveEntries, archiveSha256, sourceCommit, sourceDirty, gatedAt = new Date()}) => ({

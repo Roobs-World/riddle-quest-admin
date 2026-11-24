@@ -1,4 +1,6 @@
 import {mkdir, open, readdir, readFile, unlink} from "node:fs/promises";
+import {existsSync} from "node:fs";
+import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {
   facebookUploadBarrierPath,
@@ -6,8 +8,19 @@ import {
   verifyFacebookHandoffArchive,
 } from "./facebook-release-artifact.mjs";
 
+const repositoryDirectory = fileURLToPath(new URL("../../../../", import.meta.url));
+const canonicalReceiptDirectory = path.join(repositoryDirectory, "platforms/web/facebook/build/.facebook-upload-receipts");
+
+function assertFacebookBuildStateMigrated(receiptDirectory) {
+  if (path.resolve(receiptDirectory) === canonicalReceiptDirectory &&
+      [".facebook-upload-receipts", "platforms/web/facebook/.facebook-upload-receipts"].some(relative => existsSync(path.join(repositoryDirectory, relative)))) {
+    throw new Error("Legacy Facebook upload state remains; run node scripts/web/migrate-game-build-outputs.mjs before preparing or recording another handoff");
+  }
+}
+
 /** Serializes local preparation and handoff state across every Facebook archive hash. */
 export async function withFacebookReleaseLock(receiptDirectory, action) {
+  assertFacebookBuildStateMigrated(receiptDirectory);
   await mkdir(receiptDirectory, {recursive: true, mode: 0o700});
   const lockPath = path.join(receiptDirectory, "release.lock");
   let lock;

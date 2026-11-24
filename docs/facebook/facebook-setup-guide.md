@@ -19,7 +19,7 @@ The authenticated Meta check on 24 November found:
 | Contact email | `grindheadgames@gmail.com`, reported unverified |
 | Zero Permission Access | Not live; API responses conflict about the review state |
 
-The existing `build-facebook.zip` matched its recorded fingerprint and passed the artifact audit. This confirms the local files, not Meta acceptance. Historical version numbers in older documents are not a current dashboard inventory.
+The existing `platforms/web/facebook/build/build-facebook.zip` matched its recorded fingerprint and passed the artifact audit. This confirms the local files, not Meta acceptance. Historical version numbers in older documents are not a current dashboard inventory.
 
 ## 1. Open Web Hosting
 
@@ -38,7 +38,7 @@ Use the dashboard for the first private upload if you want the shortest route to
 
 ### Upload through the dashboard
 
-1. Have the developer prepare the approved candidate and give you the immutable, hash-named ZIP path. A file called `build-facebook.zip` is rebuildable; the release handoff freezes its exact bytes.
+1. Have the developer prepare the approved candidate and give you the immutable, hash-named ZIP path. A file called `platforms/web/facebook/build/build-facebook.zip` is rebuildable; the release handoff freezes its exact bytes.
 2. Click **Upload Version** and select that immutable ZIP.
 3. Use a comment containing its SHA-256 fingerprint so you can identify the upload later.
 4. Wait for upload processing and scanning to finish. Read any validation error before trying again.

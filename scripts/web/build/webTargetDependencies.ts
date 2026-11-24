@@ -60,17 +60,18 @@ export function targetDependencyEvidencePath(target: string, outputDirectory: st
   /** Registered artifact facts, required even for custom output directories. */
   const facts = webBuildFacts[target];
   if (!facts) throw new Error(`Unknown dependency target: ${target}`);
-  /** Shared evidence root; inventories never enter shipped files. */
-  const directory = evidenceDirectory ?? process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR ?? path.join(repository, "artifacts", "target-dependencies");
+  const override = evidenceDirectory ?? process.env.RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR;
+  const directory = override ?? path.join(repository, facts.buildDirectory, "evidence");
   if (!path.isAbsolute(directory)) throw new Error("Dependency evidence directory must be absolute");
+  const filename = override === undefined ? "target-dependencies.json" : `${target}.json`;
   /** Absolute output identity used by both naming and inventory validation. */
   const output = path.resolve(outputDirectory);
   if (output === path.resolve(repository, facts.outputDirectory)) {
-    return path.join(directory, `${target}.json`);
+    return path.join(directory, filename);
   }
   /** Custom builds for the same target retain independent inventories. */
   const key = createHash("sha256").update(output).digest("hex");
-  return path.join(directory, "custom", key, `${target}.json`);
+  return path.join(directory, "custom", key, filename);
 }
 /** Audits every emitted entry/lazy chunk and records an inventory outside shipped files. */
 export function webTargetDependencyPlugin(

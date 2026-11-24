@@ -15,7 +15,7 @@ const gameId = process.env.JEST_GAME_ID || "019faa68-f3ec-755d-9ab5-c887fb426801
 const gameUrl = process.env.JEST_DEPLOYED_GAME_URL || "https://jest.com/g/riddle-q";
 const expectedBuildVersion = process.env.JEST_EXPECTED_BUILD_VERSION;
 const evidenceDirectory = process.env.JEST_PAYMENT_EVIDENCE_DIR ||
-  fileURLToPath(new URL("../.jest-upload-receipts/payment-qa/", import.meta.url));
+  fileURLToPath(new URL("../build/.jest-upload-receipts/payment-qa/", import.meta.url));
 const productSku = process.env.JEST_SANDBOX_PAYMENT_SKU ||
   "com.roobsworld.riddlequest.coinpack1";
 const subscriptionSku = process.env.JEST_SANDBOX_SUBSCRIPTION_SKU ||

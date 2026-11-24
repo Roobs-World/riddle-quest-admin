@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 
 const root=fileURLToPath(new URL("../../../../", import.meta.url));
 const mode=process.env.GUEST_ROUNDS_REACT_MODE??'development',baseline=process.env.GUEST_ROUNDS_BASELINE_DIR,uiBaseline=process.env.GUEST_ROUNDS_UI_BASELINE_DIR;
-const output=path.resolve(process.env.GUEST_ROUNDS_REPORT_DIR??path.join(root,'builds/test-evidence/reddit-guest-rounds-2026-10-03',mode));
+const output=path.resolve(process.env.GUEST_ROUNDS_REPORT_DIR??path.join(root,'platforms/web/reddit/build/test-evidence/reddit-guest-rounds-2026-10-03',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/guest-rounds-'));let browser,server;const observations=[];
 try{

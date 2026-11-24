@@ -7,9 +7,11 @@ import {fileURLToPath} from "node:url";
 import path from "node:path";
 import {auditYouTubeArtifact} from "./audit-youtube-artifact.mjs";
 import {developmentSourcePathspecs} from "../../../../scripts/release/development-source-digest.mjs";
+import {getWebBuildPaths} from "../../../../scripts/release/release-registry.mjs";
 
 const execFileAsync = promisify(execFile);
 const defaultRepositoryDirectory = fileURLToPath(new URL("../../../..", import.meta.url));
+const youtubePaths = getWebBuildPaths("youtube");
 const requiredTranslationLocales = [
   "ar", "de", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ];
@@ -449,15 +451,14 @@ export async function writeYouTubeVerificationReport({
   capturedAt = new Date().toISOString(),
 } = {}) {
   const repository = path.resolve(repositoryDirectory);
-  const resolvedDist = path.resolve(distDirectory ?? path.join(repository, "builds/youtube"));
+  const resolvedDist = path.resolve(distDirectory ?? path.join(repository, youtubePaths.outputDirectory));
   const resolvedContentAudit = path.resolve(contentAuditPath ?? path.join(
     repository,
     "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",
   ));
-  const resolvedReport = path.resolve(reportPath ?? path.join(repository, "build-youtube.test-report.json"));
-  if (path.dirname(resolvedReport) !== repository) {
-    throw new Error("YouTube verification report must be written at the repository root");
-  }
+  const resolvedReport = path.resolve(reportPath ?? path.join(repository, youtubePaths.buildDirectory, "build-youtube.test-report.json"));
+  repositoryRelativePath(repository, resolvedReport, "YouTube verification report");
+  if (resolvedReport.startsWith(`${resolvedDist}${path.sep}`)) throw new Error("YouTube verification report must be outside the runtime artifact");
   const audit = await auditYouTubeArtifact(resolvedDist);
   const entries = await readArtifactEntries(audit);
   const artifact = createArtifactIdentity(audit, entries);
@@ -490,22 +491,23 @@ export async function writeYouTubeVerificationReport({
 
 export async function packageYouTubeArtifact(options = {}) {
   const repository = path.resolve(options.repositoryDirectory ?? defaultRepositoryDirectory);
-  const resolvedDist = path.resolve(options.distDirectory ?? path.join(repository, "builds/youtube"));
-  const resolvedArchive = path.resolve(options.archivePath ?? path.join(repository, "build-youtube.zip"));
-  const resolvedManifest = path.resolve(options.manifestPath ?? path.join(repository, "build-youtube.manifest.json"));
+  const resolvedDist = path.resolve(options.distDirectory ?? path.join(repository, youtubePaths.outputDirectory));
+  const resolvedArchive = path.resolve(options.archivePath ?? path.join(repository, youtubePaths.buildDirectory, "build-youtube.zip"));
+  const resolvedManifest = path.resolve(options.manifestPath ?? path.join(repository, youtubePaths.buildDirectory, "build-youtube.manifest.json"));
   const resolvedContentAudit = path.resolve(options.contentAuditPath ?? path.join(
     repository,
     "firebase-functions/artifacts/youtube-content/youtube-content-v1.audit.json",
   ));
-  const resolvedReport = path.resolve(options.reportPath ?? path.join(repository, "build-youtube.test-report.json"));
+  const resolvedReport = path.resolve(options.reportPath ?? path.join(repository, youtubePaths.buildDirectory, "build-youtube.test-report.json"));
+  for (const output of [resolvedArchive, resolvedManifest, resolvedReport]) repositoryRelativePath(repository, output, "YouTube release output");
   if (
-    path.dirname(resolvedArchive) !== repository ||
-    path.dirname(resolvedManifest) !== repository ||
     resolvedArchive === resolvedManifest ||
+    resolvedArchive === resolvedReport ||
+    resolvedManifest === resolvedReport ||
     resolvedArchive.startsWith(`${resolvedDist}${path.sep}`) ||
     resolvedManifest.startsWith(`${resolvedDist}${path.sep}`) ||
     resolvedReport.startsWith(`${resolvedDist}${path.sep}`)
-  ) throw new Error("YouTube release ZIP, manifest, and verification report must be distinct root-level outputs outside builds/youtube");
+  ) throw new Error("YouTube release ZIP, manifest, and verification report must be distinct outputs inside the repository and outside the runtime artifact");
 
   const audit = await auditYouTubeArtifact(resolvedDist);
   let contentAuditSource;

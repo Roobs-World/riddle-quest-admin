@@ -27,8 +27,8 @@ pnpm release:reddit --dry-run
 | --- | --- | --- | --- |
 | `pnpm release:jest` | Clean committed snapshot, security/type/build checks, isolated build, exact-byte artifact and HTML audits, receipt barriers | Uploads and activates one Jest build without game publication | Version ID, ZIP hash, and accepted-pending receipts; authoritative processing/activation and exact-version testing remain required |
 | `pnpm release:facebook` | Clean-source Facebook build and artifact audits, root-content ZIP, source/hash receipt, read-only hash-named archive, hash-scoped retry barrier | None | Printed immutable archive path for manual upload as a non-production Meta Draft |
-| `pnpm release:youtube` | Content audit, isolated production builds and artifact audits, deterministic package and evidence | None | `build-youtube.zip`, manifest and build/audit report for manual Portal ingestion and certification |
-| `pnpm release:reddit` | Contract validation, fresh isolated Devvit package build, commit/hash-bound receipt and read-only candidate handoff | None | Immutable package under `platforms/web/reddit/.reddit-release-receipts`; remote ingestion remains blocked pending exact-byte proof |
+| `pnpm release:youtube` | Content audit, isolated production builds and artifact audits, deterministic package and evidence | None | `platforms/web/youtube/build/build-youtube.zip`, manifest and build/audit report for manual Portal ingestion and certification |
+| `pnpm release:reddit` | Contract validation, fresh isolated Devvit package build, commit/hash-bound receipt and read-only candidate handoff | None | Immutable package under `platforms/web/reddit/build/.reddit-release-receipts`; remote ingestion remains blocked pending exact-byte proof |
 
 `pnpm release:all` runs the shared target verification gate before invoking the Jest, Facebook, YouTube, Reddit, Netflix, Yahoo, itch.io, CrazyGames, and Newgrounds adapters in order. Use `pnpm release:all --dry-run` to inspect every external effect without building, uploading, packaging, or publishing. Each adapter retains its provider-specific delivery boundary.
 
@@ -53,9 +53,9 @@ The release module owns discovery, operator-visible effects, dry runs, dispatch,
 
 Runtime code remains compile-time isolated:
 
-- `platforms/web/jest/src` contains Jest integration code and builds to `builds/jest`.
-- `platforms/web/facebook/src` contains Facebook integration code and builds to `builds/facebook`.
-- `platforms/web/youtube/src` contains the self-contained YouTube adapter and builds to `builds/youtube`.
+- `platforms/web/jest/src` contains Jest integration code and builds to `platforms/web/jest/build/dist`.
+- `platforms/web/facebook/src` contains Facebook integration code and builds to `platforms/web/facebook/build/dist`.
+- `platforms/web/youtube/src` contains the self-contained YouTube adapter and builds to `platforms/web/youtube/build/dist`.
 - `platforms/web/reddit/src` contains the same-origin webview adapter; `platforms/web/reddit/src/server` contains the trusted Devvit Gateway. Together they build the Reddit App package.
 
 Build one target without starting a release:

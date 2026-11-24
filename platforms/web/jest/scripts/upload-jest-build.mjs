@@ -21,6 +21,7 @@ import {
   writePrivateJson,
 } from "./jest-upload-artifact.mjs";
 import {
+  assertJestBuildStateMigrated,
   getUnresolvedUploadBarrierPath,
   resolveRiddleQuestJestGameId,
 } from "./jest-release-safety.mjs";
@@ -42,20 +43,21 @@ const repositoryDirectory = resolveAbsolutePathOverride({
   value: process.env.JEST_SOURCE_REPOSITORY_DIRECTORY,
 });
 const receiptDirectory = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, ".jest-upload-receipts"),
+  fallback: join(packageDirectory, "platforms/web/jest/build/.jest-upload-receipts"),
   name: "JEST_RECEIPT_DIRECTORY",
   value: process.env.JEST_RECEIPT_DIRECTORY,
 });
 const buildDirectory = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, "builds/jest"),
+  fallback: join(packageDirectory, "platforms/web/jest/build/dist"),
   name: "JEST_BUILD_DIRECTORY",
   value: process.env.JEST_BUILD_DIRECTORY,
 });
 const archivePath = resolveAbsolutePathOverride({
-  fallback: join(packageDirectory, "build.zip"),
+  fallback: join(packageDirectory, "platforms/web/jest/build/build.zip"),
   name: "JEST_ARCHIVE_PATH",
   value: process.env.JEST_ARCHIVE_PATH,
 });
+assertJestBuildStateMigrated({packageDirectory, receiptDirectory});
 const gateReceiptPath = resolveAbsolutePathOverride({
   fallback: join(receiptDirectory, "gated-artifact.json"),
   name: "JEST_GATE_RECEIPT_PATH",

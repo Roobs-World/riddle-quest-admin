@@ -348,7 +348,7 @@ Build the established Jest, Facebook, and Reddit web targets plus the Reddit App
 pnpm build:web
 ```
 
-This preserves the existing deployment path and writes isolated artifacts to `builds/jest`, `builds/facebook`, and `builds/reddit`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
+This preserves the existing deployment path and writes isolated artifacts to `platforms/web/jest/build/dist`, `platforms/web/facebook/build/dist`, and `platforms/web/reddit/build/dist`. It does not build or package YouTube. Each target keeps its own SDK, resource, and forbidden-code audit; the Jest audit additionally enforces an internal 4.5 MB release budget beneath Jest's 5 MB HTML5 limit.
 
 Build and audit all configured client targets:
 
@@ -373,7 +373,7 @@ pnpm build:youtube
 pnpm release:youtube
 ```
 
-The release build writes `builds/youtube`; a successful preflight writes `build-youtube.zip`, `build-youtube.manifest.json`, and `build-youtube.test-report.json` at the repository root. The legacy report filename now contains build and audit results, not test results. Hosted acceptance remains separate. See [`docs/youtube/youtube-playables-operations.md`](../../youtube/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
+The release build writes `platforms/web/youtube/build/dist`; a successful preflight writes `platforms/web/youtube/build/build-youtube.zip`, `platforms/web/youtube/build/build-youtube.manifest.json`, and `platforms/web/youtube/build/build-youtube.test-report.json` at the repository root. The legacy report filename now contains build and audit results, not test results. Hosted acceptance remains separate. See [`docs/youtube/youtube-playables-operations.md`](../../youtube/youtube-playables-operations.md) for content authoring, exact-hash evidence, and the manual Portal workflow.
 
 After reviewing the build checks and authorizing the upload, create a timestamped Jest build:
 
@@ -403,7 +403,7 @@ locked, and do not place other credentials in readable paths outside the masked 
 
 Jest responds to a successful submission with HTTP `202`: the build and automatic-activation request are accepted for
 background processing, not ready or active yet. Before transmission, the command writes an owner-private attempt receipt
-under `.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
+under `platforms/web/jest/build/.jest-upload-receipts/`. A timeout, interruption, or crash leaves that version blocked as
 transmitting/ambiguous until an owner reconciles it in the Developer Console or completion email; blindly retrying could
 duplicate an accepted build. After a documented `202`, the receipt records the version ID, exact archive checksum, and
 activation intent. The documented API has no authoritative build-status polling endpoint, so the release tool does not
