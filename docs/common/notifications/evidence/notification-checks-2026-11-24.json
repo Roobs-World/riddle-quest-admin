@@ -28,7 +28,9 @@
     "target": "all",
     "sendAt": "2026-11-24T12:14:38.593Z",
     "timeZone": "Europe/London",
-    "status": "queued",
+    "startedAt": "2026-11-24T12:15:00.823559Z",
+    "completedAt": "2026-11-24T12:15:01.608206Z",
+    "status": "complete",
     "counts": {"attempted": 0, "accepted": 0, "failed": 0, "uncertain": 0, "skipped": 0}
   },
   "databaseVerification": {
@@ -40,6 +42,16 @@
     "newCampaignDeliveryAttempts": 0,
     "dayStart": "2026-11-24T00:00:00Z",
     "dayEnd": "2026-11-25T00:00:00Z"
+  },
+  "verificationAfterScheduledDispatch": {
+    "checkedAt": "2026-11-24T23:15:57.645459Z",
+    "bothCampaignsComplete": true,
+    "scheduledNextRunAt": null,
+    "upcoming": 1,
+    "remainingCampaign": "Earlier November 25 panel check",
+    "acceptedToday": 0,
+    "activeInstallations": 0,
+    "latestSchedulerHttpStatus": 200
   },
   "scheduler": {
     "name": "notification-manager-dispatch",
@@ -88,6 +100,19 @@
     "jestAndFacebookUseSharedFirebaseEnrollment": true,
     "facebookArtifactAgeCategory": "13_plus",
     "facebookArtifactIncludesEnrollmentAndManagerOrigin": true,
+    "facebookRelease": {
+      "version": 7,
+      "bundleInstanceId": "28869213636089676",
+      "acceptedArchiveSha256": "933a472ab0fff3857f02e05e0485266426e524b5e557406d2e7ae83130ac6ba7",
+      "sourceCommit": "fb70fd4f8a9a4b564dd4796f07a17ef6f14914ea",
+      "evidence": "../../../facebook/evidence/facebook-user-token-upload-2026-11-24.json",
+      "processingConfirmed": true,
+      "acceptedAndCurrentRuntimeFilesCompared": 416,
+      "allRuntimeFilePathsAndBytesIdentical": true,
+      "duplicateUploadNeeded": false,
+      "appMode": "development",
+      "publicAvailabilityVerified": false
+    },
     "browserPermissionAndEnrollmentStillRequired": true,
     "deviceDisplayVerified": false,
     "testsAndBrowserHarnessesRun": false
@@ -113,5 +138,5 @@
     "unsignedBridgeAndEnrollmentHttpStatus": 401,
     "newDevicesEnrolled": 0
   },
-  "verificationLimit": "Zero registered devices means no device display was verified. Future scheduled delivery is queued, not yet completed."
+  "verificationLimit": "Both campaigns completed with zero delivery attempts. No device display was verified; a real device must grant browser permission and enroll."
 }
