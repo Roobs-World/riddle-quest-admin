@@ -8,6 +8,7 @@ import {HOST_TO_GAME_EVENT} from "../../../platform/bridge/browser/localBridge";
 import {createRequestId} from "../../../gameplay/session/requestIds";
 import {useReferralSharing} from "../../../sharing/components/ReferralSharingCapability";
 import {LiveRaceInvitationCard} from "../invitations/LiveRaceInvitationCard";
+import {LiveRaceIdentity} from "../social/LiveRaceIdentity";
 import {LiveRaceInbox} from "../invitations/LiveRaceInbox";
 import {LiveRacePushConsent} from "../social/LiveRacePushConsent";
 import {LiveRaceGame} from "../live/LiveRaceGame";
@@ -57,7 +58,7 @@ function LiveRaceEntry(props: RaceTo10GameProps) {
   }
   if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={playing.transport ?? props.matchmaking.live}
     locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} resumeChallenge={playing.resumeChallenge}
-    resumeTicketId={playing.resumeTicketId} rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} onCompleted={props.onLiveResult}
+    resumeTicketId={playing.resumeTicketId} rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} localPlayer={props.localPlayer} onCompleted={props.onLiveResult}
     onRematch={rematchOfTicketId => setPlaying({locale: playing.locale, categoryId: playing.categoryId, rematchOfTicketId})}
     onClose={() => setPlaying(null)} />;
   if (!incomingConsumed && props.challengeId && /^live_[a-f0-9]{64}$/.test(props.challengeId) && props.matchmaking?.live?.challenge)
@@ -67,11 +68,12 @@ function LiveRaceEntry(props: RaceTo10GameProps) {
 }
 
 /** A shared invitation opens its own lobby without loading the public category picker. */
-function LiveRaceInvitationEntry({challengeId, transport, locale, coins, onClose, onStart}: {
+function LiveRaceInvitationEntry({challengeId, transport, locale, coins, localPlayer, onClose, onStart}: {
   /** Opaque invitation received from the owning platform. */ challengeId: string;
   /** Authenticated invitation transport. */ transport: LiveRaceCapability;
   /** Current supported content language. */ locale: RaceLocale;
   /** Current balance displayed in the shared header. */ coins: number;
+  /** Cached local identity remains visible while the invitation preview loads. */ localPlayer?: RaceTo10GameProps["localPlayer"];
   /** Leaves multiplayer without creating a seat. */ onClose: () => void;
   /** Uses the server's validated category and invitation selection. */ onStart: (selection: LiveSelection) => void;
 }) {
@@ -81,6 +83,7 @@ function LiveRaceInvitationEntry({challengeId, transport, locale, coins, onClose
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
     tabIndex={-1} data-analytics-screen="multiplayer_friend_lobby_entry">
     <RaceTopbar live coins={coins} onClose={onClose} />
+    {localPlayer && <div className="race-panel live-race-self"><LiveRaceIdentity player={localPlayer} /></div>}
     <LiveRaceInvitationCard challengeId={challengeId} transport={transport} locale={locale} onAccept={onStart} autoJoin />
   </section>;
 }

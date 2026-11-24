@@ -180,6 +180,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   }
   if (typeof route === "object" && "race" in route) {
     return <HostedRaceScreen locale={locale} accountUid={account.state.account.uid} client={client} services={services} challengeId={route.race} onActivityChange={reportRaceActivity}
+      selfProfile={confirmed.user?.uid === account.state.account.uid ? confirmed.profile : null}
       onEntryHandled={() => {if (route.entryId) void acknowledge(route.entryId);}}
       onBack={() => {if (route.entryId) void acknowledge(route.entryId); setRoute("home");}} />;
   }

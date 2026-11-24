@@ -1,14 +1,16 @@
 import type {LiveRaceView} from "../../contracts/index";
 import {useId, type ReactNode} from "react";
 import {tr} from "../../../localization/browser/i18n";
-import {LiveRaceIdentity} from "../social/LiveRaceIdentity";
+import {LiveRaceIdentity, type LiveRacePlayerIdentity} from "../social/LiveRaceIdentity";
 import {LiveRaceSearchWheel} from "../lobby/LiveRaceSearchWheel";
 import "./LiveRaceFriendLobby.css";
 
 /** Shows both seats in a private invitation while its participants connect. */
-export function LiveRaceFriendLobby({view, now, status, children}: {
+export function LiveRaceFriendLobby({view, localPlayer, now, status, children}: {
   /** Latest server-confirmed seats, or null while the lobby loads. */
   view: LiveRaceView | null;
+  /** Device-cached identity is independent of server-confirmed seat ownership. */
+  localPlayer?: LiveRacePlayerIdentity;
   /** Server-aligned clock used to display the shared countdown. */
   now: number;
   /** Current loading, waiting, countdown, or expiry presentation. */
@@ -18,6 +20,7 @@ export function LiveRaceFriendLobby({view, now, status, children}: {
 }) {
   /** Accessible heading identifier unique to this mounted lobby. */
   const titleId = useId();
+  const player = view?.player ?? localPlayer;
   /** Translated status label selected by the lobby presentation state. */
   const statusKey = {
     loading: "Accessibility.LOADING",
@@ -32,9 +35,9 @@ export function LiveRaceFriendLobby({view, now, status, children}: {
     </header>
     <div className="friend-lobby-seats">
       <div className="friend-lobby-seat" data-occupied={Boolean(view)}>
-        {view ? <>
-          <LiveRaceIdentity player={view.player} />
-          <span className="friend-lobby-joined">{tr("RaceTo10.JOINED")}</span>
+        {player ? <>
+          <LiveRaceIdentity player={player} />
+          {view && <span className="friend-lobby-joined">{tr("RaceTo10.JOINED")}</span>}
         </> : <div className="friend-lobby-placeholder">
           <FriendSeatPlaceholder />
           <span>{tr("Accessibility.LOADING")}</span>

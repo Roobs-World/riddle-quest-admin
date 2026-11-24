@@ -1,6 +1,6 @@
 import {useLiveRaceSignals} from "../../hooks/live/useLiveRaceSignals";
 import {LiveRaceSafety} from "../gameplay/LiveRaceSafety";
-import {LiveRaceIdentity} from "../social/LiveRaceIdentity";
+import {LiveRaceIdentity, type LiveRacePlayerIdentity} from "../social/LiveRaceIdentity";
 import {liveRacePlayerName} from "../../browser/presentation/liveRacePlayerName";
 import {LIVE_RACE_POLL_TICK_MS} from "../../live/liveRacePolling";
 import {LiveRaceInviteShare} from "../invitations/LiveRaceInviteShare";
@@ -33,7 +33,7 @@ function publicResumeUnavailable(failure: unknown): boolean {
 }
 
 /** Lobby and live race presentation use one target-owned authenticated transport. */
-export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, resumeChallenge, resumeTicketId, rematchOfTicketId, coins, ownerId, onCompleted, onRematch, onClose}: {
+export function LiveRaceGame({transport, locale, categoryId, createChallenge, challengeId, resumeChallenge, resumeTicketId, rematchOfTicketId, coins, ownerId, localPlayer, onCompleted, onRematch, onClose}: {
   /** Approved target transport. */ transport: LiveRaceCapability;
   /** Exact content language. */ locale: RaceLocale;
   /** Selected shared riddle category. */ categoryId: RaceCategoryId;
@@ -44,6 +44,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   /** Own terminal source reserves its actual human opponent through the target adapter. */ rematchOfTicketId?: string;
   /** Current profile balance. */ coins: number;
   /** Account lifetime owning result refresh. */ ownerId?: string;
+  /** Cached display identity; never used as evidence of a joined seat or score. */ localPlayer?: LiveRacePlayerIdentity;
   /** Optional target-owned terminal effect; transport and scoring stay server authoritative. */
   onCompleted?: (view: LiveRaceView) => void;
   /** Retires the completed view before opening a new private rematch journey. */ onRematch?: (ticketId: string) => void;
@@ -558,6 +559,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
   const shownView = blocked && view ? {...view, opponent: view.opponent ? {...view.opponent,
     displayName: tr("RaceTo10.BLOCK_SUCCESS"), avatarUrl: null, level: 1} : null,
     run: view.run ? {...view.run, opponent: undefined} : null} : view;
+  const player = shownView?.player ?? localPlayer;
   /** One safe opponent label is shared by the gameplay and result projections. */
   const opponentName = shownView?.opponent ? liveRacePlayerName(shownView.opponent) : "";
   /** Only adapters with both safety operations expose human-opponent controls. */
@@ -571,13 +573,13 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
     {error && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")} <button disabled={busy || closing}
       onClick={() => closeRequested.current && transport.retireJoin ? finishClose() : void deliver()}>{tr("RaceTo10.RETRY")}</button></div>}
     {friendLobby && !invitationUnavailable && (!view || phase === "searching" || phase === "countdown" || phase === "cancelled") &&
-      <LiveRaceFriendLobby view={shownView} now={now} status={!view ? "loading" : phase === "cancelled" ? "expired" : phase === "countdown" ? "starting" : "waiting"}>
+      <LiveRaceFriendLobby view={shownView} localPlayer={localPlayer} now={now} status={!view ? "loading" : phase === "cancelled" ? "expired" : phase === "countdown" ? "starting" : "waiting"}>
         {shownView?.phase === "searching" && shownView.challengeId && !rematchOfTicketId && !closeRequested.current &&
           <LiveRaceInviteShare challengeId={shownView.challengeId} transport={transport} autoOpen={createChallenge} />}
         {phase === "cancelled" && <button className="race-secondary" onClick={close}>{tr("RaceTo10.CLOSE")}</button>}
       </LiveRaceFriendLobby>}
     {!friendLobby && !invitationUnavailable && (!view || phase === "searching" || phase === "countdown") && <div className="live-race-lobby">
-      <div className="live-race-self">{shownView ? <LiveRaceIdentity player={shownView.player} /> : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
+      <div className="live-race-self">{player ? <LiveRaceIdentity player={player} /> : <p role="status">{tr("Accessibility.LOADING")}</p>}</div>
       <div className="live-race-status">
         {shownView?.phase === "countdown" ? <div role="status" aria-live="polite">
           <h2>{tr("RaceTo10.LIVE_STARTING")}</h2>

@@ -1,6 +1,7 @@
 import type {GameToHostMessage} from "../../../platform/bridge/messages";
 import type {ReactNode} from "react";
 import type {LiveRaceView, ListRaceCategoriesResponse, RaceLocale} from "../../contracts/index";
+import type {LiveRacePlayerIdentity} from "../social/LiveRaceIdentity";
 import type {
   ContextBoardCapability,
   MatchmakingCapability,
@@ -23,6 +24,8 @@ export type RaceTo10GameProps = Readonly<{
   coins: number;
   /** Authenticated game account that owns persisted race runs. */
   ownerId?: string;
+  /** Cached display identity available before matchmaking confirms a seat. */
+  localPlayer?: LiveRacePlayerIdentity;
   /** Stores post to host. */
   postToHost: (message: GameToHostMessage) => void | Promise<void>;
   /** Stores on close. */

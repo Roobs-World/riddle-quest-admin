@@ -87,7 +87,7 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   }, [props.tournaments, props.contextBoard, props.locale, props.onLiveResult, props.presentation]);
   if (rematch && props.matchmaking?.live?.rematch) return <LiveRaceGame key={rematch.rematchOfTicketId}
     transport={rematch.transport} locale={props.locale} categoryId={rematch.categoryId} rematchOfTicketId={rematch.rematchOfTicketId}
-    coins={props.coins} ownerId={props.ownerId} onCompleted={completed}
+    coins={props.coins} ownerId={props.ownerId} localPlayer={props.localPlayer} onCompleted={completed}
     onRematch={rematchOfTicketId => setRematch({...rematch, rematchOfTicketId})} onClose={() => setRematch(null)} />;
   /** The target adapter owns context synchronization and the actual native SDK dialog. */
   const choose = async () => {

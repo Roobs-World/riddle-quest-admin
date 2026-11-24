@@ -8,6 +8,7 @@ import {tr} from "../../localization/browser/i18n";
 import {createRequestId} from "../session/requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "../../platform/bridge/browser/localBridge";
 import {ShopSubscriptionContext} from "../../commerce/browser/ShopSubscriptionContext";
+import {useProviderProfile} from "../../accounts/components/ProviderProfileContext";
 import {GuidanceOverlay} from "../../onboarding/components/GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "../../app/components/feedback/SpinningWheelLoader";
 import type {
@@ -141,6 +142,7 @@ export function GameFrameApp({
 } = {}) {
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
+  const providerProfile = useProviderProfile();
   /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
   const shopCatalog = useContext(ShopSubscriptionContext);
   /** Existing offers or a retryable catalog error keep the shop entry available. */
@@ -556,6 +558,12 @@ export function GameFrameApp({
             <RaceTo10Game
               key={raceOwnerId}
               ownerId={raceOwnerId}
+              localPlayer={{
+                displayName: (providerProfile ? providerProfile.username : state.profile?.username) ?? state.user?.displayName ?? tr("Profile.GUEST_USERNAME"),
+                avatarUrl: providerProfile ? providerProfile.avatarUrl : state.profile?.avatarUrl ?? state.user?.photoURL ?? null,
+                level: state.profile?.level ?? 1,
+                bot: false,
+              }}
               locale={raceLocale ?? "en"}
               challengeId={raceChallengeId}
               openInbox={raceInbox}

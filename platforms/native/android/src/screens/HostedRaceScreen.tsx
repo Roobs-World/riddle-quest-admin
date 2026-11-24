@@ -1,6 +1,7 @@
 import type {RaceCategoryId, LiveRaceView, LiveRaceCapability, ListRaceCategoriesResponse, RaceLocale, SocialReportCategory} from "../../../../../src/races/contracts/index";
 import {createFirebaseLiveTransport} from "../../../../../src/races/transport/firebaseLiveTransport";
 import type {HostServices} from "../../../../../src/platform/contracts/hostServices";
+import type {BridgeProfile} from "../../../../../src/platform/bridge/messages";
 import {formatRaceTime} from "../../../../../src/races/presentation/racePresentation";
 import {canShowLatinShortcut} from "../../../../../src/gameplay/input/localInput";
 import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
@@ -20,6 +21,7 @@ export type HostedRaceScreenProps = Readonly<{
   /** Current authenticated account. */ accountUid: string;
   /** Typed authenticated Firebase callables. */ client: HostedFirebaseClient;
   /** Shared profile refresh after authoritative completion. */ services: HostServices;
+  /** Account-owned display details already available before matchmaking responds. */ selfProfile?: Pick<BridgeProfile, "username" | "avatarUrl"> | null;
   /** Optional server invitation delivered by an app link or notification. */ challengeId?: string;
   /** Reports whether a join or owned seat requires confirmed retirement before navigation. */ onActivityChange?: (active: boolean) => void;
   /** Clears only this preview after server acceptance or terminal unavailability. */ onEntryHandled?: () => void;
@@ -43,7 +45,7 @@ export type HostedRaceViewProps = Omit<HostedRaceScreenProps, "client"> & {
   /** Approved category catalog. */ categories: (locale: RaceLocale) => Promise<ListRaceCategoriesResponse>;
 };
 /** Keeps the target transport and native controller stable while the race polls. */
-export function HostedRaceView({locale, accountUid, transport, categories, services, challengeId, onBack, onEntryHandled, onActivityChange}: HostedRaceViewProps) {
+export function HostedRaceView({locale, accountUid, transport, categories, services, selfProfile, challengeId, onBack, onEntryHandled, onActivityChange}: HostedRaceViewProps) {
   /** Resolves existing translated race keys for the device locale. */
   const text = (key: RaceCopyKey, params?: Readonly<Record<string, string | number>>) => raceText(locale, key, params);
   /** Shared authority and input state with native lifecycle adapters. */
@@ -135,6 +137,7 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
       <ActionButton label={text("KEEP_PLAYING")} onPress={() => controller.cancelClose()} testID="race-keep-playing" />
       <ActionButton tone="danger" label={text("QUIT_RACE")} disabled={state.busy} onPress={() => {void controller.close();}} testID="race-quit-confirm" />
     </Panel> : !view ? <>
+      {selfProfile && <Panel><RacePlayers view={null} selfProfile={selfProfile} locale={locale} hideOpponent={false} /></Panel>}
       <Panel>
         <Heading level={2}>{text("CHOOSE_CATEGORY")}</Heading>
         <Text style={styles.body}>{text("FIRST_TO_TEN")}</Text>
@@ -236,20 +239,24 @@ export function HostedRaceView({locale, accountUid, transport, categories, servi
   </Screen>;
 }
 /** Viewer-specific identity and server-confirmed progress. */
-function RacePlayers({view, locale, hideOpponent}: {
+function RacePlayers({view, selfProfile, locale, hideOpponent}: {
   /** Viewer-specific identity and confirmed progress for the scoreboard. */
-  view: LiveRaceView;
+  view: LiveRaceView | null;
+  /** Cached display identity never supplies a score or a confirmed seat. */
+  selfProfile?: HostedRaceScreenProps["selfProfile"];
   /** Device language for existing translated identity labels. */
   locale: YouTubeLocale;
   /** Masks an opponent immediately after a confirmed block. */
   hideOpponent: boolean;
 }) {
   /** Viewer and optional rival presented without exposing account identifiers. */
-  const players = [view.player, hideOpponent ? null : view.opponent];
+  const players = [view?.player ?? (selfProfile ? {displayName: selfProfile.username, avatarUrl: selfProfile.avatarUrl} : null),
+    hideOpponent ? null : view?.opponent];
+  const scores = [view?.player.correctCount, view?.opponent?.correctCount];
   return <View style={styles.players}>{players.map((player, index) => <View key={index} style={styles.player}>
     {player?.avatarUrl && <Image source={{uri: player.avatarUrl}} style={styles.avatar} accessibilityIgnoresInvertColors />}
-    <Text style={styles.body}>{index === 0 ? raceText(locale, "YOU") : player?.displayName ?? raceText(locale, "LIVE_OPPONENT")}</Text>
-    <Text style={styles.score} testID={index === 0 ? "race-player-score" : "race-opponent-score"}>{player?.correctCount ?? 0}/10</Text>
+    <Text style={styles.body}>{player?.displayName ?? raceText(locale, index === 0 ? "YOU" : "LIVE_OPPONENT")}</Text>
+    {view && <Text style={styles.score} testID={index === 0 ? "race-player-score" : "race-opponent-score"}>{hideOpponent && index === 1 ? 0 : scores[index] ?? 0}/10</Text>}
   </View>)}</View>;
 }
 /** Native answer tiles wrap for longer translated answers. */
