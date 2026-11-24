@@ -7,3 +7,5 @@
 - [Assets](assets/)
 
 See the [documentation index](../README.md) for other modules.
+
+- [Hosted notifications and native FCM](android-notifications.md)

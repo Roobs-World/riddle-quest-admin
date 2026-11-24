@@ -9,6 +9,7 @@ import {describe, expect, it} from "@jest/globals";
 import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
 import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
+import {getHostedNotificationCopy} from "../../../../../src/notifications/copy/hostedNotificationCopy";
 
 /** Documents global. */
 declare global {
@@ -56,6 +57,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         ...process.env,
         FACEBOOK_BUILD_OUT_DIR: distDirectory,
         VITE_FACEBOOK_AGE_CATEGORY: "13_plus",
+        VITE_NOTIFICATION_SERVICE_URL: "",
       },
       stdio: "inherit",
     });
@@ -663,6 +665,32 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(notificationClaims).toBe(0);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
       expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
+      await successPage.locator(".game-bottom-navigation button").first().click();
+      const settings = successPage.locator(".modal-settings");
+      await settings.waitFor();
+      const notificationToggle = settings.getByRole("button", {name: /^Notifications\b/});
+      expect(await notificationToggle.count()).toBe(1);
+      await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
+      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
+      const notificationCopy = getHostedNotificationCopy("fr");
+      await settings.getByRole("status").first().waitFor();
+      expect((await settings.getByRole("status").allTextContents()).some(message =>
+        message === notificationCopy.notConfigured || message === notificationCopy.unavailable)).toBe(true);
+      await notificationToggle.click();
+      await settings.locator('button[aria-busy="false"][aria-pressed="false"]').waitFor();
+      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("false");
+      expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("false");
+      await notificationToggle.click();
+      await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
+      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
+      expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("true");
+      expect((await settings.getByRole("status").allTextContents()).some(message =>
+        message === notificationCopy.notConfigured || message === notificationCopy.unavailable)).toBe(true);
+      expect(notificationClaims).toBe(0);
+      expect(notificationAccepted).toBe(false);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
+      await settings.locator(".modal-x").click();
+      await settings.waitFor({state: "detached"});
       await successPage.evaluate(() => Reflect.set(window, "__holdFacebookWrite", true));
       await successPage.locator(".keyboard").getByRole("button", {name: "I", exact: true}).click();
       await successPage.waitForFunction(() => typeof Reflect.get(window, "__releaseFacebookWrite") === "function");
@@ -696,23 +724,18 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await successPage.keyboard.press("Backspace");
       }
       // The prior feedback check left the next draft at P. Complete the fixture's
-      // PIANO answer through the UI so only an authoritative win can cause a prompt.
+      // PIANO answer through the UI and preserve the post-result ad journey.
       for (const letter of "IANO") {
         await successPage.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
       }
-      /** Waits for the authenticated acceptance boundary, not only the SDK dialog. */
-      const notificationAcceptance = successPage.waitForResponse("**/acceptFacebookNotificationPermissionPrompt");
       await successPage.locator(".submit-action").click();
-      await successPage.waitForFunction(() => window.__facebookEvents.includes("notifications:subscribe"));
-      await notificationAcceptance;
-      expect(notificationAccepted).toBe(true);
-      expect(notificationClaims).toBe(1);
-      expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(1);
       await successPage.waitForFunction(() => window.__facebookEvents.includes("ads:show"));
-      /** The post-result ad follows subscription consent, uses Meta's configured ID, and loads before showing. */
+      expect(notificationAccepted).toBe(false);
+      expect(notificationClaims).toBe(0);
+      expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(0);
+      /** The post-result ad uses Meta's configured ID and loads before showing. */
       const providerEvents = await successPage.evaluate(() => window.__facebookEvents);
       expect(providerEvents).toContain("ads:interstitial:1748953042991569_1765481644672042");
-      expect(providerEvents.indexOf("notifications:subscribe")).toBeLessThan(providerEvents.indexOf("ads:load"));
       expect(providerEvents.indexOf("ads:load")).toBeLessThan(providerEvents.indexOf("ads:show"));
       /** Dismissing Meta sharing leaves the result available for a later explicit retry. */
       const resultShare = successPage.locator(".fanfare-content .play-secondary");
@@ -726,6 +749,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           {intent: "SHARE", switchContext: false, data: {gameMode: "classic", referralToken: "t".repeat(43)}, png: true}]);
       expect(referralRequests).toEqual(Array.from({length: 2}, () => ({authorization: `Bearer ${firebaseIdToken}`, appCheck: appCheckToken,
         body: JSON.stringify({data: {}})})));
+      expect(notificationClaims).toBe(0);
+      expect(notificationAccepted).toBe(false);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
       await successPage.reload();
       await successPage.waitForFunction(
         () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -761,6 +787,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-invite-button').click();
       await successPage.waitForFunction(() => window.__facebookEvents.includes("share:INVITE"));
       expect(await successPage.locator('.profile-invite-button').innerText()).not.toMatch(/100|Jest/);
+      expect(notificationClaims).toBe(0);
+      expect(notificationAccepted).toBe(false);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("notifications:subscribe"))).toBe(false);
       expect(await successPage.locator('.profile-avatar-input').count()).toBe(0);
       await successPage.locator('.profile-identity .play-text-button').click();
       await successPage.locator('.username-form input').fill('FacebookTester');
@@ -773,9 +802,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await verifyRewardedContinue(successPage, origin);
       await verifyTournamentEntry(successPage, origin);
       await verifyTournamentScoreRecovery(successPage, origin);
-      // Independent flags must permit native live-win consent with and without the tournament surface.
+      // Both tournament flag variants preserve live results without triggering optional Meta consent.
       for (const tournaments of [true, false]) {
-        notificationAccepted = false;
         /** Provides prior live claims behavior. */
         const priorLiveClaims = notificationClaims;
         await installTournamentPresentation(successPage);
@@ -800,14 +828,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           await verifyTournamentPresentation(successPage);
           await successPage.locator(".race-close").click();
         }
-        /** Provides live acceptance behavior. */
-        const liveAcceptance = successPage.waitForResponse("**/acceptFacebookNotificationPermissionPrompt", {timeout: 5000});
-        void liveAcceptance.catch(() => undefined);
         await verifyTournamentLiveResult(successPage, tournaments);
-        await liveAcceptance;
-        expect(notificationAccepted).toBe(true);
-        expect(notificationClaims).toBe(priorLiveClaims + 1);
-        expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(1);
+        expect(notificationAccepted).toBe(false);
+        expect(notificationClaims).toBe(priorLiveClaims);
+        expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "notifications:subscribe").length)).toBe(0);
       }
     } finally {
       await browser.close();

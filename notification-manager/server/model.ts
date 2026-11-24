@@ -3,6 +3,7 @@ import {z} from "zod";
 
 export const DAY_MS = 86_400_000;
 export const Platform = z.string().regex(/^[a-z][a-z0-9-]{0,63}$/u);
+export const BrowserPlatform = Platform.refine(value => value !== "android" && value !== "all");
 export const Revision = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
 export const Locale = z.string().regex(/^[a-z]{2}(?:-[A-Za-z]{2})?$/u).max(16);
@@ -20,7 +21,8 @@ export function permittedPushEndpoint(value: string): boolean {
   try {
     const endpoint = new URL(value);
     return endpoint.protocol === "https:" && !endpoint.username && !endpoint.password && !endpoint.hash && !endpoint.port &&
-      ["fcm.googleapis.com", "updates.push.services.mozilla.com", "web.push.apple.com"].includes(endpoint.hostname);
+      (["fcm.googleapis.com", "updates.push.services.mozilla.com", "web.push.apple.com"].includes(endpoint.hostname) ||
+        /^[a-z0-9-]+\.notify\.windows\.com$/u.test(endpoint.hostname));
   } catch {return false;}
 }
 
@@ -33,9 +35,9 @@ export const Subscription = z.object({
 }).strict();
 export type Subscription = z.infer<typeof Subscription>;
 
-export const SubscribeInput = z.object({target: Platform, revision: Revision, locale: Locale, subscription: Subscription}).strict();
-export const UnsubscribeInput = z.object({target: Platform, revision: Revision}).strict();
-export const ActivityInput = z.object({target: Platform, locale: Locale}).strict();
+export const SubscribeInput = z.object({target: BrowserPlatform, revision: Revision, locale: Locale, subscription: Subscription}).strict();
+export const UnsubscribeInput = z.object({target: BrowserPlatform, revision: Revision}).strict();
+export const ActivityInput = z.object({target: BrowserPlatform, locale: Locale}).strict();
 export const CampaignInput = z.object({
   requestId: z.string().regex(/^[A-Za-z0-9_-]{16,128}$/u),
   title: z.string().trim().min(1).max(200),
@@ -50,13 +52,21 @@ export const CampaignInput = z.object({
 export type CampaignInput = z.infer<typeof CampaignInput>;
 
 const InstallationBase = z.object({
-  target: Platform, origin: z.string(), revision: Revision, locale: Locale,
+  revision: Revision, locale: Locale,
   createdAtMs: Revision, updatedAtMs: Revision, expiresAtMs: Revision,
   enrolledAtMs: Revision.nullable(),
 });
-export const Installation = z.discriminatedUnion("status", [
-  InstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, subscription: Subscription, endpointHash: Hash}).strict(),
-  InstallationBase.extend({status: z.literal("disabled")}).strict(),
+const WebInstallationBase = InstallationBase.extend({transport: z.literal("web-push"), target: BrowserPlatform, origin: z.string()});
+const AndroidInstallationBase = InstallationBase.extend({transport: z.literal("android"), target: z.literal("android"), origin: z.null()});
+export const Installation = z.discriminatedUnion("transport", [
+  z.discriminatedUnion("status", [
+    WebInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, subscription: Subscription, endpointHash: Hash}).strict(),
+    WebInstallationBase.extend({status: z.literal("disabled")}).strict(),
+  ]),
+  z.discriminatedUnion("status", [
+    AndroidInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),
+    AndroidInstallationBase.extend({status: z.literal("disabled")}).strict(),
+  ]),
 ]);
 export type Installation = z.infer<typeof Installation>;
 export type ActiveInstallation = Extract<Installation, {status: "active"}>;

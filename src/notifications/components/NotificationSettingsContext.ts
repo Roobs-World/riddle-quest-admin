@@ -1,6 +1,7 @@
 import {trackEvent} from "../../observability/analytics/events";
 import {createContext, createElement, useCallback, useContext, useLayoutEffect, useMemo, useSyncExternalStore, type ReactNode} from "react";
 import type {NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
+import {getCurrentLocale} from "../../localization/browser/i18n";
 
 type NotificationSettingsState = NotificationSnapshot & {
   change(enabled: boolean): Promise<boolean>;
@@ -13,10 +14,21 @@ function useNotificationSettingsState(provider?: NotificationProvider | null): N
   const lifetime = useMemo(() => ({active: false}), [provider]);
   useLayoutEffect(() => {
     lifetime.active = true;
-    void provider?.restore().catch(() => {
+    const recordActivity = () => {
+      if (lifetime.active && document.visibilityState !== "hidden") void provider?.recordActivity({locale: getCurrentLocale()})
+        .catch(() => {if (lifetime.active) trackEvent("notification_activity_failed");});
+    };
+    void provider?.restore().then(recordActivity).catch(() => {
       if (lifetime.active) trackEvent("notification_preference_restore_failed");
     });
-    return () => {lifetime.active = false; provider?.retire();};
+    window.addEventListener("focus", recordActivity);
+    document.addEventListener("visibilitychange", recordActivity);
+    return () => {
+      lifetime.active = false;
+      window.removeEventListener("focus", recordActivity);
+      document.removeEventListener("visibilitychange", recordActivity);
+      provider?.retire();
+    };
   }, [lifetime, provider]);
   const subscribe = useCallback((listener: () => void) => provider?.subscribe(listener) ?? (() => {}), [provider]);
   const getSnapshot = useCallback(() => provider?.getSnapshot() ?? null, [provider]);

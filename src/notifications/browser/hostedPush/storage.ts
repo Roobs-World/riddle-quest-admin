@@ -27,12 +27,12 @@ export function saveHostedPushState(target: HostedPushTarget, state: HostedPushS
   if (localStorage.getItem(hostedPushStorageKey(target)) !== value) throw new Error("hosted-push-storage-unavailable");
 }
 
-export function initializeHostedPushState(target: HostedPushTarget): HostedPushStoredState {
+export function initializeHostedPushState(target: HostedPushTarget, {enabled = true}: {enabled?: boolean} = {}): HostedPushStoredState {
   const stored = readHostedPushState(target);
   if (stored) return stored;
   const bytes = crypto.getRandomValues(new Uint8Array(32));
   const state: HostedPushStoredState = {version: 1, token: Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join(""),
-    installationId: null, revision: 0, enabled: true, pendingRevocation: false, locale: "en"};
+    installationId: null, revision: 0, enabled, pendingRevocation: false, locale: "en"};
   saveHostedPushState(target, state);
   return state;
 }

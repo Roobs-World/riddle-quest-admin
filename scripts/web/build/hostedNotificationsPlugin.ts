@@ -37,7 +37,7 @@ export function hostedNotificationsPlugin(target: string): Plugin | null {
     enforce: "post",
     configResolved(config) {building = config.command === "build";},
     transform(code, id) {
-      assertHostedNetworkBoundary(code, id);
+      if (target === "yahoo" || id.replaceAll("\\", "/").includes("/src/notifications/browser/")) assertHostedNetworkBoundary(code, id);
       return null;
     },
     configureServer(server) {

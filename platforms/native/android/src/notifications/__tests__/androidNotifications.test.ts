@@ -2,180 +2,218 @@ import {describe, expect, it} from "@jest/globals";
 import {
   createAndroidNotificationController,
   parseAndroidNotificationPreferences,
+  type AndroidNotificationBackend,
   type AndroidNotificationPreferences,
+  type AndroidSubscriptionInput,
 } from "../androidNotificationController";
 
-/** Real async ports retain device consent and account bindings without invoking a provider SDK. */
-function fixture() {
-  /** In-memory app-private preference records for this consent scenario. */
-  const records = new Map<string, string>(),
-    sent: Array<
-      AndroidNotificationPreferences & {
-        /** Opaque provider token, never a local grant or account selector. */
-        token: string;
-        /** Supported recipient language used for notification or referral copy. */
-        locale: string;
-      }
-    > = [];
-  /** Native account and consent changes observed by the fixture. */
-  const owners: Array<{
-    /** Authenticated game account that owns this operation. */
-    uid: string;
-    /** Explicit invitation and Daily consent for the current game account. */
-    preferences: AndroidNotificationPreferences;
-  }> = [];
-  /** Scripted Android permission decision and provider failure state. */
-  let permission = true,
-    token = "opaque-fcm-registration-token",
-    requests = 0,
-    fail = false;
-  /** Deferred provider response used to control concurrent completion order. */
-  let pending: Promise<unknown> = Promise.resolve();
-  /** Account-owned controller coordinating the device and authoritative backend. */
+const DEVICE_ID = "f6a1b3c2-04d5-4678-9abc-112233445566";
+const KEY = "riddle-quest:android:notifications:first-account";
+const flush = () => new Promise<void>(resolve => setImmediate(resolve));
+
+function fixture(saved?: string) {
+  const records = new Map<string, string>();
+  if (saved !== undefined) records.set(KEY, saved);
+  const sent: AndroidSubscriptionInput[] = [];
+  const owners: Array<{uid: string; preferences: AndroidNotificationPreferences}> = [];
+  const cleared: string[] = [];
+  const reads: string[] = [];
+  let permission = true, requests = 0, tokenReads = 0, fail = false, nativeEpoch = 0;
+  let token = "opaque-fcm-registration-token";
+  let known: string | null = null;
+  let registrationRevision = 0;
+  let remote: boolean | null = null;
+  let pending: Promise<void> = Promise.resolve();
+  const backend: AndroidNotificationBackend = {
+    async readPreference(expectedOwnerId) {reads.push(expectedOwnerId); return remote;},
+    async setSubscription(input) {
+      if (fail) throw new Error("network-unavailable");
+      sent.push(input);
+      await pending;
+      if (input.enabled && !input.preferenceFromSettings && remote === false)
+        return {enabled: false, delivery: "inactive", registrationRevision: 0};
+      if (input.preferenceFromSettings) remote = input.enabled;
+      const ready = input.enabled && "token" in input;
+      return {enabled: input.enabled, delivery: input.enabled ? ready ? "ready" : "permission-required" : "inactive",
+        registrationRevision: ready ? ++registrationRevision : 0};
+    },
+  };
   const controller = createAndroidNotificationController({
-    uid: "first-account",
-    locale: "es",
+    uid: "first-account", locale: "es", backend,
     device: {
-      requestPermission: async () => {
-        requests += 1;
-        return permission;
-      },
+      requestPermission: async () => {requests += 1; return permission;},
       hasPermission: async () => permission,
       configure: async () => undefined,
-      getToken: async () => token,
-      setAccount: async (uid, preferences) => {
+      getToken: async () => {tokenReads += 1; known = token; return token;},
+      knownToken: async () => known,
+      deviceId: async () => DEVICE_ID,
+      beginAccountOperation: async () => ++nativeEpoch,
+      invalidateAccountOperation: async () => {nativeEpoch += 1;},
+      setAccount: async (uid, preferences, operationId) => {
+        if (operationId !== nativeEpoch) throw new Error("notification-account-changed");
         owners.push({uid, preferences});
       },
-    },
-    backend: {
-      /** Records explicit native consent at the authenticated backend boundary. */
-      async setSubscription(input) {
-        if (fail) throw new Error("network-unavailable");
-        sent.push(input);
-        await pending;
-        return {invitations: input.invitations, daily: input.daily};
-      },
+      clearPendingToken: async value => {cleared.push(value);},
     },
     storage: {
-      getItem: async (key) => records.get(key) ?? null,
-      setItem: async (key, value) => {
-        records.set(key, value);
-      },
+      getItem: async key => records.get(key) ?? null,
+      setItem: async (key, value) => {records.set(key, value);},
     },
   });
   return {
-    controller,
-    records,
-    sent,
-    owners,
-    /** Changes the next Android permission decision in this scenario. */
-    setPermission(value: boolean) {
-      permission = value;
-    },
-    /** Replaces the provider registration token to simulate SDK rotation. */
-    setToken(value: string) {
-      token = value;
-    },
-    /** Makes the provider boundary unavailable without changing local consent. */
-    setFailure(value: boolean) {
-      fail = value;
-    },
-    /** Defers the next provider reply so the scenario can retire or replace its owner. */
-    setPending(value: Promise<unknown>) {
-      pending = value;
-    },
+    controller, records, sent, owners, cleared, reads,
+    setPermission(value: boolean) {permission = value;},
+    setToken(value: string) {token = value; known = value;},
+    setFailure(value: boolean) {fail = value;},
+    setRemote(value: boolean | null) {remote = value;},
+    setPending(value: Promise<void>) {pending = value;},
     requests: () => requests,
+    tokenReads: () => tokenReads,
   };
 }
 
-describe("Android notification consent", () => {
-  it("never infers consent from missing, malformed or wrongly typed storage", () => {
-    for (const value of [null, "broken", "null", "{}", '{"invitations":"yes","daily":true}'])
-      expect(parseAndroidNotificationPreferences(value)).toEqual({invitations: false, daily: false});
+describe("Android notification preference", () => {
+  it("defaults missing preferences On and preserves explicit or legacy Off", () => {
+    expect(parseAndroidNotificationPreferences(null)).toEqual({enabled: true});
+    for (const value of ['{"enabled":false}', '{"invitations":false,"daily":false}', "broken", "null", "{}"])
+      expect(parseAndroidNotificationPreferences(value)).toEqual({enabled: false});
+    expect(parseAndroidNotificationPreferences('{"invitations":true,"daily":false}')).toEqual({enabled: true});
+    expect(parseAndroidNotificationPreferences('{"enabled":true}')).toEqual({enabled: true});
   });
-  it("opens quietly with no permission prompt, token registration or default consent", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("restores default On with granted permission without opening a permission prompt", async () => {
     const f = fixture();
-    await f.controller.refresh();
+    await f.controller.restore();
     expect(f.requests()).toBe(0);
-    expect(f.sent).toEqual([]);
-    expect(f.owners.at(-1)?.preferences).toEqual({invitations: false, daily: false});
+    expect(f.reads).toEqual(["first-account"]);
+    expect(f.sent).toEqual([{enabled: true, expectedOwnerId: "first-account", deviceId: DEVICE_ID, deviceEpoch: 1, preferenceFromSettings: false, token: "opaque-fcm-registration-token", locale: "es"}]);
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: true, busy: false, delivery: "ready"});
+    expect(f.owners.at(-1)).toEqual({uid: "first-account", preferences: {enabled: true}});
   });
-  it("registers only after permission and persists the exact selected consent", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
-    const f = fixture();
-    await f.controller.update({invitations: true, daily: false});
-    expect(f.requests()).toBe(1);
-    expect(f.sent).toEqual([{token: "opaque-fcm-registration-token", locale: "es", invitations: true, daily: false}]);
-    expect(await f.controller.read()).toEqual({invitations: true, daily: false});
-  });
-  it("refuses denied permission without persisting opt-in or contacting the backend", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("retains default On while awaiting OS permission without registering a token", async () => {
     const f = fixture();
     f.setPermission(false);
-    await expect(f.controller.update({invitations: true, daily: true})).rejects.toThrow(
-      "notification-permission-denied",
-    );
+    await f.controller.restore();
+    expect(f.requests()).toBe(0);
+    expect(f.tokenReads()).toBe(0);
     expect(f.sent).toEqual([]);
-    expect(await f.controller.read()).toEqual({invitations: false, daily: false});
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: true, delivery: "permission-required"});
+    expect(f.owners.at(-1)?.preferences).toEqual({enabled: false});
   });
-  it("renews a rotated token without another permission prompt", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("preserves saved Off and sends revocation without requiring an FCM token", async () => {
+    const f = fixture('{"invitations":false,"daily":false}');
+    await f.controller.restore();
+    expect(f.requests()).toBe(0);
+    expect(f.tokenReads()).toBe(0);
+    expect(f.sent).toEqual([{enabled: false, expectedOwnerId: "first-account", deviceId: DEVICE_ID, deviceEpoch: 1, preferenceFromSettings: false}]);
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: false, delivery: "inactive"});
+  });
+
+  it("honors the authenticated account's saved Off over an absent local preference", async () => {
     const f = fixture();
-    await f.controller.update({invitations: true, daily: true});
-    f.setToken("rotated-fcm-registration-token");
-    await f.controller.refresh();
+    f.setRemote(false);
+    await f.controller.restore();
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: false, delivery: "inactive"});
+    expect(f.tokenReads()).toBe(0);
+  });
+
+  it("preserves On after an explicit permission denial and permits a later Settings retry", async () => {
+    const f = fixture();
+    f.setPermission(false);
+    expect(await f.controller.requestPermission()).toBe(false);
     expect(f.requests()).toBe(1);
-    expect(f.sent.at(-1)?.token).toBe("rotated-fcm-registration-token");
+    expect(f.sent).toEqual([{enabled: true, expectedOwnerId: "first-account", deviceId: DEVICE_ID, deviceEpoch: 1, preferenceFromSettings: true}]);
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: true, busy: false, delivery: "blocked"});
+    expect(f.owners.at(-1)?.preferences).toEqual({enabled: false});
+    f.setPermission(true);
+    expect(await f.controller.requestPermission()).toBe(true);
+    expect(f.controller.getSnapshot().delivery).toBe("ready");
   });
-  it("blocks local notification delivery and persists revocation even during a network failure", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("renews a rotated token and acknowledges it without another permission prompt", async () => {
     const f = fixture();
-    await f.controller.update({invitations: true, daily: true});
+    await f.controller.restore();
+    f.setToken("rotated-fcm-registration-token");
+    await f.controller.restore();
+    expect(f.requests()).toBe(0);
+    expect(f.sent.at(-1)).toMatchObject({token: "rotated-fcm-registration-token", expectedOwnerId: "first-account"});
+    expect(f.cleared).toEqual(["opaque-fcm-registration-token", "rotated-fcm-registration-token"]);
+  });
+
+  it("blocks local delivery and persists Off even when server revocation fails", async () => {
+    const f = fixture();
+    await f.controller.restore();
     f.setFailure(true);
-    await expect(f.controller.update({invitations: false, daily: false})).rejects.toThrow("network-unavailable");
-    expect(await f.controller.read()).toEqual({invitations: false, daily: false});
-    expect(f.owners.at(-1)?.preferences).toEqual({invitations: false, daily: false});
+    expect(await f.controller.setEnabled(false)).toBe(false);
+    expect(JSON.parse(f.records.get(KEY) ?? "null")).toEqual({enabled: false});
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: false, delivery: "save-failed"});
+    expect(f.owners.at(-1)?.preferences).toEqual({enabled: false});
   });
-  it("does not let a stale foreground refresh restore revoked consent", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("accepts authoritative Off when it changes after a restoration read", async () => {
     const f = fixture();
-    await f.controller.update({invitations: true, daily: true});
-    /** Completes the deliberately delayed provider request. */
-    let release: (() => void) | undefined;
-    f.setPending(
-      new Promise<void>((resolve) => {
-        release = resolve;
-      }),
-    );
-    /** Foreground renewal started before the player changed consent. */
-    const refreshing = f.controller.refresh();
-    while (f.sent.length < 2) await Promise.resolve();
-    /** Explicit revocation that must supersede older token renewal. */
-    const disabling = f.controller.update({invitations: false, daily: false});
-    while (f.sent.length < 3) await Promise.resolve();
-    release?.();
-    await expect(refreshing).rejects.toThrow("notification-account-changed");
-    await disabling;
-    expect(f.owners.at(-1)?.preferences).toEqual({invitations: false, daily: false});
+    let release: () => void = () => undefined;
+    f.setPending(new Promise<void>(resolve => {release = resolve;}));
+    const restoring = f.controller.restore();
+    await flush();
+    expect(f.sent).toHaveLength(1);
+    f.setRemote(false);
+    release();
+    await restoring;
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: false, busy: false, delivery: "inactive"});
+    expect(f.owners.at(-1)?.preferences).toEqual({enabled: false});
+    expect(f.cleared).toEqual([]);
   });
-  it("does not restore an old native owner after its account session ends", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+
+  it("does not let a stale foreground restoration restore revoked consent", async () => {
     const f = fixture();
-    /** Completes the deliberately delayed provider request. */
-    let release: (() => void) | undefined;
-    f.setPending(
-      new Promise<void>((resolve) => {
-        release = resolve;
-      }),
-    );
-    /** In-flight enable request whose owner can be retired. */
-    const updating = f.controller.update({invitations: true, daily: true});
-    while (!f.sent.length) await Promise.resolve();
-    f.controller.invalidate();
-    release?.();
-    await expect(updating).rejects.toThrow("notification-account-changed");
+    let release: () => void = () => undefined;
+    f.setPending(new Promise<void>(resolve => {release = resolve;}));
+    const restoring = f.controller.restore();
+    await flush();
+    expect(f.sent).toHaveLength(1);
+    const disabling = f.controller.setEnabled(false);
+    await flush();
+    expect(f.sent).toHaveLength(2);
+    release();
+    await restoring;
+    expect(await disabling).toBe(true);
+    await flush();
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: false, busy: false, delivery: "inactive"});
+    expect(f.owners.at(-1)?.preferences).toEqual({enabled: false});
+  });
+
+  it("refreshes a rotated token queued during a Settings registration", async () => {
+    const f = fixture();
+    let release: () => void = () => undefined;
+    f.setPending(new Promise<void>(resolve => {release = resolve;}));
+    const enabling = f.controller.setEnabled(true);
+    await flush();
+    expect(f.sent).toHaveLength(1);
+    f.setToken("rotated-during-settings-token");
+    await f.controller.restore();
+    expect(f.sent).toHaveLength(1);
+    release();
+    expect(await enabling).toBe(true);
+    await flush();
+    expect(f.sent.at(-1)).toMatchObject({enabled: true, token: "rotated-during-settings-token", preferenceFromSettings: false});
+    expect(f.cleared.at(-1)).toBe("rotated-during-settings-token");
+    expect(f.controller.getSnapshot()).toMatchObject({enabled: true, busy: false, delivery: "ready"});
+  });
+
+  it("does not restore native ownership after its account session retires", async () => {
+    const f = fixture();
+    let release: () => void = () => undefined;
+    f.setPending(new Promise<void>(resolve => {release = resolve;}));
+    const enabling = f.controller.setEnabled(true);
+    await flush();
+    expect(f.sent).toHaveLength(1);
+    f.controller.retire();
+    release();
+    expect(await enabling).toBe(false);
     expect(f.owners).toEqual([]);
-    expect(f.records.size).toBe(0);
+    expect(f.cleared).toEqual([]);
   });
 });

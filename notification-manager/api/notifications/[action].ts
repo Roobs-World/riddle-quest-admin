@@ -1,12 +1,12 @@
 import {z} from "zod";
 import {vapidConfiguration} from "../../server/configuration.js";
-import {ActivityInput, Platform, SubscribeInput, UnsubscribeInput} from "../../server/model.js";
+import {ActivityInput, BrowserPlatform, SubscribeInput, UnsubscribeInput} from "../../server/model.js";
 import {ApiError, body, fail, json, type ApiRequest, type ApiResponse} from "../../server/http.js";
 import {browserCors, browserOrigin, consumeBrowserQuota, digest, installationCredential} from "../../server/security.js";
 import {recordInstallationActivity, subscribeInstallation, unsubscribeInstallation} from "../../server/subscriptions.js";
 import {requestDeadline} from "../../server/deadline.js";
 
-const ConfigQuery = z.object({target: Platform}).strict();
+const ConfigQuery = z.object({target: BrowserPlatform}).strict();
 
 /** Anonymous browser enrollment is isolated from both management authentication and game accounts. */
 export default async function handler(request: ApiRequest, response: ApiResponse): Promise<void> {

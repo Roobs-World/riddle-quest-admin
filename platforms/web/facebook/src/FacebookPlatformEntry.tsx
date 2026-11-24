@@ -1,7 +1,9 @@
 import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import type {NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
-import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
+import {createNotificationProvider} from "../../../../src/notifications/controllers/notificationProvider";
+import {createHostedPushController} from "../../../../src/notifications/browser/hostedPushController";
+import {createConfiguredHostedPushTransportFactory} from "../../../../src/notifications/browser/hostedPush/api";
 import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {getCurrentLocale, tr} from "../../../../src/localization/browser/i18n";
@@ -22,7 +24,6 @@ import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./Faceb
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookCommerceSession";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
-import {createFacebookNotificationCapability} from "./FacebookNotificationCapability";
 import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletion/LocalAccountDeletionGate";
 import {
   applyPlayerPreferences,
@@ -183,8 +184,6 @@ export function FacebookPlatformEntry() {
         let tournaments = undefined;
         /** Provides notifications enabled behavior. */
         let notificationsEnabled = false;
-        /** Meta-owned subscription capability, composed only after authenticated server gates. */
-        let notifications = undefined;
         /** Settings is the only game surface that can request notification permission. */
         let notificationProvider: NotificationProvider | undefined;
         /** Provides referrals enabled behavior. */
@@ -211,8 +210,6 @@ export function FacebookPlatformEntry() {
             record facebook tournament,
             list facebook context board,
             record facebook context run,
-            claim facebook notification permission prompt,
-            accept facebook notification permission prompt,
           } behavior. */
           const {
             getFacebookClientConfiguration,
@@ -220,8 +217,6 @@ export function FacebookPlatformEntry() {
             recordFacebookTournament,
             listFacebookContextBoard,
             recordFacebookContextRun,
-            claimFacebookNotificationPermissionPrompt,
-            acceptFacebookNotificationPermissionPrompt,
             grantFacebookRewardedContinue,
             grantFacebookPurchase,
           } = await import("./firebaseClient");
@@ -253,39 +248,19 @@ export function FacebookPlatformEntry() {
           }
           notificationsEnabled = ageCategory === "13_plus" && clientConfiguration.notificationsEnabled;
           if (notificationsEnabled) {
-            const isCurrent = () => active && deletionGateRef.current.isOpen();
-            const permission = createFacebookNotificationCapability(sdk, isCurrent);
-            notifications = permission;
-            if (permission) notificationProvider = createPlatformNotificationProvider({
+            let transport: ReturnType<typeof createConfiguredHostedPushTransportFactory>;
+            try {transport = createConfiguredHostedPushTransportFactory(import.meta.env.VITE_NOTIFICATION_SERVICE_URL);}
+            catch {transport = undefined;}
+            notificationProvider = createNotificationProvider({platform: "facebook", hosted: ({platform}) => createHostedPushController({
+              target: platform,
+              transport,
+              isAccountActive: () => active && deletionGateRef.current.isOpen(),
               preferences: {
                 getEnabled: isPlayerNotificationsEnabled,
                 setEnabled: setPlayerNotificationsEnabled,
                 subscribe: subscribeToPlayerNotifications,
               },
-              async restoreDelivery() {
-                if (!isCurrent()) return "unsupported";
-                const subscribed = await sdk.player.isSubscribedBotAsync?.();
-                return isCurrent() ? subscribed === true ? "ready" : "permission-required" : "unsupported";
-              },
-              async applyEnabled(enabled) {
-                if (!isCurrent()) return false;
-                return deletionGateRef.current.run(async () => {
-                  const {setNotificationPreference} = await import("../../../../src/platform/firebase/browserClient");
-                  if (!isCurrent()) return false;
-                  if (enabled) {
-                    if (!isPlayerNotificationsEnabled()) return false;
-                    const lease = (await claimFacebookNotificationPermissionPrompt({source: "settings"})).data;
-                    if (!lease.granted || !isCurrent() || !isPlayerNotificationsEnabled()) return false;
-                    const result = await permission.requestPermission();
-                    if (result.status !== "success" || !isCurrent() || !isPlayerNotificationsEnabled()) return false;
-                    await acceptFacebookNotificationPermissionPrompt();
-                    if (!isCurrent() || !isPlayerNotificationsEnabled()) return false;
-                  }
-                  await setNotificationPreference({enabled});
-                  return isCurrent();
-                });
-              },
-            });
+            })}) ?? undefined;
           }
           referralsEnabled = ageCategory === "13_plus" && clientConfiguration.referralsEnabled;
           matchmakingEnabled = ageCategory === "13_plus" && clientConfiguration.matchmakingEnabled;
@@ -442,7 +417,6 @@ export function FacebookPlatformEntry() {
                 ...(ads ? {ads} : {}),
                 ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
-                ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
                 ...(contextBoard ? {contextBoard} : {}),
               },
@@ -454,7 +428,6 @@ export function FacebookPlatformEntry() {
                 ...(ads ? {ads} : {}),
                 ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
-                ...(notifications ? {notifications} : {}),
                 ...(tournaments ? {tournaments} : {}),
               },
             };
@@ -602,6 +575,8 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready") return;
     analyticsLifetimeRef.current.abort();
     deletionGateRef.current.close();
+    await startup.notificationProvider?.setEnabled(false);
+    startup.notificationProvider?.retire();
     await presenceRef.current?.stop();
     await playerPersistenceRef.current?.closeAndFlush();
   }, [startup]);
@@ -609,6 +584,7 @@ export function FacebookPlatformEntry() {
   /** Completes account deletion. */
   const completeAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
+    startup.notificationProvider?.retire();
     await playerPersistenceRef.current?.clear();
     playerPersistenceRef.current = null;
     clearBrowserPlayerState();

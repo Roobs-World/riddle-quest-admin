@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {AppState, NativeModules, PermissionsAndroid, Platform} from "react-native";
+import {AppState, DeviceEventEmitter, NativeModules, PermissionsAndroid, Platform} from "react-native";
 import {useEffect, useMemo, useRef} from "react";
 import {
   createAndroidNotificationController,
@@ -23,7 +23,13 @@ type NativeNotifications = {
   /** Reads the current SDK registration token, including token rotations. */
   getToken(): Promise<unknown>;
   /** Binds native display to the exact account and its selected consent. */
-  setAccount(uid: string, invitations: boolean, daily: boolean): Promise<unknown>;
+  deviceId(): Promise<unknown>;
+  beginAccountOperation(uid: string): Promise<unknown>;
+  invalidateAccountOperation(uid: string): Promise<unknown>;
+  knownToken(): Promise<unknown>;
+  setAccount(uid: string, enabled: boolean, operationId: number, registrationRevision: number): Promise<unknown>;
+  pendingToken(): Promise<unknown>;
+  clearPendingToken(expectedToken: string): Promise<unknown>;
   /** Atomically clears only the expected native owner and its displayed notifications. */
   clearAccount(expectedUid: string): Promise<unknown>;
 };
@@ -38,6 +44,12 @@ function isNativeNotifications(value: unknown): value is NativeNotifications {
     typeof value.getToken === "function" &&
     "setAccount" in value &&
     typeof value.setAccount === "function" &&
+    "deviceId" in value && typeof value.deviceId === "function" &&
+    "beginAccountOperation" in value && typeof value.beginAccountOperation === "function" &&
+    "invalidateAccountOperation" in value && typeof value.invalidateAccountOperation === "function" &&
+    "knownToken" in value && typeof value.knownToken === "function" &&
+    "pendingToken" in value && typeof value.pendingToken === "function" &&
+    "clearPendingToken" in value && typeof value.clearPendingToken === "function" &&
     "clearAccount" in value &&
     typeof value.clearAccount === "function"
   );
@@ -83,9 +95,25 @@ export function createAndroidNotificationDevice(): AndroidNotificationDevice | n
       return token;
     },
     /** Binds native display to the exact account and its selected consent. */
-    async setAccount(uid, preferences) {
-      await native.setAccount(uid, preferences.invitations, preferences.daily);
+    async deviceId() {
+      const id = await native.deviceId();
+      if (typeof id !== "string" || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(id)) throw new Error("notification-device-invalid");
+      return id;
     },
+    async beginAccountOperation(uid) {
+      const operationId = await native.beginAccountOperation(uid);
+      if (typeof operationId !== "number" || !Number.isSafeInteger(operationId) || operationId < 1) throw new Error("notification-operation-invalid");
+      return operationId;
+    },
+    async invalidateAccountOperation(uid) {await native.invalidateAccountOperation(uid);},
+    async knownToken() {
+      const token = await native.knownToken();
+      return typeof token === "string" && token.length >= 20 && token.length <= 4096 && /^[A-Za-z0-9_:.-]+$/.test(token) ? token : null;
+    },
+    async setAccount(uid, preferences, operationId, registrationRevision) {
+      if (!await native.setAccount(uid, preferences.enabled, operationId, registrationRevision)) throw new Error("notification-account-changed");
+    },
+    async clearPendingToken(token) {await native.clearPendingToken(token);},
   };
 }
 /** Clears a retired authenticated account without allowing stale work to clear a replacement. */
@@ -118,17 +146,19 @@ export function useAndroidNotifications(uid: string | null, locale: string, back
     let current = true;
     /** Renews already-selected consent with the current token without another OS prompt. */
     const refresh = () => {
-      if (current) controller.refresh().catch(() => undefined);
+      if (current) controller.restore().catch(() => undefined);
     };
     refresh();
     /** OS lifecycle listener or current verified Play receipt. */
+    const tokenSubscription = DeviceEventEmitter.addListener("riddleQuestNotificationTokenChanged", refresh);
     const subscription = AppState.addEventListener("change", (state) => {
       if (state === "active") refresh();
     });
     return () => {
       current = false;
-      controller.invalidate();
+      controller.retire();
       subscription.remove();
+      tokenSubscription.remove();
     };
   }, [controller, uid]);
   return controller;

@@ -44,7 +44,7 @@
     "audit:netflix-artifact": "node scripts/web/audit-standalone-artifact.mjs netflix",
     "audit:yahoo-artifact": "node scripts/web/audit-standalone-artifact.mjs yahoo",
     "validate:w3c": "node scripts/web/validate-w3c.mjs",
-    "check:types": "pnpm check:platform-layout && pnpm check:types:shared && pnpm --filter @riddle-quest/android check:types && pnpm --dir firebase-functions check:types && pnpm --filter @riddle-quest/reddit-app check:types",
+    "check:types": "pnpm check:platform-layout && pnpm check:types:shared && pnpm --filter @riddle-quest/android check:types && pnpm --dir firebase-functions check:types && pnpm --filter @riddle-quest/reddit-app check:types && pnpm check:types:notification-manager",
     "check:target-boundaries": "node scripts/audit-platform-layout.mjs && node scripts/web/audit-web-target-boundaries.mjs",
     "check:locales": "node scripts/web/audit-locales.mjs",
     "check:licenses": "node scripts/web/generate-third-party-licenses.mjs --check",

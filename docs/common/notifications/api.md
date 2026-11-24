@@ -21,7 +21,7 @@ Every management route requires the operator's Supabase access token. The API re
 
 | Route | Result or operation |
 | --- | --- |
-| `GET /api/management/config` | `{platforms:[{id,origin}],pushOnly:true}` |
+| `GET /api/management/config` | `{platforms:[{id,origin}],pushOnly:true}`; native Android has `origin:null` |
 | `GET /api/management/campaigns?view=active\|history&limit=100&cursor=<opaque>` | `{campaigns,nextCursor}` |
 | `POST /api/management/campaigns` | Save an idempotent campaign and begin due work |
 | `GET /api/management/campaigns/<id>` | `{campaign}` |
@@ -33,6 +33,10 @@ Title accepts up to 200 characters, body up to 2,000 and HTTPS image URLs up to 
 
 ## Push payload
 
-The worker accepts only version 1 messages of kind `notification`, with `notificationId`, `target`, `installationId`, `title`, `body`, required nullable `imageUrl` and `expiresAtMs`. The server copies authored content from the campaign. The game supplies no alternate copy or artwork. Clicks use the client's fixed same-origin launch path; campaigns cannot choose arbitrary navigation URLs.
+The same management request and campaign queue cover both default device transports. The React Native Android client registers through its existing authenticated game callable. Only that trusted server may call `POST /api/devices/android/registration` with the bridge credential and `{version:1,tokenHash,revision,enabled,locale,expiresAtMs}`. The reserved `android` target cannot be registered through the public browser endpoints.
+
+The manager's Android adapter forwards `{version:1,tokenHash,revision,notificationId,title,body,imageUrl,expiresAtMs}` to the configured authenticated native dispatch function. It returns `{outcome:"accepted"|"failed"|"uncertain"|"skipped"}`. Token resolution and account authority remain outside the management database.
+
+The browser worker accepts only version 1 messages of kind `notification`, with `notificationId`, `target`, `installationId`, `title`, `body`, required nullable `imageUrl` and `expiresAtMs`. The server copies authored content from the campaign. All transports expire a campaign six hours after its scheduled send time. The game supplies no alternate copy or artwork. Browser clicks use the client's fixed same-origin launch path; native campaign taps open the app. Campaigns cannot choose arbitrary navigation URLs.
 
 `GET` or `POST /api/cron/notifications` requires the separate scheduler bearer credential and dispatches bounded due work.

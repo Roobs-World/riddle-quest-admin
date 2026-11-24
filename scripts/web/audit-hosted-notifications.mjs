@@ -3,11 +3,11 @@ import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {targetDependencyEvidencePath} from "./build/webTargetDependencies.ts";
 
-/** Binds the Yahoo network exception to the actual bundle and its audited module inventory. */
+/** Binds the hosted push exception to the actual bundle and its audited module inventory. */
 export async function hasAuditedHostedNotifications({target, root, files}) {
   const manifestFile = path.join(root, "hosted-notifications-manifest.json");
   if (!files.includes(manifestFile)) return false;
-  if (target !== "yahoo") throw new Error(`Hosted notifications are not admitted for ${target}`);
+  if (!["yahoo", "facebook"].includes(target)) throw new Error(`Hosted notifications are not admitted for ${target}`);
   const manifest = JSON.parse(await readFile(manifestFile, "utf8"));
   if (manifest.version !== 1 || manifest.target !== target || manifest.apiBase !== "/api/notifications" ||
       manifest.workerPath !== "/hosted-notifications-worker.js") {

@@ -57,6 +57,7 @@ import {grantFacebookPurchase, facebookPaymentWebhook} from "../../platforms/web
 import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "../../platforms/native/android/server/androidReferralCallables";
 import {deliverAndroidReferralPlay} from "../../platforms/native/android/server/androidReferralDelivery";
 import {setAndroidPushSubscription} from "../../platforms/native/android/server/androidNotifications";
+import {dispatchAndroidNotification} from "../../platforms/native/android/server/notifications/androidNotificationDispatch";
 import {provisionAndroidAccount} from "../../platforms/native/android/server/provisionAndroidAccount";
 import {grantAndroidPurchase, syncAndroidSubscriptions} from "../../platforms/native/android/server/androidPurchaseEndpoints";
 import {exchangeAndroidAttestation, issueAndroidAttestationNonce} from "../../platforms/native/android/server/androidAttestation";
@@ -128,6 +129,7 @@ export {
   verifyJestReferrals,
   provisionAndroidAccount,
   setAndroidPushSubscription,
+  dispatchAndroidNotification,
   createAndroidReferral,
   bindAndroidReferralEntry,
   getAndroidReferralStatus,

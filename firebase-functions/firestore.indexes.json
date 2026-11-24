@@ -267,6 +267,24 @@
   ],
   "fieldOverrides": [
     {
+      "collectionGroup": "androidNotificationDevices",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "androidPushDeliveries",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
+      "collectionGroup": "androidPushTokens",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
       "collectionGroup": "raceDeadlineFailures",
       "fieldPath": "expiresAt",
       "ttl": true,

@@ -6,19 +6,26 @@ create table public.notification_operators (
 create table public.notification_installations (
   id text primary key check (id ~ '^[a-f0-9]{64}$'),
   target text not null check (target ~ '^[a-z][a-z0-9-]{0,63}$'),
-  origin text not null,
+  transport text not null default 'web-push' check (transport in ('web-push', 'android')),
+  origin text,
   revision bigint not null check (revision >= -1),
   locale text not null,
   status text not null check (status in ('active', 'disabled')),
   subscription jsonb,
+  native_ref text check (native_ref is null or native_ref ~ '^[a-f0-9]{64}$'),
   endpoint_hash text,
   enrolled_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
   expires_at timestamptz not null,
+  constraint notification_installation_transport check (
+    (transport = 'web-push' and origin is not null and target not in ('android', 'all') and native_ref is null)
+    or (transport = 'android' and origin is null and target = 'android' and subscription is null)
+  ),
   constraint notification_installation_state check (
-    (status = 'active' and subscription is not null and endpoint_hash is not null and endpoint_hash ~ '^[a-f0-9]{64}$' and enrolled_at is not null)
-    or (status = 'disabled' and subscription is null and endpoint_hash is null)
+    (status = 'active' and endpoint_hash is not null and endpoint_hash ~ '^[a-f0-9]{64}$' and enrolled_at is not null
+      and (transport = 'web-push' and subscription is not null or transport = 'android' and native_ref is not null))
+    or (status = 'disabled' and subscription is null and native_ref is null and endpoint_hash is null)
   )
 );
 create index notification_installations_active_target_id on public.notification_installations(target, id) where status = 'active';
@@ -115,12 +122,14 @@ create policy notification_image_operator_delete on storage.objects for delete t
 
 create or replace function public.notification_installation_json(p_row public.notification_installations)
 returns jsonb language sql stable security invoker set search_path = '' as $$
-  select jsonb_build_object('target', p_row.target, 'origin', p_row.origin, 'revision', p_row.revision,
+  select jsonb_build_object('target', p_row.target, 'transport', p_row.transport, 'origin', p_row.origin, 'revision', p_row.revision,
     'locale', p_row.locale, 'status', p_row.status, 'createdAtMs', floor(extract(epoch from p_row.created_at)*1000)::bigint,
     'updatedAtMs', floor(extract(epoch from p_row.updated_at)*1000)::bigint,
     'expiresAtMs', floor(extract(epoch from p_row.expires_at)*1000)::bigint,
     'enrolledAtMs', floor(extract(epoch from p_row.enrolled_at)*1000)::bigint)
-    || case when p_row.status = 'active' then jsonb_build_object('subscription', p_row.subscription, 'endpointHash', p_row.endpoint_hash) else '{}'::jsonb end;
+    || case when p_row.status <> 'active' then '{}'::jsonb
+      when p_row.transport = 'web-push' then jsonb_build_object('subscription', p_row.subscription, 'endpointHash', p_row.endpoint_hash)
+      else jsonb_build_object('nativeRef', p_row.native_ref, 'endpointHash', p_row.endpoint_hash) end;
 $$;
 revoke execute on function public.notification_installation_json(public.notification_installations) from public, anon, authenticated;
 grant execute on function public.notification_installation_json(public.notification_installations) to service_role;

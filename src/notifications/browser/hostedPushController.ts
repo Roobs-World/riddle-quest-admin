@@ -1,6 +1,6 @@
 import {z} from "zod";
 import type {HostedPushTarget} from "../contracts/hostedPush";
-import type {NotificationDelivery, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
+import type {NotificationDelivery, NotificationPreferenceStore, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
 import {
   hostedPushApplicationKey,
   hostedPushPermission,
@@ -28,10 +28,12 @@ const Receipt = z.object({installationId: z.string().regex(/^[A-Za-z0-9_-]{1,128
 const Locale = z.string().regex(/^[a-z]{2}(?:-[A-Za-z]{2})?$/u);
 
 /** Browser enrollment and opt-out, independent of the hosted service's deployment or framework. */
-export function createHostedPushController({target, transport, workerPath, launchPath = "/"}: {
+export function createHostedPushController({target, transport, workerPath, preferences, isAccountActive = () => true, launchPath = "/"}: {
   target: HostedPushTarget;
   transport?: HostedPushTransportFactory;
   workerPath?: string;
+  preferences?: NotificationPreferenceStore;
+  isAccountActive?: () => boolean;
   launchPath?: string;
 }): NotificationProvider {
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(target)) throw new Error("hosted-push-target-invalid");
@@ -42,6 +44,7 @@ export function createHostedPushController({target, transport, workerPath, launc
   let lastActivityAt = 0;
   let lastRecoveryAt = 0;
   let observing = false;
+  let stopPreferences: (() => void) | undefined;
   const listeners = new Set<() => void>();
   let snapshot: NotificationSnapshot = {enabled: true, busy: false, delivery: hostedPushSupported() ? transport ? "inactive" : "not-configured" : "unsupported"};
 
@@ -51,10 +54,21 @@ export function createHostedPushController({target, transport, workerPath, launc
     snapshot = {enabled, busy, delivery};
     listeners.forEach(listener => listener());
   };
-  const load = (): HostedPushStoredState => state = initializeHostedPushState(target);
   const save = (next: HostedPushStoredState) => {
     saveHostedPushState(target, next);
     state = next;
+    if (preferences && preferences.getEnabled() !== next.enabled) preferences.setEnabled(next.enabled);
+  };
+  const load = (): HostedPushStoredState => {
+    const stored = initializeHostedPushState(target, {enabled: preferences?.getEnabled() ?? true});
+    const enabled = preferences?.getEnabled() ?? stored.enabled;
+    if (enabled !== stored.enabled) {
+      const next = {...stored, enabled, revision: nextHostedPushRevision(stored), pendingRevocation: !enabled || stored.pendingRevocation};
+      save(next);
+      return next;
+    }
+    state = stored;
+    return stored;
   };
   const begin = (): Operation => {
     abort.abort();
@@ -64,13 +78,13 @@ export function createHostedPushController({target, transport, workerPath, launc
   };
   const current = (operation: Operation) => active && generation === operation.generation && !operation.signal.aborted;
   const readDesired = () => {
-    try {return readHostedPushState(target)?.enabled ?? false;} catch {return false;}
+    try {return isAccountActive() && (readHostedPushState(target)?.enabled ?? false);} catch {return false;}
   };
   const api = (stored: HostedPushStoredState): HostedPushTransport | null => transport?.({target, token: stored.token}) ?? null;
   const displayGate = (enabled: boolean, operation: Operation) => {
     const revision = state?.revision;
     const isCurrent = () => {
-      if (!current(operation)) return false;
+      if (!current(operation) || enabled && !isAccountActive()) return false;
       try {
         const stored = readHostedPushState(target);
         if (!stored) return !enabled;
@@ -112,7 +126,7 @@ export function createHostedPushController({target, transport, workerPath, launc
     const enrollment: {created: PushSubscription | null} = {created: null};
     try {
       const granted = await permission;
-      if (!current(operation) || !state?.enabled) return false;
+      if (!current(operation) || !state?.enabled || !readDesired()) return false;
       if (granted !== "granted") {
         publish(granted === "denied" ? "blocked" : "permission-required");
         return false;
@@ -188,13 +202,18 @@ export function createHostedPushController({target, transport, workerPath, launc
   };
 
   const change = (enabled: boolean, permissionRequested: boolean): Promise<boolean> => {
-    if (!active) return Promise.resolve(false);
+    if (!active || enabled && !isAccountActive()) return Promise.resolve(false);
     const operation = begin();
     try {
       const stored = load();
       save({...stored, enabled, revision: nextHostedPushRevision(stored), pendingRevocation: enabled ? stored.pendingRevocation : true});
       publish(enabled ? snapshot.delivery : "inactive", true);
-    } catch {publish("save-failed"); return Promise.resolve(false);}
+    } catch {
+      return displayGate(false, operation).then(() => {
+        if (current(operation)) publish("save-failed");
+        return false;
+      });
+    }
     if (!enabled) return disable(operation);
     if (!hostedPushSupported()) {publish("unsupported"); return Promise.resolve(false);}
     if (!transport) {publish("not-configured"); return Promise.resolve(false);}
@@ -203,10 +222,15 @@ export function createHostedPushController({target, transport, workerPath, launc
   };
 
   const restore = async (): Promise<void> => {
+    if (!isAccountActive()) return;
     active = true;
     lastRecoveryAt = Date.now();
     const operation = begin();
     if (!observing && typeof window !== "undefined") {window.addEventListener("storage", onStorage); observing = true;}
+    if (!stopPreferences && preferences) stopPreferences = preferences.subscribe(() => {
+      const enabled = preferences.getEnabled();
+      if (active && isAccountActive() && state?.enabled !== enabled) void change(enabled, false);
+    });
     try {
       const stored = load();
       if (!stored.enabled || stored.pendingRevocation) {
@@ -224,12 +248,12 @@ export function createHostedPushController({target, transport, workerPath, launc
       if (permission !== "granted") {publish(permission === "denied" ? "blocked" : "permission-required"); return;}
       publish("inactive", true);
       await enroll(operation, Promise.resolve(permission));
-    } catch {if (current(operation)) publish("save-failed");}
+    } catch {if (current(operation)) {await displayGate(false, operation); publish("save-failed");}}
   };
 
   const onStorage = (event: StorageEvent) => {
     if (event.key !== null && event.key !== hostedPushStorageKey(target)) return;
-    if (!active) return;
+    if (!active || !isAccountActive()) return;
     const operation = begin();
     try {
       const stored = readHostedPushState(target);
@@ -261,7 +285,8 @@ export function createHostedPushController({target, transport, workerPath, launc
     setEnabled(enabled: boolean) {return change(enabled, true);},
     requestPermission() {return change(true, true);},
     async recordActivity({locale}: {locale: string}): Promise<void> {
-      if (!active) return;
+      if (!active || !isAccountActive()) return;
+      let operation: Operation = {generation, signal: abort.signal};
       const parsed = Locale.safeParse(locale);
       if (!parsed.success) return;
       try {
@@ -281,16 +306,18 @@ export function createHostedPushController({target, transport, workerPath, launc
         if (!stored.enabled || snapshot.delivery !== "ready" || Date.now() - lastActivityAt < 60_000) return;
         const service = api(stored);
         if (!service) return;
-        const operation = {generation, signal: abort.signal};
+        operation = {generation, signal: abort.signal};
         await service.activity(parsed.data, operation.signal);
         if (current(operation)) lastActivityAt = Date.now();
-      } catch {if (active) publish("save-failed");}
+      } catch {if (current(operation) && isAccountActive()) publish("save-failed");}
     },
     retire() {
       active = false;
       begin();
       if (observing && typeof window !== "undefined") window.removeEventListener("storage", onStorage);
       observing = false;
+      stopPreferences?.();
+      stopPreferences = undefined;
     },
   };
 }

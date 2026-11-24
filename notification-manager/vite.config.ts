@@ -11,15 +11,16 @@ function browserBoundary(): Plugin {
       for (const id of this.getModuleIds()) {
         const normalized = id.replaceAll("\\", "/");
         if ((normalized.startsWith(root) && /^\/(?:server|api|supabase)\//u.test(normalized.slice(root.length - 1))) ||
-            /\/(?:firebase(?:-admin)?|web-push)(?:\/|@)/u.test(normalized)) {
+            /\/(?:firebase(?:-admin)?|web-push)(?:\/|@)/u.test(normalized) || normalized.includes("/platforms/native/")) {
           this.error("A server module entered the notification manager browser bundle.");
         }
       }
-      const secrets = [process.env.SUPABASE_SECRET_KEY, process.env.HOSTED_PUSH_VAPID_PRIVATE_KEY, process.env.CRON_SECRET]
+      const secrets = [process.env.SUPABASE_SECRET_KEY, process.env.HOSTED_PUSH_VAPID_PRIVATE_KEY, process.env.CRON_SECRET,
+        process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET]
         .filter((value): value is string => Boolean(value && value.length >= 16));
       for (const item of Object.values(bundle)) {
         if (item.type !== "chunk") continue;
-        if (/\b(?:SUPABASE_SECRET_KEY|HOSTED_PUSH_VAPID_PRIVATE_KEY|CRON_SECRET)\b/u.test(item.code) ||
+        if (/\b(?:SUPABASE_SECRET_KEY|HOSTED_PUSH_VAPID_PRIVATE_KEY|CRON_SECRET|NOTIFICATION_MANAGER_BRIDGE_SECRET)\b/u.test(item.code) ||
             secrets.some(secret => item.code.includes(secret))) {
           this.error("A server credential entered the notification manager browser bundle.");
         }

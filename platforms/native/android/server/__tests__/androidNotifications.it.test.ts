@@ -7,127 +7,134 @@ import {
   setAndroidPushSubscription,
 } from "../androidNotifications";
 
-/** Only the external FCM network boundary is replaced; authority and concurrency use real Firestore. */
+/** Only FCM is replaced; authentication, consent and ownership use isolated Firestore. */
 const mockSend = jest.fn(async (_input: unknown) => "provider-message-id");
 jest.mock("firebase-admin/messaging", () => ({getMessaging: () => ({send: mockSend})}));
-/** Synthetic authenticated accounts and opaque token owned by this emulator scenario. */
-const A = "AndroidPushA12345678901234567",
-  B = "AndroidPushB12345678901234567",
-  TOKEN = "opaque-native-fcm-registration-token";
-/** Real Firestore database in the dedicated local demo project. */
-let db: FirebaseFirestore.Firestore;
-/** Invokes the authenticated callable with synthetic verified claims. */
+const A = "AndroidPushA12345678901234567", B = "AndroidPushB12345678901234567";
+const TOKEN = "opaque-native-fcm-registration-token";
+const deviceId = (index = 1) => `00000000-0000-4000-8000-${String(index).padStart(12, "0")}`;
+const originalManagerUrl = process.env.NOTIFICATION_MANAGER_URL;
+let db: FirebaseFirestore.Firestore, deviceEpoch = 0;
 const call = (uid: string, data: unknown, provider = "anonymous") =>
   setAndroidPushSubscription.run({auth: {uid, token: {firebase: {sign_in_provider: provider}}}, data} as never);
-/** Explicit invitation and Daily consent for the current game account. */
-const preferences = (patch = {}) => ({token: TOKEN, invitations: true, daily: false, locale: "fr", ...patch});
-/** This distinct demo project belongs exclusively to these fixtures. */
+const enabled = (uid: string, patch: Record<string, unknown> = {}) => ({
+  enabled: true, expectedOwnerId: uid, deviceEpoch: ++deviceEpoch, deviceId: deviceId(),
+  preferenceFromSettings: true, token: TOKEN, locale: "fr", ...patch,
+});
+const disabled = (uid: string, patch: Record<string, unknown> = {}) => ({
+  enabled: false, expectedOwnerId: uid, deviceEpoch: ++deviceEpoch, deviceId: deviceId(),
+  preferenceFromSettings: true, token: TOKEN, ...patch,
+});
+const campaignData = (revision = 1) => ({kind: "campaign", notificationId: "c".repeat(64), registrationRevision: String(revision),
+  title: "Manager headline", body: "Manager message",
+  expiresAtMs: String(Date.now() + 30_000)});
 async function clear() {
-  for (const name of ["users", "androidPushTokens", "jestAccountDeletionTombstones"])
+  for (const name of ["users", "androidPushTokens", "androidNotificationDevices", "androidPushDeliveries", "jestAccountDeletionTombstones"])
     await db.recursiveDelete(db.collection(name));
 }
 beforeAll(() => {
-  if (
-    !/^demo-/.test(process.env.GCLOUD_PROJECT ?? "") ||
-    !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? "")
-  )
+  if (!/^demo-/.test(process.env.GCLOUD_PROJECT ?? "") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? ""))
     throw new Error("Dedicated Android notifications demo emulator required.");
-  /** This suite owns a separate demo namespace even under the standard shared coverage runner. */
   const app = getApps().find(candidate => candidate.name === "[DEFAULT]") ?? initializeApp({projectId: "demo-android-notifications"});
   if (app.options.projectId !== "demo-android-notifications") throw new Error("Dedicated Android notifications demo emulator required.");
   db = getFirestore(app);
+  process.env.NOTIFICATION_MANAGER_URL = "";
 });
 beforeEach(async () => {
   await clear();
+  deviceEpoch = 0;
   mockSend.mockReset();
   mockSend.mockResolvedValue("provider-message-id");
   for (const uid of [A, B]) await db.doc(`users/${uid}`).set({androidProvider: "anonymous", preferredLanguage: "fr"});
 });
-afterAll(clear);
+afterAll(async () => {
+  await clear();
+  if (originalManagerUrl === undefined) delete process.env.NOTIFICATION_MANAGER_URL;
+  else process.env.NOTIFICATION_MANAGER_URL = originalManagerUrl;
+});
 
-it("rejects wrong providers, missing Android profiles, invalid token data and client-supplied identities", async () => {
-  await expect(call(A, preferences(), "custom")).rejects.toMatchObject({code: "permission-denied"});
-  await expect(call("missing-account", preferences())).rejects.toMatchObject({code: "not-found"});
-  await expect(call(A, preferences({token: "bad token"}))).rejects.toMatchObject({code: "invalid-argument"});
-  await expect(call(A, preferences({uid: B}))).rejects.toMatchObject({code: "invalid-argument"});
+it("rejects wrong providers, missing accounts, malformed tokens and foreign expected owners", async () => {
+  await expect(call(A, enabled(A), "custom")).rejects.toMatchObject({code: "permission-denied"});
+  await expect(call("missing-account", enabled("missing-account"))).rejects.toMatchObject({code: "not-found"});
+  await expect(call(A, enabled(A, {token: "bad token"}))).rejects.toMatchObject({code: "invalid-argument"});
+  await expect(call(A, enabled(B))).rejects.toMatchObject({code: "permission-denied"});
+  await expect(call(A, enabled(A, {uid: B}))).rejects.toMatchObject({code: "invalid-argument"});
   expect((await db.collection("androidPushTokens").get()).empty).toBe(true);
 });
-it("replays consent idempotently and rebinds one installation to its latest authenticated account", async () => {
-  await call(A, preferences({daily: true}));
-  /** Private Firestore reference used by this authority or replay scenario. */
-  const ref = db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`),
-    first = (await ref.get()).data();
-  await Promise.all([call(A, preferences({daily: true})), call(A, preferences({daily: true}))]);
+
+it("replays one command without changing its revision and rejects a retired account's operation", async () => {
+  const firstCommand = enabled(A);
+  await expect(call(A, firstCommand)).resolves.toMatchObject({enabled: true, delivery: "not-configured"});
+  const ref = db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`), first = (await ref.get()).data();
+  await Promise.all([call(A, firstCommand), call(A, firstCommand)]);
   expect((await db.collection("androidPushTokens").get()).size).toBe(1);
-  expect(first?.nextDailyAtMs).toBeUndefined();
-  expect((await ref.get()).data()?.nextDailyAtMs).toBeUndefined();
-  expect(mockSend).not.toHaveBeenCalled();
-  await call(B, preferences());
-  await call(A, preferences({invitations: false}));
+  expect((await ref.get()).data()?.revision).toBe(first?.revision);
+  expect(first).toMatchObject({uid: A, enabled: true, managerCampaigns: true});
+  await call(B, enabled(B));
+  await expect(call(A, firstCommand)).rejects.toMatchObject({code: "failed-precondition"});
+  await expect(call(B, firstCommand)).rejects.toMatchObject({code: "permission-denied"});
   expect((await ref.get()).data()?.uid).toBe(B);
-  await call(B, preferences({invitations: false}));
-  expect((await ref.get()).exists).toBe(false);
-});
-it("bounds an account's notification registrations and removes daily work when consent ends", async () => {
-  for (let i = 0; i < 5; i++) await call(A, preferences({token: `${TOKEN}-${i}`, daily: true}));
-  await expect(call(A, preferences({token: `${TOKEN}-overflow`}))).rejects.toMatchObject({code: "resource-exhausted"});
-  await call(A, preferences({token: `${TOKEN}-0`, daily: false}));
-  expect(
-    (await db.doc(`androidPushTokens/${androidPushTokenHash(`${TOKEN}-0`)}`).get()).data()?.nextDailyAtMs,
-  ).toBeUndefined();
-});
-it("sends only consented fresh tokens and the current account, with canonical native data", async () => {
-  await call(A, preferences());
-  /** Opaque digest selecting a provider registration without exposing its raw token. */
-  const id = androidPushTokenHash(TOKEN),
-    data = {kind: "liveChallenge", challengeId: `live_${"a".repeat(64)}`, title: "Invitation", body: "Play"};
-  expect(await sendAndroidPush(db, id, B, data, "invitations", 1000)).toBe(false);
-  expect(await sendAndroidPush(db, id, A, data, "daily", 1000)).toBe(false);
-  expect(await sendAndroidPush(db, id, A, data, "invitations", -1)).toBe(false);
+  await call(B, disabled(B));
+  expect((await ref.get()).data()).toMatchObject({uid: B, enabled: false});
+  expect((await db.doc(`users/${B}`).get()).data()?.notificationsEnabled).toBe(false);
   expect(mockSend).not.toHaveBeenCalled();
-  expect(await sendAndroidPush(db, id, A, data, "invitations", 1000)).toBe(true);
-  expect(mockSend).toHaveBeenCalledWith(
-    expect.objectContaining({
-      token: TOKEN,
-      data: {...data, accountId: A},
-      android: {priority: "high", ttl: 1000, collapseKey: "liveChallenge"},
-    }),
-  );
-  await db.doc(`androidPushTokens/${id}`).update({updatedAtMs: Date.now() - 31 * 86_400_000});
-  expect(await sendAndroidPush(db, id, A, data, "invitations", 1000)).toBe(false);
 });
+
+it("bounds installations and applies global Off to every account registration", async () => {
+  for (let i = 1; i <= 5; i++) await call(A, enabled(A, {token: `${TOKEN}-${i}`, deviceId: deviceId(i)}));
+  await expect(call(A, enabled(A, {token: `${TOKEN}-overflow`, deviceId: deviceId(6)})))
+    .rejects.toMatchObject({code: "resource-exhausted"});
+  await call(A, disabled(A, {token: `${TOKEN}-1`}));
+  const registrations = await db.collection("androidPushTokens").where("uid", "==", A).get();
+  expect(registrations.size).toBe(5);
+  expect(registrations.docs.every(row => row.data().enabled === false)).toBe(true);
+  expect((await db.doc(`users/${A}`).get()).data()?.notificationsEnabled).toBe(false);
+});
+
+it("sends only to current consented campaign-capable registrations without collapsing distinct campaigns", async () => {
+  await call(A, enabled(A));
+  const id = androidPushTokenHash(TOKEN);
+  const revision = (await db.doc(`androidPushTokens/${id}`).get()).data()?.revision;
+  if (typeof revision !== "number") throw new Error("Registration revision absent");
+  const data = campaignData(revision);
+  expect(await sendAndroidPush(db, id, B, data, "campaign", 1000, revision)).toBe(false);
+  expect(await sendAndroidPush(db, id, A, data, "campaign", 1000, revision + 1)).toBe(false);
+  expect(await sendAndroidPush(db, id, A, data, "campaign", -1, revision)).toBe(false);
+  await db.doc(`users/${A}`).update({notificationsEnabled: false});
+  expect(await sendAndroidPush(db, id, A, data, "campaign", 1000, revision)).toBe(false);
+  expect(mockSend).not.toHaveBeenCalled();
+  await db.doc(`users/${A}`).update({notificationsEnabled: true});
+  expect(await sendAndroidPush(db, id, A, data, "campaign", 1000, revision)).toBe(true);
+  expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({token: TOKEN, data: {...data, accountId: A},
+    android: {priority: "normal", ttl: 1000}}));
+  await db.doc(`androidPushTokens/${id}`).update({updatedAtMs: Date.now() - 31 * 86_400_000});
+  expect(await sendAndroidPush(db, id, A, data, "campaign", 1000, revision)).toBe(false);
+});
+
 it("refuses deleted accounts and removes provider-invalid tokens without replaying sends", async () => {
-  await call(A, preferences());
+  await call(A, enabled(A));
   await db.doc(`jestAccountDeletionTombstones/${A}`).set({deletedAt: Date.now()});
-  await expect(call(A, preferences())).rejects.toMatchObject({code: "failed-precondition"});
-  expect(await sendAndroidPush(db, androidPushTokenHash(TOKEN), A, {kind: "daily"}, "invitations", 1000)).toBe(false);
+  await expect(call(A, enabled(A))).rejects.toMatchObject({code: "failed-precondition"});
+  expect(await sendAndroidPush(db, androidPushTokenHash(TOKEN), A, campaignData(), "campaign", 1000)).toBe(false);
   await db.doc(`jestAccountDeletionTombstones/${A}`).delete();
-  mockSend.mockRejectedValueOnce(
-    Object.assign(new Error("invalid registration"), {code: "messaging/registration-token-not-registered"}),
-  );
-  await expect(
-    sendAndroidPush(db, androidPushTokenHash(TOKEN), A, {kind: "daily"}, "invitations", 1000),
-  ).rejects.toThrow("invalid registration");
+  mockSend.mockRejectedValueOnce(Object.assign(new Error("invalid registration"), {code: "messaging/registration-token-not-registered"}));
+  await expect(sendAndroidPush(db, androidPushTokenHash(TOKEN), A, campaignData(), "campaign", 1000)).rejects.toThrow("invalid registration");
   expect((await db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`).get()).exists).toBe(false);
 });
-it("treats a transport outage as uncertain and preserves consent for the next new notification", async () => {
-  await call(A, preferences());
+
+it("treats a transport outage as uncertain and preserves the installation", async () => {
+  await call(A, enabled(A));
   mockSend.mockRejectedValueOnce(new Error("provider timeout"));
-  expect(
-    await sendAndroidLiveChallengePush(db, {
-      uid: A,
-      challengeId: `live_${"a".repeat(64)}`,
-      title: "Invitation",
-      body: "Play",
-      expiresAtMs: Date.now() + 30_000,
-    }),
-  ).toBe("unconfirmed");
+  expect(await sendAndroidLiveChallengePush(db, {uid: A, challengeId: `live_${"a".repeat(64)}`,
+    title: "Manager headline", body: "Manager message", expiresAtMs: Date.now() + 30_000})).toBe("unconfirmed");
   expect((await db.collection("androidPushTokens").get()).size).toBe(1);
 });
-it("records Daily consent without creating a schedule or app-authored message", async () => {
-  await call(A, preferences({daily: true}));
+
+it("records legacy consent without admitting an older client to manager campaigns", async () => {
+  await call(A, {token: TOKEN, invitations: true, daily: false, locale: "fr"});
   const registration = (await db.doc(`androidPushTokens/${androidPushTokenHash(TOKEN)}`).get()).data();
-  expect(registration?.daily).toBe(true);
+  expect(registration).toMatchObject({enabled: true, managerCampaigns: false});
   expect(registration?.nextDailyAtMs).toBeUndefined();
+  expect(await sendAndroidPush(db, androidPushTokenHash(TOKEN), A, campaignData(), "campaign", 1000)).toBe(false);
   expect(mockSend).not.toHaveBeenCalled();
 });

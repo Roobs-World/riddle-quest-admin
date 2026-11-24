@@ -37,7 +37,13 @@ function nativeModule(token: unknown = "native-fcm-registration-token") {
   const module = {
     configure: jest.fn(async (_input: unknown) => undefined),
     getToken: jest.fn(async () => token),
-    setAccount: jest.fn(async (..._input: unknown[]) => undefined),
+    knownToken: jest.fn(async () => typeof token === "string" ? token : null),
+    deviceId: jest.fn(async () => "f6a1b3c2-04d5-4678-9abc-112233445566"),
+    beginAccountOperation: jest.fn(async (_uid: string) => 1),
+    invalidateAccountOperation: jest.fn(async (_uid: string) => undefined),
+    setAccount: jest.fn(async (..._input: unknown[]) => true),
+    pendingToken: jest.fn(async () => null),
+    clearPendingToken: jest.fn(async (_expectedToken: string) => true),
     /** Compare-and-clear native operation used during authenticated account retirement. */
     clearAccount: jest.fn(async (_expected: string) => true),
   };
@@ -76,8 +82,21 @@ describe("Android notification adapter", () => {
       senderId: "123",
     });
     expect(await device.getToken()).toBe("native-fcm-registration-token");
-    await device.setAccount("new-account", {invitations: false, daily: false});
-    expect(native.setAccount).toHaveBeenCalledWith("new-account", false, false);
+    expect(await device.deviceId()).toBe("f6a1b3c2-04d5-4678-9abc-112233445566");
+    const operationId = await device.beginAccountOperation("new-account");
+    await device.setAccount("new-account", {enabled: false}, operationId, 0);
+    expect(native.setAccount).toHaveBeenCalledWith("new-account", false, operationId, 0);
+    await device.clearPendingToken?.("native-fcm-registration-token");
+    expect(native.clearPendingToken).toHaveBeenCalledWith("native-fcm-registration-token");
+    await device.invalidateAccountOperation("new-account");
+    expect(native.invalidateAccountOperation).toHaveBeenCalledWith("new-account");
+  });
+  it("rejects a stale native command without treating its display binding as saved", async () => {
+    const native = nativeModule();
+    const device = createAndroidNotificationDevice();
+    if (!device) throw new Error("Native fixture absent");
+    native.setAccount.mockResolvedValue(false);
+    await expect(device.setAccount("retired", {enabled: true}, 1, 42)).rejects.toThrow("notification-account-changed");
   });
   it("rejects invalid registration tokens received from native code", async () => {
     for (const token of [null, 42, "", "token with spaces and punctuation!"]) {
@@ -105,14 +124,20 @@ function fixture() {
       hasPermission: async () => permission,
       configure: async () => undefined,
       getToken: async () => "native-fcm-registration-token",
+      knownToken: async () => "native-fcm-registration-token",
+      deviceId: async () => "f6a1b3c2-04d5-4678-9abc-112233445566",
+      beginAccountOperation: async () => 1,
+      invalidateAccountOperation: async () => undefined,
       setAccount: async () => undefined,
     },
     backend: {
-      /** Records explicit native consent at the authenticated backend boundary. */
+      readPreference: async () => null,
       async setSubscription(input) {
         if (fail) throw new Error("offline");
         sent.push(input);
-        return input;
+        const ready = input.enabled && "token" in input;
+        return {enabled: input.enabled, delivery: input.enabled ? ready ? "ready" : "permission-required" : "inactive",
+          registrationRevision: ready ? 1 : 0};
       },
     },
     storage: {
@@ -136,12 +161,14 @@ function fixture() {
   };
 }
 /** Renders the native settings screen over safe-area metrics. */
-const show = (controller: ReturnType<typeof createAndroidNotificationController> | null) =>
-  render(
+const show = async (controller: ReturnType<typeof createAndroidNotificationController> | null) => {
+  await controller?.restore();
+  return render(
     <SafeAreaProvider>
       <HostedNotificationScreen locale="en" controller={controller} onBack={() => undefined} />
     </SafeAreaProvider>,
   );
+};
 
 describe("Android notification settings", () => {
   it("explains an unavailable capability and keeps every locale's keys complete", async () => {
@@ -150,34 +177,31 @@ describe("Android notification settings", () => {
     for (const locale of Object.keys(YOUTUBE_COPY).map(resolveYouTubeLocale))
       expect(Object.keys(notificationCopy(locale))).toEqual(Object.keys(notificationCopy("en")));
   });
-  it("requires permission and lets the player retry before saving invitation consent", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+  it("keeps the global preference On while permission is denied and permits a Settings retry", async () => {
     const f = fixture();
     f.setPermission(false);
     await show(f.controller);
-    await waitFor(() => expect(screen.getByTestId("notification-invitations")).toBeEnabled());
-    await fireEvent.press(screen.getByTestId("notification-invitations"));
-    await waitFor(() => expect(screen.getByRole("alert")).toHaveTextContent(notificationCopy("en").failed));
-    expect(f.sent).toEqual([]);
+    expect(screen.getByTestId("notification-enabled")).toHaveProp("value", true);
+    await fireEvent.press(screen.getByTestId("notification-permission"));
+    await waitFor(() => expect(f.controller.getSnapshot()).toMatchObject({enabled: true, busy: false, delivery: "blocked"}));
+    expect(screen.getByTestId("notification-enabled")).toHaveProp("value", true);
     f.setPermission(true);
-    await fireEvent.press(screen.getByTestId("notification-invitations"));
-    await waitFor(() => expect(screen.getByTestId("notification-invitations")).toHaveTextContent("Disable"));
-    expect(await f.controller.read()).toEqual({invitations: true, daily: false});
+    await fireEvent.press(screen.getByTestId("notification-permission"));
+    await waitFor(() => expect(f.controller.getSnapshot().delivery).toBe("ready"));
+    expect(screen.queryByTestId("notification-permission")).toBeNull();
   });
-  it("offers separate Daily consent and reflects a locally saved revocation despite an outage", async () => {
-    /** Device, storage and backend ports owned by this consent scenario. */
+  it("shows one global toggle and retains locally saved Off despite a server outage", async () => {
     const f = fixture();
     await show(f.controller);
-    await waitFor(() => expect(screen.getByTestId("notification-daily")).toBeEnabled());
-    await fireEvent.press(screen.getByTestId("notification-daily"));
-    await waitFor(() => expect(screen.getByTestId("notification-daily")).toHaveTextContent("Disable"));
-    expect(await f.controller.read()).toEqual({invitations: false, daily: true});
+    expect(screen.getAllByRole("switch")).toHaveLength(1);
+    expect(screen.getByTestId("notification-enabled")).toHaveProp("value", true);
     f.setFailure(true);
-    await fireEvent.press(screen.getByTestId("notification-daily"));
-    await waitFor(() => expect(screen.getByTestId("notification-daily")).toHaveTextContent("Enable"));
+    await fireEvent(screen.getByTestId("notification-enabled"), "valueChange", false);
+    await waitFor(() => expect(f.controller.getSnapshot()).toMatchObject({enabled: false, busy: false, delivery: "save-failed"}));
+    expect(screen.getByTestId("notification-enabled")).toHaveProp("value", false);
     expect(screen.getByRole("alert")).toBeVisible();
-    expect(await f.controller.read()).toEqual({invitations: false, daily: false});
   });
+
 });
 
 /** Native owner retirement is conditional, so an obsolete sign-out cannot clear a replacement. */

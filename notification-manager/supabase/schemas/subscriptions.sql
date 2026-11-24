@@ -38,7 +38,7 @@ begin
   insert into public.notification_installations(id, target, origin, revision, locale, status, expires_at)
     values (p_id, p_target, p_origin, -1, p_locale, 'disabled', now_at + interval '30 days') on conflict (id) do nothing;
   select * into current_row from public.notification_installations where id = p_id for update;
-  if current_row.target <> p_target or current_row.origin <> p_origin then
+  if current_row.transport <> 'web-push' or current_row.target <> p_target or current_row.origin is distinct from p_origin then
     raise sqlstate 'PT403' using message = 'installation-owner-mismatch';
   end if;
   if p_revision < current_row.revision then raise sqlstate 'PT409' using message = 'installation-revision-stale'; end if;
@@ -92,7 +92,7 @@ begin
     if not found then raise sqlstate 'PT429' using message = 'notification-registration-limited'; end if;
   end if;
   select * into current_row from public.notification_installations where id = p_id for update;
-  if current_row.target <> p_target or current_row.origin <> p_origin then raise sqlstate 'PT403' using message = 'installation-owner-mismatch'; end if;
+  if current_row.transport <> 'web-push' or current_row.target <> p_target or current_row.origin is distinct from p_origin then raise sqlstate 'PT403' using message = 'installation-owner-mismatch'; end if;
   if p_revision < current_row.revision then raise sqlstate 'PT409' using message = 'installation-revision-stale'; end if;
   if p_revision = current_row.revision then
     if current_row.status = 'disabled' then return jsonb_build_object('installationId', p_id, 'revision', p_revision); end if;
@@ -115,7 +115,7 @@ declare
 begin
   select * into current_row from public.notification_installations where id = p_id for update;
   if not found or current_row.status <> 'active' then raise sqlstate 'PT404' using message = 'installation-not-active'; end if;
-  if current_row.origin <> p_origin or current_row.target <> p_target then raise sqlstate 'PT403' using message = 'installation-owner-mismatch'; end if;
+  if current_row.transport <> 'web-push' or current_row.origin is distinct from p_origin or current_row.target <> p_target then raise sqlstate 'PT403' using message = 'installation-owner-mismatch'; end if;
   if current_row.expires_at <= now_at then raise sqlstate 'PT410' using message = 'installation-expired'; end if;
   perform 1 from public.notification_endpoints where endpoint_hash = current_row.endpoint_hash and installation_id = p_id for update;
   if not found then raise sqlstate 'PT409' using message = 'subscription-owner-mismatch'; end if;

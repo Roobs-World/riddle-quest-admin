@@ -20,7 +20,7 @@ import {connectFunctionsEmulator, getFunctions, httpsCallable, type Functions} f
 import {createGameFunctionsClient, type GameFunctionsClient} from "../../../../../src/platform/firebase/gameFunctions";
 import {createAndroidAccountFunctions} from "./androidAccountFunctions";
 import type {AndroidReferralBackend, AndroidReferralStatus, AndroidReferralToken, AndroidReferralBinding} from "../referrals/androidReferrals";
-import type {AndroidNotificationBackend, AndroidNotificationPreferences} from "../notifications/androidNotificationController";
+import type {AndroidNotificationBackend} from "../notifications/androidNotificationController";
 import type {AndroidPurchaseBackend} from "../billing/androidCommerce";
 import {enableAndroidAppCheck} from "./appCheck";
 import type {HostedConfig} from "./hostedConfig";
@@ -177,11 +177,21 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
       }, AndroidReferralBinding>(gameplayFunctions, "bindAndroidReferralEntry")({token, ...(expectedOwnerId ? {expectedOwnerId} : {})})).data,
     },
     notifications: {
+      async readPreference(expectedOwnerId) {
+        if (auth.currentUser?.uid !== expectedOwnerId) throw new Error("notification-account-changed");
+        const snapshot = await getDoc(doc(firestore, "users", expectedOwnerId));
+        if (auth.currentUser?.uid !== expectedOwnerId) throw new Error("notification-account-changed");
+        const enabled = snapshot.data()?.notificationsEnabled;
+        return typeof enabled === "boolean" ? enabled : null;
+      },
       /** Sends only the current account's explicit native notification consent. */
       async setSubscription(input) {
         /** Android-only callable bound to the authenticated gameplay region. */
-        const call = httpsCallable<Parameters<AndroidNotificationBackend["setSubscription"]>[0], AndroidNotificationPreferences>(gameplayFunctions, "setAndroidPushSubscription");
-        return (await call(input)).data;
+        if (auth.currentUser?.uid !== input.expectedOwnerId) throw new Error("notification-account-changed");
+        const call = httpsCallable<Parameters<AndroidNotificationBackend["setSubscription"]>[0], Awaited<ReturnType<AndroidNotificationBackend["setSubscription"]>>>(gameplayFunctions, "setAndroidPushSubscription");
+        const result = (await call(input)).data;
+        if (auth.currentUser?.uid !== input.expectedOwnerId) throw new Error("notification-account-changed");
+        return result;
       },
     },
     purchases: {

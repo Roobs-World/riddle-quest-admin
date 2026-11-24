@@ -1,6 +1,6 @@
 # Notification management service
 
-The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. This service has no Firebase dependency.
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager has no Firebase SDK dependency. The existing Android game backend retains authenticated FCM token ownership and serves its device adapter.
 
 Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
 
@@ -49,10 +49,22 @@ Use `notification-manager/.env.example` for the required environment settings:
 | `HOSTED_PUSH_VAPID_SUBJECT` | Real operator contact as `mailto:` or HTTPS URL |
 | `NOTIFICATION_ALLOWED_ORIGINS` | JSON map of platform IDs to exact HTTPS game origins |
 | `CRON_SECRET` | Dedicated random scheduler credential, 32 to 256 URL-safe characters |
+| `NOTIFICATION_MANAGER_BRIDGE_SECRET` | Matching server-only Android bridge credential, 32 to 256 URL-safe characters |
+| `ANDROID_NOTIFICATION_BRIDGE_URL` | HTTPS Firebase `dispatchAndroidNotification` function URL |
 
 Generate one stable P-256 VAPID pair using the installed `web-push` package or an approved credential workflow. Store the private value only in secret configuration. Rotating it requires browser re-enrollment; do not generate a new pair on each build. Never prefix server secrets with `VITE_`, log them or commit them.
 
 The default Content Security Policy admits Supabase connections under `*.supabase.co`. Update its `connect-src` directive if using an approved custom Supabase domain.
+
+## Native Android setup
+
+The React Native Android client uses the same Notifications provider interface and manager-authored campaign model as the web client. Its default device adapter uses data-only FCM. The authenticated `setAndroidPushSubscription` callable retains token ownership and the account's master preference in the existing game backend. It synchronizes only an opaque token hash, consent revision and expiry to the manager's server-only `/api/devices/android/registration` route. Supabase receives no raw FCM token or game account ID.
+
+Configure the matching `NOTIFICATION_MANAGER_BRIDGE_SECRET` in Firebase Secret Manager and Vercel. Set Firebase's `NOTIFICATION_MANAGER_URL` to the exact Vercel service origin. Set Vercel's `ANDROID_NOTIFICATION_BRIDGE_URL` to `https://<region-project>.cloudfunctions.net/dispatchAndroidNotification`. Native Android appears in the management audience list only when the Vercel bridge configuration is valid. Do not put either secret into React Native configuration or a browser build.
+
+For each native delivery, the manager sends immutable campaign content to the authenticated Firebase adapter. Firebase rechecks current account ownership, consent, device revision and deletion state before claiming one FCM attempt. A stable device intent counter prevents delayed registration from reversing newer choices across account changes and token rotation. Background renewal cannot lift an explicit master Off. Account deletion removes native tokens, device bindings and delivery receipts. The native receiver independently checks account, consent, permission and expiry before display. It shows the authored text immediately; WorkManager fetches an optional image with bounded size and time limits. Separate campaigns have separate notification identities.
+
+This path needs an authorized Functions release, current Supabase schema and an updated native Android build. Legacy clients without campaign capability are excluded. Existing Google Services/FCM setup remains required; these edits do not deploy a service or upload an APK.
 
 ## Scheduled delivery
 

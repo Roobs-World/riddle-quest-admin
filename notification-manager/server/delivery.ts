@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {notificationRpc} from "./database.js";
-import {admittedOrigins, vapidConfiguration} from "./configuration.js";
+import {admittedOrigins, androidBridgeConfiguration, vapidConfiguration} from "./configuration.js";
 import {Campaign, Installation, permittedPushEndpoint, Revision} from "./model.js";
 import {deadlineSignal, reserveDeadline, type Deadline} from "./deadline.js";
 
@@ -22,16 +22,30 @@ export async function deliverCampaignNotification(campaignId: string, installati
       return value === null ? null : Campaign.parse(value);
     };
     const campaign = await admit();
-    if (!campaign || admittedOrigins()[installation.target] !== installation.origin || !permittedPushEndpoint(installation.subscription.endpoint)) {
+    const expiresAtMs = campaign ? campaign.sendAtMs + 6 * 3_600_000 : 0;
+    if (!campaign || expiresAtMs <= Date.now()) {
+      outcome = "skipped";
+    } else if (installation.transport === "android") {
+      const configuration = androidBridgeConfiguration();
+      if (!configuration) outcome = "failed";
+      else if (!await admit()) outcome = "skipped";
+      else {
+        const {sendAndroidManagerNotification} = await import("../../platforms/native/android/server/managerAndroidDelivery.js");
+        outcome = (await sendAndroidManagerNotification({version: 1, tokenHash: installation.nativeRef,
+          revision: claim.revision, notificationId: campaignId, title: campaign.title, body: campaign.body,
+          imageUrl: campaign.imageUrl, expiresAtMs}, configuration, deadlineSignal(workDeadline, 8000))).outcome;
+      }
+    } else if (admittedOrigins()[installation.target] !== installation.origin || !permittedPushEndpoint(installation.subscription.endpoint)) {
       outcome = "skipped";
     } else {
       const config = vapidConfiguration();
       const {generateRequestDetails} = await import("web-push");
       const payload = JSON.stringify({version: 1, kind: "notification", notificationId: campaignId,
         target: installation.target, installationId, title: campaign.title, body: campaign.body, imageUrl: campaign.imageUrl,
-        expiresAtMs: Date.now() + 6 * 3_600_000});
+        expiresAtMs});
       const details = generateRequestDetails(installation.subscription, payload, {vapidDetails: {
-        subject: config.subject, publicKey: config.publicKey, privateKey: config.privateKey}, TTL: 6 * 3600, urgency: "normal", topic: campaignId.slice(0, 32)});
+        subject: config.subject, publicKey: config.publicKey, privateKey: config.privateKey},
+        TTL: Math.max(0, Math.floor((expiresAtMs - Date.now()) / 1000)), urgency: "normal", topic: campaignId.slice(0, 32)});
       if (details.endpoint !== installation.subscription.endpoint || !permittedPushEndpoint(details.endpoint)) throw new Error("notification-endpoint-invalid");
       if (!await admit()) outcome = "skipped";
       else {

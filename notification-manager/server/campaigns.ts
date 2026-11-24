@@ -1,13 +1,13 @@
 import {z} from "zod";
 import {notificationRpc} from "./database.js";
-import {admittedOrigins} from "./configuration.js";
+import {admittedPlatforms} from "./configuration.js";
 import {ApiError} from "./http.js";
 import {digest} from "./security.js";
 import {Campaign, Hash, publicCampaign, type CampaignInput} from "./model.js";
 import type {Deadline} from "./deadline.js";
 
 export async function createCampaign(operator: string, input: CampaignInput, deadline: Deadline): Promise<string> {
-  if (input.target !== "all" && !admittedOrigins()[input.target]) throw new ApiError(400, "campaign-platform-not-admitted");
+  if (input.target !== "all" && !admittedPlatforms().some(platform => platform.id === input.target)) throw new ApiError(400, "campaign-platform-not-admitted");
   const id = digest(`${operator}\0${input.requestId}`);
   const receipt = z.object({id: Hash}).strict().parse(await notificationRpc(deadline, "notification_create_campaign", {
     p_id: id, p_operator: operator, p_request_id: input.requestId, p_fingerprint: digest(JSON.stringify(input)),

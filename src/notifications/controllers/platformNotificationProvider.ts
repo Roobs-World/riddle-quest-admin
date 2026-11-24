@@ -1,11 +1,4 @@
-import type {NotificationActivity, NotificationDelivery, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
-
-/** Platform persistence remains behind its existing account-aware preference boundary. */
-export type NotificationPreferenceStore = {
-  getEnabled(): boolean;
-  setEnabled(enabled: boolean): void;
-  subscribe(listener: () => void): () => void;
-};
+import type {NotificationActivity, NotificationDelivery, NotificationPreferenceStore, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
 
 /** Adapts a required platform API to the same observable lifecycle as hosted delivery. */
 export function createPlatformNotificationProvider({preferences, applyEnabled, restoreDelivery, recordActivity}: {

@@ -16,6 +16,12 @@ export type NotificationSnapshot = Readonly<{
 
 export type NotificationActivity = Readonly<{locale: string}>;
 
+export type NotificationPreferenceStore = {
+  getEnabled(): boolean;
+  setEnabled(enabled: boolean): void;
+  subscribe(listener: () => void): () => void;
+};
+
 /** Every hosted, platform-required or custom implementation owns this lifecycle and its state. */
 export interface NotificationProvider {
   getSnapshot(): NotificationSnapshot;

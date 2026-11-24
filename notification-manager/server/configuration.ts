@@ -1,12 +1,12 @@
 import {createECDH} from "node:crypto";
 import {z} from "zod";
-import {Platform} from "./model.js";
+import {BrowserPlatform} from "./model.js";
 
 export function localDevelopmentEnabled(): boolean {
   return process.env.NODE_ENV !== "production" && process.env.NOTIFICATION_ALLOW_LOCALHOST === "true";
 }
 
-const AllowedOrigins = z.record(Platform, z.string().max(2048).refine(value => {
+const AllowedOrigins = z.record(BrowserPlatform, z.string().max(2048).refine(value => {
   try {
     const url = new URL(value);
     return !url.username && !url.password && !url.search && !url.hash && url.pathname === "/" && value.replace(/\/$/u, "") === url.origin &&
@@ -21,6 +21,35 @@ export function admittedOrigins(): Record<string, string> {
     const parsed = AllowedOrigins.parse(value);
     return Object.fromEntries(Object.entries(parsed).map(([target, origin]) => [target, new URL(origin).origin]));
   } catch {throw new Error("notification-origin-configuration-invalid");}
+}
+
+export interface AndroidBridgeConfiguration {endpoint: string; secret: string}
+
+/** Native devices are admitted only through the trusted Firebase server bridge. */
+export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null {
+  const endpoint = process.env.ANDROID_NOTIFICATION_BRIDGE_URL ?? "";
+  const secret = process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET ?? "";
+  if (endpoint.length > 2048 || /[\u0000-\u0020\u007f]/u.test(endpoint) || !/^[A-Za-z0-9_-]{32,256}$/u.test(secret)) return null;
+  try {
+    const url = new URL(endpoint);
+    if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash || url.port ||
+        !/^[a-z0-9-]+\.cloudfunctions\.net$/u.test(url.hostname) || url.pathname !== "/dispatchAndroidNotification") return null;
+    return {endpoint, secret};
+  } catch {return null;}
+}
+
+export function admittedPlatforms(): Array<{id: string; origin: string | null}> {
+  const platforms: Array<{id: string; origin: string | null}> = Object.entries(admittedOrigins()).map(([id, origin]) => ({id, origin}));
+  if (androidBridgeConfiguration()) platforms.push({id: "android", origin: null});
+  return platforms;
+}
+
+export function requireCampaignTransports(target: string): void {
+  const platforms = admittedPlatforms();
+  if (target !== "all" && !platforms.some(platform => platform.id === target) || !platforms.length) {
+    throw new Error("notification-platform-unconfigured");
+  }
+  if (target !== "android" && platforms.some(platform => platform.origin !== null)) vapidConfiguration();
 }
 
 export type VapidConfiguration = Readonly<{publicKey: string; privateKey: string; subject: string}>;

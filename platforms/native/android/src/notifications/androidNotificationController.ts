@@ -1,151 +1,160 @@
-import {trackEvent} from "../../../../../src/observability/analytics/eventsRuntime";
-/** Explicit consent retained independently for each Global Game Account on this device. */
-export type AndroidNotificationPreferences = Readonly<{
-  /** Whether this account explicitly accepts race invitation notifications. */
-  invitations: boolean;
-  /** Whether this account explicitly accepts the Daily reminder. */
-  daily: boolean;
-}>;
-/** Native device capability; no other target's SDK enters this port. */
+import type {NotificationDelivery, NotificationProvider, NotificationSnapshot} from "../../../../../src/notifications/contracts/notificationProvider";
+
+export type AndroidNotificationPreferences = Readonly<{enabled: boolean}>;
 export type AndroidNotificationDevice = Readonly<{
-  /** Requests Android notification permission only after explicit player opt-in. */
   requestPermission(): Promise<boolean>;
-  /** Reads existing OS permission without prompting the player. */
   hasPermission(): Promise<boolean>;
-  /** Initializes the native Android Firebase application for notification delivery. */
   configure(): Promise<void>;
-  /** Reads the current SDK registration token, including token rotations. */
   getToken(): Promise<string>;
-  /** Binds native display to the exact account and its selected consent. */
-  setAccount(uid: string, preferences: AndroidNotificationPreferences): Promise<void>;
+  deviceId(): Promise<string>;
+  beginAccountOperation(uid: string): Promise<number>;
+  invalidateAccountOperation(uid: string): Promise<void>;
+  knownToken?(): Promise<string | null>;
+  setAccount(uid: string, preferences: AndroidNotificationPreferences, operationId: number, registrationRevision: number): Promise<void>;
+  clearPendingToken?(token: string): Promise<void>;
 }>;
-/** Authenticated Android-only callable adapter. */
+export type AndroidSubscriptionInput = Readonly<{enabled: boolean; expectedOwnerId: string; deviceEpoch: number; deviceId: string; preferenceFromSettings: boolean}> | Readonly<{
+  enabled: true; expectedOwnerId: string; deviceEpoch: number; deviceId: string; preferenceFromSettings: boolean; token: string; locale: string;
+}> | Readonly<{enabled: false; expectedOwnerId: string; deviceEpoch: number; deviceId: string; preferenceFromSettings: boolean; token: string}>;
 export type AndroidNotificationBackend = Readonly<{
-  /** Records explicit native consent at the authenticated backend boundary. */
-  setSubscription(
-    input: AndroidNotificationPreferences & {
-      /** Opaque provider token, never a local grant or account selector. */
-      token: string;
-      /** Supported recipient language used for notification or referral copy. */
-      locale: string;
-    },
-  ): Promise<AndroidNotificationPreferences>;
+  readPreference(expectedOwnerId: string): Promise<boolean | null>;
+  setSubscription(input: AndroidSubscriptionInput): Promise<Readonly<{enabled: boolean; delivery: NotificationDelivery; registrationRevision: number}>>;
 }>;
-/** App-private preference storage. */
 export type AndroidNotificationStorage = Readonly<{
-  /** Reads one account-scoped app-private preference record. */
   getItem(key: string): Promise<string | null>;
-  /** Persists one account-scoped app-private preference record. */
   setItem(key: string, value: string): Promise<unknown>;
 }>;
-/** Reads only persisted booleans; malformed local preferences never imply consent. */
+
+/** Missing preferences default On; an explicitly saved legacy Off remains Off. */
 export function parseAndroidNotificationPreferences(raw: string | null): AndroidNotificationPreferences {
+  if (raw === null) return {enabled: true};
   try {
-    /** Untrusted local bytes parsed before they can imply notification consent. */
-    const value: unknown = raw ? JSON.parse(raw) : null;
-    if (
-      typeof value === "object" &&
-      value !== null &&
-      "invitations" in value &&
-      "daily" in value &&
-      typeof value.invitations === "boolean" &&
-      typeof value.daily === "boolean"
-    )
-      return {invitations: value.invitations, daily: value.daily};
-  } catch {
-    /* No notification consent follows a corrupt local record. */
-  }
-  return {invitations: false, daily: false};
+    const value: unknown = JSON.parse(raw);
+    if (typeof value === "object" && value !== null) {
+      if ("enabled" in value && typeof value.enabled === "boolean") return {enabled: value.enabled};
+      if ("invitations" in value && "daily" in value && typeof value.invitations === "boolean" && typeof value.daily === "boolean")
+        return {enabled: value.invitations || value.daily};
+    }
+  } catch { /* An unreadable saved preference never overrides a previous opt-out. */ }
+  return {enabled: false};
 }
-/** Coordinates permission, device ownership, durable consent and token renewal. */
+
+/** The hosted service owns campaigns; this provider owns native permission and registration. */
 export function createAndroidNotificationController(input: {
-  /** Authenticated game account that owns this operation. */
-  uid: string;
-  /** Supported recipient language used for notification or referral copy. */
-  locale: string;
-  /** Native notification capability, separate from game economy authority. */
-  device: AndroidNotificationDevice;
-  /** Authenticated provider-specific server operations. */
-  backend: AndroidNotificationBackend;
-  /** App-private persistence used only for recovery and explicit preferences. */
-  storage: AndroidNotificationStorage;
-}) {
-  /** Account and command revision that invalidates stale asynchronous replies. */
-  let epoch = 0,
-    updating = false;
-  /** Stops a retired account or superseded consent command from changing native delivery. */
-  const assertCurrent = (expected: number) => {
-    if (epoch !== expected) throw new Error("notification-account-changed");
-  };
-  /** Account-scoped app-private consent key. */
+  uid: string; locale: string; device: AndroidNotificationDevice; backend: AndroidNotificationBackend; storage: AndroidNotificationStorage;
+}): NotificationProvider {
   const key = `riddle-quest:android:notifications:${input.uid}`;
-  /** Loads only validated notification consent booleans from app-private storage. */
-  const read = async () => parseAndroidNotificationPreferences(await input.storage.getItem(key));
-  /** Reconciles explicit consent with OS permission, token ownership and the backend. */
-  const update = async (preferences: AndroidNotificationPreferences, requestPermission: boolean) => {
-    /** Frozen command revision checked after asynchronous provider boundaries. */
-    const expected = epoch;
-    /** Whether at least one notification purpose remains explicitly selected. */
-    const enabled = preferences.invitations || preferences.daily;
-    if (enabled) {
-      /** Current Android notification permission decision. */
-      const allowed = requestPermission ? await input.device.requestPermission() : await input.device.hasPermission();
-      assertCurrent(expected);
-      if (!allowed) {
-        await input.device.setAccount(input.uid, {invitations: false, daily: false});
-        throw new Error("notification-permission-denied");
-      }
-    }
-    // Disable local delivery before a possibly failing server revocation.
+  let active = true, epoch = 0, changing = false, restoring = false, refreshQueued = false;
+  let restoreProvider: () => Promise<void>;
+  const drainRefresh = () => {
+    if (active && refreshQueued && !changing && !restoring) {refreshQueued = false; void restoreProvider();}
+  };
+  let snapshot: NotificationSnapshot = {enabled: true, busy: false, delivery: "permission-required"};
+  const listeners = new Set<() => void>();
+  const publish = (next: NotificationSnapshot) => {
+    if (next.enabled === snapshot.enabled && next.busy === snapshot.busy && next.delivery === snapshot.delivery) return;
+    snapshot = next;
+    listeners.forEach(listener => listener());
+  };
+  const current = (revision: number) => active && epoch === revision;
+  const assertCurrent = (revision: number) => {if (!current(revision)) throw new Error("notification-account-changed");};
+  const persist = (enabled: boolean) => input.storage.setItem(key, JSON.stringify({enabled}));
+  const reconcile = async (enabled: boolean, fromSettings: boolean, revision: number, operationId: number, deviceId: string): Promise<NotificationDelivery> => {
     if (!enabled) {
-      await input.device.setAccount(input.uid, preferences);
-      await input.storage.setItem(key, JSON.stringify(preferences));
+      await input.device.setAccount(input.uid, {enabled: false}, operationId, 0);
+      assertCurrent(revision);
+      const token = await input.device.knownToken?.();
+      assertCurrent(revision);
+      await input.backend.setSubscription({enabled: false, expectedOwnerId: input.uid, deviceEpoch: operationId, deviceId, preferenceFromSettings: fromSettings, ...(token ? {token} : {})});
+      assertCurrent(revision);
+      return "inactive";
     }
-    assertCurrent(expected);
+    const allowed = fromSettings ? await input.device.requestPermission() : await input.device.hasPermission();
+    assertCurrent(revision);
+    if (!allowed) {
+      await input.device.setAccount(input.uid, {enabled: false}, operationId, 0);
+      assertCurrent(revision);
+      if (fromSettings) await input.backend.setSubscription({enabled: true, expectedOwnerId: input.uid, deviceEpoch: operationId, deviceId, preferenceFromSettings: true});
+      assertCurrent(revision);
+      return fromSettings ? "blocked" : "permission-required";
+    }
     await input.device.configure();
-    /** Opaque provider token, never a local grant or account selector. */
+    assertCurrent(revision);
     const token = await input.device.getToken();
-    assertCurrent(expected);
-    await input.backend.setSubscription({...preferences, locale: input.locale, token});
-    assertCurrent(expected);
-    await input.device.setAccount(input.uid, preferences);
-    await input.storage.setItem(key, JSON.stringify(preferences));
-    return preferences;
+    assertCurrent(revision);
+    const result = await input.backend.setSubscription({enabled: true, expectedOwnerId: input.uid, deviceEpoch: operationId, deviceId, preferenceFromSettings: fromSettings, token, locale: input.locale});
+    assertCurrent(revision);
+    if (!result.enabled) {await persist(false); assertCurrent(revision);}
+    await input.device.setAccount(input.uid, {enabled: result.enabled && result.delivery === "ready"}, operationId, result.registrationRevision);
+    assertCurrent(revision);
+    if (result.delivery === "ready") await input.device.clearPendingToken?.(token);
+    assertCurrent(revision);
+    return result.delivery;
+  };
+  const setEnabled = async (enabled: boolean): Promise<boolean> => {
+    if (!active || changing) return false;
+    changing = true;
+    if (restoring) refreshQueued = true;
+    const revision = ++epoch;
+    publish({enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
+    try {
+      const operationId = await input.device.beginAccountOperation(input.uid);
+      assertCurrent(revision);
+      const deviceId = await input.device.deviceId();
+      assertCurrent(revision);
+      if (!enabled) {
+        await input.device.setAccount(input.uid, {enabled: false}, operationId, 0);
+        assertCurrent(revision);
+      }
+      await persist(enabled);
+      assertCurrent(revision);
+      const delivery = await reconcile(enabled, true, revision, operationId, deviceId);
+      if (!current(revision)) return false;
+      const savedEnabled = delivery === "inactive" ? false : enabled;
+      publish({enabled: savedEnabled, busy: false, delivery});
+      return savedEnabled === enabled && (delivery === "ready" || delivery === "inactive" || delivery === "not-configured");
+    } catch {
+      if (current(revision)) publish({enabled, busy: false, delivery: "save-failed"});
+      return false;
+    } finally {if (epoch === revision) changing = false; drainRefresh();}
+  };
+  restoreProvider = async () => {
+      active = true;
+      if (changing || restoring) {refreshQueued = true; return;}
+      restoring = true;
+      const revision = ++epoch;
+      try {
+        const operationId = await input.device.beginAccountOperation(input.uid);
+        assertCurrent(revision);
+        const deviceId = await input.device.deviceId();
+        assertCurrent(revision);
+        const local = parseAndroidNotificationPreferences(await input.storage.getItem(key));
+        assertCurrent(revision);
+        const remote = await input.backend.readPreference(input.uid);
+        assertCurrent(revision);
+        const enabled = local.enabled && remote !== false;
+        if (!enabled) {
+          await input.device.setAccount(input.uid, {enabled: false}, operationId, 0);
+          assertCurrent(revision);
+        }
+        await persist(enabled);
+        assertCurrent(revision);
+        publish({enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
+        const delivery = await reconcile(enabled, false, revision, operationId, deviceId);
+        if (current(revision)) publish({enabled: delivery === "inactive" ? false : enabled, busy: false, delivery});
+      } catch {if (current(revision)) publish({...snapshot, busy: false, delivery: "save-failed"});}
+      finally {restoring = false; drainRefresh();}
   };
   return {
-    read,
-    /** Retires pending work before another account or consent command takes ownership. */
-    invalidate() {
-      epoch += 1;
-    },
-    /** Reconciles explicit consent with OS permission, token ownership and the backend. */
-    async update(preferences: AndroidNotificationPreferences) {
-      /** Frozen command revision checked after asynchronous provider boundaries. */
-      const expected = ++epoch;
-      updating = true;
-      try {
-        trackEvent("notification_preferences_requested", {invitations: preferences.invitations, daily: preferences.daily});
-        const result = await update(preferences, true);
-        trackEvent("notification_preferences_result", {status: "success", invitations: result.invitations, daily: result.daily});
-        return result;
-      } catch (error) {
-        trackEvent("notification_preferences_result", {status: "failed"});
-        throw error;
-      } finally {
-        if (epoch === expected) updating = false;
-      }
-    },
-    /** Renews already-selected consent with the current token without another OS prompt. */
-    async refresh() {
-      if (updating) return read();
-      /** Frozen command revision checked after asynchronous provider boundaries. */
-      const expected = epoch;
-      /** Explicit invitation and Daily consent for the current game account. */
-      const preferences = await read();
-      assertCurrent(expected);
-      await input.device.setAccount(input.uid, preferences);
-      if (preferences.invitations || preferences.daily) await update(preferences, false);
-      return preferences;
+    getSnapshot: () => snapshot,
+    subscribe(listener) {listeners.add(listener); return () => {listeners.delete(listener);};},
+    restore: restoreProvider,
+    setEnabled,
+    requestPermission: () => setEnabled(true),
+    async recordActivity() {},
+    retire() {
+      active = false; epoch += 1; changing = false; refreshQueued = false;
+      void input.device.invalidateAccountOperation(input.uid).catch(() => undefined);
     },
   };
 }

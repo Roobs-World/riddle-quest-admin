@@ -194,6 +194,8 @@ export async function removeLiveRaceIdentitySnapshots(userId: string): Promise<v
   await deleteMatchingDocuments("liveRacePushOutbox", "recipientId", userId);
   await deleteMatchingDocuments("liveRacePushTokens", "uid", userId);
   await deleteMatchingDocuments("androidPushTokens", "uid", userId);
+  await deleteMatchingDocuments("androidPushDeliveries", "uid", userId);
+  await deleteMatchingDocuments("androidNotificationDevices", "uid", userId);
   await deleteMatchingCollectionGroupDocuments("entries", "userId", userId);
   /** Atomic batch retires the selected private documents. */
   const batch = db.batch();
