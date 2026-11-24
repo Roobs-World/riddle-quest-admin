@@ -265,13 +265,14 @@ export function ProfileModalPage({
         <button data-tooltip="profileLeaderboard" onClick={() => onOpenModal("leaderboard")}>
           {tr("Leaderboard.TITLE")}
         </button>
-        <button type="button" className="profile-treasure-button" data-tooltip="profileTreasure" onClick={() => onOpenModal("shop")}>
+        <button type="button" className="profile-treasure-button" data-tooltip="profileTreasure"
+          aria-label={`${balance.toLocaleString()}${tr("CoinShop.COINS_SUFFIX")}. ${tr("Navigation.BUY_COINS_BUTTON")}`}
+          onClick={() => onOpenModal("shop")}>
           <SpinningWheel />
           <span className="profile-treasure-content">
             <img src={chestUrl} alt="" width="112" height="100" />
             <small>{tr("CoinShop.YOUR_BALANCE")}</small>
             <strong>{balance.toLocaleString()}{tr("CoinShop.COINS_SUFFIX")}</strong>
-            <span>{tr("Navigation.BUY_COINS_BUTTON")}</span>
           </span>
         </button>
       </div>
