@@ -1,3 +1,4 @@
+import {getProfileLevel} from "../../profile/profileLevel";
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema,
@@ -82,7 +83,7 @@ export async function listLiveRaceHistoryForUser(userId: string, request: ListLi
             opponent = {displayName: typeof profile.username === "string" && profile.username.trim() ? profile.username.trim().slice(0, 80) : "Riddle Quest player",
               avatarUrl: typeof profile.avatarUrl === "string" && /^https:\/\//.test(profile.avatarUrl) ? profile.avatarUrl : null,
               bot: false, correctCount: match.runs[rivalSeat].correctCount,
-              level: Number.isSafeInteger(profile.level) && profile.level > 0 ? profile.level : 1};
+              level: getProfileLevel(profile)};
             available = true;
           }
         }

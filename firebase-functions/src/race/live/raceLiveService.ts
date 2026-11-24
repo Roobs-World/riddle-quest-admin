@@ -1,3 +1,4 @@
+import {getProfileLevel} from "../../profile/profileLevel";
 import {androidReferralPlayPatch} from "../../../../platforms/native/android/server/androidReferralIdentity";
 import {androidReferralLiveEventId} from "../../../../platforms/native/android/server/androidReferralDelivery";
 import {publishLiveRaceSignals} from "./raceLiveSignals";
@@ -78,7 +79,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
   return db.runTransaction(async transaction => {
     /** Reads fresh recovery authority and only public identity fields before shared-pool locks or content queries. */
     const [intent, current, receipt, owner, deletion] = await Promise.all([readLiveJoinIntent(db, transaction, userId, input), transaction.get(pointer), transaction.get(ticketRef),
-      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]}).then(([profile]) => profile),
+      transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "stats.level", "avatarUrl", "androidProvider"]}).then(([profile]) => profile),
       transaction.get(getJestAccountDeletionRef(db, userId))]);
     assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
@@ -122,6 +123,10 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
         if (unavailable && (input.resumeTicketId || receipt.exists || intent?.record?.ticketId))
           throw new HttpsError(input.resumeTicketId ? "failed-precondition" : "not-found", "Original live authority unavailable.");
         if (!unavailable) {
+          ticket.player.level = getProfileLevel(owner.data());
+          const seat = match?.tickets[0] === id ? 0 : 1;
+          const refreshMatchLevel = match && match.winner === undefined && match.players[seat].level !== ticket.player.level;
+          if (match && refreshMatchLevel) match.players[seat].level = ticket.player.level;
           /** Expired waits cannot strand the active pointer, and immutable receipts remain terminal. */
           const waitExpired = !match && ticket.privateChallenge &&
             recoveryNowMs >= liveRaceSearchEndsAtMs(ticket);
@@ -149,8 +154,9 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
               {ticketId: id, ticket, nowMs: observedAtMs, expiresAt: old.data()!.expiresAt, ownerProfile: owner, ownerPointer: current}) : undefined;
             match = queue?.match ?? match;
             queue?.commit();
-            transaction.update(old.ref, {seenAtMs: observedAtMs, ...(match ? {matchId: ticket.matchId} : {})});
-            if (match && !queue?.match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs});
+            transaction.update(old.ref, {seenAtMs: observedAtMs, "player.level": ticket.player.level, ...(match ? {matchId: ticket.matchId} : {})});
+            if (match && !queue?.match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs,
+              ...(refreshMatchLevel ? {players: match.players} : {})});
             if (queue?.match) publishLiveRaceSignals(db, transaction, match!.tickets, old.data()!.expiresAt);
             claimLiveJoinIntent(transaction, intent, old.ref, observedAtMs);
             return liveView(id, ticket, match, observedAtMs);
@@ -169,7 +175,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     const data = owner.data()!;
     /** Provides player behavior. */
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
-      level: typeof data.level === "number" && Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
+      level: getProfileLevel(data),
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Provides ticket behavior. */
     const ticket: LiveTicket = {userId, pool, player, ...(privateEntry ? {privateChallenge: true} : {}),
@@ -364,7 +370,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   }
   if (!match && !ticket.privateChallenge && input.action === "poll" && nowMs < liveRaceSearchEndsAtMs(ticket)) {
     /** Public account identity required before a waiting seat re-enters the queue. */
-    const [ownerProfile] = await transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]});
+    const [ownerProfile] = await transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "stats.level", "avatarUrl", "androidProvider"]});
     assertAndroidRaceAccount(userId, ownerProfile.data());
     queue = await prepareLiveRaceQueue(db, transaction, {ticketId: input.ticketId, ticket, nowMs, expiresAt: snapshot.data()!.expiresAt, ownerProfile, ownerPointer});
     match = queue.match;
@@ -383,7 +389,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   if (!match) {
     if (input.action !== "poll") throw new HttpsError("failed-precondition", "No opponent has joined yet.");
     queue?.commit();
-    transaction.update(ticketRef, {seenAtMs: nowMs});
+    transaction.update(ticketRef, {seenAtMs: nowMs, ...(queue ? {"player.level": ticket.player.level} : {})});
     return liveView(input.ticketId, ticket, undefined, nowMs);
   }
   // Persist the first shared start observation once; subsequent unchanged polls remain read-only.
@@ -555,7 +561,8 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       expiresAt: matchSnapshot?.data()?.expiresAt ?? queue?.matchExpiresAt ?? expiresAt});
     publishLiveRaceSignals(db, transaction, match.tickets.filter((_, seat) => !match!.deletedSeats?.[seat]), expiresAt);
   }
-  if (previousMatchId !== ticket.matchId) transaction.update(ticketRef, {matchId: ticket.matchId, seenAtMs: nowMs});
+  if (previousMatchId !== ticket.matchId) transaction.update(ticketRef, {matchId: ticket.matchId, seenAtMs: nowMs,
+    ...(queue ? {"player.level": ticket.player.level} : {})});
   if (acceptedCommand) transaction.create(requestRef, {userId, binding, expiresAt, ...(guessProof ? {guessProof} : {})});
   return response;
 }

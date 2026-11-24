@@ -191,7 +191,7 @@ it("refreshes game-owned rematch identity and omits a missing recipient account"
   const {ids, a} = await completed("reddit");
   /** New private receipt initially copies Alice's current profile. */
   const lobby = await rematch(ids[0], a.ticketId);
-  await db.doc(`users/${ids[0]}`).update({username: "RenamedCreator", level: 7, avatarUrl: "https://example.com/current-avatar.png"});
+  await db.doc(`users/${ids[0]}`).update({username: "RenamedCreator", "stats.level": 7, avatarUrl: "https://example.com/current-avatar.png"});
   expect(await getLiveRaceChallengeForUser(ids[1], lobby.challengeId!, {db, nowMs: NOW + 11_000}))
     .toMatchObject({creator: {displayName: "RenamedCreator", level: 7, avatarUrl: "https://example.com/current-avatar.png"}});
   await db.doc(`users/${ids[1]}`).delete();

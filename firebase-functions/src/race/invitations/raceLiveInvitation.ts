@@ -1,3 +1,4 @@
+import {getProfileLevel} from "../../profile/profileLevel";
 import {androidReferralPlayPatch} from "../../../../platforms/native/android/server/androidReferralIdentity";
 import {publishLiveRaceSignals} from "../live/raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
@@ -58,7 +59,7 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
     transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, ticket.userId)),
     transaction.get(db.doc(`users/${userId}/blockedRivals/${ticket.userId}`)),
     transaction.get(db.doc(`users/${ticket.userId}/blockedRivals/${userId}`)),
-    transaction.getAll(db.doc(`users/${ticket.userId}`), db.doc(`users/${userId}`), {fieldMask: ["username", "level", "avatarUrl", "androidProvider"]}),
+    transaction.getAll(db.doc(`users/${ticket.userId}`), db.doc(`users/${userId}`), {fieldMask: ["username", "stats.level", "avatarUrl", "androidProvider"]}),
   ]);
   assertJestAccountActive(viewerDeleted);
   assertAndroidRaceAccount(userId, viewer.data());
@@ -69,8 +70,10 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
   const data = creator.data()!;
   /** No copied historical profile may outlive a current rematch account projection. */
   const player = ticket.rematchOfTicketId ? {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
-    level: Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
-    avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0} : ticket.player;
+    level: getProfileLevel(data),
+    avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0} :
+    {...ticket.player, level: getProfileLevel(data)};
+  ticket.player.level = player.level;
   return {snapshot, ticket, player, viewer};
 }
 /** Reads a challenge notice without joining; the recipient chooses whether to accept. */
@@ -140,8 +143,11 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       assertFacebookLiveContextSelection(creator.facebookContext, contextKey);
       if (intent?.record?.ticketId && intent.record.ticketId !== creatorId)
         throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
-      transaction.update(snapshot.ref, {seenAtMs: nowMs});
-      if (existing) transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {observedAtMs: nowMs});
+      transaction.update(snapshot.ref, {seenAtMs: nowMs, "player.level": creatorPlayer.level});
+      if (existing) {
+        existing.players[0] = {...existing.players[0], level: creatorPlayer.level};
+        transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {observedAtMs: nowMs, players: existing.players});
+      }
       claimLiveJoinIntent(transaction, intent, snapshot.ref, nowMs);
       return liveView(creatorId, creator, existing, nowMs);
     }
@@ -158,6 +164,14 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
       assertFacebookLiveContextSelection(own.facebookContext, contextKey);
       if (intent?.record?.ticketId && intent.record.ticketId !== ownId)
         throw new HttpsError("failed-precondition", "Request belongs to another live seat.");
+      own.player.level = getProfileLevel(owner.data());
+      existing.players[0] = {...existing.players[0], level: creatorPlayer.level};
+      existing.players[1] = {...existing.players[1], level: own.player.level};
+      if (existing.winner === undefined) {
+        transaction.update(snapshot.ref, {"player.level": creatorPlayer.level});
+        transaction.update(ownSnapshot.ref, {"player.level": own.player.level});
+        transaction.update(db.doc(`liveRaceMatches/${creator.matchId}`), {players: existing.players});
+      }
       claimLiveJoinIntent(transaction, intent, db.doc(`liveRaceTickets/${ownId}`), nowMs);
       return liveView(ownId, own, existing, nowMs);
     }
@@ -193,7 +207,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     const data = owner.data()!;
     /** Safe identity snapshot for the creator's lobby. */
     const player = {displayName: typeof data.username === "string" && data.username.trim() ? data.username.trim().slice(0, 80) : "Riddle Quest player",
-      level: typeof data.level === "number" && Number.isInteger(data.level) && data.level > 0 ? data.level : 1,
+      level: getProfileLevel(data),
       avatarUrl: typeof data.avatarUrl === "string" && /^https:\/\//.test(data.avatarUrl) ? data.avatarUrl : null, bot: false, correctCount: 0};
     /** Both seats receive the creator's immutable deck and the same five-second countdown. */
     const startsAtMs = nowMs + LIVE_RACE_COUNTDOWN_MS;
@@ -208,7 +222,7 @@ export async function acceptLiveRaceChallengeForUser(userId: string, input: Join
     /** Accepting a native race closes acquisition before the recipient seat is published. */
     const referralActivity = androidReferralPlayPatch(owner.data() ?? {});
     if (referralActivity.androidReferralPlayed) transaction.update(owner.ref, referralActivity);
-    transaction.update(snapshot.ref, {matchId: creatorId});
+    transaction.update(snapshot.ref, {matchId: creatorId, "player.level": creatorPlayer.level});
     transaction.create(db.doc(`liveRaceMatches/${creatorId}`), {...stripUndefined(match), expiresAt});
     transaction.create(db.doc(`liveRaceTickets/${ownId}`), {...stripUndefined(own), expiresAt});
     claimLiveJoinIntent(transaction, intent, db.doc(`liveRaceTickets/${ownId}`), nowMs);

@@ -32,7 +32,7 @@ beforeEach(async () => {
   catalogPaths.forEach((path, index) => batch.set(db.doc(path), {riddleId: `join-payload-${index}`, canonicalRiddleId: `history:${index}`, categoryId: "history",
     text: `Unique historical question ${index} follows its own trail`, answer: `a${String(index).padStart(6, "0")}`,
     difficultyBand: (["easy", "medium", "hard"] as const)[index % 3], raceEligible: true, qualityVersion: "human_review_v1"}));
-  [A, B].forEach((uid, index) => batch.set(db.doc(`users/${uid}`), {username: index ? "Bob" : "Alice", level: 8,
+  [A, B].forEach((uid, index) => batch.set(db.doc(`users/${uid}`), {username: index ? "Bob" : "Alice", stats: {level: 8},
     avatarUrl: "https://example.invalid/avatar.png", coins: 550, privateBlob: "x".repeat(100_000)}));
   await batch.commit();
 });
@@ -85,7 +85,7 @@ async function observed<T>(operation: () => Promise<T>) {
 }
 /** Only identity fields should be loaded, and fixture account economy/storage must stay unchanged. */
 function expectIdentityOnly(reads: ProfileRead[]) {
-  for (const read of reads) expect(read.fields).toEqual(["avatarUrl", "level", "username"]);
+  for (const read of reads) expect(read.fields).toEqual(["avatarUrl", "stats", "username"]);
 }
 
 it.each(["public", "private", "reconnect"] as const)("loads only public identity for a %s join", async kind => {
@@ -154,7 +154,7 @@ it.each(["join", "accept"] as const)("captures fresh identity after an actual SD
   /** Second attempt reads changed canonical identity rather than caching the first profile snapshot. */
   const spy = jest.spyOn(db, "runTransaction").mockImplementation((callback, options) => original(async transaction => {
     attempts++;
-    if (attempts === 2) await db.doc(`users/${uid}`).update({username: "Fresh identity", level: 11, avatarUrl: "https://example.invalid/fresh.png"});
+    if (attempts === 2) await db.doc(`users/${uid}`).update({username: "Fresh identity", "stats.level": 11, avatarUrl: "https://example.invalid/fresh.png"});
     /** Original callback still performs all safety checks and queues canonical writes. */
     const result = await callback(transaction);
     if (attempts === 1) throw Object.assign(new Error("Fixture retryable live identity abort"), {code: 10});

@@ -1,4 +1,5 @@
 import {LIVE_RACE_COUNTDOWN_MS} from "../../../../src/races/contracts/index.js";
+import {getProfileLevel} from "../../profile/profileLevel";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
 import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
@@ -53,6 +54,7 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
     newTicket ? undefined : ownerPointer ?? transaction.get(db.doc(`liveRacePlayers/${requestDocumentId(ticket.userId, "active-live-race")}`))]);
   if (!ownerProfile.exists || !newTicket && ownPointer?.data()?.ticketId !== ticketId)
     throw new HttpsError("failed-precondition", "Another live journey owns this account.");
+  ticket.player.level = getProfileLevel(ownerProfile.data());
   if (newTicket) assertLiveRaceDeckCompatible(ticket.run);
   else if (!isLiveRaceDeckCompatible(ticket.run))
     return {match: undefined, matchExpiresAt: undefined, commit: () => undefined};
@@ -89,7 +91,7 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
   const [metadata, profiles] = candidateReads.length ? await Promise.all([
     transaction.getAll(...candidateReads.flatMap(({pointer, deleted, outgoingBlock, incomingBlock}) =>
       [pointer, deleted, outgoingBlock, incomingBlock])),
-    transaction.getAll(...candidateReads.map(({profile}) => profile), {fieldMask: ["username", "level", "avatarUrl"]}),
+    transaction.getAll(...candidateReads.map(({profile}) => profile), {fieldMask: ["username", "stats.level", "avatarUrl"]}),
   ]) : [[], []];
   /** Snapshots indexed by document path for consistent candidate verification. */
   const facts = new Map([...metadata, ...profiles].map(snapshot => [snapshot.ref.path, snapshot]));
@@ -106,6 +108,7 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
   /** Shared match prepared in memory before the commit plan queues writes. */
   let match: LiveMatch | undefined;
   if (opponent) {
+    opponent.ticket.player.level = getProfileLevel(facts.get(`users/${opponent.ticket.userId}`)?.data());
     /** Shared countdown start after both seats' latest observed clocks. */
     const startsAtMs = Math.max(nowMs, ticket.seenAtMs, opponent.ticket.seenAtMs) + LIVE_RACE_COUNTDOWN_MS;
     ticket.matchId = opponent.snapshot.id;
@@ -127,7 +130,7 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
     /** Queues opponent assignment, match creation and any changed queue contents. */
     commit() {
     if (opponent && match && matchExpiresAt) {
-      transaction.update(opponent.snapshot.ref, {matchId: opponent.snapshot.id});
+      transaction.update(opponent.snapshot.ref, {matchId: opponent.snapshot.id, "player.level": opponent.ticket.player.level});
       transaction.create(db.doc(`liveRaceMatches/${opponent.snapshot.id}`), {...stripUndefined(match), expiresAt: matchExpiresAt});
     }
     if (changed) transaction.set(queueRef, {tickets: nextIds, expiresAt});
