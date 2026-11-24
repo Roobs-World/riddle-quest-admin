@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-24",
+  "project": "vqyjgcqyudqonfhgymoy",
+  "preparedAt": "2026-11-24T11:14:38.593Z",
+  "createdAt": "2026-11-24T11:15:01.181878Z",
+  "createdThrough": "existing notification_create_campaign RPC with the sole approved operator",
+  "inputValidation": "Both requests parsed successfully through the production CampaignInput schema; IDs and fingerprints use the campaign service's SHA-256 conventions.",
+  "instant": {
+    "id": "93e48f6b2134bfe979db45bc16b4d0fe67d318cdff7b7fb75f0ff0d507efffc1",
+    "requestId": "notification-check-20261124-instant-01",
+    "title": "Instant Riddle Quest notification check",
+    "body": "This is an instant Riddle Quest notification check. No action is needed.",
+    "imageUrl": null,
+    "target": "all",
+    "inputSendAt": null,
+    "sendAt": "2026-11-24T11:15:01.189329Z",
+    "startedAt": "2026-11-24T11:16:00.636261Z",
+    "completedAt": "2026-11-24T11:16:00.925099Z",
+    "status": "complete",
+    "counts": {"attempted": 0, "accepted": 0, "failed": 0, "uncertain": 0, "skipped": 0}
+  },
+  "scheduled": {
+    "id": "ec2015e5e8515d82b993e7113767b8dfc4a095bc681dd5af1708aee9ae54abb9",
+    "requestId": "notification-check-20261124-scheduled-01",
+    "title": "Scheduled Riddle Quest notification check",
+    "body": "This is your scheduled Riddle Quest notification check, set for one hour after setup. No action is needed.",
+    "imageUrl": null,
+    "target": "all",
+    "sendAt": "2026-11-24T12:14:38.593Z",
+    "timeZone": "Europe/London",
+    "status": "queued",
+    "counts": {"attempted": 0, "accepted": 0, "failed": 0, "uncertain": 0, "skipped": 0}
+  },
+  "databaseVerification": {
+    "checkedAt": "2026-11-24T11:16:19.448713Z",
+    "upcoming": 2,
+    "includesExistingNovember25Check": true,
+    "acceptedToday": 0,
+    "activeInstallations": 0,
+    "newCampaignDeliveryAttempts": 0,
+    "dayStart": "2026-11-24T00:00:00Z",
+    "dayEnd": "2026-11-25T00:00:00Z"
+  },
+  "scheduler": {
+    "name": "notification-manager-dispatch",
+    "activeJobs": 1,
+    "schedule": "* * * * *",
+    "dispatchObservedAt": "2026-11-24T11:16:00.052614Z",
+    "httpStatus": 200,
+    "response": {"scanned": 0, "campaigns": 1},
+    "manualInvocation": false
+  },
+  "accountLabelCorrection": {
+    "oldLabel": "141 Firebase accounts",
+    "actualMetric": "unfiltered Firestore users profile-document count",
+    "replacementSubtitle": "Browser push registrations",
+    "accountCountRemovedFromPanel": true
+  },
+  "verificationLimit": "Zero registered devices means no device display was verified. Future scheduled delivery is queued, not yet completed."
+}
