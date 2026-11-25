@@ -1,0 +1,61 @@
+{
+  "date": "2026-11-25",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "6e01644f75e80fe2a22785bcb2b2cec43c25c781",
+  "guestToggleChangeCommit": "a4face8ac9200b35e9decf779fed1e91de5633ff",
+  "authorization": {
+    "upload": "User requested build and upload to Jest.",
+    "activation": "User explicitly requested activation once uploaded.",
+    "publicationOrReview": false
+  },
+  "behavior": {
+    "guestSettingsNotificationToggleDisabled": true,
+    "guestToggleDisplayedOff": true,
+    "guestBrowserUnavailableMessageHidden": true,
+    "automaticRegistrationAdded": false,
+    "automaticPermissionPromptAdded": false
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261125000223.6e01644f75e8.de075df9",
+    "versionId": "01a21003-7613-7479-be52-bbe911ea742c",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a21003-7613-7479-be52-bbe911ea742c",
+    "httpStatus": 202,
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2629737,
+    "archiveEntries": 100,
+    "archiveSha256": "16b3a22c06ad070f80a0e9f0a4eb66c8a085b9a53049c9aaf7229981b0a96ae4",
+    "activationRequested": true,
+    "immutableSourceAndArchiveVerified": true
+  },
+  "authoritativeReadback": {
+    "checkedAt": "2026-11-25T00:03:34.619Z",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-25T00:03:20.442Z",
+    "processingComplete": true,
+    "separateActivationMutationRequired": false
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "securityAndDependencyAuditsPassed": true,
+    "typeAndBackendLintChecksPassed": true,
+    "productionBuildsAndArtifactAuditsPassed": true,
+    "htmlAndExactArchiveAuditsPassed": true,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "releaseGateRepair": {
+    "initialAttemptSource": "a4face8ac9200b35e9decf779fed1e91de5633ff",
+    "initialAttemptTransmitted": false,
+    "initialFailure": "Unrelated Facebook handoff preparation refused its retained pending version 8 upload.",
+    "correction": "Production verification retains the Facebook build, source-secret and artifact audits. Explicit Facebook ZIP and handoff preparation remains in its own preflight.",
+    "independentSecurityReviewCompleted": true,
+    "facebookBarrierBypassedOrDeleted": false
+  },
+  "previousActiveVersionId": "01a20c95-dd01-713b-b291-2e8ee5db350c",
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false,
+  "secretsExposed": false
+}

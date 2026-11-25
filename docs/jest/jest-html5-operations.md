@@ -31,6 +31,8 @@ This runs the retained dependency, security, type, backend lint/runtime, product
 
 Facebook source-secret, build and artifact checks remain part of this gate. Its separate ZIP and handoff preparation runs only through the explicit Facebook preflight, so a pending Facebook upload does not prevent verification of the independent Jest archive.
 
+The [November 25 guest notification toggle release](evidence/jest-guest-notification-toggle-2026-11-25.json) records the completed upload and activation of version `01a21003-7613-7479-be52-bbe911ea742c`. Jest confirmed processing complete and active status at 00:03 UTC. The Settings notification control is disabled and shown Off for guests; platform registration continues through the existing Profile flow.
+
 Individual build and lint commands remain available:
 
 ```bash
