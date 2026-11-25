@@ -51,6 +51,8 @@ scripts/release/platform-releases.mjs
 
 The release module owns discovery, operator-visible effects, dry runs, dispatch, and failure propagation. It does not read credentials or flatten the four provider protocols. Target-native modules retain their locks, fingerprints, artifact audits, receipts, and external uncertainty rules.
 
+The production verification gate builds and audits Facebook through `build:web` and runs its source-secret audit separately. Facebook ZIP creation and handoff preparation belong to the explicit `preflight:facebook-upload` command, which retains its pending-upload barrier checks. Jest verification prepares and verifies its own archive while an existing Facebook handoff remains preserved.
+
 Runtime code remains compile-time isolated:
 
 - `platforms/web/jest/src` contains Jest integration code and builds to `platforms/web/jest/build/dist`.

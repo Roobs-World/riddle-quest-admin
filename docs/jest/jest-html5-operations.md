@@ -29,6 +29,8 @@ pnpm verify:production
 
 This runs the retained dependency, security, type, backend lint/runtime, production build, W3C, artifact and packaging checks. It does not run unit suites, emulator tests, local browser journeys or a mobile soak. A failed build or audit stops release preparation.
 
+Facebook source-secret, build and artifact checks remain part of this gate. Its separate ZIP and handoff preparation runs only through the explicit Facebook preflight, so a pending Facebook upload does not prevent verification of the independent Jest archive.
+
 Individual build and lint commands remain available:
 
 ```bash
