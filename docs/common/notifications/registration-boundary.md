@@ -27,3 +27,5 @@ A user-only Supabase installation row was rejected because an account identifier
 Device-owned registration on the manager page remains necessary for browser permission and push subscriptions. Native Android retains its native token and permission adapter. Browser leases currently renew on manager-page visits and can expire after 30 days without one. Adding automatic worker renewal requires a separate revision-preserving server design; incrementing the registration revision while checking an incoming push would invalidate that push.
 
 Jest uploads follow the standing release authorization after builds. Manager website deployment remains a separate release. Unit tests and browser harnesses run only when explicitly requested.
+
+The [November 25 release record](../../jest/evidence/jest-manager-registration-only-2026-11-25.json) confirms the registration-only Jest build is ready and active. The affected web builds, native/shared type checks and compiled game boundary audits pass. Regression specifications were updated and type-checked without executing tests or browser harnesses.

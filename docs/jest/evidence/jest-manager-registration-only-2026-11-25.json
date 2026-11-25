@@ -1,0 +1,87 @@
+{
+  "date": "2026-11-25",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "89eb0c737e39327fe7fc369e2c743aa934d914f6",
+  "authorization": {
+    "implementation": "User requested implementation of game registration, manager sending and device response ownership.",
+    "uploadAndActivation": "Standing instruction to update Jest after each completed Jest build.",
+    "publicationOrReview": false
+  },
+  "behavior": {
+    "managerAndDeviceCapabilitiesSeparatedByType": true,
+    "gameOnlySavesConsentAndIssuesRegistrationHandoff": true,
+    "gameDeviceStatusPollingRemoved": true,
+    "gameEnrollmentResponseListenerRemoved": true,
+    "gamePopupTrackingRemoved": true,
+    "gamePairingProofStorageRemoved": true,
+    "handoffDoesNotClaimDeviceReadiness": true,
+    "postMenuRegistrationModalPreserved": true,
+    "managerDispatchAndDeviceResponseHandlingPreserved": true,
+    "legacyManagerAndServerCompatibilityPreserved": true
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261125084907.89eb0c737e39.9377053c",
+    "versionId": "01a211e5-afe7-7735-a223-04c1e3f67488",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a211e5-afe7-7735-a223-04c1e3f67488",
+    "httpStatus": 202,
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2630338,
+    "archiveEntries": 98,
+    "archiveSha256": "9d0d730438122403a1a3742027c0b1c5b84d9861293ce2e35016fc15bc507129",
+    "activationRequested": true,
+    "immutableSourceAndArchiveVerified": true
+  },
+  "authoritativeReadback": {
+    "channel": "Jest MCP list_game_versions",
+    "checkedAt": "2026-11-25T08:50:08Z",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-25T08:50:01.919Z",
+    "processingComplete": true
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "jestFacebookYahooBuildsAndArtifactAuditsPassed": true,
+    "managerBuildPassed": true,
+    "androidAndSharedTypeChecksPassed": true,
+    "newRegistrationSpecificationsTypeChecked": true,
+    "compiledGameArtifactsExcludeLegacyStatusAndResponseHandling": true,
+    "independentCodeReviewCompleted": true,
+    "testsAndBrowserHarnessesRun": false,
+    "realDeviceEnrollmentVerified": false
+  },
+  "backend": {
+    "sourceAndRulesUnchangedFromPreviousActiveBuild": true,
+    "deploymentPerformed": false,
+    "managerDeploymentOrDatabaseMigrationRequired": false,
+    "gameplayFunctionInstancesVerified": 14,
+    "allInstancesActive": true,
+    "runtime": "nodejs22",
+    "allTrafficOnLatestRevisions": true
+  },
+  "pluginDiscovery": {
+    "vercel": {
+      "pluginInstalled": true,
+      "targetTeamAccess": "forbidden",
+      "connectedTeamHasMatchingProject": false
+    },
+    "supabase": {
+      "pluginAvailable": true,
+      "pluginInstalled": false,
+      "existingMcpConnection": "oauth-refresh-failed"
+    }
+  },
+  "browserLease": {
+    "durationDays": 30,
+    "renewalOwner": "manager device page",
+    "gameVisitsRenewLease": false
+  },
+  "previousActiveVersionId": "01a21081-324d-7632-a164-140a09e3827d",
+  "facebookBuildUploaded": false,
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false,
+  "secretsExposed": false
+}
