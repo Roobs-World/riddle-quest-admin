@@ -343,12 +343,14 @@ describeBrowser("Jest authentication integration", () => {
   });
 
   it.each([
-    ["new guest", "success"],
-    ["guest with a legacy milestone", "returning-milestone"],
-    ["returning guest with two saved wins", "returning-guest-two-wins"],
-    ["guest when the milestone call fails", "milestone-failure"],
-  ])("prompts a %s after the first solved riddle", async (_label, scenario) => {
-    /** Fresh guest with no prior milestone or onboarding. */
+    {label: "new guest", scenario: "success", shouldPrompt: false},
+    {label: "guest with a legacy milestone", scenario: "returning-milestone", shouldPrompt: false},
+    {label: "returning guest with one saved win", scenario: "returning-guest-one-win", shouldPrompt: false},
+    {label: "returning guest with two saved wins", scenario: "returning-guest-two-wins", shouldPrompt: true},
+    {label: "returning guest with five saved wins", scenario: "returning-guest-five-wins", shouldPrompt: true},
+    {label: "guest when the milestone call fails", scenario: "returning-guest-two-wins-milestone-failure", shouldPrompt: true},
+  ])("applies the three-word registration cadence for a $label", async ({scenario, shouldPrompt}) => {
+    /** Isolated guest with the selected saved progress and no completed onboarding. */
     const {context, page} = await openHarness(browser, {customName: "Nova", scenario});
     await enterRegisteredGame(page);
     expect(await page.locator(".game-header .coin-pill strong").innerText()).toBe("300");
@@ -375,7 +377,7 @@ describeBrowser("Jest authentication integration", () => {
       return milestoneFailure
         ? state.calls.includes("sdk.markFirstMilestone")
         : state.preferenceWrites.some((value) => value.firstMilestoneMarked === true);
-    }, scenario === "milestone-failure");
+    }, scenario.endsWith("milestone-failure"));
     expect((await getHarnessState(page)).overlayOptions).toEqual([]);
     await page.locator(".modal-victory").waitFor();
     await page.locator(".modal-victory .coin-award").waitFor();
@@ -386,6 +388,13 @@ describeBrowser("Jest authentication integration", () => {
     await page.waitForFunction(() => Boolean(document.querySelector<HTMLButtonElement>(".reward-continue:not(:disabled)")));
     await page.locator(".reward-continue").click();
     await page.locator(".modal-victory").waitFor({state: "detached"});
+    if (!shouldPrompt) {
+      await dismissDailyCompletionGuidance(page);
+      expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+      expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+      await context.close();
+      return;
+    }
     for (let step = 0; step < 5; step += 1) {
       await page.waitForFunction(() => Boolean(document.querySelector(".tooltip-backdrop, .jest-registration-dialog")));
       if (await page.locator(".jest-registration-dialog").count()) break;
@@ -446,7 +455,7 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("reports a guest Daily completion without opening registration", async () => {
+  it("offers guest registration after the Daily completion reward panels close", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {gameMode: "challenge"});
     await enterRegisteredGame(page, /i speak without a mouth/i);
@@ -460,6 +469,8 @@ describeBrowser("Jest authentication integration", () => {
       .click();
     await page.locator(".modal-victory").waitFor();
     await page.locator(".modal-victory .coin-award").waitFor();
+    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").waitFor();
       /** Provides current step behavior. */
@@ -476,17 +487,21 @@ describeBrowser("Jest authentication integration", () => {
       );
     }
     await dismissDailyCompletionGuidance(page);
+    await page.getByText("Keep your progress", {exact: true}).waitFor();
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
-    expect(state.overlayOptions).toEqual([]);
-    expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+    expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
+    expect(await page.locator(".jest-registration-dialog").isVisible()).toBe(true);
     await context.close();
   });
 
-  it("offers registration when confirmation arrives after all completion popups were dismissed", async () => {
+  it.each([
+    {scenario: "returning-guest-one-win", savedWins: 1, shouldPrompt: false},
+    {scenario: "returning-guest-two-wins", savedWins: 2, shouldPrompt: true},
+  ])("applies the cadence after $savedWins saved wins when confirmation follows all completion popups", async ({scenario, savedWins, shouldPrompt}) => {
     /** Provides {context, page} behavior. */
-    const {context, page} = await openHarness(browser);
+    const {context, page} = await openHarness(browser, {scenario});
     try {
       await enterRegisteredGame(page);
       await page.evaluate(() => {
@@ -550,6 +565,10 @@ describeBrowser("Jest authentication integration", () => {
           .click();
       }
       expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+      await page.waitForFunction((completedWords) =>
+        window.__RIDDLE_QUEST_JEST_AUTH_TEST__?.preferenceWrites.some(value => value.jestGuestCompletedRiddles === completedWords),
+        savedWins + 1,
+      );
       await page.evaluate(() =>
         (
           window as typeof window & {
@@ -558,16 +577,24 @@ describeBrowser("Jest authentication integration", () => {
           }
         ).__RELEASE_DELAYED_GUESS__(),
       );
-      await page.getByText("Keep your progress", {exact: true}).waitFor();
-      expect((await getHarnessState(page)).overlayOptions).toHaveLength(1);
+      await page.waitForFunction(() =>
+        window.__RIDDLE_QUEST_JEST_AUTH_TEST__?.calls.some(call => call.startsWith("sdk.captureEvent:guess_submitted:")),
+      );
+      if (shouldPrompt) {
+        await page.getByText("Keep your progress", {exact: true}).waitFor();
+        expect((await getHarnessState(page)).overlayOptions).toHaveLength(1);
+      } else {
+        expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+        expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
+      }
     } finally {
       await context.close();
     }
   });
 
-  it("offers registration after the first Classic victory while reward syncing is delayed", async () => {
+  it("offers registration after the third Classic victory while reward syncing is delayed", async () => {
     /** Provides {context, page} behavior. */
-    const {context, page} = await openHarness(browser);
+    const {context, page} = await openHarness(browser, {scenario: "returning-guest-two-wins"});
     await enterRegisteredGame(page);
     await page.evaluate(() => {
       /** Provides dispatch behavior. */

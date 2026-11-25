@@ -15,16 +15,21 @@ const session = (overrides: Partial<JestSession> = {}): JestSession => ({
 });
 
 describe("authoritative first milestone", () => {
-  test("offers registration after session wins 1, 4, and 7 even with saved wins", () => {
+  test("offers registration after Classic wins 3, 6, and 9 and every Daily win", () => {
     /** Provides returning guest behavior. */
     const returningGuest = session({preferences: {jestGuestCompletedRiddles: 2}});
-    expect(Array.from({length: 7}, (_, index) => shouldPromptGuestRegistration(returningGuest, "classic", index + 1)))
-      .toEqual([true, false, false, true, false, false, true]);
-    expect(shouldPromptGuestRegistration(returningGuest, "challenge", 1)).toBe(false);
-    expect(shouldPromptGuestRegistration(session({player: {playerId: "stable-player", registered: true}}), "classic", 1))
-      .toBe(false);
+    expect(Array.from({length: 9}, (_, index) => shouldPromptGuestRegistration(returningGuest, "classic", index + 1)))
+      .toEqual([false, false, true, false, false, true, false, false, true]);
+    expect(shouldPromptGuestRegistration(session(), "classic", 0)).toBe(false);
+    expect(shouldPromptGuestRegistration(session(), "classic")).toBe(false);
+    expect(shouldPromptGuestRegistration(returningGuest, "classic")).toBe(true);
+    expect(shouldPromptGuestRegistration(returningGuest, "challenge", 1)).toBe(true);
+    for (const gameMode of ["classic", "challenge"] satisfies Array<"classic" | "challenge">) {
+      expect(shouldPromptGuestRegistration(session({player: {playerId: "stable-player", registered: true}}), gameMode, 3))
+        .toBe(false);
+    }
   });
-  test("reports a Daily win without advancing the Classic guest prompt cadence", async () => {
+  test("offers registration after a Daily win without advancing the Classic guest prompt cadence", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -38,11 +43,11 @@ describe("authoritative first milestone", () => {
     expect(mark).toHaveBeenCalledTimes(1);
     expect(result).toEqual(expect.objectContaining({
       status: "success",
-      value: expect.objectContaining({shouldPromptRegistration: false}),
+      value: expect.objectContaining({shouldPromptRegistration: true}),
     }));
     if (result.status === "success") expect(result.value.preferences.jestGuestCompletedRiddles).toBe(3);
   });
-  test("marks only after an authoritative win and opens contextual registration", async () => {
+  test("marks the first authoritative Classic win without opening registration", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -57,13 +62,13 @@ describe("authoritative first milestone", () => {
     expect(result).toEqual(
       expect.objectContaining({
         status: "success",
-        value: expect.objectContaining({milestoneMarked: true, shouldPromptRegistration: true}),
+        value: expect.objectContaining({milestoneMarked: true, shouldPromptRegistration: false}),
       }),
     );
     expect(mark).toHaveBeenCalledTimes(1);
   });
 
-  test("does not mark a loss and prompts a guest with legacy preferences", async () => {
+  test("does not mark a loss or prompt a guest's first win with legacy preferences", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -91,21 +96,21 @@ describe("authoritative first milestone", () => {
     expect(nextWin).toEqual(
       expect.objectContaining({
         status: "success",
-        value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: true}),
+        value: expect.objectContaining({milestoneMarked: false, shouldPromptRegistration: false}),
       }),
     );
     expect(nextWin.status === "success" && nextWin.value.preferences.jestGuestCompletedRiddles).toBe(1);
     expect(mark).toHaveBeenCalledTimes(1);
   });
 
-  test("prompts on guest wins 1, 4, and 7 across saved preferences", async () => {
+  test("prompts on guest wins 3, 6, and 9 across saved preferences", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides preferences behavior. */
     let preferences: JestSession["preferences"] = {};
     /** Provides prompts behavior. */
     const prompts: number[] = [];
-    for (let win = 1; win <= 7; win += 1) {
+    for (let win = 1; win <= 9; win += 1) {
       /** Provides result behavior. */
       const result = await recordAuthoritativeCompletion(platform, session({preferences}), {
         gameMode: "classic", isCorrect: true,
@@ -115,8 +120,8 @@ describe("authoritative first milestone", () => {
       preferences = result.value.preferences;
       if (result.value.shouldPromptRegistration) prompts.push(win);
     }
-    expect(prompts).toEqual([1, 4, 7]);
-    expect(preferences.jestGuestCompletedRiddles).toBe(7);
+    expect(prompts).toEqual([3, 6, 9]);
+    expect(preferences.jestGuestCompletedRiddles).toBe(9);
   });
 
   test("propagates a platform milestone failure without writing preferences", async () => {

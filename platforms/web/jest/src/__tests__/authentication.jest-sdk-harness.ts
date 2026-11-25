@@ -41,13 +41,17 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
     const preferences: Record<string, unknown> =
       selectedScenario === "returning-milestone"
         ? {firstMilestoneMarked: true}
-        : selectedScenario === "returning-guest-two-wins"
-          ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
-          : selectedScenario === "returning-turkish"
-            ? {locale: "tr", onboardingComplete: true}
-            : selectedScenario === "localized-coin-catalog"
-              ? {locale: "ar"}
-              : {};
+        : selectedScenario === "returning-guest-one-win"
+          ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 1}
+          : selectedScenario === "returning-guest-two-wins" || selectedScenario === "returning-guest-two-wins-milestone-failure"
+            ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 2}
+            : selectedScenario === "returning-guest-five-wins"
+              ? {firstMilestoneMarked: true, jestGuestCompletedRiddles: 5}
+              : selectedScenario === "returning-turkish"
+                ? {locale: "tr", onboardingComplete: true}
+                : selectedScenario === "localized-coin-catalog"
+                  ? {locale: "ar"}
+                  : {};
     /** Provides overlay closed behavior. */
     let overlayClosed = false;
     /** Provides subscription active behavior. */
@@ -345,7 +349,7 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
       },
       markFirstMilestone: async () => {
         state.calls.push("sdk.markFirstMilestone");
-        if (selectedScenario === "milestone-failure") throw new Error("Milestone unavailable");
+        if (selectedScenario.endsWith("milestone-failure")) throw new Error("Milestone unavailable");
       },
       setLoadingProgress: (progress: number) => {
         state.calls.push(`sdk.progress:${progress}`);

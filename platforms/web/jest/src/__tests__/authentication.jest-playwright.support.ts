@@ -82,6 +82,13 @@ export type AuthHarnessState = {
   referralSharesStartedFromProfileClick: boolean[];
 };
 
+declare global {
+  interface Window {
+    /** SDK observations installed by the authentication harness before navigation. */
+    __RIDDLE_QUEST_JEST_AUTH_TEST__?: AuthHarnessState;
+  }
+}
+
 /** Reads the injected SDK state through the authentication harness's shared typed boundary. */
 export const getHarnessState = (page: Page) =>
   page.evaluate(

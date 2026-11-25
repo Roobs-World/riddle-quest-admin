@@ -16,10 +16,11 @@ export function shouldPromptGuestRegistration(
   gameMode: AuthoritativeCompletion["gameMode"],
   completedRiddles?: number,
 ): boolean {
-  if (session.player.registered || gameMode !== "classic") return false;
+  if (session.player.registered) return false;
+  if (gameMode === "challenge") return true;
   /** Provides count behavior. */
   const count = completedRiddles ?? (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
-  return count > 0 && (count - 1) % 3 === 0;
+  return count > 0 && count % 3 === 0;
 }
 
 /** Records authoritative completion. */

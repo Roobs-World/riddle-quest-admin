@@ -98,9 +98,9 @@ function warmJestFirebaseStartup(): void {
 
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
-  /** Counts confirmed guest Classic wins in this play session for the registration cadence. */
-  const guestWinsThisSessionRef = useRef(0);
-  /** Prevents retried answers from counting the same Classic win twice. */
+  /** Continues the saved guest Classic count while completion rewards are still syncing. */
+  const guestCompletedClassicRiddlesRef = useRef<number | null>(null);
+  /** Prevents retried answers from counting the same win twice. */
   const countedGuestWinIdsRef = useRef(new Set<string>());
   /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
   const firstMilestoneFunnelRecordedRef = useRef(false);
@@ -142,6 +142,11 @@ export function JestPlayApp() {
   const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
+  useLayoutEffect(() => {
+    if (session && guestCompletedClassicRiddlesRef.current === null) {
+      guestCompletedClassicRiddlesRef.current = session.preferences.jestGuestCompletedRiddles ?? 0;
+    }
+  }, [session]);
   /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
   const syncedAvatarRef = useRef<string | null>(null);
   useEffect(() => {
@@ -551,13 +556,15 @@ export function JestPlayApp() {
       if (
         !activeSession ||
         activeSession.player.registered ||
-        input.gameMode !== "classic" ||
-        countedGuestWinIdsRef.current.has(input.riddleId)
+        countedGuestWinIdsRef.current.has(`${input.gameMode}:${input.riddleId}`)
       )
         return;
-      countedGuestWinIdsRef.current.add(input.riddleId);
-      guestWinsThisSessionRef.current += 1;
-      if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestWinsThisSessionRef.current)) {
+      countedGuestWinIdsRef.current.add(`${input.gameMode}:${input.riddleId}`);
+      if (input.gameMode === "classic") {
+        guestCompletedClassicRiddlesRef.current =
+          (guestCompletedClassicRiddlesRef.current ?? 0) + 1;
+      }
+      if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestCompletedClassicRiddlesRef.current ?? 0)) {
         openRegistrationPrompt("authoritative_win", true, completionPresentationKey(input));
       }
     },
