@@ -1,4 +1,4 @@
-import type {NotificationDelivery, NotificationProvider, NotificationSnapshot} from "../../../../../src/notifications/contracts/notificationProvider";
+import type {DeviceNotificationProvider, DeviceNotificationSnapshot, NotificationDelivery} from "../../../../../src/notifications/contracts/notificationProvider";
 
 export type AndroidNotificationPreferences = Readonly<{enabled: boolean}>;
 export type AndroidNotificationDevice = Readonly<{
@@ -42,16 +42,16 @@ export function parseAndroidNotificationPreferences(raw: string | null): Android
 /** The hosted service owns campaigns; this provider owns native permission and registration. */
 export function createAndroidNotificationController(input: {
   uid: string; locale: string; device: AndroidNotificationDevice; backend: AndroidNotificationBackend; storage: AndroidNotificationStorage;
-}): NotificationProvider {
+}): DeviceNotificationProvider {
   const key = `riddle-quest:android:notifications:${input.uid}`;
   let active = true, epoch = 0, changing = false, restoring = false, refreshQueued = false;
   let restoreProvider: () => Promise<void>;
   const drainRefresh = () => {
     if (active && refreshQueued && !changing && !restoring) {refreshQueued = false; void restoreProvider();}
   };
-  let snapshot: NotificationSnapshot = {enabled: true, busy: false, delivery: "permission-required"};
+  let snapshot: DeviceNotificationSnapshot = {kind: "device", enabled: true, busy: false, delivery: "permission-required"};
   const listeners = new Set<() => void>();
-  const publish = (next: NotificationSnapshot) => {
+  const publish = (next: DeviceNotificationSnapshot) => {
     if (next.enabled === snapshot.enabled && next.busy === snapshot.busy && next.delivery === snapshot.delivery) return;
     snapshot = next;
     listeners.forEach(listener => listener());
@@ -96,7 +96,7 @@ export function createAndroidNotificationController(input: {
     changing = true;
     if (restoring) refreshQueued = true;
     const revision = ++epoch;
-    publish({enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
+    publish({kind: "device", enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
     try {
       const operationId = await input.device.beginAccountOperation(input.uid);
       assertCurrent(revision);
@@ -111,10 +111,10 @@ export function createAndroidNotificationController(input: {
       const delivery = await reconcile(enabled, true, revision, operationId, deviceId);
       if (!current(revision)) return false;
       const savedEnabled = delivery === "inactive" ? false : enabled;
-      publish({enabled: savedEnabled, busy: false, delivery});
+      publish({kind: "device", enabled: savedEnabled, busy: false, delivery});
       return savedEnabled === enabled && (delivery === "ready" || delivery === "inactive" || delivery === "not-configured");
     } catch {
-      if (current(revision)) publish({enabled, busy: false, delivery: "save-failed"});
+      if (current(revision)) publish({kind: "device", enabled, busy: false, delivery: "save-failed"});
       return false;
     } finally {if (epoch === revision) changing = false; drainRefresh();}
   };
@@ -139,13 +139,14 @@ export function createAndroidNotificationController(input: {
         }
         await persist(enabled);
         assertCurrent(revision);
-        publish({enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
+        publish({kind: "device", enabled, busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
         const delivery = await reconcile(enabled, false, revision, operationId, deviceId);
-        if (current(revision)) publish({enabled: delivery === "inactive" ? false : enabled, busy: false, delivery});
+        if (current(revision)) publish({kind: "device", enabled: delivery === "inactive" ? false : enabled, busy: false, delivery});
       } catch {if (current(revision)) publish({...snapshot, busy: false, delivery: "save-failed"});}
       finally {restoring = false; drainRefresh();}
   };
   return {
+    kind: "device",
     getSnapshot: () => snapshot,
     subscribe(listener) {listeners.add(listener); return () => {listeners.delete(listener);};},
     restore: restoreProvider,

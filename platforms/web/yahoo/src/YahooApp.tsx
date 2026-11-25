@@ -4,7 +4,7 @@ import {createStandaloneSdkPort} from "../../../../src/app/standalone/standalone
 import {createHostedPushController} from "../../../../src/notifications/browser/hostedPushController";
 import {createConfiguredHostedPushTransportFactory} from "../../../../src/notifications/browser/hostedPush/api";
 import {createNotificationProvider} from "../../../../src/notifications/controllers/notificationProvider";
-import type {NotificationDelivery, NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
+import type {DeviceNotificationProvider, NotificationDelivery} from "../../../../src/notifications/contracts/notificationProvider";
 import {getHostedNotificationCopy, type HostedNotificationCopy} from "../../../../src/notifications/copy/hostedNotificationCopy";
 import type {YouTubeLocale} from "../../../../src/platform/contracts/localGamePolicy";
 
@@ -20,7 +20,6 @@ function deliveryMessage(delivery: NotificationDelivery, copy: HostedNotificatio
     case "blocked": return copy.blocked;
     case "unsupported": return copy.unavailable;
     case "not-configured": return copy.notConfigured;
-    case "setup-failed": return copy.setupFailed;
     case "save-failed": return copy.saveFailed;
     case "ready":
     case "inactive": return null;
@@ -33,14 +32,14 @@ function deliveryMessage(delivery: NotificationDelivery, copy: HostedNotificatio
 
 /** Yahoo browser delivery can be granted only from its Settings screen. */
 function YahooNotificationSettings({controller, locale, disabled}: {
-  controller: NotificationProvider;
+  controller: DeviceNotificationProvider;
   locale: YouTubeLocale;
   disabled: boolean;
 }) {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
   const copy = getHostedNotificationCopy(locale);
   const message = deliveryMessage(snapshot.delivery, copy);
-  const allowDelivery = snapshot.enabled && (snapshot.delivery === "permission-required" || snapshot.delivery === "save-failed" || snapshot.delivery === "setup-failed");
+  const allowDelivery = snapshot.enabled && (snapshot.delivery === "permission-required" || snapshot.delivery === "save-failed");
   return <div className="yt-notification-settings">
     <button
       type="button"
@@ -70,7 +69,7 @@ export function YahooApp() {
     const provider = createNotificationProvider({platform: "yahoo", hosted: ({platform}) => createHostedPushController({
       target: platform, transport: yahooNotificationTransport(),
     })});
-    if (!provider) throw new Error("yahoo-notification-provider-disabled");
+    if (!provider || provider.kind !== "device") throw new Error("yahoo-notification-provider-disabled");
     return provider;
   });
   const localeRef = useRef<YouTubeLocale | null>(null);

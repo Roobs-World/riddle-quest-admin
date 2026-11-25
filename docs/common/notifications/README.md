@@ -2,7 +2,7 @@
 
 Games register verified accounts, device routing and notification consent. The existing notification manager owns notification content, scheduling and sending. The receiving device owns system display and notification responses, including taps and dismissal. Gameplay has no push-received callback, notification-response handler, delivery acknowledgement or response-based reward.
 
-The device may launch the configured game URL or native app after a tap. The game then follows its ordinary startup path. A registration or enrollment-complete response only confirms setup; it is separate from a response to a delivered notification.
+The device may launch the configured game URL or native app after a tap. The game then follows its ordinary startup path. Device enrollment completes in the manager's page, which displays its own confirmation. New games register no completion listener and do not poll device status. The manager's legacy confirmation remains compatible with older uploaded clients until they migrate.
 
 | Responsibility | Owner |
 | --- | --- |
@@ -15,9 +15,9 @@ The browser implementation is `notification-manager/public/push/worker.js`. Andr
 
 The game has one global Notifications preference in Settings, using the same On/Off control as the other preferences. It defaults to On. Profile and multiplayer have no notification controls. Default On records a preference; device permission still requires a player gesture.
 
-Eligible players receive the notification request in its own modal after closing the startup menu and finishing any instructions, registration or guidance. Sandboxed games that cannot open a setup window provide a private, copyable enrollment link. Setup and delivery failures are distinct from a failed preference save.
+Eligible players receive the registration request in its own modal after closing the startup menu and finishing any instructions, registration or guidance. The game issues a private, copyable manager handoff. The manager's page owns device permission and enrollment. Issuing the link does not claim that a device is connected or able to receive push.
 
-`src/notifications/contracts/notificationProvider.ts` defines the common provider interface. Each provider owns restoration, permission, saved consent, activity and retirement. Settings observes its snapshot and sends preference commands. Closing the game retires the controller without revoking background push delivery.
+`src/notifications/contracts/notificationProvider.ts` separates manager registration from device adapters. Manager providers expose consent, lifecycle and `register`; their snapshots contain registration state. Device providers expose permission and activity operations; their snapshots contain actual delivery state. The types prevent game registration adapters from using device-response APIs. Settings narrows the capability once. Closing the game retires local registration work without revoking device push delivery. See the [registration boundary design](registration-boundary.md).
 
 `createNotificationProvider` selects our hosted implementation by default. A platform with a mandatory SDK supplies its own implementation. A platform that prohibits notifications returns no provider. A platform failure never silently changes delivery channels.
 

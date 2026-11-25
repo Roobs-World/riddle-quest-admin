@@ -1,6 +1,6 @@
 import {z} from "zod";
 import type {HostedPushTarget} from "../contracts/hostedPush";
-import type {NotificationDelivery, NotificationPreferenceStore, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
+import type {DeviceNotificationProvider, DeviceNotificationSnapshot, NotificationDelivery, NotificationPreferenceStore} from "../contracts/notificationProvider";
 import {
   hostedPushApplicationKey,
   hostedPushPermission,
@@ -35,7 +35,7 @@ export function createHostedPushController({target, transport, workerPath, prefe
   preferences?: NotificationPreferenceStore;
   isAccountActive?: () => boolean;
   launchPath?: string;
-}): NotificationProvider {
+}): DeviceNotificationProvider {
   if (!/^[a-z][a-z0-9-]{0,63}$/u.test(target)) throw new Error("hosted-push-target-invalid");
   let active = true;
   let generation = 0;
@@ -46,12 +46,12 @@ export function createHostedPushController({target, transport, workerPath, prefe
   let observing = false;
   let stopPreferences: (() => void) | undefined;
   const listeners = new Set<() => void>();
-  let snapshot: NotificationSnapshot = {enabled: true, busy: false, delivery: hostedPushSupported() ? transport ? "inactive" : "not-configured" : "unsupported"};
+  let snapshot: DeviceNotificationSnapshot = {kind: "device", enabled: true, busy: false, delivery: hostedPushSupported() ? transport ? "inactive" : "not-configured" : "unsupported"};
 
   const publish = (delivery: NotificationDelivery, busy = false) => {
     const enabled = state?.enabled ?? snapshot.enabled;
     if (snapshot.enabled === enabled && snapshot.busy === busy && snapshot.delivery === delivery) return;
-    snapshot = {enabled, busy, delivery};
+    snapshot = {kind: "device", enabled, busy, delivery};
     listeners.forEach(listener => listener());
   };
   const save = (next: HostedPushStoredState) => {
@@ -279,7 +279,8 @@ export function createHostedPushController({target, transport, workerPath, prefe
     }
   };
   return {
-    getSnapshot: (): NotificationSnapshot => snapshot,
+    kind: "device",
+    getSnapshot: (): DeviceNotificationSnapshot => snapshot,
     subscribe(listener: () => void) {listeners.add(listener); return () => listeners.delete(listener);},
     restore,
     setEnabled(enabled: boolean) {return change(enabled, true);},

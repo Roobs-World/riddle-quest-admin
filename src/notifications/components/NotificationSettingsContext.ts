@@ -5,20 +5,30 @@ import {getCurrentLocale} from "../../localization/browser/i18n";
 
 type NotificationSettingsState = NotificationSnapshot & {
   change(enabled: boolean): Promise<boolean>;
-  requestPermission(): Promise<boolean>;
+  requestSetup(): Promise<boolean>;
 };
 
-/** Settings observes one selected provider, which owns preference and delivery state. */
+/** Settings observes either account registration or a device's actual permission state. */
 function useNotificationSettingsState(provider?: NotificationProvider | null): NotificationSettingsState | null {
-  /** A replaced provider cannot attribute an old permission result to the new visit. */
+  /** A replaced provider cannot attribute old setup work to the new visit. */
   const lifetime = useMemo(() => ({active: false}), [provider]);
   useLayoutEffect(() => {
     lifetime.active = true;
+    if (provider?.kind !== "device") {
+      void provider?.restore().catch(() => {
+        if (lifetime.active) trackEvent("notification_preference_restore_failed");
+      });
+      return () => {
+        lifetime.active = false;
+        provider?.retire();
+      };
+    }
+    const device = provider;
     const recordActivity = () => {
-      if (lifetime.active && document.visibilityState !== "hidden") void provider?.recordActivity({locale: getCurrentLocale()})
+      if (lifetime.active && document.visibilityState !== "hidden") void device.recordActivity({locale: getCurrentLocale()})
         .catch(() => {if (lifetime.active) trackEvent("notification_activity_failed");});
     };
-    void provider?.restore().then(recordActivity).catch(() => {
+    void device.restore().then(recordActivity).catch(() => {
       if (lifetime.active) trackEvent("notification_preference_restore_failed");
     });
     window.addEventListener("focus", recordActivity);
@@ -27,7 +37,7 @@ function useNotificationSettingsState(provider?: NotificationProvider | null): N
       lifetime.active = false;
       window.removeEventListener("focus", recordActivity);
       document.removeEventListener("visibilitychange", recordActivity);
-      provider?.retire();
+      device.retire();
     };
   }, [lifetime, provider]);
   const subscribe = useCallback((listener: () => void) => provider?.subscribe(listener) ?? (() => {}), [provider]);
@@ -45,7 +55,8 @@ function useNotificationSettingsState(provider?: NotificationProvider | null): N
       return false;
     }
   };
-  return snapshot && provider ? {...snapshot, change, requestPermission: () => provider.requestPermission()} : null;
+  return snapshot && provider ? {...snapshot, change,
+    requestSetup: () => provider.kind === "manager" ? provider.register() : provider.requestPermission()} : null;
 }
 
 /** The active account owns notification updates across modal navigation. */

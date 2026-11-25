@@ -6,18 +6,33 @@ export type NotificationDelivery =
   | "blocked"
   | "ready"
   | "inactive"
-  | "setup-failed"
   | "save-failed";
 
 /** An account-bound, short-lived browser handoff shown only to the player. */
 export type NotificationSetupLink = Readonly<{url: string; expiresAtMs: number}>;
 
-export type NotificationSnapshot = Readonly<{
+export type DeviceNotificationSnapshot = Readonly<{
+  kind: "device";
   enabled: boolean;
   busy: boolean;
   delivery: NotificationDelivery;
-  setupLink?: NotificationSetupLink;
 }>;
+
+/** A registration handoff never asserts that a device can receive push. */
+export type ManagerNotificationRegistration =
+  | Readonly<{kind: "unavailable"}>
+  | Readonly<{kind: "available"}>
+  | Readonly<{kind: "handoff"; link: NotificationSetupLink}>
+  | Readonly<{kind: "failed"; operation: "consent" | "registration"}>;
+
+export type ManagerNotificationSnapshot = Readonly<{
+  kind: "manager";
+  enabled: boolean;
+  busy: boolean;
+  registration: ManagerNotificationRegistration;
+}>;
+
+export type NotificationSnapshot = DeviceNotificationSnapshot | ManagerNotificationSnapshot;
 
 export type NotificationActivity = Readonly<{locale: string}>;
 
@@ -27,19 +42,31 @@ export type NotificationPreferenceStore = {
   subscribe(listener: () => void): () => void;
 };
 
-/** Every hosted, platform-required or custom implementation owns this lifecycle and its state. */
-export interface NotificationProvider {
-  getSnapshot(): NotificationSnapshot;
+/** Consent and lifecycle are shared; device response APIs stay on the device branch. */
+type NotificationLifecycle<Snapshot extends NotificationSnapshot> = {
+  getSnapshot(): Snapshot;
   subscribe(listener: () => void): () => void;
   /** Restores saved state without opening permission UI. */
   restore(): Promise<void>;
   setEnabled(enabled: boolean): Promise<boolean>;
-  /** Called directly from a Settings interaction when delivery needs permission. */
-  requestPermission(): Promise<boolean>;
-  recordActivity(activity: NotificationActivity): Promise<void>;
   /** Stops local work without revoking delivery when the game closes. */
   retire(): void;
-}
+};
+
+export type DeviceNotificationProvider = NotificationLifecycle<DeviceNotificationSnapshot> & Readonly<{
+  kind: "device";
+  /** Only a device adapter may request operating-system notification permission. */
+  requestPermission(): Promise<boolean>;
+  recordActivity(activity: NotificationActivity): Promise<void>;
+}>;
+
+export type ManagerNotificationProvider = NotificationLifecycle<ManagerNotificationSnapshot> & Readonly<{
+  kind: "manager";
+  /** Issues the authenticated handoff; device setup completes in the manager. */
+  register(): Promise<boolean>;
+}>;
+
+export type NotificationProvider = DeviceNotificationProvider | ManagerNotificationProvider;
 
 export type NotificationProviderFactory = (context: Readonly<{platform: string}>) => NotificationProvider;
 
@@ -48,8 +75,8 @@ export type NotificationProviderPolicy =
   | Readonly<{kind: "platform-required"; create: NotificationProviderFactory}>
   | Readonly<{kind: "disabled"}>;
 
-/** A narrow command port used when platform delivery is loaded after the game. */
-export type NotificationPreferenceCommand = Pick<NotificationProvider, "setEnabled" | "requestPermission"> & {
-  restoreDelivery(): Promise<NotificationDelivery>;
-  getSetupLink?(): NotificationSetupLink | null;
+/** Lazy game adapters expose registration and consent, without device delivery methods. */
+export type NotificationRegistrationCommands = {
+  setEnabled(enabled: boolean): Promise<boolean>;
+  registerAccount(): Promise<NotificationSetupLink>;
 };

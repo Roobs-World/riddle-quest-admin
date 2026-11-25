@@ -348,7 +348,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       });
       const enrollmentPair = "d".repeat(64);
       let enrollmentRequests = 0;
-      let enrollmentComplete = false;
+      let enrollmentStatusRequests = 0;
       const notificationPreferences: boolean[] = [];
       await successPage.route("**/setNotificationPreference", async route => {
         const input = JSON.parse(route.request().postData() ?? "{}");
@@ -360,11 +360,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {enabled: input.data.enabled}})});
       });
       await successPage.route("**/getNotificationEnrollmentStatus", async route => {
-        const input = JSON.parse(route.request().postData() ?? "{}");
-        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
-          registeredDevices: enrollmentComplete ? 1 : 0,
-          enrollmentComplete: enrollmentComplete && input.data?.pairingCode === enrollmentPair,
-        }})});
+        enrollmentStatusRequests += 1;
+        await route.fulfill({status: 500, contentType: "application/json", body: JSON.stringify({error: {status: "INTERNAL"}})});
       });
       await successPage.route("**/createNotificationEnrollment", async route => {
         enrollmentRequests += 1;
@@ -704,7 +701,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
       const notificationCopy = getHostedNotificationCopy("fr");
       await settings.getByRole("status").first().waitFor();
-      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.permissionRequired);
+      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.registrationRequired);
       expect(enrollmentRequests).toBe(0);
       await notificationToggle.click();
       await settings.locator('button[aria-busy="false"][aria-pressed="false"]').waitFor();
@@ -714,25 +711,24 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
       expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("true");
-      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.permissionRequired);
+      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.registrationRequired);
       expect(notificationPreferences).toEqual([false, true]);
-      const enrollmentWindow = successPage.waitForEvent("popup");
-      await settings.getByRole("button", {name: notificationCopy.allowNotifications, exact: true}).click();
-      const popup = await enrollmentWindow;
-      await popup.waitForURL(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
+      const openPages = successPage.context().pages().length;
+      await settings.getByRole("button", {name: notificationCopy.registerNotifications, exact: true}).click();
+      const handoff = settings.getByLabel(notificationCopy.setupLinkLabel, {exact: true});
+      await handoff.waitFor();
+      expect(await handoff.inputValue()).toBe(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
       expect(enrollmentRequests).toBe(1);
+      expect(successPage.context().pages().length).toBe(openPages);
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
-      const pairHash = await successPage.evaluate(async code => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(code)))].map(value => value.toString(16).padStart(2, "0")).join(""), enrollmentPair);
-      await popup.evaluate(() => window.opener.postMessage({kind: "riddle-quest-notification-enrolled", pairHash: "0".repeat(64)}, "*"));
-      expect(popup.isClosed()).toBe(false);
-      enrollmentComplete = true;
-      const enrollmentClosed = popup.waitForEvent("close");
-      await popup.evaluate(hash => window.opener.postMessage({kind: "riddle-quest-notification-enrolled", pairHash: hash}, "*"), pairHash);
-      await enrollmentClosed;
-      await successPage.bringToFront();
-      await successPage.evaluate(() => window.dispatchEvent(new Event("focus")));
-      await settings.getByRole("button", {name: notificationCopy.allowNotifications, exact: true}).waitFor({state: "detached"});
-      expect(popup.isClosed()).toBe(true);
+      await successPage.evaluate(() => {
+        window.dispatchEvent(new Event("focus"));
+        document.dispatchEvent(new Event("visibilitychange"));
+        window.dispatchEvent(new MessageEvent("message", {data: {kind: "riddle-quest-notification-enrolled", pairHash: "0".repeat(64)}}));
+      });
+      expect(enrollmentStatusRequests).toBe(0);
+      expect(await handoff.inputValue()).toBe(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
+      expect(await successPage.evaluate(() => Object.keys(localStorage).some(key => key.startsWith("riddleQuest:notificationEnrollment:")))).toBe(false);
       expect(successRequests.some(url => url.includes("accounts.google.com"))).toBe(false);
       expect(notificationClaims).toBe(0);
       expect(notificationAccepted).toBe(false);

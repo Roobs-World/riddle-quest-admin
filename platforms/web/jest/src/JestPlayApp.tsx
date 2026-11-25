@@ -58,11 +58,11 @@ import {createJestRaceMatchmaking} from "./createJestRaceMatchmaking";
 import {hasLiveRaceLobby} from "../../../../src/races/browser/storage/liveRaceLobbyHint";
 import {createJestStartupRiddlePreload} from "./startupRiddlePreload";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
-import type {NotificationDelivery, NotificationPreferenceCommand} from "../../../../src/notifications/contracts/notificationProvider";
-import {createPlatformNotificationProvider} from "../../../../src/notifications/controllers/platformNotificationProvider";
+import type {NotificationRegistrationCommands} from "../../../../src/notifications/contracts/notificationProvider";
+import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
 
-/** Notification delivery loads after the playable session mounts. */
+/** Account registration controls load after the playable session mounts. */
 const JestNotifications = lazy(() => import("./notifications/JestNotifications")
   .then(module => ({default: module.JestNotifications})));
 
@@ -220,27 +220,24 @@ export function JestPlayApp() {
   const isAnalyticsSessionCurrent = useCallback(() => notificationOperationGate.isOpen(), [notificationOperationGate]);
   const notificationsDelegate = useMemo(() => {
     let active = false;
-    let current: NotificationPreferenceCommand | null = null;
-    const waiting = new Set<(capability: NotificationPreferenceCommand | null) => void>();
-    const resolveWaiting = (capability: NotificationPreferenceCommand | null) => {
+    let current: NotificationRegistrationCommands | null = null;
+    const waiting = new Set<(capability: NotificationRegistrationCommands | null) => void>();
+    const resolveWaiting = (capability: NotificationRegistrationCommands | null) => {
       waiting.forEach(resolve => resolve(capability)); waiting.clear();
     };
     return {
       async setEnabled(enabled: boolean) {
         if (!active) return false;
-        const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
+        const capability = current ?? await new Promise<NotificationRegistrationCommands | null>(resolve => waiting.add(resolve));
         return active && capability ? capability.setEnabled(enabled) : false;
       },
-      requestPermission() {
-        return active && current ? current.requestPermission() : Promise.resolve(false);
+      async registerAccount() {
+        if (!active) throw new Error("notification-registration-unavailable");
+        const capability = current ?? await new Promise<NotificationRegistrationCommands | null>(resolve => waiting.add(resolve));
+        if (!active || !capability) throw new Error("notification-registration-unavailable");
+        return capability.registerAccount();
       },
-      async restoreDelivery(): Promise<NotificationDelivery> {
-        if (!active) return "inactive";
-        const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
-        return active && capability ? capability.restoreDelivery() : "inactive";
-      },
-      getSetupLink() {return active ? current?.getSetupLink?.() ?? null : null;},
-      install(capability: NotificationPreferenceCommand) {
+      install(capability: NotificationRegistrationCommands) {
         current = capability; if (active) resolveWaiting(capability);
         return () => {if (current === capability) current = null;};
       },
@@ -252,17 +249,16 @@ export function JestPlayApp() {
     notificationsDelegate.activate();
     return () => notificationsDelegate.retire();
   }, [notificationsDelegate]);
-  const notificationProvider = useMemo(() => createPlatformNotificationProvider({
+  const notificationProvider = useMemo(() => createManagerNotificationProvider({
     preferences: {
       getEnabled: isPlayerNotificationsEnabled,
       setEnabled: setPlayerNotificationsEnabled,
       subscribe: subscribeToPlayerNotifications,
     },
-    applyEnabled: notificationsDelegate.setEnabled,
-    applyPermission: notificationsDelegate.requestPermission,
-    restoreDelivery: notificationsDelegate.restoreDelivery,
-    getSetupLink: notificationsDelegate.getSetupLink,
-  }), [notificationsDelegate]);
+    saveConsent: notificationsDelegate.setEnabled,
+    registerAccount: notificationsDelegate.registerAccount,
+    available: Boolean(session?.player.registered && !authHarness && !mockRuntime),
+  }), [authHarness, mockRuntime, notificationsDelegate, session?.player.registered]);
   /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({
     locale,

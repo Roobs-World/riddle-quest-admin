@@ -34,6 +34,7 @@ const consoleManifest = JSON.parse(await readFile(
   "utf8",
 ));
 const forbidden = [
+  ["Game-owned notification response handling", /getNotificationEnrollmentStatus|riddle-quest-notification-enrolled|notificationclick/u],
   ["Browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u],
   ["Firebase Cloud Messaging", /(?:\bfrom\s*|\bimport\s*(?:\(\s*)?|\brequire\s*\(\s*)["'`](?:firebase|@firebase)\/(?:compat\/)?messaging(?:-compat)?(?:\/|["'`])|\b(?:fcmregistrations|fcm)\.googleapis\.com\b|messaging\/(?:unsupported-browser|permission-blocked|token-subscribe-failed)|\b(?:setLiveRacePushSubscription|liveChallengePushWorker)\b/u],
   [
@@ -146,5 +147,5 @@ if (initialResourceBytes > maximumInitialResourceBytes) {
 console.log(
   `Jest artifact audit passed: ${files.length} files, ${(artifactBytes / 1024 / 1024).toFixed(2)} MB, ` +
   `${(initialResourceBytes / 1024 / 1024).toFixed(2)} MB initial resources, relative entry paths, ` +
-  "consent-controlled analytics; separate account-linked push enrollment; no native modules, in-frame browser push/FCM, external auth/ads, install copy, secrets, source maps, or missing entry assets",
+  "consent-controlled analytics; manager registration only; no notification response handling, native modules, in-frame browser push/FCM, external auth/ads, install copy, secrets, source maps, or missing entry assets",
 );

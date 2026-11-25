@@ -1,6 +1,6 @@
 import {Linking, Switch, Text, View} from "react-native";
 import {useSyncExternalStore} from "react";
-import type {NotificationProvider, NotificationSnapshot} from "../../../../../src/notifications/contracts/notificationProvider";
+import type {DeviceNotificationProvider, DeviceNotificationSnapshot} from "../../../../../src/notifications/contracts/notificationProvider";
 import {getHostedNotificationCopy} from "../../../../../src/notifications/copy/hostedNotificationCopy";
 import {youtubeText} from "../../../../../src/localization/copy/localGameCopy";
 import type {YouTubeLocale} from "../../../../../src/gameplay/local/types";
@@ -8,13 +8,13 @@ import {ActionButton, Panel, Screen, Heading} from "../components/Primitives";
 import {notificationCopy} from "../i18n/notificationCopy";
 import {palette} from "../theme";
 
-const unavailable: NotificationSnapshot = {enabled: true, busy: false, delivery: "unsupported"};
+const unavailable: DeviceNotificationSnapshot = {kind: "device", enabled: true, busy: false, delivery: "unsupported"};
 const noSubscription = () => () => undefined;
 const unavailableSnapshot = () => unavailable;
 
 /** The sole native preference controls every hosted campaign; OS permission is separate. */
 export function HostedNotificationScreen({locale, controller, onBack}: {
-  locale: YouTubeLocale; controller: NotificationProvider | null; onBack(): void;
+  locale: YouTubeLocale; controller: DeviceNotificationProvider | null; onBack(): void;
 }) {
   const copy = notificationCopy(locale), common = getHostedNotificationCopy(locale);
   const state = useSyncExternalStore(controller?.subscribe ?? noSubscription, controller?.getSnapshot ?? unavailableSnapshot, unavailableSnapshot);

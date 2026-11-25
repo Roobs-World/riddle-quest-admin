@@ -10,7 +10,8 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
   const setupLinkInput = useRef<HTMLInputElement | null>(null);
   const [copiedSetupLink, setCopiedSetupLink] = useState<string | null>(null);
   const [linkExpiryCheckedAt, setLinkExpiryCheckedAt] = useState(0);
-  const setupLinkExpiresAt = consent?.setupLink?.expiresAtMs;
+  const registrationLink = consent?.kind === "manager" && consent.registration.kind === "handoff" ? consent.registration.link : null;
+  const setupLinkExpiresAt = registrationLink?.expiresAtMs;
   useEffect(() => {
     if (!setupLinkExpiresAt || disabled || !consent?.enabled) return;
     const remaining = setupLinkExpiresAt - Date.now();
@@ -19,10 +20,18 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
     return () => window.clearTimeout(timer);
   }, [consent?.enabled, disabled, setupLinkExpiresAt]);
   if (!consent) return null;
-  const {enabled, busy, delivery, change} = consent;
+  const {enabled, busy, change} = consent;
   const copy = getHostedNotificationCopy(getCurrentLocale());
-  const setupLink = !disabled && enabled && consent.setupLink &&
-    consent.setupLink.expiresAtMs > Math.max(Date.now(), linkExpiryCheckedAt) ? consent.setupLink : null;
+  const setupLink = !disabled && enabled && registrationLink &&
+    registrationLink.expiresAtMs > Math.max(Date.now(), linkExpiryCheckedAt) ? registrationLink : null;
+  const registration = consent.kind === "manager" ? consent.registration : null;
+  const delivery = consent.kind === "device" ? consent.delivery : null;
+  const saveFailed = delivery === "save-failed" || registration?.kind === "failed" && registration.operation === "consent";
+  const registrationFailed = registration?.kind === "failed" && registration.operation === "registration";
+  const registrationAvailable = registration?.kind === "available" || registration?.kind === "failed" ||
+    registration?.kind === "handoff" && !setupLink;
+  const canRequestSetup = enabled && !setupLink && (consent.kind === "manager" ? registrationAvailable :
+    delivery === "permission-required" || delivery === "save-failed");
   const copySetupLink = () => {
     if (!setupLink) return;
     if (setupLink.expiresAtMs <= Date.now()) {
@@ -46,8 +55,10 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
       selectForManualCopy();
     }
   };
-  const message = disabled ? null : delivery === "setup-failed" ? copy.setupFailed : delivery === "unsupported" ? copy.unavailable : delivery === "not-configured" ? copy.notConfigured :
-    delivery === "blocked" ? copy.blocked : delivery === "permission-required" && !setupLink ? copy.permissionRequired : null;
+  const message = disabled ? null : registrationFailed ? copy.registrationFailed : registration?.kind === "unavailable" ? copy.notConfigured :
+    enabled && registrationAvailable && !saveFailed ? copy.registrationRequired : delivery === "unsupported" ? copy.unavailable :
+    delivery === "not-configured" ? copy.notConfigured : delivery === "blocked" ? copy.blocked :
+    delivery === "permission-required" ? copy.permissionRequired : null;
   return <>
     <button
       type="button"
@@ -60,7 +71,7 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
       <span>{tr("Settings.NOTIFICATIONS")}</span>
       <strong>{tr(!disabled && enabled ? "Settings.TOGGLE_ON" : "Settings.TOGGLE_OFF")}</strong>
     </button>
-    {!disabled && delivery === "save-failed" && <p role="status">{copy.saveFailed}</p>}
+    {!disabled && saveFailed && <p role="status">{copy.saveFailed}</p>}
     {message && <p role="status">{message}</p>}
     {setupLink && <div className="settings-page" data-screenshot-private="true">
       <p>{copy.setupLinkInstructions}</p>
@@ -73,7 +84,7 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
       <button type="button" className="play-secondary" onClick={copySetupLink}>{copy.copySetupLink}</button>
       {copiedSetupLink === setupLink.url && <p role="status">{copy.setupLinkCopied}</p>}
     </div>}
-    {!disabled && enabled && !setupLink && (delivery === "permission-required" || delivery === "save-failed" || delivery === "setup-failed") && <button type="button" className="settings-row" disabled={busy}
-      onClick={() => {void consent.requestPermission();}}>{copy.allowNotifications}</button>}
+    {!disabled && canRequestSetup && <button type="button" className="settings-row" disabled={busy}
+      onClick={() => {void consent.requestSetup();}}>{consent.kind === "manager" ? copy.registerNotifications : copy.allowNotifications}</button>}
   </>;
 }

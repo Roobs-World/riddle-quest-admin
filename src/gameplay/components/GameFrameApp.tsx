@@ -213,18 +213,20 @@ export function GameFrameApp({
       setNotificationPromptOwner(surfaceOwner);
     }
   }, [state.user?.uid, surfaceOwner]);
+  const notificationSetupAvailable = notifications?.kind === "manager"
+    ? notifications.registration.kind === "available" || notifications.registration.kind === "failed"
+    : notifications?.delivery === "permission-required" || notifications?.delivery === "save-failed";
 
   useEffect(() => {
     if (notificationPromptOwner !== surfaceOwner || !notifications || notifications.busy ||
       !notifications.enabled || state.user?.platformRegistered === false ||
       interactionBlocked || !online || state.paused || raceOpen || state.modal !== null ||
       guidanceActive || terminalSurfaceRecovery) return;
-    if (notifications.delivery !== "permission-required" && notifications.delivery !== "save-failed" &&
-      notifications.delivery !== "setup-failed") return;
+    if (!notificationSetupAvailable) return;
     shownNotificationPromptOwners.current.add(surfaceOwner);
     setNotificationPromptOwner(null);
     dispatch({type: "openModal", modal: "notifications"});
-  }, [guidanceActive, interactionBlocked, notificationPromptOwner, notifications?.busy, notifications?.delivery,
+  }, [guidanceActive, interactionBlocked, notificationPromptOwner, notificationSetupAvailable, notifications?.busy,
     notifications?.enabled, online, raceOpen, state.modal, state.paused, state.user?.platformRegistered,
     surfaceOwner, terminalSurfaceRecovery]);
 
