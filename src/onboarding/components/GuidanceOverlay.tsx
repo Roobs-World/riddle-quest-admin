@@ -432,6 +432,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
             seenMarkers.markSeen("session", createGuidanceStorageKey("welcomeSession", userId));
             if (welcomeOnly) {
               setOnboardingStep(null);
+              window.dispatchEvent(new CustomEvent("riddle-quest:returning-player-play"));
               return;
             }
             setOnboardingStep(1);

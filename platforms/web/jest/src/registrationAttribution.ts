@@ -1,7 +1,7 @@
 import type {JestEntryIntent} from "./types";
 
 /** Describes registration source. */
-export type RegistrationSource = "post_instructions" | "profile" | "authoritative_win";
+export type RegistrationSource = "post_instructions" | "returning_player" | "profile" | "authoritative_win";
 
 /** Creates registration entry payload. */
 export function createRegistrationEntryPayload(

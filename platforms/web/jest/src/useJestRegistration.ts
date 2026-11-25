@@ -258,8 +258,11 @@ export function useJestRegistration({
   }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
-    /** Opens signup only after a voluntary profile action. */
+    /** Opens signup after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
+    const openForReturningPlayer = () => {
+      if (sessionRef.current?.player.registered === false) open("returning_player", true);
+    };
     /** Provides on completion popups dismissed behavior. */
     const onCompletionPopupsDismissed = (event: Event) => {
       /** Provides key behavior. */
@@ -274,15 +277,17 @@ export function useJestRegistration({
     };
     window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
+    window.addEventListener("riddle-quest:returning-player-play", openForReturningPlayer);
     window.addEventListener("riddle-quest:register-player", register);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
       window.removeEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
       window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
+      window.removeEventListener("riddle-quest:returning-player-play", openForReturningPlayer);
       window.removeEventListener("riddle-quest:register-player", register);
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);
     };
-  }, [dismiss, open, register, showPrompt]);
+  }, [dismiss, open, register, sessionRef, showPrompt]);
 
   return {showRegistration, registrationPending, registrationFailure, open, dismiss, register};
 }
