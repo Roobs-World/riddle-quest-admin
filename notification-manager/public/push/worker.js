@@ -1,5 +1,6 @@
 const CACHE = "riddle-quest-push-display-v1";
 const HASH = /^[a-f0-9]{64}$/u;
+const DECIMAL = /^(?:0|[1-9][0-9]{0,15})$/u;
 let pushProcessing = Promise.resolve();
 
 self.addEventListener("install", event => event.waitUntil(self.skipWaiting()));
@@ -8,7 +9,15 @@ self.addEventListener("activate", event => event.waitUntil(self.clients.claim())
 self.addEventListener("push", event => {
   const process = async () => {
     let message;
-    try {message = event.data?.json();} catch {return;}
+    try {
+      message = event.data?.json();
+      if (message?.data?.version === "1" && message.data.kind === "notification") {
+        const data = message.data;
+        if (typeof data.registrationRevision !== "string" || typeof data.expiresAtMs !== "string" ||
+            !DECIMAL.test(data.registrationRevision) || !DECIMAL.test(data.expiresAtMs)) return;
+        message = {...data, version: 1, registrationRevision: Number(data.registrationRevision), expiresAtMs: Number(data.expiresAtMs)};
+      }
+    } catch {return;}
     if (!message || message.version !== 1 || message.kind !== "notification" || !HASH.test(message.deviceHash) ||
         !HASH.test(message.notificationId) || typeof message.title !== "string" || !message.title.length || message.title.length > 200 ||
         typeof message.body !== "string" || !message.body.length || message.body.length > 2000 ||

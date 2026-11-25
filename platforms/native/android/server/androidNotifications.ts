@@ -9,6 +9,7 @@ import {onCallWithSentry} from "../../../../firebase-functions/src/shared/sentry
 import {validateCallableRequest} from "../../../../firebase-functions/src/validation/callableValidation";
 import {assertJestAccountActive, getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isAndroidAccountProvider} from "./androidUser";
+import {sendFcmNotification} from "../../../../firebase-functions/src/notifications/fcmEdgeDelivery";
 
 import {notificationManagerBridgeSecret, synchronizeAndroidRegistration} from "./notifications/androidNotificationBridge";
 import type {AndroidRegistration} from "./notificationManagerProtocol";
@@ -157,13 +158,17 @@ export async function sendAndroidPush(
   )
     return false;
   try {
+    if (consent === "campaign") {
+      return await sendFcmNotification({version: 1, transport: "android", token: binding.token,
+        expiresAtMs: Number(data.expiresAtMs), data: {...data, accountId: uid}});
+    }
     await getMessaging().send({
       token: binding.token,
       data: {...data, accountId: uid},
       android: {
-        priority: consent === "invitations" || consent === "campaign" ? "high" : "normal",
+        priority: consent === "invitations" ? "high" : "normal",
         ttl: Math.max(0, ttlMs),
-        ...(consent === "campaign" ? {} : {collapseKey: data.kind}),
+        collapseKey: data.kind,
       },
     });
     return true;

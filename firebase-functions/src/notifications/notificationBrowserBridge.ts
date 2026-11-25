@@ -1,7 +1,7 @@
 import {HttpsError, onRequest} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
 import {FirebasePushAudience, FirebasePushBridgeInput} from "../../../src/notifications/contracts/firebasePush";
-import {bridgeAuthorized, browserPushConfiguration, notificationBridgeSecret, notificationVapidPrivateKey} from "./notificationBridge";
+import {bridgeAuthorized, browserFcmConfiguration, browserPushConfiguration, notificationBridgeSecret, notificationVapidPrivateKey} from "./notificationBridge";
 import {browserDeviceStatus, enrollBrowserDevice} from "./notificationDevices";
 
 export const notificationBrowserBridge = onRequest({region: "europe-west1", minInstances: 0, timeoutSeconds: 60,
@@ -15,6 +15,7 @@ export const notificationBrowserBridge = onRequest({region: "europe-west1", minI
     const input = parsed.data;
     switch (input.action) {
       case "configuration": response.json({version: 1, publicKey: browserPushConfiguration().publicKey}); return;
+      case "configuration-fcm": response.json({version: 1, publicKey: browserPushConfiguration().publicKey, fcm: browserFcmConfiguration()}); return;
       case "audience": {
         const db = admin.firestore();
         const [accounts, devices] = await Promise.all([db.collection("users").count().get(),
@@ -23,6 +24,10 @@ export const notificationBrowserBridge = onRequest({region: "europe-west1", minI
         return;
       }
       case "enroll": response.json(await enrollBrowserDevice(input)); return;
+      case "enroll-fcm": {
+        if (!browserFcmConfiguration()) throw new HttpsError("unavailable", "Notification FCM setup is unavailable.");
+        response.json(await enrollBrowserDevice(input)); return;
+      }
       case "status": response.json(await browserDeviceStatus(input.deviceToken, false, input.renew ?? false)); return;
       case "disable": response.json(await browserDeviceStatus(input.deviceToken, true)); return;
       default: {const exhaustive: never = input; throw exhaustive;}

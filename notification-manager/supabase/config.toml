@@ -10,3 +10,8 @@ schema_paths = ["./schemas/notifications.sql", "./schemas/subscriptions.sql", ".
 [db.seed]
 enabled = true
 sql_paths = ["./seed.sql"]
+
+[functions.fcm-push]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/fcm-push/index.ts"

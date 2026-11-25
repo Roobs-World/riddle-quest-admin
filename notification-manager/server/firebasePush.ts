@@ -1,6 +1,6 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 import {z} from "zod";
-import {FirebasePushAudience, FirebasePushBridgeInput, FirebasePushConfiguration, FirebasePushDeviceStatus, FirebasePushRegistration} from "../../src/notifications/contracts/firebasePush.js";
+import {FirebaseFcmPushConfiguration, FirebasePushAudience, FirebasePushBridgeInput, FirebasePushConfiguration, FirebasePushDeviceStatus, FirebasePushRegistration} from "../../src/notifications/contracts/firebasePush.js";
 import {firebaseBridgeConfiguration, firebaseNotificationTargets, localDevelopmentEnabled} from "./configuration.js";
 import {notificationRpc} from "./database.js";
 import {deadlineSignal, type Deadline} from "./deadline.js";
@@ -104,9 +104,9 @@ export async function browserEnrollment(request: ApiRequest, action: string, val
   const origin = enrollmentOrigin(request);
   const configuration = firebaseBridgeConfiguration();
   if (!configuration) throw new ApiError(503, "firebase-bridge-unconfigured");
-  if (!["config", "enroll", "status", "disable"].includes(action) || !value || typeof value !== "object" || Array.isArray(value))
+  if (!["config", "config-fcm", "enroll", "enroll-fcm", "status", "disable"].includes(action) || !value || typeof value !== "object" || Array.isArray(value))
     throw new ApiError(400, "notification-enrollment-request-invalid");
-  const parsed = FirebasePushBridgeInput.safeParse({...value, action: action === "config" ? "configuration" : action});
+  const parsed = FirebasePushBridgeInput.safeParse({...value, action: action === "config" ? "configuration" : action === "config-fcm" ? "configuration-fcm" : action});
   if (!parsed.success) throw new ApiError(400, "notification-enrollment-request-invalid");
   const input = parsed.data;
   await consumeEnrollmentQuota(request, origin, "deviceToken" in input ? input.deviceToken : "", configuration.secret, deadline);
@@ -114,5 +114,7 @@ export async function browserEnrollment(request: ApiRequest, action: string, val
     Authorization: `Bearer ${configuration.secret}`, Accept: "application/json", "Content-Type": "application/json"},
     body: JSON.stringify(input), redirect: "error", signal: deadlineSignal(deadline, 15_000)});
   const result = await readFirebaseBridgeResponse(response);
-  return input.action === "configuration" ? FirebasePushConfiguration.parse(result) : FirebasePushDeviceStatus.parse(result);
+  if (input.action === "configuration") return FirebasePushConfiguration.parse(result);
+  if (input.action === "configuration-fcm") return FirebaseFcmPushConfiguration.parse(result);
+  return FirebasePushDeviceStatus.parse(result);
 }

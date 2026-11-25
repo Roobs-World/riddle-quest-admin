@@ -11,21 +11,37 @@ function browserBoundary(environment: Readonly<Record<string, string>>): Plugin 
     generateBundle(_options, bundle) {
       for (const id of this.getModuleIds()) {
         const normalized = id.replaceAll("\\", "/");
+        const firebasePackage = /\/node_modules\/firebase\/([^/]+)\//u.exec(normalized)?.[1];
+        const firebaseInternal = /\/node_modules\/@firebase\/([^/]+)\//u.exec(normalized)?.[1];
+        if (firebasePackage && !["app", "messaging"].includes(firebasePackage) ||
+            firebaseInternal && !["app", "messaging", "installations", "component", "logger", "util"].includes(firebaseInternal)) {
+          this.error("Only Firebase app and messaging enrollment modules may enter the notification manager browser bundle.");
+        }
+        if (firebasePackage || firebaseInternal) {
+          const info = this.getModuleInfo(id);
+          for (const importer of [...info?.importers ?? [], ...info?.dynamicImporters ?? []]) {
+            const source = importer.replaceAll("\\", "/");
+            if (!source.includes("/node_modules/") && source !== `${root}src/fcmEnrollment.ts`) {
+              this.error("Firebase browser modules belong only to device enrollment.");
+            }
+          }
+        }
         if ((normalized.startsWith(root) && /^\/(?:server|api|supabase)\//u.test(normalized.slice(root.length - 1))) ||
-            /\/(?:firebase(?:-admin)?|web-push)(?:\/|@)/u.test(normalized) || normalized.includes("/platforms/native/")) {
+            /\/(?:firebase-admin|web-push)(?:\/|@)/u.test(normalized) || normalized.includes("/platforms/native/")) {
           this.error("A server module entered the notification manager browser bundle.");
         }
       }
       const secrets = [environment.SUPABASE_SECRET_KEY, environment.SUPABASE_SERVICE_ROLE_KEY, environment.SUPABASE_JWT_SECRET,
         environment.POSTGRES_PASSWORD, environment.POSTGRES_URL, environment.POSTGRES_PRISMA_URL, environment.POSTGRES_URL_NON_POOLING,
-        environment.HOSTED_PUSH_VAPID_PRIVATE_KEY, environment.CRON_SECRET, environment.NOTIFICATION_MANAGER_BRIDGE_SECRET]
+        environment.HOSTED_PUSH_VAPID_PRIVATE_KEY, environment.CRON_SECRET, environment.NOTIFICATION_MANAGER_BRIDGE_SECRET,
+        environment.NOTIFICATION_FCM_EDGE_SECRET, environment.FCM_SERVICE_ACCOUNT_JSON]
         .filter((value): value is string => Boolean(value && value.length >= 16));
       for (const item of Object.values(bundle)) {
         if (item.type !== "chunk") continue;
         if (Object.entries(item.modules).some(([id, module]) => id.replaceAll("\\", "/").endsWith("/src/DraftWorkspace.tsx") && module.renderedLength > 0)) {
           this.error("The development drafts workspace cannot ship in a production build.");
         }
-        if (/\b(?:SUPABASE_SECRET_KEY|HOSTED_PUSH_VAPID_PRIVATE_KEY|CRON_SECRET|NOTIFICATION_MANAGER_BRIDGE_SECRET)\b/u.test(item.code) ||
+        if (/\b(?:SUPABASE_SECRET_KEY|HOSTED_PUSH_VAPID_PRIVATE_KEY|CRON_SECRET|NOTIFICATION_MANAGER_BRIDGE_SECRET|NOTIFICATION_FCM_EDGE_SECRET|FCM_SERVICE_ACCOUNT_JSON)\b/u.test(item.code) ||
             secrets.some(secret => item.code.includes(secret))) {
           this.error("A server credential entered the notification manager browser bundle.");
         }

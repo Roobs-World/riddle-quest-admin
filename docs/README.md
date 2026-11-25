@@ -25,7 +25,7 @@ The background Sentry worker has its own [runbook](sentry-worker/README.md) and 
 
 Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
 
-The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling.
+The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling. [Supabase FCM delivery](common/notifications/supabase-fcm.md) describes the Edge Function transport and its rollout.
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 

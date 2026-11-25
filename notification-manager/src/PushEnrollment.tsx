@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react";
-import {FirebasePushConfiguration, FirebasePushDeviceStatus, type FirebasePushSubscription} from "../../src/notifications/contracts/firebasePush";
+import {FirebaseFcmPushConfiguration, FirebasePushDeviceStatus, type FirebasePushSubscription} from "../../src/notifications/contracts/firebasePush";
+import {createFcmEnrollment, fcmSupported, revokeFcmEnrollment, savedFcmConfiguration} from "./fcmEnrollment";
 import {Icon} from "./Icons";
 import "./pushEnrollment.css";
 
@@ -27,12 +28,12 @@ async function hash(value: string): Promise<string> {
   return [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(value)))].map(byte => byte.toString(16).padStart(2, "0")).join("");
 }
 
-async function request(action: "config" | "enroll" | "status" | "disable", input: unknown): Promise<unknown> {
+async function request(action: "config-fcm" | "enroll" | "enroll-fcm" | "status" | "disable", input: unknown): Promise<unknown> {
   const response = await fetch(`/api/push/${action}`, {method: "POST", credentials: "same-origin", redirect: "error", cache: "no-store",
     headers: {"Content-Type": "application/json", Accept: "application/json"}, body: JSON.stringify(input), signal: AbortSignal.timeout(15_000)});
   if (!response.ok) {
     void response.body?.cancel();
-    throw new Error(action === "enroll" ? "This connection could not be completed. Open a new notification link from your game settings and try again."
+    throw new Error(action === "enroll" || action === "enroll-fcm" ? "This connection could not be completed. Open a new notification link from your game settings and try again."
       : "The notification service is unavailable. Please try again shortly.");
   }
   const reader = response.body?.getReader();
@@ -123,18 +124,31 @@ export function PushEnrollment() {
       const token = deviceToken();
       await setDisplayGate(false, token);
       if (await permission !== "granted") throw new Error("Notifications are blocked. Allow them in your browser’s site settings, then try again.");
-      const configuration = FirebasePushConfiguration.parse(await request("config", {}));
+      const configuration = FirebaseFcmPushConfiguration.parse(await request("config-fcm", {}));
       const registration = await navigator.serviceWorker.register("/push/worker.js", {scope: "/push/", updateViaCache: "none"});
       await Promise.race([navigator.serviceWorker.ready, new Promise<never>((_resolve, reject) => setTimeout(() => reject(new Error("Notification setup took too long. Please try again.")), 12_000))]);
       let subscription = await registration.pushManager.getSubscription();
       const previous = FirebasePushDeviceStatus.parse(await request("status", {deviceToken: token}));
-      if (subscription && !previous.registered) {await subscription.unsubscribe(); subscription = null;}
-      subscription ??= await registration.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: applicationKey(configuration.publicKey)});
-      const serialized = subscription.toJSON();
-      const keys = serialized.keys;
-      if (!serialized.endpoint || !keys?.p256dh || !keys.auth) throw new Error("Your browser could not register for notifications.");
-      const input: FirebasePushSubscription = {endpoint: serialized.endpoint, keys: {p256dh: keys.p256dh, auth: keys.auth}};
-      const status = FirebasePushDeviceStatus.parse(await request("enroll", {pairingCode, deviceToken: token, locale: navigator.language.split("-")[0] || "en", subscription: input}));
+      if (subscription && !previous.registered) {await revokeFcmEnrollment(registration); await subscription.unsubscribe(); subscription = null;}
+      const savedFcm = savedFcmConfiguration();
+      const locale = navigator.language.split("-")[0] || "en";
+      let result: unknown;
+      if (configuration.fcm && (!subscription || savedFcm) && await fcmSupported()) {
+        if (subscription && savedFcm && (savedFcm.appId !== configuration.fcm.appId || savedFcm.vapidKey !== configuration.fcm.vapidKey)) {
+          throw new Error("This device’s notification connection has changed. Disable it on this page, then open a new link from your game settings.");
+        }
+        const fcmToken = await createFcmEnrollment(configuration.fcm, registration);
+        result = await request("enroll-fcm", {pairingCode, deviceToken: token, locale, fcmToken});
+      } else {
+        if (subscription && savedFcm) throw new Error("This device’s notification connection cannot be refreshed right now. Please try again shortly.");
+        subscription ??= await registration.pushManager.subscribe({userVisibleOnly: true, applicationServerKey: applicationKey(configuration.publicKey)});
+        const serialized = subscription.toJSON();
+        const keys = serialized.keys;
+        if (!serialized.endpoint || !keys?.p256dh || !keys.auth) throw new Error("Your browser could not register for notifications.");
+        const input: FirebasePushSubscription = {endpoint: serialized.endpoint, keys: {p256dh: keys.p256dh, auth: keys.auth}};
+        result = await request("enroll", {pairingCode, deviceToken: token, locale, subscription: input});
+      }
+      const status = FirebasePushDeviceStatus.parse(result);
       if (!status.registered || !status.enabled) throw new Error("Notifications are disabled for this game account. Enable them in the game settings first.");
       await setDisplayGate(true, token, status.revision);
       const pairHash = await hash(pairingCode);
@@ -154,6 +168,7 @@ export function PushEnrollment() {
       await setDisplayGate(false, token);
       FirebasePushDeviceStatus.parse(await request("disable", {deviceToken: token}));
       const registration = await navigator.serviceWorker.getRegistration("/push/");
+      await revokeFcmEnrollment(registration).catch(() => undefined);
       await (await registration?.pushManager.getSubscription())?.unsubscribe();
       setState({kind: "available"});
     } catch (error) {setState({kind: "error", message: error instanceof Error ? error.message : "The change could not be saved. Please try again."});}
@@ -170,6 +185,7 @@ export function PushEnrollment() {
     {state.kind === "checking" || state.kind === "busy" ? <p role="status">{state.kind === "checking" ? "Checking this device…" : "Saving your notification settings…"}</p> : state.kind === "ready" ? <><p role="status" className="push-connected">Notifications are enabled on this device. You can return to your game.</p><button className="button-secondary" onClick={() => {void disable();}}>Disable on this device</button></> : <>
       <label htmlFor="pairing-code">Connection code</label><input id="pairing-code" autoComplete="off" spellCheck={false} value={pairingCode} onChange={event => setPairingCode(event.target.value.trim())} placeholder="Open the link from your game, or paste its code" />
       <button className="button-primary" disabled={!supported || ios && !standalone || !Code.test(pairingCode)} onClick={() => {void enable(Notification.permission === "default" ? Notification.requestPermission() : Promise.resolve(Notification.permission));}}>Enable notifications on this device</button>
+      {supported && savedFcmConfiguration() && <button className="button-secondary" onClick={() => {void disable();}}>Disable on this device</button>}
     </>}
     <p className="push-small">Repeat this setup once on each device you want to receive notifications on. Permission stays under your control.</p>
   </section></main>;

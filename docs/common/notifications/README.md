@@ -35,6 +35,6 @@ The hosted provider registers a browser PushSubscription and a private installat
 
 `VITE_NOTIFICATION_SERVICE_URL` explicitly selects the hosted service. With no URL, the preference reports unconfigured delivery and makes no backend requests. Browser transport is replaceable, and new platforms can supply a provider without importing another platform's SDK.
 
-Read the [service and setup guide](service.md), [API contract](api.md), and [Yahoo client guide](../../yahoo/notifications.md). Source builds do not deploy the service, apply database changes or upload games.
+Read the [service and setup guide](service.md), [Supabase FCM delivery guide](supabase-fcm.md), [API contract](api.md), and [Yahoo client guide](../../yahoo/notifications.md). Source builds do not deploy the service, apply database changes or upload games.
 
 For authenticated players, [Firebase enrollment](firebase-enrollment.md) describes the shared signup action, device ownership, platform adapters and coordinated release. Firebase is the account and device authority; its device count is distinct from configured delivery platforms.

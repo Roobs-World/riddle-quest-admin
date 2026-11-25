@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {FcmRegistrationToken} from "./fcmDelivery";
 
 const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
 const Revision = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
@@ -24,12 +25,20 @@ export const FirebasePushRegistration = z.object({
 export type FirebasePushRegistration = z.infer<typeof FirebasePushRegistration>;
 export const FirebasePushBridgeInput = z.discriminatedUnion("action", [
   z.object({action: z.literal("configuration")}).strict(),
+  z.object({action: z.literal("configuration-fcm")}).strict(),
   z.object({action: z.literal("audience")}).strict(),
   z.object({action: z.literal("enroll"), pairingCode: Hash, deviceToken: Hash, locale: Locale, subscription: FirebasePushSubscription}).strict(),
+  z.object({action: z.literal("enroll-fcm"), pairingCode: Hash, deviceToken: Hash, locale: Locale, fcmToken: FcmRegistrationToken}).strict(),
   z.object({action: z.literal("status"), deviceToken: Hash, renew: z.boolean().optional()}).strict(),
   z.object({action: z.literal("disable"), deviceToken: Hash}).strict(),
 ]);
 export const FirebasePushConfiguration = z.object({version: z.literal(1), publicKey: z.string().regex(/^[A-Za-z0-9_-]{87}$/u)}).strict();
+export const FirebaseFcmWebConfiguration = z.object({
+  apiKey: z.string().regex(/^AIza[A-Za-z0-9_-]{35}$/u), projectId: z.string().regex(/^[a-z][a-z0-9-]{4,28}[a-z0-9]$/u),
+  appId: z.string().regex(/^1:[0-9]+:web:[a-f0-9]+$/u), messagingSenderId: z.string().regex(/^[0-9]{1,32}$/u),
+  vapidKey: z.string().regex(/^[A-Za-z0-9_-]{87}$/u),
+}).strict();
+export const FirebaseFcmPushConfiguration = FirebasePushConfiguration.extend({fcm: FirebaseFcmWebConfiguration.nullable()});
 export const FirebasePushDeviceStatus = z.object({registered: z.boolean(), enabled: z.boolean(), expiresAtMs: Revision, revision: Revision}).strict();
 export const FirebasePushAudience = z.object({accounts: Revision, registeredDevices: Revision}).strict();
 export const FirebasePushDispatch = z.object({

@@ -5,12 +5,13 @@ import {FirebasePushDispatch, FirebasePushDispatchResult} from "../../../src/not
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../shared/accountDeletion";
 import {AccountPushDevice} from "./notificationDevices";
+import {FcmDeliveryError, notificationFcmEdgeSecret, sendFcmNotification} from "./fcmEdgeDelivery";
 import {bridgeAuthorized, browserPushConfiguration, notificationBridgeSecret, notificationVapidPrivateKey, notificationLaunchUrl, pushDigest, synchronizeFirebaseRegistration} from "./notificationBridge";
 
 type DispatchOutcome = ReturnType<typeof FirebasePushDispatchResult.parse>["outcome"];
 
 export const dispatchFirebaseNotification = onRequest({region: "europe-west1", minInstances: 0, timeoutSeconds: 60,
-  secrets: [notificationBridgeSecret, notificationVapidPrivateKey], cors: false}, async (request, response) => {
+  secrets: [notificationBridgeSecret, notificationVapidPrivateKey, notificationFcmEdgeSecret], cors: false}, async (request, response) => {
   response.setHeader("Cache-Control", "no-store");
   if (request.method !== "POST") {response.status(405).json({error: "method-not-allowed"}); return;}
   if (!bridgeAuthorized(request.get("Authorization"))) {response.status(401).json({error: "bridge-authorization-required"}); return;}
@@ -46,9 +47,18 @@ export const dispatchFirebaseNotification = onRequest({region: "europe-west1", m
         const device = AccountPushDevice.safeParse(snapshot.data());
         if (!device.success || device.data.uid !== admission.uid || !device.data.enabled || device.data.revision !== input.revision ||
             device.data.expiresAtMs <= Date.now() || input.expiresAtMs <= Date.now() || !user.exists || user.data()?.notificationsEnabled === false || deleted.exists) return "skipped";
+        const launchUrl = notificationLaunchUrl(device.data.target);
+        if (device.data.transport === "fcm") {
+          const data = {version: "1", kind: "notification", deviceHash: input.deviceHash, notificationId: input.notificationId,
+            registrationRevision: String(input.revision), target: device.data.target, title: input.title, body: input.body,
+            ...(input.imageUrl ? {imageUrl: input.imageUrl} : {}), ...(launchUrl ? {launchUrl} : {}), expiresAtMs: String(input.expiresAtMs)};
+          if (Buffer.byteLength(JSON.stringify(data)) > 3800) return "failed";
+          const sent = await sendFcmNotification({version: 1, transport: "web", token: device.data.fcmToken,
+            expiresAtMs: input.expiresAtMs, data});
+          return sent ? "accepted" : "skipped";
+        }
         const payload = JSON.stringify({version: 1, kind: "notification", deviceHash: input.deviceHash, notificationId: input.notificationId, registrationRevision: input.revision,
-          target: device.data.target, title: input.title, body: input.body, imageUrl: input.imageUrl, expiresAtMs: input.expiresAtMs,
-          launchUrl: notificationLaunchUrl(device.data.target)});
+          target: device.data.target, title: input.title, body: input.body, imageUrl: input.imageUrl, expiresAtMs: input.expiresAtMs, launchUrl});
         if (Buffer.byteLength(payload) > 3800) return "failed";
         const {subject, publicKey, privateKey} = browserPushConfiguration();
         await webPush.sendNotification(device.data.subscription, payload, {TTL: Math.max(1, Math.ceil((input.expiresAtMs - Date.now()) / 1000)),
@@ -57,7 +67,8 @@ export const dispatchFirebaseNotification = onRequest({region: "europe-west1", m
       });
     } catch (error) {
       const status = error instanceof Error && "statusCode" in error ? error.statusCode : undefined;
-      if (status === 404 || status === 410) {
+      if (error instanceof FcmDeliveryError && error.code === "messaging/invalid-argument") outcome = "failed";
+      if (status === 404 || status === 410 || error instanceof FcmDeliveryError && error.code === "messaging/registration-token-not-registered") {
         outcome = "failed";
         const retired = await db.runTransaction(async tx => {
           const ref = db.doc(`accountPushDevices/${input.deviceHash}`), snapshot = await tx.get(ref);

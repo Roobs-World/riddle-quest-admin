@@ -3,16 +3,21 @@ import {Timestamp} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
 import {FirebasePushBridgeInput, FirebasePushRegistration, FirebasePushSubscription, FirebasePushTarget} from "../../../src/notifications/contracts/firebasePush";
+import {FcmRegistrationToken} from "../../../src/notifications/contracts/fcmDelivery";
 import {admin} from "../shared/firebaseAdmin";
 import {getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../shared/accountDeletion";
 import {PUSH_DEVICE_TTL_MS, pushDigest, synchronizeFirebaseRegistration} from "./notificationBridge";
 
 const Hash = z.string().regex(/^[a-f0-9]{64}$/u);
 const Time = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
-export const AccountPushDevice = z.object({
+const AccountPushDeviceFields = z.object({
   uid: z.string().min(1).max(128), target: FirebasePushTarget, locale: z.string().max(16), enabled: z.boolean(),
-  revision: Time, expiresAtMs: Time, endpointHash: Hash, pairingHash: Hash, subscription: FirebasePushSubscription, managerRevision: Time.optional(), managerExpiresAtMs: Time.optional(),
+  revision: Time, expiresAtMs: Time, endpointHash: Hash, pairingHash: Hash, managerRevision: Time.optional(), managerExpiresAtMs: Time.optional(),
 });
+export const AccountPushDevice = z.union([
+  AccountPushDeviceFields.extend({transport: z.literal("fcm"), fcmToken: FcmRegistrationToken}),
+  AccountPushDeviceFields.extend({transport: z.literal("webpush").default("webpush"), subscription: FirebasePushSubscription}),
+]);
 const Pairing = z.object({uid: z.string().min(1).max(128), target: FirebasePushTarget, locale: z.string().max(16),
   expiresAtMs: Time, deviceHash: Hash.optional()});
 const revisionAfter = (previous: number): number => Math.max(Date.now(), previous + 1);
@@ -30,12 +35,21 @@ async function synchronizeDevice(deviceHash: string, device: z.infer<typeof Acco
   });
 }
 
-type EnrollInput = Extract<z.infer<typeof FirebasePushBridgeInput>, {action: "enroll"}>;
+type EnrollInput = Extract<z.infer<typeof FirebasePushBridgeInput>, {action: "enroll" | "enroll-fcm"}>;
+
+function deliveryMatchesInput(device: z.infer<typeof AccountPushDevice>, input: EnrollInput): boolean {
+  return input.action === "enroll-fcm"
+    ? device.transport === "fcm" && device.fcmToken === input.fcmToken
+    : device.transport === "webpush" && JSON.stringify(device.subscription) === JSON.stringify(input.subscription);
+}
 
 export async function enrollBrowserDevice(input: EnrollInput) {
-  try {ECDH.convertKey(Buffer.from(input.subscription.keys.p256dh, "base64url"), "prime256v1");}
-  catch {throw new HttpsError("failed-precondition", "Notification subscription is invalid.");}
-  const db = admin.firestore(), deviceHash = pushDigest(input.deviceToken), endpointHash = pushDigest(input.subscription.endpoint);
+  if (input.action === "enroll") {
+    try {ECDH.convertKey(Buffer.from(input.subscription.keys.p256dh, "base64url"), "prime256v1");}
+    catch {throw new HttpsError("failed-precondition", "Notification subscription is invalid.");}
+  }
+  const db = admin.firestore(), deviceHash = pushDigest(input.deviceToken);
+  const endpointHash = pushDigest(input.action === "enroll-fcm" ? `fcm:${input.fcmToken}` : input.subscription.endpoint);
   const pairingRef = db.doc(`notificationPairings/${pushDigest(input.pairingCode)}`);
   const initial = Pairing.safeParse((await pairingRef.get()).data());
   if (!initial.success || initial.data.expiresAtMs <= Date.now() && initial.data.deviceHash !== deviceHash)
@@ -56,12 +70,13 @@ export async function enrollBrowserDevice(input: EnrollInput) {
     const oldEndpoint = oldEndpointRef ? await tx.get(oldEndpointRef) : null;
     if (pairing.deviceHash) {
       if (existing.success && existing.data.uid === pairing.uid && existing.data.enabled && existing.data.endpointHash === endpointHash &&
-          JSON.stringify(existing.data.subscription) === JSON.stringify(input.subscription) && existing.data.expiresAtMs > Date.now()) return existing.data;
+          deliveryMatchesInput(existing.data, input) && existing.data.expiresAtMs > Date.now()) return existing.data;
       throw new HttpsError("failed-precondition", "Notification setup was already used.");
     }
     const now = Date.now(), expiresAtMs = now + PUSH_DEVICE_TTL_MS;
     const device = AccountPushDevice.parse({uid: pairing.uid, target: pairing.target, locale: input.locale,
-      enabled: true, revision: revisionAfter(existing.success ? existing.data.revision : 0), expiresAtMs, endpointHash, pairingHash: pairingRef.id, subscription: input.subscription});
+      enabled: true, revision: revisionAfter(existing.success ? existing.data.revision : 0), expiresAtMs, endpointHash, pairingHash: pairingRef.id,
+      ...(input.action === "enroll-fcm" ? {transport: "fcm", fcmToken: input.fcmToken} : {transport: "webpush", subscription: input.subscription})});
     if (oldEndpointRef && oldEndpoint?.data()?.deviceHash === deviceHash) tx.delete(oldEndpointRef);
     tx.set(deviceRef, {...device, updatedAtMs: now, expiresAt: Timestamp.fromMillis(expiresAtMs)});
     tx.set(endpointRef, {uid: pairing.uid, deviceHash, expiresAt: Timestamp.fromMillis(expiresAtMs)});

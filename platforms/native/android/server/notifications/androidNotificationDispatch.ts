@@ -6,10 +6,11 @@ import {runWithJestAccountOperationLease} from "../../../../../firebase-function
 import {sendAndroidPush} from "../androidNotifications";
 import {AndroidDispatch, type AndroidDispatchResult} from "../notificationManagerProtocol";
 import {notificationManagerBridgeSecret} from "./androidNotificationBridge";
+import {FcmDeliveryError, notificationFcmEdgeSecret} from "../../../../../firebase-functions/src/notifications/fcmEdgeDelivery";
 
 /** The hosted manager supplies immutable content; Firebase retains token and account authority. */
 export const dispatchAndroidNotification = onRequest({region: "europe-west1", minInstances: 0, timeoutSeconds: 60,
-  secrets: [notificationManagerBridgeSecret], cors: false}, async (request, response) => {
+  secrets: [notificationManagerBridgeSecret, notificationFcmEdgeSecret], cors: false}, async (request, response) => {
   response.setHeader("Cache-Control", "no-store");
   if (request.method !== "POST") {response.status(405).json({error: "method-not-allowed"}); return;}
   const secret = notificationManagerBridgeSecret.value(), expected = Buffer.from(`Bearer ${secret}`);
@@ -50,6 +51,7 @@ export const dispatchAndroidNotification = onRequest({region: "europe-west1", mi
     } catch (error) {
       const code = error instanceof Error && "code" in error ? error.code : undefined;
       if (code === "messaging/registration-token-not-registered" || code === "messaging/invalid-registration-token") outcome = "failed";
+      if (error instanceof FcmDeliveryError && error.code === "messaging/invalid-argument") outcome = "failed";
     }
     await receipt.update({outcome, finishedAtMs: Date.now()});
     response.json({outcome} satisfies AndroidDispatchResult);

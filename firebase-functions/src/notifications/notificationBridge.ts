@@ -1,7 +1,7 @@
 import {createHash, createECDH, timingSafeEqual} from "node:crypto";
 import {z} from "zod";
 import {defineSecret} from "firebase-functions/params";
-import {FirebasePushConfiguration, FirebasePushRegistration, FirebasePushTarget} from "../../../src/notifications/contracts/firebasePush";
+import {FirebaseFcmWebConfiguration, FirebasePushConfiguration, FirebasePushRegistration, FirebasePushTarget} from "../../../src/notifications/contracts/firebasePush";
 
 export const notificationBridgeSecret = defineSecret("NOTIFICATION_MANAGER_BRIDGE_SECRET");
 export const notificationVapidPrivateKey = defineSecret("HOSTED_PUSH_VAPID_PRIVATE_KEY");
@@ -33,6 +33,16 @@ export function browserPushConfiguration(): {publicKey: string; privateKey: stri
   key.setPrivateKey(Buffer.from(privateKey, "base64url"));
   if (key.getPublicKey().toString("base64url") !== publicKey) throw new Error("notification-vapid-key-mismatch");
   return {publicKey, privateKey, subject};
+}
+
+export function browserFcmConfiguration(): ReturnType<typeof FirebaseFcmWebConfiguration.parse> | null {
+  const raw = process.env.NOTIFICATION_FCM_WEB_CONFIG;
+  if (!raw) return null;
+  const value: unknown = JSON.parse(raw);
+  const configuration = FirebaseFcmWebConfiguration.parse(value);
+  if (configuration.projectId !== "riddle-quest-ec2b2" || configuration.appId.split(":")[1] !== configuration.messagingSenderId)
+    throw new Error("notification-fcm-web-configuration-invalid");
+  return configuration;
 }
 
 export async function synchronizeFirebaseRegistration(registration: FirebasePushRegistration): Promise<void> {
