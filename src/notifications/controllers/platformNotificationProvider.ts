@@ -1,11 +1,12 @@
-import type {NotificationActivity, NotificationDelivery, NotificationPreferenceStore, NotificationProvider, NotificationSnapshot} from "../contracts/notificationProvider";
+import type {NotificationActivity, NotificationDelivery, NotificationPreferenceStore, NotificationProvider, NotificationSetupLink, NotificationSnapshot} from "../contracts/notificationProvider";
 
 /** Adapts a required platform API to the same observable lifecycle as hosted delivery. */
-export function createPlatformNotificationProvider({preferences, applyEnabled, applyPermission, restoreDelivery, recordActivity}: {
+export function createPlatformNotificationProvider({preferences, applyEnabled, applyPermission, restoreDelivery, getSetupLink, recordActivity}: {
   preferences: NotificationPreferenceStore;
   applyEnabled(enabled: boolean): Promise<boolean>;
   applyPermission?: () => Promise<boolean>;
   restoreDelivery?: () => Promise<NotificationDelivery>;
+  getSetupLink?: () => NotificationSetupLink | null;
   recordActivity?: (activity: NotificationActivity) => Promise<void>;
 }): NotificationProvider {
   let active = true;
@@ -15,11 +16,13 @@ export function createPlatformNotificationProvider({preferences, applyEnabled, a
   const listeners = new Set<() => void>();
   const uncheckedDelivery = restoreDelivery ? "permission-required" : "ready";
   let snapshot: NotificationSnapshot = {
-    enabled: preferences.getEnabled(), busy: false, delivery: preferences.getEnabled() ? uncheckedDelivery : "inactive",
+    enabled: preferences.getEnabled(), busy: Boolean(preferences.getEnabled() && restoreDelivery), delivery: preferences.getEnabled() ? uncheckedDelivery : "inactive",
   };
   const publish = (next: NotificationSnapshot) => {
-    if (next.enabled === snapshot.enabled && next.busy === snapshot.busy && next.delivery === snapshot.delivery) return;
-    snapshot = next;
+    const setupLink = active && next.enabled && next.delivery !== "ready" ? getSetupLink?.() ?? undefined : undefined;
+    if (next.enabled === snapshot.enabled && next.busy === snapshot.busy && next.delivery === snapshot.delivery &&
+      setupLink?.url === snapshot.setupLink?.url && setupLink?.expiresAtMs === snapshot.setupLink?.expiresAtMs) return;
+    snapshot = {...next, setupLink};
     listeners.forEach(listener => listener());
   };
   const preferenceChanged = () => {
@@ -36,15 +39,19 @@ export function createPlatformNotificationProvider({preferences, applyEnabled, a
       publish({enabled: preferences.getEnabled(), busy: true, delivery: enabled ? snapshot.delivery : "inactive"});
       const saved = await (permission && applyPermission ? applyPermission() : applyEnabled(enabled));
       if (!active || operation !== generation) return false;
-      const delivery = saved && enabled && restoreDelivery ? await restoreDelivery() : uncheckedDelivery;
+      let delivery: NotificationDelivery = uncheckedDelivery;
+      if (saved && enabled && restoreDelivery) {
+        try {delivery = await restoreDelivery();} catch {delivery = "not-configured";}
+      }
       if (!active || operation !== generation) return false;
       const currentEnabled = preferences.getEnabled();
       const ownsPreference = currentEnabled === enabled;
       publish({enabled: currentEnabled, busy: false,
-        delivery: !ownsPreference ? currentEnabled ? uncheckedDelivery : "inactive" : saved ? enabled ? delivery : "inactive" : "save-failed"});
+        delivery: !ownsPreference ? currentEnabled ? uncheckedDelivery : "inactive" : saved ? enabled ? delivery : "inactive" : permission ? "setup-failed" : "save-failed"});
       return saved && ownsPreference;
     } catch {
-      if (active && operation === generation) publish({enabled: preferences.getEnabled(), busy: false, delivery: "save-failed"});
+      if (active && operation === generation) publish({enabled: preferences.getEnabled(), busy: false,
+        delivery: permission ? "setup-failed" : "save-failed"});
       return false;
     } finally {
       if (operation === generation) changing = false;
@@ -60,18 +67,18 @@ export function createPlatformNotificationProvider({preferences, applyEnabled, a
       stopPreferences?.();
       stopPreferences = preferences.subscribe(preferenceChanged);
       const enabled = preferences.getEnabled();
-      publish({enabled, busy: false, delivery: enabled ? uncheckedDelivery : "inactive"});
+      publish({enabled, busy: Boolean(enabled && restoreDelivery), delivery: enabled ? uncheckedDelivery : "inactive"});
       if (!enabled || !restoreDelivery) return;
       try {
         const delivery = await restoreDelivery();
         if (active && operation === generation) {
           const currentEnabled = preferences.getEnabled();
-          publish({...snapshot, enabled: currentEnabled, delivery: currentEnabled ? delivery : "inactive"});
+          publish({...snapshot, enabled: currentEnabled, busy: false, delivery: currentEnabled ? delivery : "inactive"});
         }
       } catch {
         if (active && operation === generation) {
           const currentEnabled = preferences.getEnabled();
-          publish({...snapshot, enabled: currentEnabled, delivery: currentEnabled ? "not-configured" : "inactive"});
+          publish({...snapshot, enabled: currentEnabled, busy: false, delivery: currentEnabled ? "not-configured" : "inactive"});
         }
       }
     },
@@ -94,6 +101,7 @@ export function createPlatformNotificationProvider({preferences, applyEnabled, a
       generation += 1;
       stopPreferences?.();
       stopPreferences = undefined;
+      publish({...snapshot, busy: false});
     },
   };
 }

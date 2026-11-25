@@ -274,6 +274,7 @@ export function FacebookPlatformEntry() {
                 subscribe: subscribeToPlayerNotifications,
               },
               applyEnabled, applyPermission: enrollment.requestPermission, restoreDelivery: enrollment.restoreDelivery,
+              getSetupLink: enrollment.getSetupLink,
             });
             notificationProvider = createNotificationProvider({platform: "facebook", hosted: () => ({...notifications,
               restore() {enrollment.activate(); return notifications.restore();},

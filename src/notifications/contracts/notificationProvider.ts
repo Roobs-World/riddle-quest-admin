@@ -6,12 +6,17 @@ export type NotificationDelivery =
   | "blocked"
   | "ready"
   | "inactive"
+  | "setup-failed"
   | "save-failed";
+
+/** An account-bound, short-lived browser handoff shown only to the player. */
+export type NotificationSetupLink = Readonly<{url: string; expiresAtMs: number}>;
 
 export type NotificationSnapshot = Readonly<{
   enabled: boolean;
   busy: boolean;
   delivery: NotificationDelivery;
+  setupLink?: NotificationSetupLink;
 }>;
 
 export type NotificationActivity = Readonly<{locale: string}>;
@@ -46,4 +51,5 @@ export type NotificationProviderPolicy =
 /** A narrow command port used when platform delivery is loaded after the game. */
 export type NotificationPreferenceCommand = Pick<NotificationProvider, "setEnabled" | "requestPermission"> & {
   restoreDelivery(): Promise<NotificationDelivery>;
+  getSetupLink?(): NotificationSetupLink | null;
 };

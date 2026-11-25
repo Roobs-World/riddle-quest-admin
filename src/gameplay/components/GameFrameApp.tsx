@@ -54,6 +54,7 @@ import {DecorativeSolarSystem} from "../../scenery/solar/components/DecorativeSo
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "../../app/components/recovery/GameSurfaceRecovery";
 import {completionPresentationKey, isCompletionAdvancePending} from "../session/completion/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../../settings/browser/playerPreferences";
+import {useNotificationSettings} from "../../notifications/components/NotificationSettingsContext";
 
 /** Provides game frame app behavior. */
 export function GameFrameApp({
@@ -143,6 +144,7 @@ export function GameFrameApp({
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
   const providerProfile = useProviderProfile();
+  const notifications = useNotificationSettings();
   /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
   const shopCatalog = useContext(ShopSubscriptionContext);
   /** Existing offers or a retryable catalog error keep the shop entry available. */
@@ -203,6 +205,28 @@ export function GameFrameApp({
   const [failedModalOwner, setFailedModalOwner] = useState<string | null>(null);
   /** Terminal recovery belongs only to the visit whose modal code failed. */
   const terminalSurfaceRecovery = failedModalOwner === surfaceOwner && state.lastOutcome?.kind === "win";
+  /** The dismissed startup menu queues one request for this account visit. */
+  const [notificationPromptOwner, setNotificationPromptOwner] = useState<string | null>(null);
+  const shownNotificationPromptOwners = useRef(new Set<string>());
+  const queueNotificationPrompt = useCallback(() => {
+    if (state.user?.uid && !shownNotificationPromptOwners.current.has(surfaceOwner)) {
+      setNotificationPromptOwner(surfaceOwner);
+    }
+  }, [state.user?.uid, surfaceOwner]);
+
+  useEffect(() => {
+    if (notificationPromptOwner !== surfaceOwner || !notifications || notifications.busy ||
+      !notifications.enabled || state.user?.platformRegistered === false ||
+      interactionBlocked || !online || state.paused || raceOpen || state.modal !== null ||
+      guidanceActive || terminalSurfaceRecovery) return;
+    if (notifications.delivery !== "permission-required" && notifications.delivery !== "save-failed" &&
+      notifications.delivery !== "setup-failed") return;
+    shownNotificationPromptOwners.current.add(surfaceOwner);
+    setNotificationPromptOwner(null);
+    dispatch({type: "openModal", modal: "notifications"});
+  }, [guidanceActive, interactionBlocked, notificationPromptOwner, notifications?.busy, notifications?.delivery,
+    notifications?.enabled, online, raceOpen, state.modal, state.paused, state.user?.platformRegistered,
+    surfaceOwner, terminalSurfaceRecovery]);
 
   useEffect(() => {
     if (state.modal === null) setAnimatedCoinBalance(null);
@@ -545,8 +569,9 @@ export function GameFrameApp({
           commerceAvailable={commerceAvailable}
           multiplayerAvailable={raceEnabled}
           modal={state.modal}
-          suspended={raceOpen || (failedModalOwner === surfaceOwner && Boolean(state.modal || terminalSurfaceRecovery))}
+          suspended={raceOpen || state.modal === "notifications" || (failedModalOwner === surfaceOwner && Boolean(state.modal || terminalSurfaceRecovery))}
           onActiveChange={setGuidanceActive}
+          onOnboardingClosed={queueNotificationPrompt}
           registrationName={registrationName}
           registrationInviterName={registrationInviterName}
           interactionBlocked={interactionBlocked || !online}

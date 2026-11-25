@@ -13,6 +13,7 @@ import {ProfileModalPage} from "../../../accounts/components/ProfileModalPage";
 import {AchievementsModalPage, RanksModalPage, StatisticsModalPage} from "../../../progression/components/ProfileStatsModalPages";
 import {UsernameModalPage} from "../../../accounts/components/UsernameModalPage";
 import {SettingsModalPage} from "../../../settings/components/SettingsModalPage";
+import {NotificationSettings} from "../../../notifications/components/NotificationSettings";
 
 /** State and handlers routed to modal-specific page components. */
 export type GameModalPagesProps = {
@@ -122,6 +123,12 @@ export function GameModalPages({
           onToggleMute={onToggleMute}
           commerceAvailable={commerceAvailable}
         />
+      )}
+
+      {state.modal === "notifications" && (
+        <div className="settings-page">
+          <NotificationSettings disabled={state.user?.platformRegistered === false} />
+        </div>
       )}
 
       {state.modal === "achievements" && <AchievementsModalPage profile={profile} />}

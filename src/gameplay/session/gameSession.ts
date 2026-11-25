@@ -15,7 +15,7 @@ export type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} 
 
 /** Player-owned utility pages remain open while an authoritative question changes underneath them. */
 const questionIndependentModals = new Set<GameModal>([
-  "profile", "settings", "instructions", "credits", "about", "statistics",
+  "profile", "settings", "notifications", "instructions", "credits", "about", "statistics",
   "achievements", "ranks", "leaderboard", "shop", "treasure", "username",
 ]);
 

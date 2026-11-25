@@ -239,6 +239,7 @@ export function JestPlayApp() {
         const capability = current ?? await new Promise<NotificationPreferenceCommand | null>(resolve => waiting.add(resolve));
         return active && capability ? capability.restoreDelivery() : "inactive";
       },
+      getSetupLink() {return active ? current?.getSetupLink?.() ?? null : null;},
       install(capability: NotificationPreferenceCommand) {
         current = capability; if (active) resolveWaiting(capability);
         return () => {if (current === capability) current = null;};
@@ -260,6 +261,7 @@ export function JestPlayApp() {
     applyEnabled: notificationsDelegate.setEnabled,
     applyPermission: notificationsDelegate.requestPermission,
     restoreDelivery: notificationsDelegate.restoreDelivery,
+    getSetupLink: notificationsDelegate.getSetupLink,
   }), [notificationsDelegate]);
   /** Provides referral sharing behavior. */
   const referralSharing = useJestSharing({

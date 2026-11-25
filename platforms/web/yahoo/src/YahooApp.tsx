@@ -20,6 +20,7 @@ function deliveryMessage(delivery: NotificationDelivery, copy: HostedNotificatio
     case "blocked": return copy.blocked;
     case "unsupported": return copy.unavailable;
     case "not-configured": return copy.notConfigured;
+    case "setup-failed": return copy.setupFailed;
     case "save-failed": return copy.saveFailed;
     case "ready":
     case "inactive": return null;
@@ -39,7 +40,7 @@ function YahooNotificationSettings({controller, locale, disabled}: {
   const snapshot = useSyncExternalStore(controller.subscribe, controller.getSnapshot);
   const copy = getHostedNotificationCopy(locale);
   const message = deliveryMessage(snapshot.delivery, copy);
-  const allowDelivery = snapshot.enabled && (snapshot.delivery === "permission-required" || snapshot.delivery === "save-failed");
+  const allowDelivery = snapshot.enabled && (snapshot.delivery === "permission-required" || snapshot.delivery === "save-failed" || snapshot.delivery === "setup-failed");
   return <div className="yt-notification-settings">
     <button
       type="button"

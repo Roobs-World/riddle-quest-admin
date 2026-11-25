@@ -67,6 +67,7 @@ export function JestNotifications({mockRuntime, authHarness, session, platform, 
       setEnabled,
       requestPermission: () => enrollment?.requestPermission() ?? Promise.resolve(false),
       restoreDelivery: () => enrollment?.restoreDelivery() ?? Promise.resolve(eligible ? "not-configured" : "unsupported"),
+      getSetupLink: () => enrollment?.getSetupLink() ?? null,
     } satisfies NotificationPreferenceCommand};
   }, [authHarness, cancelAllNotifications, mockRuntime, gate, session?.firebaseUid, session?.player.playerId, session?.player.registered]);
   useLayoutEffect(() => {

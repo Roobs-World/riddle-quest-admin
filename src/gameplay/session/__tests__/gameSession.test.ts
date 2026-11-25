@@ -95,7 +95,7 @@ describe("game session reducer", () => {
     expect(state.guessPending).toBe(false);
     expect(state.lastOutcome).toEqual(expect.objectContaining({kind: "win", attempts: 6}));
   });
-  it.each(["profile", "settings", "instructions", "credits", "about", "statistics",
+  it.each(["profile", "settings", "notifications", "instructions", "credits", "about", "statistics",
     "achievements", "ranks", "leaderboard", "shop", "treasure", "username"] as const)(
     "keeps %s open when journal restoration or rollback replaces gameplay", (modal) => {
       /** Gameplay captured before the player opened a utility page. */

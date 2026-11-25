@@ -2,6 +2,8 @@
 
 The game has one global Notifications preference in Settings, using the same On/Off control as the other preferences. It defaults to On. Profile and multiplayer have no notification controls. Default On records a preference; device permission still requires a player gesture.
 
+Eligible players receive the notification request in its own modal after closing the startup menu and finishing any instructions, registration or guidance. Sandboxed games that cannot open a setup window provide a private, copyable enrollment link. Setup and delivery failures are distinct from a failed preference save.
+
 `src/notifications/contracts/notificationProvider.ts` defines the common provider interface. Each provider owns restoration, permission, saved consent, activity and retirement. Settings observes its snapshot and sends preference commands. Closing the game retires the controller without revoking background push delivery.
 
 `createNotificationProvider` selects our hosted implementation by default. A platform with a mandatory SDK supplies its own implementation. A platform that prohibits notifications returns no provider. A platform failure never silently changes delivery channels.

@@ -11,6 +11,11 @@ export type HostedNotificationCopy = Readonly<{
   unavailable: string;
   notConfigured: string;
   saveFailed: string;
+  setupFailed: string;
+  setupLinkInstructions: string;
+  setupLinkLabel: string;
+  copySetupLink: string;
+  setupLinkCopied: string;
 }>;
 
 const copyByLocale = {
@@ -24,6 +29,11 @@ const copyByLocale = {
     unavailable: "Notifications are unavailable in this browser.",
     notConfigured: "The notification service is not configured yet.",
     saveFailed: "Notification settings could not be saved. Please try again.",
+    setupFailed: "Notification setup could not be opened. Please try again.",
+    setupLinkInstructions: "Open this link in your browser to finish enabling notifications.",
+    setupLinkLabel: "Notification setup link",
+    copySetupLink: "Copy setup link",
+    setupLinkCopied: "Setup link copied.",
   },
   es: {
     notifications: "Notificaciones",
@@ -35,6 +45,11 @@ const copyByLocale = {
     unavailable: "Las notificaciones no están disponibles en este navegador.",
     notConfigured: "El servicio de notificaciones aún no está configurado.",
     saveFailed: "No se pudieron guardar los ajustes de notificaciones. Inténtalo de nuevo.",
+    setupFailed: "No se pudo abrir la configuración de notificaciones. Inténtalo de nuevo.",
+    setupLinkInstructions: "Abre este enlace en tu navegador para terminar de activar las notificaciones.",
+    setupLinkLabel: "Enlace de configuración de notificaciones",
+    copySetupLink: "Copiar enlace de configuración",
+    setupLinkCopied: "Enlace de configuración copiado.",
   },
   pt: {
     notifications: "Notificações",
@@ -46,6 +61,11 @@ const copyByLocale = {
     unavailable: "As notificações não estão disponíveis neste navegador.",
     notConfigured: "O serviço de notificações ainda não está configurado.",
     saveFailed: "Não foi possível salvar as configurações de notificações. Tente novamente.",
+    setupFailed: "Não foi possível abrir a configuração de notificações. Tente novamente.",
+    setupLinkInstructions: "Abra este link no navegador para concluir a ativação das notificações.",
+    setupLinkLabel: "Link de configuração de notificações",
+    copySetupLink: "Copiar link de configuração",
+    setupLinkCopied: "Link de configuração copiado.",
   },
   fr: {
     notifications: "Notifications",
@@ -57,6 +77,11 @@ const copyByLocale = {
     unavailable: "Les notifications ne sont pas disponibles dans ce navigateur.",
     notConfigured: "Le service de notifications n'est pas encore configuré.",
     saveFailed: "Les paramètres de notification n’ont pas pu être enregistrés. Réessayez.",
+    setupFailed: "Impossible d'ouvrir la configuration des notifications. Réessayez.",
+    setupLinkInstructions: "Ouvrez ce lien dans votre navigateur pour terminer l'activation des notifications.",
+    setupLinkLabel: "Lien de configuration des notifications",
+    copySetupLink: "Copier le lien de configuration",
+    setupLinkCopied: "Lien de configuration copié.",
   },
   de: {
     notifications: "Benachrichtigungen",
@@ -68,6 +93,11 @@ const copyByLocale = {
     unavailable: "Benachrichtigungen sind in diesem Browser nicht verfügbar.",
     notConfigured: "Der Benachrichtigungsdienst ist noch nicht eingerichtet.",
     saveFailed: "Die Benachrichtigungseinstellungen konnten nicht gespeichert werden. Versuche es erneut.",
+    setupFailed: "Die Einrichtung der Benachrichtigungen konnte nicht geöffnet werden. Versuche es erneut.",
+    setupLinkInstructions: "Öffne diesen Link in deinem Browser, um die Aktivierung der Benachrichtigungen abzuschließen.",
+    setupLinkLabel: "Link zur Einrichtung von Benachrichtigungen",
+    copySetupLink: "Einrichtungslink kopieren",
+    setupLinkCopied: "Einrichtungslink kopiert.",
   },
   ja: {
     notifications: "通知",
@@ -79,6 +109,11 @@ const copyByLocale = {
     unavailable: "このブラウザーでは通知を利用できません。",
     notConfigured: "通知サービスはまだ設定されていません。",
     saveFailed: "通知設定を保存できませんでした。もう一度お試しください。",
+    setupFailed: "通知設定を開けませんでした。もう一度お試しください。",
+    setupLinkInstructions: "このリンクをブラウザーで開いて、通知の有効化を完了してください。",
+    setupLinkLabel: "通知設定リンク",
+    copySetupLink: "設定リンクをコピー",
+    setupLinkCopied: "設定リンクをコピーしました。",
   },
   ko: {
     notifications: "알림",
@@ -90,6 +125,11 @@ const copyByLocale = {
     unavailable: "이 브라우저에서는 알림을 사용할 수 없습니다.",
     notConfigured: "알림 서비스가 아직 설정되지 않았습니다.",
     saveFailed: "알림 설정을 저장하지 못했습니다. 다시 시도해 주세요.",
+    setupFailed: "알림 설정을 열지 못했습니다. 다시 시도해 주세요.",
+    setupLinkInstructions: "브라우저에서 이 링크를 열어 알림 설정을 완료하세요.",
+    setupLinkLabel: "알림 설정 링크",
+    copySetupLink: "설정 링크 복사",
+    setupLinkCopied: "설정 링크를 복사했습니다.",
   },
   hi: {
     notifications: "सूचनाएँ",
@@ -101,6 +141,11 @@ const copyByLocale = {
     unavailable: "इस ब्राउज़र में सूचनाएँ उपलब्ध नहीं हैं।",
     notConfigured: "सूचना सेवा अभी सेट अप नहीं की गई है।",
     saveFailed: "सूचना सेटिंग सहेजी नहीं जा सकीं। कृपया फिर से कोशिश करें।",
+    setupFailed: "सूचना सेटअप नहीं खोला जा सका। कृपया फिर से कोशिश करें।",
+    setupLinkInstructions: "सूचनाएँ चालू करने की प्रक्रिया पूरी करने के लिए इस लिंक को अपने ब्राउज़र में खोलें।",
+    setupLinkLabel: "सूचना सेटअप लिंक",
+    copySetupLink: "सेटअप लिंक कॉपी करें",
+    setupLinkCopied: "सेटअप लिंक कॉपी हो गया।",
   },
   ru: {
     notifications: "Уведомления",
@@ -112,6 +157,11 @@ const copyByLocale = {
     unavailable: "В этом браузере уведомления недоступны.",
     notConfigured: "Служба уведомлений ещё не настроена.",
     saveFailed: "Не удалось сохранить настройки уведомлений. Попробуйте ещё раз.",
+    setupFailed: "Не удалось открыть настройку уведомлений. Попробуйте ещё раз.",
+    setupLinkInstructions: "Откройте эту ссылку в браузере, чтобы завершить включение уведомлений.",
+    setupLinkLabel: "Ссылка для настройки уведомлений",
+    copySetupLink: "Скопировать ссылку настройки",
+    setupLinkCopied: "Ссылка настройки скопирована.",
   },
   tr: {
     notifications: "Bildirimler",
@@ -123,6 +173,11 @@ const copyByLocale = {
     unavailable: "Bu tarayıcıda bildirimler kullanılamıyor.",
     notConfigured: "Bildirim hizmeti henüz yapılandırılmadı.",
     saveFailed: "Bildirim ayarları kaydedilemedi. Lütfen tekrar deneyin.",
+    setupFailed: "Bildirim kurulumu açılamadı. Lütfen tekrar deneyin.",
+    setupLinkInstructions: "Bildirimleri etkinleştirmeyi tamamlamak için bu bağlantıyı tarayıcınızda açın.",
+    setupLinkLabel: "Bildirim kurulum bağlantısı",
+    copySetupLink: "Kurulum bağlantısını kopyala",
+    setupLinkCopied: "Kurulum bağlantısı kopyalandı.",
   },
   ar: {
     notifications: "الإشعارات",
@@ -134,6 +189,11 @@ const copyByLocale = {
     unavailable: "الإشعارات غير متاحة في هذا المتصفح.",
     notConfigured: "خدمة الإشعارات غير مهيأة بعد.",
     saveFailed: "تعذر حفظ إعدادات الإشعارات. يُرجى المحاولة مرة أخرى.",
+    setupFailed: "تعذر فتح إعداد الإشعارات. يُرجى المحاولة مرة أخرى.",
+    setupLinkInstructions: "افتح هذا الرابط في متصفحك لإكمال تفعيل الإشعارات.",
+    setupLinkLabel: "رابط إعداد الإشعارات",
+    copySetupLink: "نسخ رابط الإعداد",
+    setupLinkCopied: "تم نسخ رابط الإعداد.",
   },
   id: {
     notifications: "Notifikasi",
@@ -145,6 +205,11 @@ const copyByLocale = {
     unavailable: "Notifikasi tidak tersedia di browser ini.",
     notConfigured: "Layanan notifikasi belum dikonfigurasi.",
     saveFailed: "Pengaturan notifikasi tidak dapat disimpan. Silakan coba lagi.",
+    setupFailed: "Penyiapan notifikasi tidak dapat dibuka. Silakan coba lagi.",
+    setupLinkInstructions: "Buka tautan ini di browser untuk menyelesaikan pengaktifan notifikasi.",
+    setupLinkLabel: "Tautan penyiapan notifikasi",
+    copySetupLink: "Salin tautan penyiapan",
+    setupLinkCopied: "Tautan penyiapan disalin.",
   },
   it: {
     notifications: "Notifiche",
@@ -156,6 +221,11 @@ const copyByLocale = {
     unavailable: "Le notifiche non sono disponibili in questo browser.",
     notConfigured: "Il servizio di notifiche non è ancora configurato.",
     saveFailed: "Impossibile salvare le impostazioni delle notifiche. Riprova.",
+    setupFailed: "Impossibile aprire la configurazione delle notifiche. Riprova.",
+    setupLinkInstructions: "Apri questo link nel browser per completare l'attivazione delle notifiche.",
+    setupLinkLabel: "Link di configurazione delle notifiche",
+    copySetupLink: "Copia il link di configurazione",
+    setupLinkCopied: "Link di configurazione copiato.",
   },
   nl: {
     notifications: "Meldingen",
@@ -167,6 +237,11 @@ const copyByLocale = {
     unavailable: "Meldingen zijn niet beschikbaar in deze browser.",
     notConfigured: "De meldingsservice is nog niet ingesteld.",
     saveFailed: "De meldingsinstellingen konden niet worden opgeslagen. Probeer het opnieuw.",
+    setupFailed: "Het instellen van meldingen kon niet worden geopend. Probeer het opnieuw.",
+    setupLinkInstructions: "Open deze link in je browser om het inschakelen van meldingen af te ronden.",
+    setupLinkLabel: "Link voor het instellen van meldingen",
+    copySetupLink: "Instellingslink kopiëren",
+    setupLinkCopied: "Instellingslink gekopieerd.",
   },
   pl: {
     notifications: "Powiadomienia",
@@ -178,6 +253,11 @@ const copyByLocale = {
     unavailable: "Powiadomienia są niedostępne w tej przeglądarce.",
     notConfigured: "Usługa powiadomień nie jest jeszcze skonfigurowana.",
     saveFailed: "Nie udało się zapisać ustawień powiadomień. Spróbuj ponownie.",
+    setupFailed: "Nie udało się otworzyć konfiguracji powiadomień. Spróbuj ponownie.",
+    setupLinkInstructions: "Otwórz ten link w przeglądarce, aby dokończyć włączanie powiadomień.",
+    setupLinkLabel: "Link konfiguracji powiadomień",
+    copySetupLink: "Kopiuj link konfiguracji",
+    setupLinkCopied: "Link konfiguracji skopiowany.",
   },
   vi: {
     notifications: "Thông báo",
@@ -189,6 +269,11 @@ const copyByLocale = {
     unavailable: "Trình duyệt này không hỗ trợ thông báo.",
     notConfigured: "Dịch vụ thông báo chưa được cấu hình.",
     saveFailed: "Không thể lưu cài đặt thông báo. Vui lòng thử lại.",
+    setupFailed: "Không thể mở phần thiết lập thông báo. Vui lòng thử lại.",
+    setupLinkInstructions: "Mở liên kết này trong trình duyệt để hoàn tất việc bật thông báo.",
+    setupLinkLabel: "Liên kết thiết lập thông báo",
+    copySetupLink: "Sao chép liên kết thiết lập",
+    setupLinkCopied: "Đã sao chép liên kết thiết lập.",
   },
 } satisfies Record<YouTubeLocale, HostedNotificationCopy>;
 
