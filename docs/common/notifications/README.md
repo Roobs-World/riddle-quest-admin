@@ -1,5 +1,18 @@
 # Notifications
 
+Games register verified accounts, device routing and notification consent. The existing notification manager owns notification content, scheduling and sending. The receiving device owns system display and notification responses, including taps and dismissal. Gameplay has no push-received callback, notification-response handler, delivery acknowledgement or response-based reward.
+
+The device may launch the configured game URL or native app after a tap. The game then follows its ordinary startup path. A registration or enrollment-complete response only confirms setup; it is separate from a response to a delivered notification.
+
+| Responsibility | Owner |
+| --- | --- |
+| Account, device routing and On/Off consent registration | Authenticated platform adapter and backend |
+| Campaign content, audience, schedule and sending | Notification manager |
+| Browser notification display and taps | Manager service worker on the device |
+| Android notification display and taps | Native FCM receiver and Android notification APIs |
+
+The browser implementation is `notification-manager/public/push/worker.js`. Android uses `RiddleQuestMessagingService` and `AndroidNotifications` under `platforms/native/android`. Both operate outside gameplay. A user ID alone is not a device push route; a registered browser subscription or FCM token and device permission are still required.
+
 The game has one global Notifications preference in Settings, using the same On/Off control as the other preferences. It defaults to On. Profile and multiplayer have no notification controls. Default On records a preference; device permission still requires a player gesture.
 
 Eligible players receive the notification request in its own modal after closing the startup menu and finishing any instructions, registration or guidance. Sandboxed games that cannot open a setup window provide a private, copyable enrollment link. Setup and delivery failures are distinct from a failed preference save.

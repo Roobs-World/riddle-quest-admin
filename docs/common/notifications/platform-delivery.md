@@ -4,6 +4,8 @@ One hosted notification service owns campaign content, scheduling, the queue and
 
 Game platforms enroll player devices and maintain consent. The notification manager sends every campaign to the eligible registered devices in its selected audience. Selecting all platforms includes every supported enrolled transport; it does not turn historical account profiles into device registrations. Browser delivery uses system notifications through `ServiceWorkerRegistration.showNotification`, with the Riddle Quest icon. The installed web app is named Riddle Quest. The browser and operating system control the final layout and source attribution. Android uses its native notification receiver through FCM.
 
+Notification responses belong to the device. Browser workers handle `notificationclick`; Android uses a native `PendingIntent`. These may open the normal game entry, but they send no delivery acknowledgement or notification-response callback into gameplay. The game's enrollment confirmation and consent controls only maintain registration.
+
 The [system notification release record](evidence/system-notifications-2026-11-24.json) records the live branding update, signup failure correction and remaining device-verification limit.
 
 | Client | Default device adapter |
@@ -37,7 +39,7 @@ Reddit, YouTube, Netflix and GameSnacks retain their existing target restriction
 
 | Game client | Device signup |
 | --- | --- |
-| Jest and Facebook | Shared Firebase-linked enrollment, offered during the welcome shown to eligible new and returning accounts and in Settings |
+| Jest and Facebook | Shared Firebase-linked enrollment, offered in its own modal after the startup menu closes and in Settings |
 | Native Android | Native permission and FCM registration through the app's notification screen |
 | Yahoo hosted-push client | Browser permission and an anonymous hosted device registration |
 | Reddit | No released enrollment adapter; an external enrollment flow requires the Devvit gateway and Reddit approval for off-site navigation and collection |
