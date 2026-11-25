@@ -60,7 +60,7 @@ Runtime code remains compile-time isolated:
 - `platforms/web/youtube/src` contains the self-contained YouTube adapter and builds to `platforms/web/youtube/build/dist`.
 - `platforms/web/reddit/src` contains the same-origin webview adapter; `platforms/web/reddit/src/server` contains the trusted Devvit Gateway. Together they build the Reddit App package.
 
-Build one target without starting a release:
+Build one target with its target-specific command:
 
 ```bash
 pnpm build:jest
@@ -68,6 +68,8 @@ pnpm build:facebook
 pnpm build:youtube
 pnpm build:reddit
 ```
+
+After completing a Jest game build, follow the [standing upload and activation authorization](../../jest/jest-html5-operations.md#build-and-upload). The build command itself stays independent so internal release builds cannot recursively upload. Other targets keep their explicit release boundaries.
 
 ## Provider-specific safeguards
 

@@ -58,7 +58,7 @@ The reviewed migration, Firebase functions, website and scheduler are deployed; 
 
 The [Jest active-build check](../../jest/evidence/jest-notification-enrollment-active-2026-11-24.json) confirmed that version `01a20c95-dd01-713b-b291-2e8ee5db350c` is ready and active, with the external Firebase enrollment flow in its hosted JavaScript. It was activated at 08:33 UTC on November 24. A newer upload is not needed for that core flow. An old version-pinned preview or already-open tab must be distinguished from an account/runtime eligibility failure before diagnosing an unavailable message as browser incompatibility.
 
-Source and build verification do not authorize game uploads, activation or publication. Real-device enrollment and live push delivery remain acceptance work after the updated client is activated or opened through its inactive preview.
+Follow the [standing Jest release authorization](../../jest/jest-html5-operations.md#build-and-upload) after completing a Jest game build. Other platform uploads and game publication retain their explicit authorization requirements. Real-device enrollment and live push delivery remain acceptance work after the updated client is activated or opened through its inactive preview.
 
 ## References
 

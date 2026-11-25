@@ -92,6 +92,8 @@ set `complete` manually.
 
 Build and upload from a clean, committed `main` checkout. Confirm `git branch --show-current` returns `main` and push the reviewed source to `origin/main` before preparing the release.
 
+The user's standing instruction is to update Jest after each completed Jest game build. Run `pnpm release:jest` to upload and activate that build without requesting permission again, unless the user explicitly asks for a build-only, dry-run or inactive result. The production gate's internal builds and immutable rebuild form part of that one release; they do not start additional uploads. Confirm the exact uploaded version is ready and has the requested activation state through Jest before reporting completion. Publication, review submission and GitHub Actions runner usage retain their separate authorization requirements.
+
 Install the credential template outside the repository with owner-only permissions, then set the game upload token and notification email. The release rejects repository-local, linked, group-readable, or world-readable credential files:
 
 ```bash

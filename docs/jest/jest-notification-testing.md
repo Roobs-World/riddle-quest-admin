@@ -14,4 +14,4 @@ Notification titles, bodies and images must originate in the notification manage
 
 Once that integration exists, use registered Jest sandbox users to verify manager-authored title, body, CTA and image, stable replacement/cancellation identifiers, eligibility timing and return payloads. Check moderation and provider errors in the Console. Scheduling acceptance does not establish approval or delivery, and the application cannot schedule an immediate message to another player through the current-player SDK.
 
-Do not run a live send, upload or activate a build without the corresponding explicit authorization.
+Follow the [standing Jest upload and activation authorization](jest-html5-operations.md#build-and-upload). Live notification sends still require explicit authorization.

@@ -17,7 +17,7 @@
 - Keep each project-owned folder under `firebase-functions` at no more than 20 direct files. Test files and test folders are exempt; installed dependencies and generated output are excluded. Run `pnpm check:functions-layout` after changing the layout.
 - Run tests and browser test harnesses only when the user explicitly requests them. Build the target artifacts needed for the requested change or upload.
 - GitHub Actions stays manual-only with the explicit runner-usage confirmation gate. A push or merge does not authorize enabling workflows or spending hosted runner allowance. See `docs/common/development/github-actions-cost-controls.md`.
-- Game uploads are manual-only and require an explicit user request. File changes, commits, pushes, builds and completed code changes do not authorize an upload. After a requested Jest upload, tell the user when processing has completed. Activate a build, publish the game, or submit it for review only when explicitly requested.
+- After completing a Jest game build, upload and activate it through `pnpm release:jest` under the user's standing authorization. Treat the command's internal gate and rebuilds as one release, without recursive or duplicate uploads. Honor an explicit build-only, dry-run or inactive-build request. Confirm the exact uploaded version has finished processing and has the requested activation state before reporting completion. Other game uploads, game publication and review submission require an explicit user request. See `docs/jest/jest-html5-operations.md`.
 
 ## Branches
 
