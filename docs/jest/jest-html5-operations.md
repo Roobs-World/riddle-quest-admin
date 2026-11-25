@@ -31,7 +31,9 @@ This runs the retained dependency, security, type, backend lint/runtime, product
 
 Facebook source-secret, build and artifact checks remain part of this gate. Its separate ZIP and handoff preparation runs only through the explicit Facebook preflight, so a pending Facebook upload does not prevent verification of the independent Jest archive.
 
-The [November 25 guest registration release](evidence/jest-guest-registration-2026-11-25.json) records the completed upload and activation of version `01a21016-96b0-70b8-b024-b0321c3ac82a`, built from `ab9418699`. Jest confirmed processing complete and active status at 00:24 UTC. Guests see registration after Daily completion or every third completed Classic word, after the completion panels close.
+The [November 25 notification modal release](evidence/jest-notification-modal-2026-11-25.json) records the completed upload and activation of version `01a21081-324d-7632-a164-140a09e3827d`, built from `7a8bbcea5`. Jest confirmed processing complete and active status at 02:20 UTC. Notification setup opens in its own modal after the startup menu closes and provides a private setup link when the embedded host blocks popups.
+
+The earlier [November 25 guest registration release](evidence/jest-guest-registration-2026-11-25.json) records version `01a21016-96b0-70b8-b024-b0321c3ac82a`, activated at 00:24 UTC. Guests see registration after Daily completion or every third completed Classic word, after the completion panels close.
 
 The earlier [November 25 guest notification toggle release](evidence/jest-guest-notification-toggle-2026-11-25.json) records version `01a21003-7613-7479-be52-bbe911ea742c`, activated at 00:03 UTC. The Settings notification control is disabled and shown Off for guests.
 

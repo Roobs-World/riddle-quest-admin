@@ -21,3 +21,5 @@ Preference-save errors, setup errors and delivery-status failures remain distinc
 Jest, Facebook and Yahoo production builds and artifact audits pass. Android's shared-contract type check passes. Regression specifications cover denied popups, handoff validation and expiry, account replacement, asynchronous retirement, stale pairing-status responses and save/status separation. Tests and browser harnesses were not run under the repository's explicit-request policy.
 
 This source change does not upload or activate a replacement Jest build or deploy Firebase Functions. Real-device enrollment and notification display remain unverified for the replacement source.
+
+After the user supplied standing upload and activation authorization, the [notification modal release](../../../jest/evidence/jest-notification-modal-2026-11-25.json) completed processing and became active at 02:20 UTC. No Firebase deployment or real-device enrollment check accompanied that release.
