@@ -1,6 +1,6 @@
 # Notification management service
 
-The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager has no Firebase SDK dependency. Firebase retains authenticated account and device ownership for both browser enrollment and native FCM. The manager calls private Firebase bridges rather than importing its SDK. See [Firebase enrollment](firebase-enrollment.md).
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager backend calls private Firebase bridges without importing Firebase Admin. Firebase retains authenticated account and device ownership for both browser enrollment and native FCM. The prepared browser enrollment page loads only Firebase app and messaging to obtain an FCM token; it performs no Firebase account sign-in. See [Firebase enrollment](firebase-enrollment.md) and the [Supabase FCM rollout](supabase-fcm.md).
 
 Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
 
@@ -18,7 +18,7 @@ pnpm check:types:notification-manager
 pnpm build:notification-manager
 ```
 
-Vite serves the frontend on port 5180. For local API routes, use Vercel's development runtime with `notification-manager/` as the project root. Vite alone serves only the frontend. Builds emit `notification-manager/dist/` and reject browser imports of server modules, Web Push server code, Firebase or private credentials.
+Vite serves the frontend on port 5180. For local API routes, use Vercel's development runtime with `notification-manager/` as the project root. Vite alone serves only the frontend. Builds emit `notification-manager/dist/` and reject browser imports of server modules, Web Push server code, private credentials and Firebase modules outside the isolated app/messaging enrollment path.
 
 The development login screen offers a local drafts workspace while external services are unconfigured. It makes no management API calls, and its send/upload controls stay disabled. Calendar dates describe draft plans, not scheduled delivery. This entry point is excluded from production builds. Production requires sign-in and a successful server operator check before opening the workspace; a later 401 or 403 closes it again.
 

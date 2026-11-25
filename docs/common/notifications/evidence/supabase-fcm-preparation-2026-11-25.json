@@ -1,0 +1,80 @@
+{
+  "recordedAt": "2026-11-25T12:47:56Z",
+  "status": "prepared-awaiting-supabase-authentication-and-browser-vapid",
+  "sourceCommit": "487bffd7cb5806afc52c449b826d8d2c5789c2da",
+  "branch": "main",
+  "pushedToOriginMain": true,
+  "targets": {
+    "supabaseProjectRef": "vqyjgcqyudqonfhgymoy",
+    "firebaseProjectId": "riddle-quest-ec2b2",
+    "vercelProjectId": "prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz",
+    "vercelTeamId": "team_Q3bXo2jPBKdjs3tuoKLtqUe2",
+    "edgeFunction": "fcm-push"
+  },
+  "checks": {
+    "denoFrozenTypeCheck": "passed, Deno 2.9.6",
+    "firebaseProductionBuild": "passed, pinned Node 22.23.1",
+    "firebaseProductionLint": "passed",
+    "firebaseArtifactAudit": "passed, 271 modules, 1411 dependency references, 544 upload files",
+    "functionCapacityAudit": "passed, zero warm instances",
+    "managerBuild": "passed, Node 24.17.0, browser module/credential boundary audit",
+    "vercelProductionBuild": "passed, local production output including API functions",
+    "functionsLayout": "passed, 44 folders, maximum 18 direct non-test files, limit 20",
+    "workerSyntax": "passed",
+    "whitespace": "passed",
+    "automatedTests": "not run, not requested",
+    "browserHarnesses": "not run, not requested"
+  },
+  "googleProvisioning": {
+    "serviceAccount": "notification-fcm-sender@riddle-quest-ec2b2.iam.gserviceaccount.com",
+    "projectRole": "projects/riddle-quest-ec2b2/roles/notificationFcmSender",
+    "permissions": ["cloudmessaging.messages.create"],
+    "onlyProjectRoleVerified": true,
+    "secretVersions": {
+      "FCM_SERVICE_ACCOUNT_JSON": 1,
+      "NOTIFICATION_FCM_EDGE_SECRET": 1
+    },
+    "secretStore": "Google Secret Manager in riddle-quest-ec2b2",
+    "temporaryCredentialFilesRemoved": true,
+    "validation": {
+      "runtimeModule": "notification-manager/supabase/functions/fcm-push/google.ts",
+      "credential": "valid",
+      "fcmPermission": "verified",
+      "validateOnly": true,
+      "httpStatus": 200,
+      "notificationsSent": 0
+    },
+    "localFirebaseEdgeUrlConfigured": true
+  },
+  "access": {
+    "supabaseMcp": "OAuth token refresh failed: Failed to parse server response",
+    "supabaseMcpUnsignedReachabilityStatus": 401,
+    "supabaseCli": "AccessTokenRequiredError, no saved access token",
+    "vercelCliCorrectProject": "accessible",
+    "googleCloudCli": "authenticated",
+    "firebasePublicWebAppConfiguration": "retrieved from Firebase MCP"
+  },
+  "review": {
+    "authorizationOwnershipConsentDeletionAndDuplicateSendReview": "no new concrete regression found",
+    "correctedFinding": "flattened FCM web data to avoid double JSON escaping, and classified local validation rejection as failed"
+  },
+  "rollout": {
+    "supabaseSecretsConfigured": false,
+    "edgeFunctionDeployed": false,
+    "firebaseFunctionsDeployed": false,
+    "vercelDeploymentCreated": false,
+    "browserVapidConfigured": false,
+    "gameBuildCreated": false,
+    "gameUploadPerformed": false,
+    "campaignsCreated": 0,
+    "notificationsSent": 0,
+    "remaining": [
+      "Restore Supabase project authentication",
+      "Privately configure Supabase secrets from the prepared Google Secret Manager versions",
+      "Deploy and verify the fcm-push Edge Function",
+      "Obtain the Firebase-associated public browser VAPID key and configure NOTIFICATION_FCM_WEB_CONFIG",
+      "Deploy and verify the three Firebase bridge/dispatch functions",
+      "Deploy and verify the manager through its correct Vercel project"
+    ]
+  }
+}

@@ -19,6 +19,8 @@ The iOS scope is Safari/Home Screen web apps, as selected by the user. No native
 
 The Web Push service accepts Google, Mozilla, Apple and Microsoft push endpoints. It uses the browser-issued subscription, rather than guessing the user's device API from their OS. The user writes notification title, body and optional image in the manager. Device support determines image presentation; the game supplies no fallback copy or generated artwork.
 
+The [Supabase FCM integration](supabase-fcm.md) is prepared for Android campaigns and new account-linked browser enrollments. It preserves the existing Web Push routes and device-owned display. Its rollout status and required authentication are recorded in that guide; source preparation does not switch the live transport.
+
 ## Android React Native
 
 The native provider has one default-On master preference and preserves saved Off values. OS notification permission remains separate and is requested only from Settings. Native account changes and token rotations renew registration through the existing authenticated Firebase JS account, without creating another identity.

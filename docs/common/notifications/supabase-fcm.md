@@ -67,4 +67,10 @@ Use Node.js 22 for the Firebase build and Node.js 24 for the manager. Tests and 
 
 ## Current rollout
 
-Implementation is prepared locally on November 25, 2026. Supabase MCP could not refresh its OAuth token, and Supabase CLI had no saved access token. Google Cloud and the correct Vercel project were accessible through their existing CLI logins. No Edge Function, Firebase revision, Vercel release, IAM credential or browser FCM VAPID setting has been changed by this preparation. Complete the release order after Supabase authentication and the Firebase Web Push certificate are available.
+Implementation commit `487bffd7cb5806afc52c449b826d8d2c5789c2da` is pushed to `origin/main`. The Deno check, Firebase Node.js 22 build and lint, manager production build, full Vercel production build and Functions layout audit passed on November 25, 2026. No automated tests or browser harnesses ran.
+
+Google service account `notification-fcm-sender@riddle-quest-ec2b2.iam.gserviceaccount.com` has the dedicated project role `notificationFcmSender`, containing only `cloudmessaging.messages.create`. Version 1 of both `FCM_SERVICE_ACCOUNT_JSON` and `NOTIFICATION_FCM_EDGE_SECRET` is stored in Google Secret Manager. The service-account credential was verified through the canonical Google-auth module with an FCM HTTP v1 `validate_only` request. Google returned HTTP 200 and no notification was sent. Temporary credential files were removed. The approved Edge URL is configured in the ignored local Firebase environment file.
+
+Supabase MCP could not refresh its OAuth token, and Supabase CLI had no saved access token. The MCP service itself was reachable with the expected unsigned HTTP 401. Google Cloud and the correct Vercel project were accessible through their existing CLI logins. No Edge Function, Firebase revision, Vercel release or browser FCM VAPID setting has been changed. Complete the release order after Supabase authentication and the Firebase Web Push certificate are available. Recover the two prepared credential values privately from Google Secret Manager for Supabase secret configuration; do not generate or rotate another pair.
+
+See the [preparation evidence](evidence/supabase-fcm-preparation-2026-11-25.json).
