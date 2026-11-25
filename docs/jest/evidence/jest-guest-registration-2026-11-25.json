@@ -1,0 +1,72 @@
+{
+  "date": "2026-11-25",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "ab94186997d00536c5d425b559949f6675e16304",
+  "authorization": {
+    "upload": "User requested upload to Jest.",
+    "activation": "User explicitly requested build activation.",
+    "publicationOrReview": false
+  },
+  "behavior": {
+    "guestDailyCompletionPromptsRegistration": true,
+    "guestClassicPromptWins": [3, 6, 9],
+    "classicPromptInterval": 3,
+    "continuesSavedClassicCount": true,
+    "waitsForCompletionPanels": true,
+    "returningGuestPlayPromptPreserved": true
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261125002311.ab94186997d0.212e7dc8",
+    "versionId": "01a21016-96b0-70b8-b024-b0321c3ac82a",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a21016-96b0-70b8-b024-b0321c3ac82a",
+    "httpStatus": 202,
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2629812,
+    "archiveEntries": 100,
+    "archiveSha256": "d007c3e821001b29298ca2e897f3232a865addf2cbdc6119f5b42ddaf539f21e",
+    "activationRequested": true,
+    "immutableSourceAndArchiveVerified": true
+  },
+  "authoritativeReadback": {
+    "channel": "Jest MCP list_game_versions",
+    "checkedAt": "2026-11-25T00:24:24Z",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-25T00:24:11.813Z",
+    "processingComplete": true,
+    "separateActivationMutationRequired": false
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "securityAndDependencyAuditsPassed": true,
+    "typeAndBackendLintChecksPassed": true,
+    "productionBuildsAndArtifactAuditsPassed": true,
+    "htmlAndExactArchiveAuditsPassed": true,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "backend": {
+    "sourceAndRulesUnchangedFromPreviousActiveBuild": true,
+    "deploymentPerformed": false,
+    "readbackCommand": "gcloud functions list --v2",
+    "gameplayFunctionsVerified": [
+      "getCurrentClassicRiddle",
+      "getCurrentDailyChallenge",
+      "submitSinglePlayerGuess",
+      "completeGame",
+      "getHint",
+      "spendCoins",
+      "skipRiddle"
+    ],
+    "regions": ["us-central1", "europe-west1"],
+    "allInstancesActive": true,
+    "runtime": "nodejs22",
+    "allTrafficOnLatestRevisions": true
+  },
+  "previousActiveVersionId": "01a21003-7613-7479-be52-bbe911ea742c",
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false,
+  "secretsExposed": false
+}
