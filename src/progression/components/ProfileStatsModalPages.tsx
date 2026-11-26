@@ -1,3 +1,4 @@
+import {useLayoutEffect, useRef} from "react";
 import {ACHIEVEMENT_DEFINITIONS} from "../achievements/catalog/achievements";
 import type {GameSessionState} from "../../gameplay/session/gameSession";
 import {useTranslator} from "../../localization/browser/i18n";
@@ -73,6 +74,29 @@ export function AchievementsModalPage({profile}: ProfileStatsModalPageProps) {
 export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const gridRef = useRef<HTMLDListElement>(null);
+
+  useLayoutEffect(() => {
+    const viewport = viewportRef.current;
+    const grid = gridRef.current;
+    if (!viewport || !grid) return;
+
+    const fit = () => {
+      grid.style.transform = "none";
+      const availableHeight = viewport.getBoundingClientRect().height;
+      const contentHeight = grid.getBoundingClientRect().height;
+      const scale = contentHeight > 0 ? Math.min(1, availableHeight / contentHeight) : 1;
+      grid.style.transform = `scale(${scale})`;
+    };
+
+    fit();
+    const observer = new ResizeObserver(fit);
+    observer.observe(viewport);
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, []);
+
   /** Label and value pairs displayed in the statistics grid. */
   const statistics: Array<[string, string | number]> = [
     [tr("StatsModal.GAMES_PLAYED"), profile?.gamesPlayed ?? 0],
@@ -92,14 +116,16 @@ export function StatisticsModalPage({profile}: ProfileStatsModalPageProps) {
   ];
 
   return (
-    <dl className="full-stat-grid">
-      {statistics.map(([label, value]) => (
-        <div key={label}>
-          <dt>{label}</dt>
-          <dd>{value}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="statistics-page" ref={viewportRef}>
+      <dl className="full-stat-grid" ref={gridRef}>
+        {statistics.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 

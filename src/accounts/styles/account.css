@@ -366,14 +366,22 @@
 .achievement-progress {
   height: 7px;
 }
-.full-stat-grid {
+.statistics-page {
+  min-width: 0;
+  min-height: 0;
+  overflow: clip;
+}
+.modal-statistics .full-stat-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  gap: clamp(4px, 1.2dvh, 10px);
+  width: 100%;
   margin: 0;
+  transform-origin: top center;
 }
 .full-stat-grid div {
-  padding: 12px;
+  min-width: 0;
+  padding: clamp(6px, 1.5dvh, 12px);
   border-radius: 11px;
   background: #f4f1eb;
 }
@@ -387,8 +395,14 @@
   margin: 5px 0 0;
   color: #401f40;
   font:
-    900 21px "Manrope",
+    900 clamp(16px, 3.2dvh, 21px) "Manrope",
     sans-serif;
+  overflow-wrap: anywhere;
+}
+@media (max-height: 500px) and (min-width: 600px) {
+  .modal-statistics .full-stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 .rank-list article {
   filter: none;
