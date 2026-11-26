@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-26",
+  "sourceCommit": "005d237da9b5b805aa5492009d11854a527f7951",
+  "sourceDirty": false,
+  "changes": [
+    "Display translated Premium benefits immediately, before the first subscription catalog response.",
+    "Keep the same account's known subscription name, price, description and benefits visible during refresh and transient failure.",
+    "Withhold subscription checkout actions until ownership refresh succeeds; preserve active-plan suppression and registered-only billing."
+  ],
+  "jest": {
+    "versionId": "01a2199a-2cdd-7453-9169-81a028de8c9f",
+    "buildVersion": "1.0.0-dev.20261126204335.005d237da9b5.12a2d3b6",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T20:44:32.116Z",
+    "confirmationSource": "Jest list_game_versions",
+    "archiveBytes": 2590259,
+    "archiveSha256": "8d0a6517545f0e4d56fbed4d2a2431f7fabcca5d3d69c56f0042d4ec4340c467"
+  },
+  "checksPassed": ["Shared TypeScript", "pnpm release:jest production gate", "Immutable Jest artifact audit", "W3C validation with zero findings"],
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "simulatorAcceptance": "not-run",
+  "publicationOrReviewSubmitted": false
+}

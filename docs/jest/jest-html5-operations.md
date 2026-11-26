@@ -23,6 +23,8 @@ A local build or artifact audit does not establish hosted gameplay, payment, not
 
 ## Build and artifact verification
 
+The [November 26 subscription details release](evidence/subscription-details-2026-11-26.json) displays Premium benefits immediately and keeps known plan details visible during ownership refresh or failure. Checkout actions remain unavailable until verification succeeds. Jest confirmed version `01a2199a-2cdd-7453-9169-81a028de8c9f` ready and active at 20:44:32 UTC. The production gate and artifact checks passed; tests and browser checks were not run.
+
 The [November 26 Growth Fund fixes](evidence/growth-fund-fixes-2026-11-26.json) add first-session guest registration, registration before subscription checkout, and early manager-owned D1–D7 reminders with approved images and distinct bodies of 69–84 characters. Supabase, Vercel and the authenticated Firebase handoff are deployed. Jest confirmed version `01a21988-b3e9-75d9-89ab-8518bd6d5c34` ready and active at 20:25:27 UTC. The production gate and artifact checks passed; tests, browser harnesses and Simulator acceptance were not run. Refresh the whole Simulator page before replaying the checks because Reload app retains earlier recorded failures.
 
 The [November 26 profile avatar release](evidence/jest-profile-avatar-2026-11-26.json) makes the profile image open avatar selection and displays the saved game avatar in Profile and multiplayer. Guests are prompted to register. Jest confirmed version `01a2193e-f9a4-734e-a149-a50ae15385a9` ready and active at 19:04:55 UTC. Production builds and audits passed; tests, browser harnesses and hosted avatar upload acceptance were not run.
