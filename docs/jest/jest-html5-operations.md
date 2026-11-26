@@ -21,6 +21,8 @@ A local build or artifact audit does not establish hosted gameplay, payment, not
 
 ## Build and artifact verification
 
+The [November 26 multiplayer waiting alignment release](evidence/jest-multiplayer-waiting-alignment-2026-11-26.json) centers the opponent waiting message across the gameplay grid, including short landscape layouts. Jest confirmed version `01a2164a-8489-7497-bb35-bc5af56ba9d9` ready and active at 05:18:39 UTC.
+
 Run the production build and audit gate:
 
 ```bash

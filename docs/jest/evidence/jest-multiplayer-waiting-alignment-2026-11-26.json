@@ -1,0 +1,19 @@
+{
+  "change": "Center the multiplayer opponent waiting message across the gameplay grid.",
+  "sourceCommit": "294ba56ff8b931d20d48307d1c03707539ec401a",
+  "alignmentCommit": "6f8c4e02b",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a2164a-8489-7497-bb35-bc5af56ba9d9",
+  "buildVersion": "1.0.0-dev.20261126051742.294ba56ff8b9.97e1f2f7",
+  "buildStatus": "ready",
+  "isActive": true,
+  "activatedAt": "2026-11-26T05:18:39.436Z",
+  "fileSizeBytes": 4221486,
+  "confirmationSource": "Jest list_game_versions",
+  "validation": {
+    "productionGate": "pnpm release:jest completed the production gate, immutable rebuild, artifact audit and W3C validation.",
+    "builtCss": ".race-outcome-loading{text-align:center;grid-column:1/-1}",
+    "testsRun": false,
+    "browserHarnessRun": false
+  }
+}
