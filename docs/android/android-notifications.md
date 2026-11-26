@@ -54,4 +54,6 @@ FCM supports background messages, but delivery remains subject to Android permis
 
 ## Release verification
 
+The API 37 Google Play emulator received a live FCM campaign and opened the installed game from the Android notification shade. [Delivery and tap evidence, 26 November 2026](evidence/native-notification-tap-2026-11-26.md)
+
 Build Functions and the native APK after changing this integration. Run tests and browser/device harnesses only when explicitly requested. An authorized deployment must configure the bridge, deploy the Firebase dispatch endpoint and updated registration callable, apply the manager schema, and install the updated APK. Retire the old daily reminder scheduler. No live notification, deployment, game upload or publication follows from source changes or builds.
