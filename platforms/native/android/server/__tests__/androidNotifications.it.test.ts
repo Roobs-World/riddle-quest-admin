@@ -14,9 +14,11 @@ const A = "AndroidPushA12345678901234567", B = "AndroidPushB12345678901234567";
 const TOKEN = "opaque-native-fcm-registration-token";
 const deviceId = (index = 1) => `00000000-0000-4000-8000-${String(index).padStart(12, "0")}`;
 const originalManagerUrl = process.env.NOTIFICATION_MANAGER_URL;
+const nativeAppId = "1:123456789:android:123abc";
+const originalAppId = process.env.ANDROID_FIREBASE_APP_ID;
 let db: FirebaseFirestore.Firestore, deviceEpoch = 0;
-const call = (uid: string, data: unknown, provider = "anonymous") =>
-  setAndroidPushSubscription.run({auth: {uid, token: {firebase: {sign_in_provider: provider}}}, data} as never);
+const call = (uid: string, data: unknown, provider = "anonymous", appId = nativeAppId) =>
+  setAndroidPushSubscription.run({app: {appId}, auth: {uid, token: {firebase: {sign_in_provider: provider}}}, data} as never);
 const enabled = (uid: string, patch: Record<string, unknown> = {}) => ({
   enabled: true, expectedOwnerId: uid, deviceEpoch: ++deviceEpoch, deviceId: deviceId(),
   preferenceFromSettings: true, token: TOKEN, locale: "fr", ...patch,
@@ -39,6 +41,7 @@ beforeAll(() => {
   if (app.options.projectId !== "demo-android-notifications") throw new Error("Dedicated Android notifications demo emulator required.");
   db = getFirestore(app);
   process.env.NOTIFICATION_MANAGER_URL = "";
+  process.env.ANDROID_FIREBASE_APP_ID = nativeAppId;
 });
 beforeEach(async () => {
   await clear();
@@ -51,6 +54,13 @@ afterAll(async () => {
   await clear();
   if (originalManagerUrl === undefined) delete process.env.NOTIFICATION_MANAGER_URL;
   else process.env.NOTIFICATION_MANAGER_URL = originalManagerUrl;
+  if (originalAppId === undefined) delete process.env.ANDROID_FIREBASE_APP_ID;
+  else process.env.ANDROID_FIREBASE_APP_ID = originalAppId;
+});
+
+it("refuses to register a browser app's token as a native Android route", async () => {
+  await expect(call(A, enabled(A), "anonymous", "1:123456789:web:123abc")).rejects.toMatchObject({code: "permission-denied"});
+  expect((await db.collection("androidPushTokens").get()).empty).toBe(true);
 });
 
 it("rejects wrong providers, missing accounts, malformed tokens and foreign expected owners", async () => {
