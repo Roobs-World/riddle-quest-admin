@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-11-26T03:57:56Z",
+  "vercel": {
+    "project": "riddle-quest-admin",
+    "alias": "riddle-quest-admin.vercel.app",
+    "deploymentId": "dpl_9FcFLo8Z3iZXr3tRZDZtNpPhitLU",
+    "target": "production",
+    "state": "READY"
+  },
+  "unauthenticatedPost": {
+    "retiredBrowserRoutes": [
+      "/api/push/config",
+      "/api/push/config-fcm",
+      "/api/push/enroll",
+      "/api/push/enroll-fcm",
+      "/api/push/status"
+    ],
+    "retiredBrowserStatus": 410,
+    "retiredBrowserError": "browser-push-retired",
+    "androidRegistration": {
+      "path": "/api/devices/android/registration",
+      "status": 401,
+      "error": "android-bridge-authentication-required"
+    }
+  },
+  "retirementWorker": {
+    "path": "/push/worker.js",
+    "httpStatus": 200,
+    "sha256": "ffc67fb6aa75505c135667b9ef577e443f5cc73861167d0db9f9d5f015963fc5",
+    "matchesRepositoryBytes": true
+  },
+  "verificationPushSends": 0
+}
