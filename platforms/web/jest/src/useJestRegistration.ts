@@ -1,6 +1,5 @@
 import {
   useCallback,
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -68,6 +67,9 @@ export function useJestRegistration({
   const overlayRef = useRef<JestRegistrationOverlayHandle | null>(null);
   const promptOpenRef = useRef(false);
   const loginPendingRef = useRef(false);
+  const guidanceReadyOwnerRef = useRef<string | null>(null);
+  const automaticPromptPlayerRef = useRef<string | null>(null);
+  const restartingSessionRef = useRef(false);
   /** Provides completing ref behavior. */
   const completingRef = useRef(false);
   /** Provides source ref behavior. */
@@ -79,6 +81,17 @@ export function useJestRegistration({
     active.current = true;
     return () => {active.current = false;};
   }, []);
+  /** A host-side logout must repeat signed startup before the new guest can play. */
+  const restartChangedGuestSession = useCallback((player: JestSession["player"]) => {
+    const session = sessionRef.current;
+    if (!session || player.registered ||
+      (!session.player.registered && player.playerId === session.player.playerId)) return false;
+    if (!restartingSessionRef.current) {
+      restartingSessionRef.current = true;
+      window.location.reload();
+    }
+    return true;
+  }, [sessionRef]);
   /** Provides complete behavior. */
   const complete = useCallback(() => {
     if (!active.current || !isCurrent() || !sessionRef.current || completingRef.current) return;
@@ -88,7 +101,7 @@ export function useJestRegistration({
     void withPlatformActivity(async () => {
       /** Provides previous session behavior. */
       const previousSession = sessionRef.current;
-      const ownsSession = () => active.current && isCurrent() && previousSession !== null &&
+      const ownsSession = () => active.current && isCurrent() && !restartingSessionRef.current && previousSession !== null &&
         sessionRef.current?.firebaseUid === previousSession.firebaseUid && sessionRef.current?.player.playerId === previousSession.player.playerId;
       /** Provides registered behavior. */
       let registered = false;
@@ -97,6 +110,7 @@ export function useJestRegistration({
       try {
         /** Provides player behavior. */
         const player = platform.getPlayer();
+        if (restartChangedGuestSession(player)) return;
         registered = player.registered;
         if (registered) {
           /** Provides signed behavior. */
@@ -137,6 +151,7 @@ export function useJestRegistration({
           }
           completionSucceeded = true;
         } else if (previousSession) {
+          automaticPromptPlayerRef.current = player.playerId;
           /** Provides preferences behavior. */
           const preferences = {...previousSession.preferences, registrationPromptDismissedAt: Date.now()};
           await platform.writePreferences(preferences);
@@ -179,6 +194,7 @@ export function useJestRegistration({
     backend,
     completeDeletedPlayerCleanup,
     platform,
+    restartChangedGuestSession,
     sessionRef,
     setError,
     setSession,
@@ -188,19 +204,18 @@ export function useJestRegistration({
   /** Shows registration after the current completion sequence has ended. */
   const showPrompt = useCallback(
     (source: RegistrationSource, showGamePrompt: boolean) => {
-      if (!active.current || !isCurrent() || promptOpenRef.current || completingRef.current) return;
+      if (!active.current || !isCurrent() || restartingSessionRef.current || promptOpenRef.current || completingRef.current) return;
       /** Provides session behavior. */
       const session = sessionRef.current;
       if (!session) return;
-      if (session.player.registered) {
-        window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {detail: {registered: true}}));
-        return;
-      }
       sourceRef.current = source;
       setRegistrationFailure(null);
       try {
-        if (platform.getPlayer().registered) {
-          complete();
+        const player = platform.getPlayer();
+        if (restartChangedGuestSession(player)) return;
+        if (player.registered) {
+          if (!session.player.registered || player.playerId !== session.player.playerId) complete();
+          else window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {detail: {registered: true}}));
           return;
         }
       } catch (error) {
@@ -218,13 +233,16 @@ export function useJestRegistration({
           entryPayload: createRegistrationEntryPayload(source, session.entryIntent),
           onClose: complete,
         });
-        if (overlay.status === "success") overlayRef.current = overlay.value;
+        if (overlay.status === "success") {
+          overlayRef.current = overlay.value;
+          automaticPromptPlayerRef.current = session.player.playerId;
+        }
         else trackFunnel("registration_overlay_failed", {source, status: overlay.status});
       }
       setShowRegistration(showGamePrompt);
       trackFunnel("registration_prompt_shown", {after: source});
     },
-    [complete, isCurrent, platform, sessionRef, trackFunnel],
+    [complete, isCurrent, platform, restartChangedGuestSession, sessionRef, trackFunnel],
   );
   /** Queues win prompts behind the victory and achievement popups. */
   const open = useCallback(
@@ -251,10 +269,12 @@ export function useJestRegistration({
   }, [complete]);
   /** Provides register behavior. */
   const register = useCallback(() => {
-    if (!active.current || !isCurrent() || !sessionRef.current || completingRef.current || loginPendingRef.current) return;
+    if (!active.current || !isCurrent() || restartingSessionRef.current || !sessionRef.current || completingRef.current || loginPendingRef.current) return;
     setRegistrationFailure(null);
     try {
-      if (platform.getPlayer().registered) {
+      const player = platform.getPlayer();
+      if (restartChangedGuestSession(player)) return;
+      if (player.registered) {
         if (overlayRef.current) overlayRef.current.closeButtonAction();
         complete();
         return;
@@ -278,6 +298,7 @@ export function useJestRegistration({
       }
       return;
     }
+    const promptedPlayerId = sessionRef.current.player.playerId;
     void withPlatformActivity(() =>
       platform.login(createRegistrationEntryPayload(sourceRef.current, sessionRef.current?.entryIntent ?? {})),
     ).then((result) => {
@@ -288,6 +309,7 @@ export function useJestRegistration({
         trackFunnel("registration_login_failed", {source: sourceRef.current, status: result.status});
         return;
       }
+      automaticPromptPlayerRef.current = promptedPlayerId;
       complete();
     }).catch((error) => {
       loginPendingRef.current = false;
@@ -297,15 +319,13 @@ export function useJestRegistration({
       setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
       trackFunnel("registration_login_failed", {source: sourceRef.current, status: "failure"});
     });
-  }, [complete, isCurrent, platform, sessionRef, trackFunnel, withPlatformActivity]);
+  }, [complete, isCurrent, platform, restartChangedGuestSession, sessionRef, trackFunnel, withPlatformActivity]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     /** Opens signup after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
     const openAfterInstructions = () => open("post_instructions", true);
-    const openForReturningPlayer = () => {
-      if (sessionRef.current?.player.registered === false) open("returning_player", true);
-    };
+    const openForReturningPlayer = () => open("returning_player", true);
     /** Provides on completion popups dismissed behavior. */
     const onCompletionPopupsDismissed = (event: Event) => {
       /** Provides key behavior. */
@@ -333,6 +353,50 @@ export function useJestRegistration({
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);
     };
   }, [dismiss, open, register, sessionRef, showPrompt]);
+
+  useLayoutEffect(() => {
+    /** Recheck the SDK when the player returns from host controls or resumes play. */
+    const resume = (event?: Event) => {
+      const session = sessionRef.current;
+      if (!active.current || !isCurrent() || !session ||
+        guidanceReadyOwnerRef.current !== session.firebaseUid ||
+        document.visibilityState === "hidden") return;
+      try {
+        const player = platform.getPlayer();
+        if (restartChangedGuestSession(player)) {
+          event?.preventDefault();
+          event?.stopImmediatePropagation();
+          return;
+        }
+        if (promptOpenRef.current || completingRef.current || loginPendingRef.current) return;
+        if (player.registered) {
+          if (!session.player.registered || player.playerId !== session.player.playerId) complete();
+          return;
+        }
+        if (automaticPromptPlayerRef.current !== player.playerId) showPrompt("returning_player", true);
+      } catch (error) {
+        captureBrowserException(error, {component: "jest_registration", operation: "check_guest_after_guidance"});
+      }
+    };
+    const onGuidanceReady = (event: Event) => {
+      const uid: unknown = (event as CustomEvent<{uid?: unknown}>).detail?.uid;
+      if (typeof uid !== "string" || uid !== sessionRef.current?.firebaseUid) return;
+      guidanceReadyOwnerRef.current = uid;
+      resume();
+    };
+    window.addEventListener("riddle-quest:guidance-ready", onGuidanceReady);
+    window.addEventListener("focus", resume);
+    document.addEventListener("visibilitychange", resume);
+    window.addEventListener("pointerdown", resume, true);
+    window.addEventListener("keydown", resume, true);
+    return () => {
+      window.removeEventListener("riddle-quest:guidance-ready", onGuidanceReady);
+      window.removeEventListener("focus", resume);
+      document.removeEventListener("visibilitychange", resume);
+      window.removeEventListener("pointerdown", resume, true);
+      window.removeEventListener("keydown", resume, true);
+    };
+  }, [complete, isCurrent, platform, restartChangedGuestSession, sessionRef, showPrompt]);
 
   return {showRegistration, registrationPending, registrationFailure, open, dismiss, register};
 }
