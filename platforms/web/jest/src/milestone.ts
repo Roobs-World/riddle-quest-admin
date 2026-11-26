@@ -13,11 +13,9 @@ export type AuthoritativeCompletion = {
 /** Decides whether a confirmed guest win should offer registration. */
 export function shouldPromptGuestRegistration(
   session: JestSession,
-  gameMode: AuthoritativeCompletion["gameMode"],
   completedRiddles?: number,
 ): boolean {
   if (session.player.registered) return false;
-  if (gameMode === "challenge") return true;
   /** Provides count behavior. */
   const count = completedRiddles ?? (session.preferences.jestGuestCompletedRiddles ?? 0) + 1;
   return count > 0 && count % 3 === 0;
@@ -59,15 +57,15 @@ export async function recordAuthoritativeCompletion(
   let preferences = session.preferences;
   /** Provides milestone marked behavior. */
   let milestoneMarked = false;
-  /** Indicates whether is classic guest win. */
-  const isClassicGuestWin = !session.player.registered && completion.gameMode === "classic";
+  /** Both Daily and Classic wins advance the guest registration cadence. */
+  const isGuestWin = !session.player.registered;
   /** Provides guest completed riddles behavior. */
-  const guestCompletedRiddles = (preferences.jestGuestCompletedRiddles ?? 0) + (isClassicGuestWin ? 1 : 0);
-  if (!preferences.firstMilestoneMarked || isClassicGuestWin) {
+  const guestCompletedRiddles = (preferences.jestGuestCompletedRiddles ?? 0) + (isGuestWin ? 1 : 0);
+  if (!preferences.firstMilestoneMarked || isGuestWin) {
     preferences = {
       ...preferences,
       firstMilestoneMarked: true,
-      ...(isClassicGuestWin && {jestGuestCompletedRiddles: guestCompletedRiddles}),
+      ...(isGuestWin && {jestGuestCompletedRiddles: guestCompletedRiddles}),
     };
     await platform.writePreferences(preferences);
     milestoneMarked = !session.preferences.firstMilestoneMarked;
@@ -78,7 +76,7 @@ export async function recordAuthoritativeCompletion(
     value: {
       preferences,
       milestoneMarked,
-      shouldPromptRegistration: shouldPromptGuestRegistration(session, completion.gameMode),
+      shouldPromptRegistration: shouldPromptGuestRegistration(session, guestCompletedRiddles),
     },
   };
 }

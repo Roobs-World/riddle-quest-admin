@@ -17,7 +17,7 @@ export type OnboardingOverlayProps = {
   onAdvance: () => void;
 };
 
-/** Renders welcome and instructions before uninterrupted guest play. */
+/** Renders welcome and instructions before the guest registration prompt. */
 export function OnboardingOverlay({
   cardRef,
   onboardingStep,

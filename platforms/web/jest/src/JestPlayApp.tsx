@@ -98,8 +98,10 @@ function warmJestFirebaseStartup(): void {
 
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
-  /** Continues the saved guest Classic count while completion rewards are still syncing. */
-  const guestCompletedClassicRiddlesRef = useRef<number | null>(null);
+  /** Continues the saved guest win count across Daily and Classic riddles. */
+  const guestCompletedRiddlesRef = useRef<number | null>(null);
+  /** Keeps completion counting and deduplication scoped to the active account. */
+  const guestCompletionOwnerRef = useRef<string | null>(null);
   /** Prevents retried answers from counting the same win twice. */
   const countedGuestWinIdsRef = useRef(new Set<string>());
   /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
@@ -143,9 +145,13 @@ export function JestPlayApp() {
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
   useLayoutEffect(() => {
-    if (session && guestCompletedClassicRiddlesRef.current === null) {
-      guestCompletedClassicRiddlesRef.current = session.preferences.jestGuestCompletedRiddles ?? 0;
-    }
+    if (!session) return;
+    const owner = JSON.stringify([session.player.playerId, session.firebaseUid]);
+    if (guestCompletionOwnerRef.current === owner) return;
+    guestCompletionOwnerRef.current = owner;
+    guestCompletedRiddlesRef.current = session.playerData?.profile?.totalWins ??
+      session.playerData?.profile?.wins ?? session.preferences.jestGuestCompletedRiddles ?? 0;
+    countedGuestWinIdsRef.current.clear();
   }, [session]);
   /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
   const syncedAvatarRef = useRef<string | null>(null);
@@ -551,11 +557,8 @@ export function JestPlayApp() {
       )
         return;
       countedGuestWinIdsRef.current.add(`${input.gameMode}:${input.riddleId}`);
-      if (input.gameMode === "classic") {
-        guestCompletedClassicRiddlesRef.current =
-          (guestCompletedClassicRiddlesRef.current ?? 0) + 1;
-      }
-      if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestCompletedClassicRiddlesRef.current ?? 0)) {
+      guestCompletedRiddlesRef.current = (guestCompletedRiddlesRef.current ?? 0) + 1;
+      if (shouldPromptGuestRegistration(activeSession, guestCompletedRiddlesRef.current)) {
         openRegistrationPrompt("authoritative_win", true, completionPresentationKey(input));
       }
     },
@@ -682,7 +685,7 @@ export function JestPlayApp() {
               platformPurchase: purchaseProduct,
               raceAvailable: true,
               platformCapabilities,
-              externalInteractionBlocked: pendingPlatformOperations > 0 || (!session.player.registered && showRegistration),
+              externalInteractionBlocked: pendingPlatformOperations > 0 || registrationPending || (!session.player.registered && showRegistration),
               initialPlayerData: session.playerData,
               onPlayerDataChange: playerStateWrites.savePlayerData,
               accountDeletionServiceGate: notificationOperationGate,
