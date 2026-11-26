@@ -1,0 +1,36 @@
+{
+  "date": "2026-11-26",
+  "project": "riddle-quest-ec2b2",
+  "region": "europe-west1",
+  "implementation": "a4baf1354",
+  "releaseCheckout": "4b902f701",
+  "activeFirebaseRevisions": {
+    "dispatchFacebookManagerNotification": "dispatchfacebookmanagernotification-00001-zow",
+    "setNotificationPreference": "setnotificationpreference-00004-rix",
+    "syncFacebookManagerRegistration": "syncfacebookmanagerregistration-00001-rul"
+  },
+  "provider": {
+    "appId": "1748953042991569",
+    "mode": "development",
+    "minimumAge": "13+",
+    "standardZeroPermissionsAccess": true,
+    "advancedZeroPermissionsAccess": false,
+    "readOnlyAppCredentialProbeHttpStatus": 200,
+    "appIdMatched": true,
+    "providerMessagesSentByChecks": 0
+  },
+  "managerAndBridgeEvidence": "../../common/notifications/evidence/facebook-manager-rollout-2026-11-26.json",
+  "firestoreEmulatorWithMockMeta": {
+    "initialOrLegacyPreferenceAloneEnrolled": false,
+    "explicitSettingsOptInRegistered": true,
+    "nextLoginKeptRegistrationRevision": true,
+    "mockSendIncludedCampaignCopyAndImage": true,
+    "accountGenerationChangeSuppressedDispatch": true
+  },
+  "receiptRetention": {
+    "field": "facebookManagerDeliveries.expiresAt",
+    "retentionDays": 31,
+    "ttlRequested": true,
+    "singleFieldIndexes": []
+  }
+}

@@ -809,6 +809,12 @@
       "indexes": []
     },
     {
+      "collectionGroup": "facebookManagerDeliveries",
+      "fieldPath": "expiresAt",
+      "ttl": true,
+      "indexes": []
+    },
+    {
       "collectionGroup": "facebookNotificationAttempts",
       "fieldPath": "expiresAt",
       "ttl": true,
