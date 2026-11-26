@@ -9,3 +9,5 @@ Account changes, ranking changes and profile updates clear the cache and retire 
 `getLeaderboard` uses descending score and document ID cursors. Canonical rows retain live-account checks and current names and avatars. Missing projections fall back to indexed user queries. Multiplayer pages merge bounded user and AI queries with the same ordering. The server reads one extra candidate per source to determine whether another page exists, and may read replacement candidates for deleted or invalid rows.
 
 Updated callers opt into paginated responses. Legacy callers retain the existing response shape until their platform artifacts are updated. Deploy the required Firestore indexes before deploying the updated callable, then release the web client. Android continues to request its existing initial row limit through the shared adapter.
+
+The [November 26 release evidence](evidence/page-loading-2026-11-26.json) records the active Jest build, deployed backend revisions, ready indexes and completed static checks. Tests and browser harnesses were not requested or run.

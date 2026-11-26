@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-26",
+  "sourceCommit": "294ba56ff8b931d20d48307d1c03707539ec401a",
+  "behavior": {
+    "webPageSize": 10,
+    "cacheLifetimeMs": 60000,
+    "prefetchOtherPages": false,
+    "preloaderOnCacheMiss": true,
+    "cursorPagination": true
+  },
+  "verification": {
+    "sharedTypeCheck": "passed",
+    "androidTypeCheck": "passed",
+    "redditTypeCheck": "passed",
+    "functionsTypeCheck": "passed",
+    "functionsLint": "passed",
+    "functionsLayout": "passed",
+    "functionsModuleCycles": "passed",
+    "functionsDeploymentArtifact": "passed",
+    "independentSourceReview": "no blocking findings",
+    "testsRun": false,
+    "browserHarnessesRun": false
+  },
+  "backend": {
+    "project": "riddle-quest-ec2b2",
+    "region": "us-central1",
+    "buildId": "fe1fa814-4d13-4c50-b160-a5de301b1041",
+    "functions": [
+      {"name": "getLeaderboard", "revision": "getleaderboard-00050-bef", "state": "ACTIVE"},
+      {"name": "redditGameplay", "revision": "redditgameplay-00052-bav", "state": "ACTIVE"}
+    ],
+    "indexes": [
+      {"collectionGroup": "users", "fields": ["stats.level DESC", "stats.xp DESC", "__name__ DESC"], "state": "READY"},
+      {"collectionGroup": "users", "fields": ["stats.totalWins DESC"], "state": "READY"},
+      {"collectionGroup": "users", "fields": ["stats.bestStreak DESC"], "state": "READY"}
+    ],
+    "unchangedGameplayCohortBuildId": "b7b35978-4937-453d-8fba-069609589236",
+    "verificationSources": ["gcloud functions describe", "Firestore Admin index metadata"]
+  },
+  "jest": {
+    "versionId": "01a2164a-8489-7497-bb35-bc5af56ba9d9",
+    "version": "1.0.0-dev.20261126051742.294ba56ff8b9.97e1f2f7",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T05:18:39.436Z",
+    "archiveSha256": "d8311bf3fd8fd04a8866de231b487b8a55a4a118c6f1befb296177f96a2f333a",
+    "archiveBytes": 2586687,
+    "gatedSourceDirty": false,
+    "reusedConcurrentCanonicalRelease": true,
+    "duplicateUploadPerformed": false,
+    "verificationSources": ["Canonical gated and accepted upload receipts", "Official Jest list_game_versions tool"]
+  }
+}
