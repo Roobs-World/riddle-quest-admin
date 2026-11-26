@@ -43,7 +43,6 @@ type LiveSelection = {
   /** Re-enters an acknowledged creator lobby without creating another invitation. */ resumeChallenge?: boolean;
   /** Recovers the exact acknowledged public seat without creating a replacement. */ resumeTicketId?: string;
   /** Starts a new private invitation for this owned completed seat. */ rematchOfTicketId?: string;
-  /** Optional native audience selection owns this private journey's transport. */ transport?: LiveRaceCapability;
 };
 
 /** Owns live category selection without resuming or creating recorded races. */
@@ -67,7 +66,7 @@ function LiveRaceEntry(props: RaceTo10GameProps) {
     setPlaying(null);
     setIncomingConsumed(false);
   }
-  if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={playing.transport ?? props.matchmaking.live}
+  if (playing && props.matchmaking?.live) return <LiveRaceGame key={JSON.stringify(playing)} transport={props.matchmaking.live}
     locale={playing.locale} categoryId={playing.categoryId} createChallenge={playing.createChallenge} challengeId={playing.challengeId} resumeChallenge={playing.resumeChallenge}
     resumeTicketId={playing.resumeTicketId} rematchOfTicketId={playing.rematchOfTicketId} coins={props.coins} ownerId={props.ownerId} localPlayer={props.localPlayer} onCompleted={props.onLiveResult}
     onRematch={rematchOfTicketId => setPlaying({locale: playing.locale, categoryId: playing.categoryId, rematchOfTicketId})}
@@ -116,22 +115,6 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
   const [failed, setFailed] = useState(false);
   /** Retry generation for the read-only catalog request. */
   const [retry, setRetry] = useState(0);
-  /** Native selection excludes repeated clicks before React disables the intro. */
-  const choosing = useRef(false);
-  /** Visible provider selection state stays separate from read-only category loading. */
-  const [choosingFriends, setChoosingFriends] = useState(false);
-  /** Native chooser failures use the existing translated recovery copy. */
-  const [chooseFailed, setChooseFailed] = useState(false);
-  /** Retirement prevents a late native selection from creating a server seat. */
-  const choiceLifetime = useRef<AbortController | null>(null);
-  /** Only committed provider replacements retire a pending native choice. */
-  const choiceProvider = useRef(matchmaking?.live);
-  useLayoutEffect(() => {choiceProvider.current = matchmaking?.live;}, [matchmaking?.live]);
-  useEffect(() => {
-    /** StrictMode replay owns its own callback lifetime. */
-    const lifetime = new AbortController(); choiceLifetime.current = lifetime;
-    return () => lifetime.abort();
-  }, []);
   /** Modal focus boundary. */
   const dialogRef = useRef<HTMLElement | null>(null);
   /** Shared focus adapter's unused confirmation boundary. */
@@ -181,22 +164,8 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
   /** Category remains valid if the host refreshes its available catalog. */
   const selected = categories.find(category => category.categoryId === selection)?.categoryId ??
     categories.find(category => category.categoryId === "mixed")?.categoryId ?? categories[0]?.categoryId;
-  /** An explicit native audience starts a reserved lobby in the already selected content category. */
+  /** Opening the multiplayer intro records only its screen impression. */
   useEffect(() => {trackScreen("multiplayer_live_intro");}, []);
-  const chooseFriends = async () => {
-    /** Capture exact category, provider and effect lifetime before native UI opens. */
-    const categoryId = selected, provider = matchmaking?.live, choose = provider?.chooseChallenge, signal = choiceLifetime.current?.signal;
-    if (choosing.current || loading || failed || !categoryId || !choose || !signal || signal.aborted) return;
-    choosing.current = true; setChoosingFriends(true); setChooseFailed(false);
-    try {
-      /** Returned transport preserves the native audience independently of public matching. */
-      const result = await choose();
-      if (signal.aborted || choiceProvider.current !== provider) return;
-      if (result.status === "success") onStart({categoryId, locale, createChallenge: true, transport: result.value});
-      else if (result.status !== "cancelled") setChooseFailed(true);
-    } catch {if (!signal.aborted && choiceProvider.current === provider) setChooseFailed(true);}
-    finally {choosing.current = false; if (!signal.aborted) setChoosingFriends(false);}
-  };
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
     tabIndex={-1} data-analytics-screen="multiplayer_live_intro">
     <RaceTopbar live coins={coins} onClose={onClose} />
@@ -209,7 +178,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
       <h2>{tr("RaceTo10.CHOOSE_CATEGORY")}</h2>
       <div className="race-category-grid">
         {categories.map(category => <button key={category.categoryId} aria-pressed={selected === category.categoryId}
-          disabled={loading || choosingFriends || !matchmaking?.live} style={{"--race-color": category.colorToken} as CSSProperties}
+          disabled={loading || !matchmaking?.live} style={{"--race-color": category.colorToken} as CSSProperties}
           onClick={() => {setSelection(category.categoryId); trackEvent("race_category_selected", {category_id: category.categoryId});}}>
           <RaceCategoryIcon categoryId={category.categoryId} />
           <strong>{tr(category.nameKey)}</strong><span>{tr(category.descriptionKey)}</span>
@@ -220,13 +189,10 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
         {tr(matchmaking?.live ? "RaceTo10.ERROR_GENERIC" : "RaceTo10.MATCH_UNAVAILABLE")}
         {failed && <button onClick={() => setRetry(current => current + 1)}>{tr("RaceTo10.RETRY")}</button>}
       </div>}
-      <button className="race-primary live-race-start" disabled={loading || choosingFriends || failed || !selected || !matchmaking?.live}
-        onClick={() => {if (!choosing.current && selected && matchmaking?.live) {trackEvent("live_race_search_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale});}}}>{tr("RaceTo10.LIVE_START")}</button>
-      {matchmaking?.live?.chooseChallenge && <button className="race-secondary live-race-context-challenge" aria-busy={choosingFriends}
-        disabled={loading || choosingFriends || failed || !selected} onClick={() => void chooseFriends()}>{tr("RaceTo10.CHOOSE_CONTEXT")}</button>}
-      {chooseFailed && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
-      {(matchmaking?.live?.shareChallenge || sharing?.shareLiveRace) && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || choosingFriends || failed || !selected}
-        onClick={() => {if (!choosing.current && selected) {trackEvent("live_race_challenge_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale, createChallenge: true});}}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
+      <button className="race-primary live-race-start" disabled={loading || failed || !selected || !matchmaking?.live}
+        onClick={() => {if (selected && matchmaking?.live) {trackEvent("live_race_search_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale});}}}>{tr("RaceTo10.LIVE_START")}</button>
+      {sharing?.shareLiveRace && matchmaking?.live?.challenge && <button className="race-secondary" disabled={loading || failed || !selected}
+        onClick={() => {if (selected) {trackEvent("live_race_challenge_requested", {category_id: selected, locale}); onStart({categoryId: selected, locale, createChallenge: true});}}}>{tr("RaceTo10.CHALLENGE_FRIEND")}</button>}
     </div>
   </section>;
 }

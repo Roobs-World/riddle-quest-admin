@@ -4,7 +4,7 @@ import {resolve} from "node:path";
 import {fileURLToPath, pathToFileURL} from "node:url";
 
 const packageDirectory = fileURLToPath(new URL("../../", import.meta.url));
-// Audited shared/Jest/Facebook leaves. New leaves require an explicit target-scope review.
+// Audited shared/Jest leaves. New leaves require an explicit target-scope review.
 const sharedCommands = new Set(`
 test:online-status-commit:browser
 test:offline-keyboard-boundary:browser
@@ -96,24 +96,12 @@ test:live-poll-scheduling:browser
 test:live-recovery-wakeups:browser
 test:riddle-recovery-coalescing:browser
 test:host-riddle-commit-retirement:browser
-test:attempt-recovery-retirement:browser
 test:checkpoint-writer-recovery:browser
 test:pending-play-scope-retirement:browser
 test:pending-play-lifetime:browser
 test:live-history-provider:browser
 test:live-destination-capability:browser
 test:live-rematch-owner:browser
-test:live-tournament-owner:browser
-test:live-context-owner:browser
-test:live-context-choice:browser
-test:live-context-read-cancellation:browser
-test:live-overlay-owner:browser
-test:live-overlay-cancellation:browser
-test:live-tournament-share:browser
-test:live-tournament-projection:browser
-test:live-tournament-lookup-deadline:browser
-test:live-tournament-share-preparation:browser
-test:live-tournament-share-retirement:browser
 test:host-recovery-suspension:browser
 test:host-retired-warmups:browser
 test:host-deferred-warmups:browser
@@ -133,6 +121,7 @@ test:pagehide-checkpoint:browser
 test:journal-write-work:browser
 `.trim().split(/\s+/u));
 const excludedCommands = new Set([
+  "test:provider-save-recovery:browser",
   "test:reddit-delivery:browser",
   "test:reddit-guest-durability:browser",
   "test:guidance-storage-recovery:browser",
@@ -143,22 +132,21 @@ const excludedCommands = new Set([
   "test:playable-action-focus:browser",
   "test:playable-unchanged-input:browser"
 ]);
-// Restrict mixed-provider runtime loops while retaining all Jest/Facebook/shared cases.
+// Restrict mixed-provider runtime loops while retaining all Jest/shared cases.
 const mixedCommands = {
-  "test:live-immediate-submit:browser": "PORTAL_BROWSER_SCOPE=jest-facebook LIVE_IMMEDIATE_TARGETS=live",
-  "test:provider-save-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "test:race-profile-refresh-null:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "test:live-render-work:browser": "PORTAL_BROWSER_SCOPE=jest-facebook LIVE_RENDER_TARGETS=solo,race",
-  "test:stable-request-initialization:browser": "PORTAL_BROWSER_SCOPE=jest-facebook STABLE_REQUEST_TARGETS=solo,race",
-  "test:static-keyboard-work:browser": "PORTAL_BROWSER_SCOPE=jest-facebook STATIC_KEYBOARD_TARGETS=solo,race",
-  "test:native-navigation-tail:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_NAVIGATION_TARGETS=live",
-  "test:native-composition-delivery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook COMPOSITION_DELIVERY_TARGETS=live",
-  "test:native-composition-retirement:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_RETIRE_TARGETS=live",
-  "test:bounded-grapheme-input:browser": "PORTAL_BROWSER_SCOPE=jest-facebook BOUNDED_GRAPHEME_TARGETS=live",
-  "test:native-cancelled-keys:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_CANCELLED_TARGETS=live",
-  "test:rapid-answer-edits:browser": "PORTAL_BROWSER_SCOPE=jest-facebook RAPID_ANSWER_TARGETS=live",
-  "test:authority-terminal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "test:terminal-journal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook"
+  "test:live-immediate-submit:browser": "PORTAL_BROWSER_SCOPE=jest LIVE_IMMEDIATE_TARGETS=live",
+  "test:race-profile-refresh-null:browser": "PORTAL_BROWSER_SCOPE=jest",
+  "test:live-render-work:browser": "PORTAL_BROWSER_SCOPE=jest LIVE_RENDER_TARGETS=solo,race",
+  "test:stable-request-initialization:browser": "PORTAL_BROWSER_SCOPE=jest STABLE_REQUEST_TARGETS=solo,race",
+  "test:static-keyboard-work:browser": "PORTAL_BROWSER_SCOPE=jest STATIC_KEYBOARD_TARGETS=solo,race",
+  "test:native-navigation-tail:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_NAVIGATION_TARGETS=live",
+  "test:native-composition-delivery:browser": "PORTAL_BROWSER_SCOPE=jest COMPOSITION_DELIVERY_TARGETS=live",
+  "test:native-composition-retirement:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_RETIRE_TARGETS=live",
+  "test:bounded-grapheme-input:browser": "PORTAL_BROWSER_SCOPE=jest BOUNDED_GRAPHEME_TARGETS=live",
+  "test:native-cancelled-keys:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_CANCELLED_TARGETS=live",
+  "test:rapid-answer-edits:browser": "PORTAL_BROWSER_SCOPE=jest RAPID_ANSWER_TARGETS=live",
+  "test:authority-terminal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest",
+  "test:terminal-journal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest"
 };
 
 /** Validates an optional one-based round-robin shard without silently omitting work. */
@@ -173,7 +161,7 @@ export function parseBrowserShard(value) {
 }
 
 /** Derives the scoped plan from the existing ordered all-target game-browser interface. */
-export function createJestFacebookBrowserPlan(script, shardValue) {
+export function createJestBrowserPlan(script, shardValue) {
   if (typeof script !== "string" || !script.trim()) throw new Error("The game-browser script is missing.");
   const source = script.split(/\s*&&\s*/u).map(command => command.trim());
   if (!source[0].startsWith("PORTAL_BROWSER_TESTS=1 jest "))
@@ -191,7 +179,7 @@ export function createJestFacebookBrowserPlan(script, shardValue) {
   }
   const shard = parseBrowserShard(shardValue);
   return {
-    profile: "jest-facebook",
+    profile: "jest",
     sourceCommandCount: source.length,
     eligibleCommandCount: commands.length,
     shard,
@@ -203,7 +191,7 @@ export function createJestFacebookBrowserPlan(script, shardValue) {
 /** Stops on the first failing command while preserving each original shell command. */
 export function runBrowserCommands(commands, spawn = spawnSync) {
   for (const command of commands) {
-    console.log(`Jest/Facebook browser check: ${command}`);
+    console.log(`Jest browser check: ${command}`);
     const result = spawn(command, {cwd: packageDirectory, env: process.env, shell: true, stdio: "inherit"});
     if (result.error) throw result.error;
     if (result.status !== 0) return result.status ?? 1;
@@ -214,7 +202,7 @@ export function runBrowserCommands(commands, spawn = spawnSync) {
 /** Reads the existing command graph and optionally prints it without executing tests. */
 async function main() {
   const arguments_ = process.argv.slice(2);
-  let dryRun = false, shard = process.env.JEST_FACEBOOK_BROWSER_SHARD || undefined;
+  let dryRun = false, shard = process.env.JEST_BROWSER_SHARD || undefined;
   for (let index = 0; index < arguments_.length; index++) {
     const argument = arguments_[index];
     if (argument === "--dry-run") dryRun = true;
@@ -222,7 +210,7 @@ async function main() {
     else throw new Error(`Unknown or incomplete browser runner option: ${argument}`);
   }
   const manifest = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  const plan = createJestFacebookBrowserPlan(manifest.scripts["test:game-browser:playwright"], shard);
+  const plan = createJestBrowserPlan(manifest.scripts["test:game-browser:playwright"], shard);
   if (dryRun) process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
   else process.exitCode = runBrowserCommands(plan.commands);
 }

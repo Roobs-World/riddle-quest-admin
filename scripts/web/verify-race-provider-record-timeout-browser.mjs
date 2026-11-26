@@ -45,12 +45,12 @@ function postToHost(message){window.commands.push(message);
  if(message.type==='game:listRaceInbox')reply(message,'raceInbox',{items:[]});}
 const adapter={record:()=>{window.writes++;return new Promise((resolve,reject)=>window.writeReplies.push({resolve,reject}));},
  list:()=>new Promise(resolve=>window.reads.push(resolve))};
-window.finishRead=(index,rank)=>window.reads[index]({tournamentId:'daily',contextId:'room',locale:'en',
+window.finishRead=(index,rank)=>window.reads[index]({tournamentId:'daily',locale:'en',
  startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,
  standings:[{rank,adjustedTimeMs:60000,isCurrentPlayer:true}]});
 createRoot(document.getElementById('root')).render(<ReferralSharingProvider capability={{rewardCoins:25,shareResult:()=>{},shareInvite:()=>{},shareRace:async()=> 'cancelled'}}>
  <RaceTo10Game locale="en" coins={100} ownerId="owner-1" postToHost={postToHost} onClose={()=>{}}
- tournaments={stage==='tournaments'?adapter:undefined} contextBoard={stage==='inbox'?adapter:undefined}/></ReferralSharingProvider>);
+ tournaments={adapter}/></ReferralSharingProvider>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
 await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOptions: {jsx: "react-jsx"}}));
@@ -77,7 +77,7 @@ try {
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   browser = await chromium.launch({headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? {executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH} : {})});
-  for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) for (const stage of ["tournaments","inbox"]) for (const ending of ["success","failure"]) {
+  for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) for (const stage of ["tournaments"]) for (const ending of ["success","failure"]) {
     const context = await browser.newContext({viewport});
     const page = await context.newPage();
     const errors = []; page.on("pageerror", error => errors.push(error.message));

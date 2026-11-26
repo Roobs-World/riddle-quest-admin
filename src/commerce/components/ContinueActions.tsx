@@ -1,7 +1,6 @@
 import type {GameModal} from "../../gameplay/session/gameSession";
 import {useTranslator} from "../../localization/browser/i18n";
 import {CONTINUE_COIN_COST, SKIP_COIN_COST} from "../browser/commerceCosts";
-import {isFacebookWebTarget} from "../../platform/browser/webTargetEnvironment";
 
 /** Opens another modal without allowing the null/closed state. */
 type OpenModalHandler = (modal: Exclude<GameModal, null>) => void;
@@ -12,8 +11,6 @@ export type ContinueModalPageProps = {
   balance: number;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
-  /** Optional provider-funded attempt, composed only by Facebook. */
-  onRecoverAttempt?: () => void;
   /** Disables competing choices while a continuation is in progress. */
   pending?: boolean;
   /** Provider requests wait for the final guess's authoritative confirmation. */
@@ -34,7 +31,6 @@ export type ContinueModalPageProps = {
 export function ContinueModalPage({
   balance,
   onContinue,
-  onRecoverAttempt,
   pending = false,
   recoveryPending = false,
   onSkip,
@@ -62,11 +58,6 @@ export function ContinueModalPage({
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      {isFacebookWebTarget && onRecoverAttempt ? (
-        <button className="play-primary loss-video-action" disabled={pending || recoveryPending} aria-busy={pending} onClick={onRecoverAttempt}>
-          {tr("LossModal.VIDEO_EXTRA_GO_BUTTON")}
-        </button>
-      ) : null}
       <button className="play-primary loss-continue-action" disabled={!canAfford || pending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}

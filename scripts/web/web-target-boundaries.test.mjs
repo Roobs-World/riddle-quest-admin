@@ -39,13 +39,11 @@ const captureBoundaryError = async (sourceDirectory) => {
 test("allows target-local edges, target-to-shared edges, and the real shop adapter seam", async () => {
   await withSourceFixture({
     "core/helper.ts": "export const helper = true;\n",
-    "facebook/entry.ts": `
+    "yahoo/entry.ts": `
       import "./local";
       import "../core/helper";
-      import "firebase/app";
-      import "@sentry/browser";
     `,
-    "facebook/local.ts": "export {};\n",
+    "yahoo/local.ts": "export {};\n",
     "jest/entry.ts": `
       import "../shared";
       import "firebase/auth";
@@ -67,7 +65,7 @@ test("allows target-local edges, target-to-shared edges, and the real shop adapt
   }, async (sourceDirectory) => {
     const report = await auditWebTargetBoundaries({sourceDirectory});
     assert.equal(report.filesScanned, 7);
-    assert.equal(report.referencesChecked, 13);
+    assert.equal(report.referencesChecked, 11);
     assert.equal(report.sourceDirectory, sourceDirectory);
     assert.ok(Object.isFrozen(report));
   });
@@ -76,11 +74,11 @@ test("allows target-local edges, target-to-shared edges, and the real shop adapt
 test("excludes __tests__, src/test, and *.test.* files from the production graph", async () => {
   await withSourceFixture({
     "__tests__/shared.ts": "import '../youtube/missing';\n",
-    "facebook/__tests__/entry.ts": "import '../../reddit/missing';\n",
+    "yahoo/__tests__/entry.ts": "import '../../reddit/missing';\n",
     "main.test.ts": "import './jest/missing';\n",
     "main.ts": "import './shared';\n",
     "shared.ts": "export {};\n",
-    "test/helper.ts": "import '../facebook/missing';\n",
+    "test/helper.ts": "import '../yahoo/missing';\n",
   }, async (sourceDirectory) => {
     const report = await auditWebTargetBoundaries({sourceDirectory});
     assert.equal(report.filesScanned, 2);
@@ -91,14 +89,14 @@ test("excludes __tests__, src/test, and *.test.* files from the production graph
 test("rejects shared-to-target imports across every supported TypeScript module syntax", async () => {
   await withSourceFixture({
     "a-static.ts": "import './jest/value';\n",
-    "b-reexport.ts": "export {value} from './facebook/value';\n",
+    "b-reexport.ts": "export {value} from './yahoo/value';\n",
     "c-export-type.ts": "export type {Value} from './reddit/value';\n",
     "d-dynamic.ts": "void import('./youtube/value');\n",
-    "e-require.ts": "require('./facebook/value');\n",
+    "e-require.ts": "require('./yahoo/value');\n",
     "f-import-type.ts": "import type {Value} from './reddit/value';\n",
     "g-type-expression.ts": "type Value = import('./youtube/value').Value;\n",
     "h-import-equals.ts": "import Value = require('./jest/value');\n",
-    "facebook/value.ts": "export const value = true;\n",
+    "yahoo/value.ts": "export const value = true;\n",
     "jest/value.ts": "export = class Value {};\n",
     "reddit/value.ts": "export interface Value {}\n",
     "youtube/value.ts": "export interface Value {}\n",
@@ -112,10 +110,10 @@ test("rejects shared-to-target imports across every supported TypeScript module 
       error.violations.map(({specifier}) => specifier),
       [
         "./jest/value",
-        "./facebook/value",
+        "./yahoo/value",
         "./reddit/value",
         "./youtube/value",
-        "./facebook/value",
+        "./yahoo/value",
         "./reddit/value",
         "./youtube/value",
         "./jest/value",
@@ -126,11 +124,11 @@ test("rejects shared-to-target imports across every supported TypeScript module 
 
 test("rejects imports between different target owners", async () => {
   await withSourceFixture({
-    "facebook/reexport.ts": "export {value} from '../reddit/value';\n",
+    "yahoo/reexport.ts": "export {value} from '../reddit/value';\n",
     "jest/dynamic.ts": "void import('../youtube/value');\n",
-    "reddit/type.ts": "import type {Value} from '../facebook/value';\n",
+    "reddit/type.ts": "import type {Value} from '../yahoo/value';\n",
     "reddit/value.ts": "export const value = true;\n",
-    "facebook/value.ts": "export interface Value {}\n",
+    "yahoo/value.ts": "export interface Value {}\n",
     "youtube/value.ts": "export const value = true;\n",
   }, async (sourceDirectory) => {
     const error = await captureBoundaryError(sourceDirectory);
@@ -139,7 +137,7 @@ test("rejects imports between different target owners", async () => {
       "CROSS_TARGET_IMPORT",
       "CROSS_TARGET_IMPORT",
     ]);
-    assert.deepEqual(error.violations.map(({owner}) => owner), ["facebook", "jest", "reddit"]);
+    assert.deepEqual(error.violations.map(({owner}) => owner), ["jest", "reddit", "yahoo"]);
   });
 });
 
@@ -161,7 +159,7 @@ test("rejects the legacy platform entry while allowing the shop adapter", async 
 
 test("rejects Devvit imports outside Reddit-owned source", async () => {
   await withSourceFixture({
-    "facebook/entry.ts": "import '@devvit/client';\n",
+    "yahoo/entry.ts": "import '@devvit/client';\n",
     "reddit/entry.ts": "import '@devvit/payments/client';\n",
     "shared.ts": "export * from '@devvit/client';\n",
   }, async (sourceDirectory) => {
@@ -170,7 +168,7 @@ test("rejects Devvit imports outside Reddit-owned source", async () => {
       "DEVVIT_OUTSIDE_REDDIT",
       "DEVVIT_OUTSIDE_REDDIT",
     ]);
-    assert.deepEqual(error.violations.map(({owner}) => owner), ["facebook", "shared"]);
+    assert.deepEqual(error.violations.map(({owner}) => owner), ["yahoo", "shared"]);
   });
 });
 
@@ -201,16 +199,16 @@ test("fails closed when a missing relative path lexically enters target-owned so
 
 test("handles extensions and index modules with TypeScript-compatible resolution", async () => {
   await withSourceFixture({
-    "facebook/feature.ts": "export {};\n",
+    "yahoo/feature.ts": "export {};\n",
     "main.ts": `
-      import './facebook/feature.js';
+      import './yahoo/feature.js';
       import './youtube';
     `,
     "youtube/index.tsx": "export {};\n",
   }, async (sourceDirectory) => {
     const error = await captureBoundaryError(sourceDirectory);
     assert.deepEqual(error.violations.map(({code}) => code), ["SHARED_TO_TARGET", "SHARED_TO_TARGET"]);
-    assert.deepEqual(error.violations.map(({specifier}) => specifier), ["./facebook/feature.js", "./youtube"]);
+    assert.deepEqual(error.violations.map(({specifier}) => specifier), ["./yahoo/feature.js", "./youtube"]);
   });
 });
 
@@ -235,7 +233,7 @@ test("aggregates violations in deterministic file and source order", async () =>
     "z.ts": "import './youtube/missing';\n",
     "a.ts": `
       import '@devvit/client';
-      import './facebook/missing';
+      import './yahoo/missing';
     `,
   }, async (sourceDirectory) => {
     const error = await captureBoundaryError(sourceDirectory);

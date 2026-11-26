@@ -31,32 +31,18 @@ export function RetainedRaceHarness(props: RaceTo10GameProps) {
 
 /** Rendering and optional provider adapters owned by one mounted Race Session journey. */
 function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLocale, coins, ownerId, postToHost, onClose,
-  initialCategories = EMPTY_RACE_CATEGORIES, nativeSocial, matchmaking, playerOverlay, platformPlayerId,
-  tournaments, contextBoard}: RaceTo10GameProps) {
+  initialCategories = EMPTY_RACE_CATEGORIES, matchmaking, tournaments}: RaceTo10GameProps) {
   /** Sharing remains a target capability, independent of competitive scoring. */
   const referralSharing = useReferralSharing();
   /** Replacing a sharing provider retires its dialogs without replacing competitive state. */
   const referralOwner = useMemo(() => ({}), [referralSharing]);
-  /** Tournament replacement does not retire an unrelated challenge-sharing dialog. */
-  const tournamentOwner = useMemo(() => ({}), [tournaments]);
-  /** Social dialogs belong only to their selected native capability. */
-  const socialOwner = useMemo(() => ({}), [nativeSocial]);
-  /** Render-time selection rejects late callbacks before passive effect cleanup. */
-  const dialogOwners = useRef({referral: referralOwner, tournament: tournamentOwner, social: socialOwner});
-  dialogOwners.current = {referral: referralOwner, tournament: tournamentOwner, social: socialOwner};
-  /** Pending native dialog retains its destination and provider selection. */
-  const [socialReceipt, setSocialReceipt] = useState<{
-    /** Provider selection that opened the dialog. */ owner: object;
-    /** Dialog destination displayed as loading. */ kind: "context" | "match";
-  } | null>(null);
-  /** Only the selected provider's dialog may disable its controls. */
-  const socialPending = socialReceipt?.owner === socialOwner ? socialReceipt.kind : null;
-  /** Native calls are guarded synchronously before React can render disabled buttons. */
-  const socialPendingRef = useRef<typeof socialReceipt>(null);
+  /** Render-time selection retires callbacks from replaced sharing providers. */
+  const dialogOwners = useRef({referral: referralOwner});
+  dialogOwners.current = {referral: referralOwner};
   /** Outbound share dialog loading state. */
   const [sharingReceipt, setSharingReceipt] = useState<object | null>(null);
   /** A retired provider's unresolved dialog does not disable a replacement share control. */
-  const sharing = sharingReceipt === referralOwner || sharingReceipt === tournamentOwner;
+  const sharing = sharingReceipt === referralOwner;
   /** Synchronous duplicate-dialog guard. */
   const sharingRef = useRef<{
     /** Exact sharing provider selection for this delivery. */ owner: object;
@@ -80,14 +66,14 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     postToHost, effect: effect => effectRef.current(effect), getMatchmaking: () => matchmaking,
   });
   /** Replaced provider adapters receive a fresh cache before the next frame commits. */
-  const providerViews = useMemo(() => new RaceProviderViews({reportError: session.reportError}), [session, tournaments, contextBoard]);
+  const providerViews = useMemo(() => new RaceProviderViews({reportError: session.reportError}), [session, tournaments]);
   /** A still-owned native dialog refreshes the latest optional view selection on completion. */
   const currentProviderViews = useRef(providerViews);
   currentProviderViews.current = providerViews;
   /** Rendering consumes whole provider cache transitions. */
   const providerState = useSyncExternalStore(providerViews.subscribe, providerViews.getSnapshot, providerViews.getSnapshot);
   useEffect(() => {
-    providerViews.enter({locale, tournaments, contextBoard});
+    providerViews.enter({locale, tournaments});
     /** A synchronous resume can confirm the outcome before provider ownership is installed. */
     const completedRunId = session.getConfirmedOutcomeRunId();
     if (completedRunId) providerViews.record(completedRunId);
@@ -99,7 +85,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     /** Subscription follows navigation, rematch and authority transitions synchronously. */
     const unsubscribe = session.subscribe(select);
     return () => {unsubscribe(); providerViews.dispose();};
-  }, [providerViews, session, ownerId, locale, challengeId, openInbox, incomingTournamentLocale, tournaments, contextBoard]);
+  }, [providerViews, session, ownerId, locale, challengeId, openInbox, incomingTournamentLocale, tournaments]);
   /** Optional analytics transport cannot interrupt a share dialog or rematch action. */
   const trackAnalytics = useCallback((event: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => {
     try {
@@ -112,7 +98,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
   }, [postToHost]);
   /** Starts a provider share dialog only for a confirmed published challenge. */
   const sharePublishedChallenge = useCallback(async (publication: PublishRaceChallengeResponse) => {
-    if (!referralSharing || sharingRef.current?.owner === referralOwner || sharingRef.current?.owner === tournamentOwner) return;
+    if (!referralSharing || sharingRef.current?.owner === referralOwner) return;
     /** Dialog completion belongs to this adapter lifetime. */
     const generation = adapterGeneration.current;
     /** Navigation away and back cannot reclaim an earlier share dialog's error. */
@@ -131,7 +117,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
       if (owned() && current() && result === "error") session.reportError("RaceTo10.ERROR_GENERIC");
     } catch {if (owned() && current()) session.reportError("RaceTo10.ERROR_GENERIC");}
     finally {if (owned()) {sharingRef.current = null; setSharingReceipt(null);}}
-  }, [referralSharing, referralOwner, tournamentOwner, trackAnalytics, session]);
+  }, [referralSharing, referralOwner, trackAnalytics, session]);
   effectRef.current = effect => {
     if (effect.kind === "close") onClose();
     else if (effect.kind === "analytics") trackAnalytics(effect.event, effect.params);
@@ -145,9 +131,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
   useEffect(() => {
     adapterGeneration.current++;
     sharingRef.current = null;
-    socialPendingRef.current = null;
     setSharingReceipt(null);
-    setSocialReceipt(null);
     return () => {adapterGeneration.current++;};
   }, [ownerId, locale, challengeId, openInbox, incomingTournamentLocale]);
   useRaceEntryTracking(state.stage, challengeId);
@@ -156,7 +140,7 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
   useRaceGameplayFit({active: state.stage === "racing", screenRef: dialogRef, viewportRef: gameplayViewportRef, gameplayRef});
   useAnswerKeyboard({active: state.stage === "racing" && !state.quitConfirmationOpen && (!state.pending || state.allowTypingWhilePending),
     onLetter: letter => session.input("letter", letter), onBackspace: () => session.input("backspace"), onSubmit: session.submit});
-  /** Optional context view refresh does not own session navigation. */
+  /** Activity navigation remains independent of optional tournament reads. */
   const showInbox = () => {
     session.navigate("inbox");
     providerViews.refresh("inbox");
@@ -166,55 +150,6 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     if (!tournaments) return;
     session.navigate("tournaments");
     providerViews.refresh("tournaments");
-  };
-  /** Player-requested native presentation cannot alter official scoring or session navigation. */
-  const shareTournament = async () => {
-    if (!tournaments?.share || sharingRef.current?.owner === referralOwner || sharingRef.current?.owner === tournamentOwner || session.getSnapshot().stage !== "tournaments") return;
-    /** UI results belong to the exact account/locale adapter lifetime. */
-    const generation = adapterGeneration.current;
-    /** Navigation invalidates an old dialog's errors. */
-    const current = session.captureJourney();
-    /** Guard clearing belongs to this exact dialog, never another provider's replacement. */
-    const receipt = {owner: tournamentOwner};
-    sharingRef.current = receipt;
-    /** Retired adapters cannot change context, errors or a replacement dialog's loading state. */
-    const owned = () => generation === adapterGeneration.current && dialogOwners.current.tournament === tournamentOwner && sharingRef.current === receipt;
-    setSharingReceipt(tournamentOwner);
-    session.reportError(null);
-    try {
-      if (!owned()) return;
-      /** The target rereads authority and owns the native dialog contract. */
-      const result = await tournaments.share(locale);
-      if (owned() && current()) {
-        if (result.status === "success") {currentProviderViews.current.contextChanged(); currentProviderViews.current.refresh("tournaments");}
-        else if (result.status !== "cancelled") session.reportError(result.status === "unavailable" &&
-          result.message === "RaceTo10.ERROR_LOCALE_MISMATCH" ? "RaceTo10.ERROR_LOCALE_MISMATCH" : "RaceTo10.ERROR_GENERIC");
-      }
-    } catch {if (owned() && current()) session.reportError("RaceTo10.ERROR_GENERIC");}
-    finally {if (owned()) {sharingRef.current = null; setSharingReceipt(null);}}
-  };
-  /** Native social effects have no ownership over competitive state. */
-  const runNativeSocial = async (kind: "context" | "match") => {
-    if (!nativeSocial || socialPendingRef.current?.owner === socialOwner || session.getSnapshot().findingOpponent || session.getSnapshot().pending) return;
-    /** Dialog receipt must still belong to the visible player journey. */
-    const generation = adapterGeneration.current;
-    /** Native dialog errors belong to the screen and run that opened the dialog. */
-    const current = session.captureJourney();
-    /** A new provider can open its dialog while an old provider's reply remains unresolved. */
-    const receipt = {owner: socialOwner, kind};
-    socialPendingRef.current = receipt;
-    /** Completion may affect only this selected native capability and exact delivery. */
-    const owned = () => generation === adapterGeneration.current && dialogOwners.current.social === socialOwner && socialPendingRef.current === receipt;
-    setSocialReceipt(receipt);
-    try {
-      /** Target capability owns native context selection. */
-      const result = kind === "context" ? await nativeSocial.chooseContext() : await nativeSocial.matchPlayer(`race10_v1_${locale}`);
-      if (owned()) {
-        if (result.status === "success") currentProviderViews.current.contextChanged();
-        else if (current() && result.status !== "cancelled") session.reportError("RaceTo10.ERROR_GENERIC");
-      }
-    } catch {if (owned() && current()) session.reportError("RaceTo10.ERROR_GENERIC");}
-    finally {if (owned()) {socialPendingRef.current = null; setSocialReceipt(null);}}
   };
   /** Confirmed opponent events replay against the owned adjusted clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(state.run?.opponent, state.adjustedNow), [state.run?.opponent, state.adjustedNow]);
@@ -231,9 +166,9 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     challenge={acceptedEntry?.status === "ready" ? acceptedEntry.challenge : state.challenge} coins={coins}
     error={state.error ? tr(state.error) : null} penaltyFlash={state.penaltyFlash ? tr(state.penaltyFlash) : null}
     safetyNotice={state.safetyNotice ? tr(state.safetyNotice) : null}
-    tournament={providerState.tournament} tournamentLoading={providerState.tournamentLoading} contextBoard={providerState.contextBoard} contextBoardLoading={providerState.contextBoardLoading}
+    tournament={providerState.tournament} tournamentLoading={providerState.tournamentLoading}
     opponentCorrect={ghostCorrect} letterStates={letterStates} dialogRef={dialogRef} gameplayViewportRef={gameplayViewportRef} gameplayRef={gameplayRef} quitDialogRef={quitDialogRef}
-    socialPending={state.findingOpponent || state.pending ? "match" : socialPending} playerOverlay={playerOverlay} platformPlayerId={platformPlayerId}
+    matchPending={state.findingOpponent || Boolean(state.pending)}
     sharingRewardCoins={referralSharing?.rewardCoins} sharing={sharing}
     sharingLabel={referralSharing?.raceShareLabel} sharingReadyText={referralSharing?.raceReadyText}
     onClose={session.requestClose} onRetry={() => {
@@ -247,12 +182,11 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     requiresRunRefresh={state.requiresRunRefresh}
     retryDisabled={state.findingOpponent || Boolean(state.pending) || state.matchSearchStatus === "failed" && !state.matchRetryReady && !needsRaceCatalog(state)}
     onShowInbox={showInbox} onShowTournaments={tournaments ? showTournaments : undefined}
-    onShareTournament={tournaments?.share ? () => void shareTournament() : undefined} onChooseCategory={() => session.navigate("categories")}
+    onChooseCategory={() => session.navigate("categories")}
     onSelectCategory={session.begin} onInboxRematch={inboxRematch} onBlockRival={item => session.safety("block", item)} onReportRival={(item, category) => session.safety("report", item, category)}
     onSelectSlot={index => session.input("slot", index)} onLetter={letter => session.input("letter", letter)} onText={text => session.input("text", text)} onBackspace={() => session.input("backspace")}
     onHint={session.hint} onSubmit={session.submit} onSkip={session.skip} onPublish={referralSharing ? session.publish : () => undefined}
     onShare={() => {if (state.published) void sharePublishedChallenge(state.published);}} onRematch={session.rematch} onDismissQuit={session.dismissQuit}
-    onChooseNativeContext={nativeSocial ? () => void runNativeSocial("context") : undefined}
-    onMatchNativePlayer={matchmaking ? () => void session.findOpponent(matchmaking) : nativeSocial ? () => void runNativeSocial("match") : undefined}
+    onFindOpponent={matchmaking ? () => void session.findOpponent(matchmaking) : undefined}
     onCancelInvitation={session.cancelInvitation} onAbandon={session.abandon} />;
 }

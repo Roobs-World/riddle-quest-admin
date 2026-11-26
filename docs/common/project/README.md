@@ -329,7 +329,6 @@ Build one isolated shipping target:
 
 ```bash
 pnpm build:jest
-pnpm build:facebook
 pnpm build:youtube
 pnpm build:reddit
 ```
@@ -342,7 +341,7 @@ Build the established backend and non-YouTube production path:
 pnpm build
 ```
 
-Build the established Jest, Facebook, and Reddit web targets plus the Reddit App package:
+Build the established Jest and Reddit web targets plus the Reddit App package:
 
 ```bash
 pnpm build:web

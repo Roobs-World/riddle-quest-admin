@@ -95,7 +95,7 @@ test("only shader template code changes while comments and object/function macro
 test("other JavaScript and other targets retain their existing build behavior", () => {
   assert.equal(plugin.transform("export const value = 1;", "/src/play/gameSession.ts"), null);
   assert.equal(plugin.transform("export default `  body`;", "/node_modules/another-library/shader.glsl.js"), null);
-  for (const mode of ["facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+  for (const mode of ["reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
     /** Selecting another target must not introduce a new vendor transform. */
     const target = createWebTargetViteConfig({command: "build", mode, environment: process.env});
     assert.equal(target.plugins.some(candidate => candidate?.name === "riddle-quest-jest-shader-indentation"), false, mode);

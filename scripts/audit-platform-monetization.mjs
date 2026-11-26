@@ -9,13 +9,11 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
 export async function auditPlatformMonetization() {
-  const [policySource, jestPurchases, jestCheckout, jestRecovery, facebookEntry, facebookBootstrap, facebookCommerce,
+  const [policySource, jestPurchases, jestCheckout, jestRecovery,
     redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry, yahooApp] = await Promise.all([
     read("config/platform-monetization.json"),
     read("platforms/web/jest/src/purchases.ts"), read("platforms/web/jest/src/purchaseCheckout.ts"),
-    read("platforms/web/jest/src/purchaseReconciliation.ts"), read("platforms/web/facebook/src/FacebookPlatformEntry.tsx"),
-    read("platforms/web/facebook/src/FacebookPlatformBootstrap.ts"),
-    read("platforms/web/facebook/src/FacebookCommerceCapability.ts"), read("platforms/web/reddit/devvit.json"),
+    read("platforms/web/jest/src/purchaseReconciliation.ts"), read("platforms/web/reddit/devvit.json"),
     read("platforms/web/reddit/products.json"), read("platforms/web/reddit/src/RedditPlatformBootstrap.ts"),
     read("platforms/web/youtube/scripts/audit-youtube-artifact.mjs"),
     read("scripts/web/audit-standalone-artifact.mjs"), read("platforms/web/yahoo/src/main.tsx"),
@@ -42,10 +40,6 @@ export async function auditPlatformMonetization() {
       !/import\("\.\/purchaseReconciliation"\)/u.test(jestPurchases) || !/return reconcileJestPurchases\(/u.test(jestPurchases) ||
       !/getIncompletePurchases/u.test(jestRecovery) || !grantsBeforeCompletion(jestCheckout) || !grantsBeforeCompletion(jestRecovery))
     failures.push("Jest purchase grant/recovery ordering is missing.");
-  if (!/createFacebookAdsCapability/u.test(facebookEntry) || !/VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID/u.test(facebookEntry) || !/VITE_FACEBOOK_REWARDED_PLACEMENT_ID/u.test(facebookEntry)) failures.push("Facebook ad capability or placement boundary is missing.");
-  if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Facebook commerce must remain unavailable before authentication.");
-  if (!/new FacebookCommerceSession/u.test(facebookEntry) || !/clientConfiguration\.commerceEnabled/u.test(facebookEntry)) failures.push("Facebook payments must use the authenticated server-gated adapter.");
-  if (!/price:\s*product\.price/u.test(facebookCommerce)) failures.push("Facebook commerce must preserve Meta's formatted catalog price.");
   const redditConfig = JSON.parse(redditConfigSource);
   const redditProducts = JSON.parse(redditProductsSource);
   if (redditConfig.permissions?.payments !== true || !redditConfig.payments?.endpoints?.fulfillOrder || !redditConfig.payments?.endpoints?.refundOrder) failures.push("Reddit payment permissions and handlers must be configured.");

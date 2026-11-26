@@ -501,8 +501,7 @@ it("excludes account, economy, notification, and presence fields from guest migr
       registrationPromptDismissedAt: 1,
       firstMilestoneMarked: true,
       presenceEnabled: true,
-      facebookNotificationPermission: "accepted",
-      facebookNotificationLastPromptAtMs: 2,
+      notificationsEnabled: true,
     }),
   ).toEqual({locale: "fr"});
 });

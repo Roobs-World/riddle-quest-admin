@@ -34,7 +34,7 @@ test("rejects forged identity, lifecycle, environment, price, SKU, accounting an
     {...order, status: "DELIVERED"},
     {...order, environment: "unknown"},
     {...order, products: [{...order.products[0], price: 5}]},
-    {...order, products: [{...order.products[0], sku: "facebook_sku"}]},
+    {...order, products: [{...order.products[0], sku: "foreign_sku"}]},
     {...order, products: [{...order.products[0], accountingType: "DURABLE"}]},
     {...order, products: [order.products[0], order.products[0]]},
   ])

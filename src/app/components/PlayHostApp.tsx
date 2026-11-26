@@ -38,7 +38,6 @@ export function PlayHostApp({
     hostConfigurationWarning,
     initialGameMode,
     platformCapabilities,
-    platformPlayerId,
     externalInteractionBlocked,
     initialPlayerData,
     onPlayerDataChange,
@@ -441,13 +440,8 @@ export function PlayHostApp({
           initialRaceTournamentLocale={platformCapabilities?.tournaments ? initialRaceTournamentLocale : undefined}
           raceFeatureEnabled={raceBuildEnabled}
           prefetchedRaceCategories={prefetchedRaceCategories}
-          nativeSocial={platformCapabilities?.nativeSocial}
           matchmaking={platformCapabilities?.matchmaking}
-          playerOverlay={platformCapabilities?.overlay}
-          platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
           tournaments={platformCapabilities?.tournaments}
-          contextBoard={platformCapabilities?.contextBoard}
-          attemptRecovery={platformCapabilities?.attemptRecovery}
           raceLocalePolicy={raceLocalePolicy}
           onPresenceStateChange={onPresenceStateChange}
         />

@@ -21,8 +21,6 @@ export type HostedPlaySession = Readonly<{
   initialGameMode: WebGameMode;
   /** Stores platform capabilities. */
   platformCapabilities?: PlatformCapabilities;
-  /** Stores platform player id. */
-  platformPlayerId?: string;
   /** Stores external interaction blocked. */
   externalInteractionBlocked: boolean;
   /** Stores initial player data. */

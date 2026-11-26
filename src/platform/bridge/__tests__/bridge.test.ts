@@ -211,7 +211,7 @@ describe("bridge protocol", () => {
       GameToHostMessageSchema.safeParse({
         type: "game:blockRival",
         requestId: "block-rival-1",
-        payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
+        payload: {targetUserId: "jest_1111111111111111111111111111111111111111"},
       }).success,
     ).toBe(true);
     expect(

@@ -466,7 +466,7 @@ importers:
         version: 19.3.0(@types/react@19.3.0)
       '@vitejs/plugin-react':
         specifier: ^6.3.0
-        version: 6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8))(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)
+        version: 6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(rolldown@1.2.19)(vite@8.3.8))(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
@@ -567,37 +567,6 @@ importers:
       typescript:
         specifier: npm:@typescript/typescript6@6.0.2
         version: '@typescript/typescript6@6.0.2'
-
-  platforms/web/facebook:
-    dependencies:
-      firebase:
-        specifier: ^13.4.0
-        version: 13.4.0(@types/react@19.3.2)(react@19.3.1)(supports-color@8.1.1)
-      react:
-        specifier: 19.3.1
-        version: 19.3.1
-      react-dom:
-        specifier: 19.3.1
-        version: 19.3.1(react@19.3.1)
-    devDependencies:
-      '@jest/globals':
-        specifier: 30.5.2
-        version: 30.5.2(supports-color@8.1.1)
-      '@playwright/test':
-        specifier: ^1.65.1
-        version: 1.65.1
-      '@types/react':
-        specifier: ~19.3.0
-        version: 19.3.2
-      '@types/react-dom':
-        specifier: ^19.3.0
-        version: 19.3.0(@types/react@19.3.2)
-      typescript:
-        specifier: npm:@typescript/typescript6@6.0.2
-        version: '@typescript/typescript6@6.0.2'
-      vite:
-        specifier: ^8.3.8
-        version: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
 
   platforms/web/gamesnacks:
     dependencies:
@@ -13548,17 +13517,6 @@ snapshots:
       - '@types/node'
       - '@vitejs/devtools'
 
-  '@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)':
-    dependencies:
-      '@babel/core': 8.1.3
-      artichokie: 0.4.5
-      picomatch: 4.0.7
-      rolldown: 1.2.19
-    optionalDependencies:
-      '@babel/plugin-transform-runtime': 8.1.2(@babel/core@8.1.3)
-      '@babel/runtime': 8.1.3
-      vite: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
-
   '@rolldown/pluginutils@1.1.1': {}
 
   '@sec-ant/readable-stream@0.4.1': {}
@@ -14269,14 +14227,6 @@ snapshots:
     transitivePeerDependencies:
       - '@types/node'
       - '@vitejs/devtools'
-
-  '@vitejs/plugin-react@6.3.0(@rolldown/plugin-babel@0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8))(babel-plugin-react-compiler@1.0.0)(vite@8.3.8)':
-    dependencies:
-      '@rolldown/pluginutils': 1.1.1
-      vite: 8.3.8(@types/node@26.6.6)(@vitejs/devtools@0.8.3)(terser@5.51.4)(yaml@2.9.1)
-    optionalDependencies:
-      '@rolldown/plugin-babel': 0.3.1(@babel/core@8.1.3)(@babel/plugin-transform-runtime@8.1.2(@babel/core@8.1.3))(@babel/runtime@8.1.3)(rolldown@1.2.19)(vite@8.3.8)
-      babel-plugin-react-compiler: 1.0.0
 
   '@vscode/sudo-prompt@9.3.2': {}
 

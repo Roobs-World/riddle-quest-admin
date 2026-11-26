@@ -10,9 +10,8 @@ export function RaceHubTabs({
   onPlay,
   onActivity,
   onTournaments,
-  onChooseContext,
   onMatchPlayer,
-  socialPending = null,
+  matchPending = false,
 }: {
   /** Stores active. */
   active: RaceHubTab;
@@ -22,12 +21,10 @@ export function RaceHubTabs({
   onActivity: () => void;
   /** Stores on tournaments. */
   onTournaments?: () => void;
-  /** Stores on choose context. */
-  onChooseContext?: () => void;
-  /** Stores on match player. */
+  /** Starts the target-owned recorded opponent search. */
   onMatchPlayer?: () => void;
-  /** Stores social pending. */
-  socialPending?: "context" | "match" | null;
+  /** Disables discovery while its owned operation is pending. */
+  matchPending?: boolean;
 }) {
   /** Provides tabs behavior. */
   const tabs = [
@@ -75,30 +72,9 @@ export function RaceHubTabs({
           </button>
         ))}
       </div>
-      {onChooseContext || onMatchPlayer ? (
-        <div className="race-hub-social-actions" role="group" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
-          {onMatchPlayer ? (
-            <button
-              type="button"
-              onClick={onMatchPlayer}
-              disabled={socialPending !== null}
-              aria-busy={socialPending === "match"}
-            >
-              {tr("RaceTo10.MATCH_PLAYER")}
-            </button>
-          ) : null}
-          {onChooseContext ? (
-            <button
-              type="button"
-              onClick={onChooseContext}
-              disabled={socialPending !== null}
-              aria-busy={socialPending === "context"}
-            >
-              {tr("RaceTo10.CHOOSE_CONTEXT")}
-            </button>
-          ) : null}
-        </div>
-      ) : null}
+      {onMatchPlayer && <button className="race-match-player" type="button" onClick={onMatchPlayer} disabled={matchPending} aria-busy={matchPending}>
+        {tr("RaceTo10.MATCH_PLAYER")}
+      </button>}
     </nav>
   );
 }

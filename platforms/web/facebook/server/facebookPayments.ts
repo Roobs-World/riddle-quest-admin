@@ -3,7 +3,7 @@ import {getFirestore, Timestamp, type Firestore} from "firebase-admin/firestore"
 import {defineSecret} from "firebase-functions/params";
 import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {z} from "zod";
-import {resolveFacebookProduct} from "../src/commerce/facebookCatalog.js";
+import {resolveFacebookProduct} from "./commerce/facebookCatalog.js";
 import {browserCallableSecurityOptions} from "../../../../firebase-functions/src/shared/callableSecurity";
 import {onCallWithSentry, onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
 import {validateCallableRequest, validateCallableResponse} from "../../../../firebase-functions/src/validation/callableValidation";

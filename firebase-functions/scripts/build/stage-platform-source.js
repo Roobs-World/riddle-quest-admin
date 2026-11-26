@@ -13,7 +13,6 @@ const serverRoots = [
 ];
 const sharedSourceRoots = [
   "src",
-  "platforms/web/facebook/src/commerce/facebookCatalog.ts",
   "platforms/web/reddit/src/shared/redditCatalog.ts",
   "platforms/web/jest/src/referrals/referralCampaigns.ts",
 ];

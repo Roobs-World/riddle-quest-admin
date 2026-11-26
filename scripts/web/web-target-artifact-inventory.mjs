@@ -3,7 +3,6 @@ import path from "node:path";
 
 const targetNames = Object.freeze({
   jest: "Jest",
-  facebook: "Facebook",
   reddit: "Reddit",
   youtube: "YouTube",
   netflix: "Netflix candidate",

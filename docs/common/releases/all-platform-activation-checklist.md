@@ -28,23 +28,15 @@ JEST_NOTIFICATION_EMAIL
 
 Optional release-time Sentry source-map credentials are documented in `docs/jest/jest-html5-operations.md`. Dispatch `.github/workflows/deploy-jest.yml` or use `pnpm release:jest`.
 
-## Facebook Instant Games
+## Retained Facebook server integration
 
-Meta dashboard requirements:
+This branch has no Facebook browser frontend or release command. Existing backend configuration and notification delivery remain available.
+
+Meta dashboard requirements for the retained integration:
 
 - Numeric Meta App ID, Instant Games product, hosted-game origins, deletion callback/status URL, privacy policy, terms URL, icons, cover assets, and age classification.
 - Business verification and the permissions/feature review required by the current Meta dashboard.
-- One interstitial and one rewarded-video placement. Copy their exact placement IDs; do not use the app secret as a browser value.
 - Catalog entries matching the seven repository Facebook products and role accounts for hosted testing.
-
-Browser build variables:
-
-```text
-VITE_FACEBOOK_AGE_CATEGORY=13_plus
-VITE_FACEBOOK_FUNCTIONS_BASE_URL=<approved Firebase Functions origin>
-VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID=<Meta interstitial placement ID>
-VITE_FACEBOOK_REWARDED_PLACEMENT_ID=<Meta rewarded-video placement ID>
-```
 
 Backend non-secret configuration:
 
@@ -61,7 +53,7 @@ Backend secret-manager value:
 FACEBOOK_APP_SECRET
 ```
 
-Ensure `FACEBOOK_DISABLED_FEATURES` does not contain a feature intended for launch. Run `pnpm preflight:facebook-backend`, deploy Functions, then `pnpm release:facebook`. Upload the printed immutable ZIP as a draft, test it, and promote those exact bytes.
+Use `pnpm preflight:facebook-backend` when maintaining the retained backend. Removing the frontend does not deploy or disable any existing backend service.
 
 ## Reddit Devvit Web
 

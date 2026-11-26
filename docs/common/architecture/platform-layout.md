@@ -8,7 +8,7 @@ Use `main` for every platform, shared source folder, release, Jest upload and mo
 | --- | --- | --- |
 | Android / Google Play | `platforms/native/android` | Bare React Native app, native views, device bridges and Android-only server integration |
 | Jest | `platforms/web/jest` | English-only HTML5 entry, Jest SDK adapter, identity/commerce integration and release scripts |
-| Facebook | `platforms/web/facebook` | FBInstant entry, SDK adapter, Facebook-only ads, provider authority and release scripts |
+| Facebook server integration | `platforms/web/facebook/server` | Retained provider authority, payments, referrals and notification integration; no browser frontend on this branch |
 | Reddit | `platforms/web/reddit` | Browser adapter, Devvit package and trusted same-origin gateway; Firebase integration in `server` |
 | YouTube | `platforms/web/youtube` | Self-contained Playable entry, YouTube save/lifecycle SDK and release packaging |
 | Netflix | `platforms/web/netflix` | Self-contained candidate entry; approved partner capabilities remain absent |
@@ -16,7 +16,7 @@ Use `main` for every platform, shared source folder, release, Jest upload and mo
 | GameSnacks | `platforms/web/gamesnacks` | Self-contained target entry and GameSnacks adapter |
 | 42 Neutral Handoff destinations | `platforms/web/<target>/release.json` | Destination-specific release metadata, with shared game implementation |
 
-Each of the 49 web destinations owns its release definition in `release.json`. `scripts/release/release-targets.json` is the ordered list of destination names; `release-registry.mjs` loads the definitions. Neutral Handoff destinations do not gain invented SDK adapters or copies of the game.
+Each supported web destination owns its release definition in `release.json`. `scripts/release/release-targets.json` is the ordered list of destination names; `release-registry.mjs` loads the definitions. Neutral Handoff destinations do not gain invented SDK adapters or copies of the game. Facebook's retained server directory is outside that browser release registry.
 
 Platform-only source, tests, HTML, SDK code, views, native bridges, provider server integration and release scripts belong beneath the corresponding root. Browser source uses `src`. Firebase-side provider code uses `server`. Reddit's Devvit `src/server` is a separate trusted runtime from its Firebase-side `server` directory.
 
@@ -24,7 +24,7 @@ Common source lives in feature folders such as `src/gameplay`, `src/races`, `src
 
 These are ordinary folders governed by root `package.json`, `tsconfig.json`, `vite.config.ts`, and `jest.config.cjs`. They have no separate package configuration or generated package builds. Callers import canonical implementations directly. Cross-feature aggregate entry points and files that merely re-exported another implementation have been removed. See the [feature source analysis and rationale](shared-source-layout.md).
 
-Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's referral campaigns live under its `src/referrals`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
+Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's retained server catalog lives in `platforms/web/facebook/server/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's referral campaigns live under its `src/referrals`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
 
 The notification management website is a separate top-level workspace at `notification-manager/`. Vercel hosts its React frontend and API routes. Supabase owns its Postgres database, operator authentication and notification image storage. Its server code is outside the game and Firebase deployment graphs. See the [notification service guide](../notifications/service.md).
 
@@ -32,7 +32,7 @@ The notification management website is a separate top-level workspace at `notifi
 
 Root `pnpm build:<target>` and `pnpm release:<target>` commands retain their provider-specific behavior. Vite selects one provider HTML root and one SDK integration at compile time. Each successful build audits resolved source ownership and runtime packages before accepting the artifact. Web artifacts exclude native modules and foreign provider SDKs. Every web game's generated files belong under `platforms/web/<target>/build/`. Runtime files use `build/dist/`; ZIPs, manifests and private release receipts are siblings outside that runtime folder so rebuilding cannot delete or package release history. Reddit's final Devvit package uses `build/devvit/{client,server}`. Platform build-plugin source belongs in `tooling/`, outside generated output.
 
-The shared release registry defines these paths for the seven browser targets and every neutral handoff destination. The neutral source ZIP is prepared in Netflix's build folder, then copied into each destination's own build folder. Android already writes APKs and AABs into its Gradle project's `android/app/build/outputs/`. Backend and notification-manager outputs have separate project contracts.
+The shared release registry defines these paths for the six browser targets and every neutral handoff destination. The neutral source ZIP is prepared in Netflix's build folder, then copied into each destination's own build folder. Android already writes APKs and AABs into its Gradle project's `android/app/build/outputs/`. Backend and notification-manager outputs have separate project contracts.
 
 For a checkout with older root build files, run `pnpm migrate:game-builds` to inspect the relocation plan and `pnpm migrate:game-builds --apply` to move them. The Linux migration uses GNU `mv` without copying or replacing existing files, refuses destination conflicts or unresolved release attempts, and preserves archive and receipt contents. Re-run the target preflight before a future upload to regenerate its singleton gate with the new path and current source revision. Historical receipts are not rewritten. Existing test reports are evidence rather than game build artifacts and retain their recorded locations.
 

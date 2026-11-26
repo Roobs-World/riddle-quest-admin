@@ -5,12 +5,10 @@ import type {
   ListFacebookTournamentResponse,
   RaceLocale,
   RecordFacebookTournamentRunResponse,
-  ListFacebookContextBoardResponse,
-  RecordFacebookContextRunResponse,
 } from "../../races/contracts/index";
 
 /** Identifies the release target that owns the active browser session. */
-export type PlatformId = "jest" | "facebook" | "reddit" | "youtube";
+export type PlatformId = "jest" | "reddit" | "youtube";
 
 /**
  * Declares which browser behaviors are owned by the game and which are delegated
@@ -44,7 +42,7 @@ export type PlatformRuntimePolicy = Readonly<{
 }>;
 
 /**
- * Legacy hosted-web policy retained by Jest, Facebook, and Reddit.
+ * Legacy hosted-web policy retained by Jest and Reddit.
  *
  * @remarks
  * YouTube supplies its own restrictive policy so adding that target cannot
@@ -103,10 +101,6 @@ export type PlatformPreferences = {
   jestGuestCompletedRiddles?: number;
   /** Explicit player consent for account-wide presence publication. */
   presenceEnabled?: boolean;
-  /** Last durable Facebook notification-prompt outcome. */
-  facebookNotificationPermission?: "unknown" | "declined" | "accepted";
-  /** Server-authorized Facebook prompt time in Unix epoch milliseconds. */
-  facebookNotificationLastPromptAtMs?: number;
 };
 
 export type {SavedGame} from "../../gameplay/session/checkpoints/savedGame";
@@ -224,45 +218,6 @@ export type CommerceCapability = {
   recover(): Promise<PlatformResult<void>>;
 };
 
-/**
- * Optional ad surface implemented only by an approved target artifact.
- *
- * @remarks
- * Capability absence is authoritative. Shared code must not load an ad SDK or
- * emulate an ad flow when this property is missing.
- */
-export type AdsCapability = {
-  /** True only when an independently gated opt-in video placement exists. */
-  rewardedAvailable?: boolean;
-  /**
-   * Shows a rewarded placement without granting value client-side.
-   *
-   * @param placement - Target-defined, allowlisted placement identifier.
-   */
-  showRewarded(placement: string): Promise<PlatformResult<void>>;
-  /**
-   * Shows an interstitial subject to provider and session frequency policies.
-   *
-   * @param placement - Target-defined, allowlisted placement identifier.
-   */
-  showInterstitial(placement: string): Promise<PlatformResult<void>>;
-};
-
-/** Target-owned recovery of one exhausted authoritative single-player attempt. */
-export type AttemptRecoveryCapability = {
-  /** Resolves only after the provider flow and authoritative continuation succeed. */
-  request(input: {
-  /** Single-player mode bound to the continuation session. */
-  gameMode: "classic" | "challenge";
-  /** Authority-owned question identity for the continuation grant. */
-  riddleId: string;
-  /** Server-issued session token binds continuation to the current question. */
-  sessionToken: string}):
-    Promise<PlatformResult<{
-    /** Validated authoritative balance returned after the continuation grant. */
-    newCoins: number}>>;
-};
-
 /** Optional provider-owned notification permission and scheduling boundary. */
 export type NotificationCapability = {
   /** Requests permission from a player-initiated, policy-eligible UI flow. */
@@ -297,41 +252,6 @@ export type SharingCapability = {
   }): Promise<PlatformResult<void>>;
 };
 
-/** Optional provider context selection that never exposes a social graph to game code. */
-export type NativeSocialCapability = {
-  /** Observes successful provider context changes; unsubscribe retires the callback. */
-  onContextChange?(callback: () => void): () => void;
-  /** @returns The active provider thread/group, or `unavailable` outside one. */
-  currentContext(): PlatformResult<{
-    /** Stores context id. */
-    contextId: string; /** Stores context type. */
-    /** Stores context type. */
-    contextType: "THREAD" | "GROUP";
-  }>;
-  /** Opens the provider's context chooser and returns the selected context. */
-  chooseContext(): Promise<
-    PlatformResult<{
-      /** Stores context id. */
-      contextId: string; /** Stores context type. */
-      /** Stores context type. */
-      contextType: "THREAD" | "GROUP";
-    }>
-  >;
-  /**
-   * Asks the provider to match the player into a context.
-   *
-   * @param tag - Optional bounded provider matchmaking hint.
-   */
-  matchPlayer(tag?: string): Promise<
-    PlatformResult<{
-      /** Stores context id. */
-      contextId: string; /** Stores context type. */
-      /** Stores context type. */
-      contextType: "THREAD" | "GROUP";
-    }>
-  >;
-};
-
 export type {MatchmakingResult, MatchmakingCapability} from "../../races/controllers/matchmaking";
 import type {MatchmakingCapability} from "../../races/controllers/matchmaking";
 
@@ -360,41 +280,12 @@ export type PresenceCapability = {
   disconnect(sessionId: string): Promise<void>;
 };
 
-/** Optional provider-owned identity overlay that avoids returning profile data to JavaScript. */
-export type OverlayCapability = {
-  /**
-   * Mounts provider-owned current-player UI into a connected surface.
-   *
-   * @returns A successful async disposer that must be called when the surface unmounts.
-   */
-  renderPlayer(options: {
-    /** Stores player id. */
-    playerId: string; /** Stores surface. */
-    /** Stores surface. */
-    surface: HTMLElement;
-    /** Retires partial initialization while original provider operations remain observed. */
-    signal?: AbortSignal;
-  }): Promise<PlatformResult<() => Promise<void>>>;
-};
-
-/** Server-authoritative Facebook tournament access; Meta standings remain presentation-only. */
+/** Server-authoritative provider tournament access. */
 export type TournamentCapability = {
   /** Lists the current authoritative tournament window for a content locale. */
   list(locale: RaceLocale): Promise<ListFacebookTournamentResponse>;
   /** Records an idempotent completed run and returns refreshed standings. */
   record(runId: string, locale: RaceLocale): Promise<RecordFacebookTournamentRunResponse>;
-  /** Opens a provider-owned share dialog using its fresh authoritative best; cancellation retires preparation only. */
-  share?(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>>;
-};
-
-/** Server-authoritative board for the currently active Facebook thread/group context. */
-export type ContextBoardCapability = {
-  /** Invalidates current rows immediately when the owning provider context changes. */
-  onContextChange?(callback: () => void): () => void;
-  /** Lists validated standings or null for absent social context; cancellation retires admission while membership settles. */
-  list(locale: RaceLocale, signal?: AbortSignal): Promise<ListFacebookContextBoardResponse | null>;
-  /** Records an idempotent run, or returns null when no social context can receive it. */
-  record(runId: string, locale: RaceLocale): Promise<RecordFacebookContextRunResponse | null>;
 };
 
 /**
@@ -421,26 +312,16 @@ export type PlatformCapabilities = {
   lifecycle?: LifecycleCapability;
   /** Provider catalog and server-authoritative purchase flow. */
   commerce?: CommerceCapability;
-  /** Target-approved rewarded/interstitial surfaces; Facebook-only in current builds. */
-  ads?: AdsCapability;
-  /** Optional provider-funded extra attempt; supplied only by Facebook. */
-  attemptRecovery?: AttemptRecoveryCapability;
   /** Provider notification permission and scheduling surface. */
   notifications?: NotificationCapability;
   /** Provider-owned outbound sharing surface. */
   sharing?: SharingCapability;
-  /** Provider thread/group selection without exposing a social graph. */
-  nativeSocial?: NativeSocialCapability;
   /** Server-authoritative offline opponent selection. */
   matchmaking?: MatchmakingCapability;
   /** Privacy-safe activity publication and rival visibility. */
   presence?: PresenceCapability;
-  /** Provider-rendered identity presentation. */
-  overlay?: OverlayCapability;
   /** Server-authoritative provider tournament standings. */
   tournaments?: TournamentCapability;
-  /** Server-authoritative standings scoped to the active provider context. */
-  contextBoard?: ContextBoardCapability;
 };
 
 /**

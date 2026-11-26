@@ -39,7 +39,7 @@ pnpm verify:production
 
 This runs the retained dependency, security, type, backend lint/runtime, production build, W3C, artifact and packaging checks. It does not run unit suites, emulator tests, local browser journeys or a mobile soak. A failed build or audit stops release preparation.
 
-Facebook source-secret, build and artifact checks remain part of this gate. Its separate ZIP and handoff preparation runs only through the explicit Facebook preflight, so a pending Facebook upload does not prevent verification of the independent Jest archive.
+Facebook's server-secret checks remain part of this gate. This branch has no Facebook frontend build, artifact or upload handoff; the Facebook backend and notification services remain available.
 
 The [November 26 completion milestone release](evidence/jest-completion-milestones-2026-11-26.json) records version `01a21650-d6d1-7746-9031-031b0da256cb`, built from `9f9d06ace274`. Jest confirmed it ready and active at 05:25 UTC. Victory waits for the completion receipt and every applicable level-up and achievement before enabling Next. Delayed profile refreshes and auxiliary rewards no longer discard these milestones.
 

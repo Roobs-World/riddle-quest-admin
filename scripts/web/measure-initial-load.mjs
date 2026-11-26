@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 // Cold browser contexts, local uncompressed artifacts, 4x CPU slowdown and a
 // deterministic 300ms host SDK response. No live provider/backend timing noise.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const supportedTargets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo'];
+const supportedTargets = ['jest', 'reddit', 'youtube', 'netflix', 'yahoo'];
 const targets = process.env.LOAD_TARGETS?.split(',') ?? supportedTargets;
 assert.ok(targets.every(target => supportedTargets.includes(target)), 'Unknown measurement target');
 const results = [];
@@ -45,7 +45,6 @@ try {
           window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
           window.devvit = {context:{}, entrypoints:{game:'/index.html'}, token:'browser-test-token', webViewMode:1};
           window.ytgame = {IN_PLAYABLES_ENV:true, game:{firstFrameReady(){}, gameReady(){window.__gameReadyAt=performance.now();}, async loadData(){return '';}, async saveData(){}}, system:{async getLanguage(){return 'fr-CA';}, isAudioEnabled(){return false;}, onAudioEnabledChange(){return ()=>{};}, onPause(){return ()=>{};}, onResume(){return ()=>{};}}, health:{logError(){}, logWarning(){}}};
-          window.FBInstant = {async initializeAsync(){}, setLoadingProgress(){}, async startGameAsync(){}, getSupportedAPIs(){return [];}, onPause(){}, onResume(){}, player:{getID(){return 'load-test';}, getName(){return 'Solver';}, getPhoto(){return null;}, async getDataAsync(){return {};}, async setDataAsync(){}, async getSignedPlayerInfoAsync(){throw Error('offline measurement');}}};
         });
         const session = await context.newCDPSession(page);
         await session.send('Emulation.setCPUThrottlingRate', {rate:4});

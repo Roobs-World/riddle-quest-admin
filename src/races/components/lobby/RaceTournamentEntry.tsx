@@ -1,11 +1,10 @@
-import {useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode, type KeyboardEvent} from "react";
+import {useCallback, useEffect, useRef, useState, type ReactNode, type KeyboardEvent} from "react";
 import {ListFacebookTournamentResponseSchema, type ListFacebookTournamentResponse, type LiveRaceView, type LiveRaceCapability} from "../../contracts/index";
 import {RaceTo10Game} from "../recorded/RaceTo10Game";
 import type {RaceTo10GameProps} from "../recorded/RaceTo10Game.types.ts";
 import {RaceTournamentPanel} from "./RaceLobbyPanels";
 import {tr} from "../../../localization/browser/i18n";
-import {RaceContextBoard} from "../history/RaceContextBoard";
-import {PlatformPlayerOverlay} from "../social/PlatformPlayerOverlay";
+import {RaceActivity} from "../history/RaceActivity";
 import {LiveRaceGame} from "../live/LiveRaceGame";
 import type {LiveRaceHistory} from "../history/LiveRaceHistory";
 import {useRaceDialogFocus} from "../../hooks/useRaceDialogFocus";
@@ -17,7 +16,6 @@ export type RaceTournamentEntryProps = RaceTo10GameProps & {
     /** Accessible title identity retained by the owning target. */ titleId: string;
     /** Existing target analytics screen name. */ analyticsScreen: string;
     /** Reports an optional background record failure. */ onRecordFailure: (error: unknown) => void;
-    /** Reports a context result failure independently of official tournaments. */ onContextRecordFailure?: (error: unknown) => void;
   };
 };
 
@@ -32,7 +30,7 @@ type Destination = "play" | "activity" | "tournaments";
 /** Account and language lifetimes retire target-owned navigation and result effects. */
 function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   /** The selected destination must remain available before any child commits. */
-  const destinations: Destination[] = ["play", ...(props.contextBoard || props.matchmaking?.live?.history ? ["activity" as const] : []),
+  const destinations: Destination[] = ["play", ...(props.matchmaking?.live?.history ? ["activity" as const] : []),
     ...(props.tournaments ? ["tournaments" as const] : [])];
   /** A native tournament entry selects only the configured official board. */
   const [destination, setDestination] = useState<Destination>(props.tournaments && props.tournamentLocale ? "tournaments" : "play");
@@ -47,34 +45,7 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   }
   /** Keyboard selection retains focus across destination replacement. */
   const keyboardSelection = useRef(false);
-  /** Tab changes retire late native-dialog feedback while retaining the SDK's dialog barrier. */
-  const revision = useRef(0);
-  /** A synchronous lock contains repeated clicks before disabled controls commit. */
-  const choosing = useRef(false);
-  /** Visible native chooser state persists across tab changes. */
-  const [busy, setBusy] = useState(false);
-  /** Accepted native context changes invalidate previously rendered standings. */
-  const [contextRevision, setContextRevision] = useState(0);
-  /** Native chooser feedback uses existing translated copy. */
-  const [contextError, setContextError] = useState(false);
-  if (!destinations.includes(destination)) {
-    setDestination("play");
-    setContextError(false);
-  }
-  useLayoutEffect(() => {
-    // Automatic fallback retires old-tab feedback only when that selection commits.
-    revision.current++;
-  }, [destination]);
-  /** Component lifetime prevents a retired account from accepting dialog feedback. */
-  const active = useRef(true);
-  useLayoutEffect(() => {active.current = true; return () => {active.current = false;};}, []);
-  /** Only committed provider operations may acknowledge a pending native selection. */
-  const choiceOwner = useRef({native: props.nativeSocial, choose: props.nativeSocial?.chooseContext,
-    board: props.contextBoard, list: props.contextBoard?.list, notify: props.contextBoard?.onContextChange});
-  useLayoutEffect(() => {
-    choiceOwner.current = {native: props.nativeSocial, choose: props.nativeSocial?.chooseContext,
-      board: props.contextBoard, list: props.contextBoard?.list, notify: props.contextBoard?.onContextChange};
-  }, [props.nativeSocial, props.nativeSocial?.chooseContext, props.contextBoard, props.contextBoard?.list, props.contextBoard?.onContextChange]);
+  if (!destinations.includes(destination)) setDestination("play");
   /** Submit opaque tickets independently; optional board failures cannot suppress live completion. */
   const completed = useCallback((view: LiveRaceView) => {
     props.onLiveResult?.(view);
@@ -82,46 +53,16 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
       view.run.runId !== view.ticketId || view.run.locale !== props.locale) return;
     if (props.tournaments) void Promise.resolve().then(() => props.tournaments!.record(view.ticketId, props.locale))
       .catch(props.presentation.onRecordFailure);
-    if (props.contextBoard) void Promise.resolve().then(() => props.contextBoard!.record(view.ticketId, props.locale))
-      .catch(props.presentation.onContextRecordFailure ?? props.presentation.onRecordFailure);
-  }, [props.tournaments, props.contextBoard, props.locale, props.onLiveResult, props.presentation]);
+  }, [props.tournaments, props.locale, props.onLiveResult, props.presentation]);
   if (rematch && props.matchmaking?.live?.rematch) return <LiveRaceGame key={rematch.rematchOfTicketId}
     transport={rematch.transport} locale={props.locale} categoryId={rematch.categoryId} rematchOfTicketId={rematch.rematchOfTicketId}
     coins={props.coins} ownerId={props.ownerId} localPlayer={props.localPlayer} onCompleted={completed}
     onRematch={rematchOfTicketId => setRematch({...rematch, rematchOfTicketId})} onClose={() => setRematch(null)} />;
-  /** The target adapter owns context synchronization and the actual native SDK dialog. */
-  const choose = async () => {
-    /** Capture the original receiver and its committed board ownership before opening the dialog. */
-    const native = props.nativeSocial, method = native?.chooseContext, owner = choiceOwner.current;
-    if (!active.current || choosing.current || !native || !method || owner.native !== native || owner.choose !== method ||
-      owner.board !== props.contextBoard || owner.list !== props.contextBoard?.list || owner.notify !== props.contextBoard?.onContextChange) return;
-    choosing.current = true; setBusy(true); setContextError(false);
-    /** Only the initiating tab lifetime may display a chooser failure. */
-    const started = revision.current;
-    try {
-      /** Context membership is synchronized before this success reaches presentation. */
-      const result = await method.call(native);
-      if (!active.current || choiceOwner.current !== owner) return;
-      if (result.status === "success") {
-        setContextError(false);
-        // Notifying providers already invalidated and reconciled this selection before acknowledging success.
-        if (!props.contextBoard?.onContextChange) setContextRevision(value => value + 1);
-      }
-      else if (result.status !== "cancelled" && started === revision.current) setContextError(true);
-    } catch {if (active.current && choiceOwner.current === owner && started === revision.current) setContextError(true);}
-    finally {choosing.current = false; if (active.current) setBusy(false);}
-  };
-  if (!props.tournaments && !props.contextBoard && !props.nativeSocial && !props.matchmaking?.live?.history) return <RaceTo10Game {...props} />;
-  /** Navigation and optional chooser are restricted to the race lobby and social boards. */
-  const navigation = <>
-    <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
-      onSelect={(next, keyboard = false) => {revision.current++; setContextError(false); keyboardSelection.current = keyboard; setDestination(next);}} />
-    {props.nativeSocial && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) && <div className="race-hub-social-actions"><button type="button" disabled={busy} onClick={() => void choose()}>
-      {tr("RaceTo10.CHOOSE_CONTEXT")}</button></div>}
-    {contextError && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
-  </>;
+  if (!props.tournaments && !props.matchmaking?.live?.history) return <RaceTo10Game {...props} />;
+  const navigation = <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
+    onSelect={(next, keyboard = false) => {keyboardSelection.current = keyboard; setDestination(next);}} />;
   return destination === "tournaments" ? <RaceTournamentBoard {...props} navigation={navigation} />
-    : destination === "activity" ? <RaceContextBoard {...props} refreshRevision={contextRevision} navigation={navigation}
+    : destination === "activity" ? <RaceActivity {...props} navigation={navigation}
       onRematch={selection => {
         /** Only the capability that admitted this selection may create its private journey. */
         const transport = props.matchmaking?.live;
@@ -197,7 +138,7 @@ function RaceTournamentBoard(props: RaceTournamentBoardProps) {
 }
 
 /** Reads only validated official standings; native scores never become game authority. */
-function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins, onClose, navigation, presentation, playerOverlay, platformPlayerId}: RaceTournamentBoardProps) {
+function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins, onClose, navigation, presentation}: RaceTournamentBoardProps) {
   /** Latest exact-schema server standings for the selected game language. */
   const [tournament, setTournament] = useState<ListFacebookTournamentResponse | null>(null);
   /** Read retry generation. */
@@ -206,26 +147,11 @@ function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins,
   const [loading, setLoading] = useState(true);
   /** Provider failure is presented through existing localized copy. */
   const [error, setError] = useState<string | null>(tournamentLocale && tournamentLocale !== locale ? "RaceTo10.ERROR_LOCALE_MISMATCH" : null);
-  /** Synchronous barrier contains duplicate clicks before React commits disabled controls. */
-  const sharing = useRef(false);
-  /** Visible provider dialog state. */
-  const [busy, setBusy] = useState(false);
-  /** Prevents a retired board from accepting late provider or authority responses. */
-  const active = useRef(true);
-  /** Pending native preparation belongs to this committed board operation. */
-  const pendingShare = useRef<AbortController | null>(null);
-  /** Native feedback belongs to the exact committed provider operation. */
-  const shareOwner = useRef({provider: tournaments, share: tournaments?.share});
-  useLayoutEffect(() => {
-    pendingShare.current?.abort();
-    shareOwner.current = {provider: tournaments, share: tournaments?.share};
-  }, [tournaments, tournaments?.share]);
   /** Board owns the same modal focus boundary as live play. */
   const dialogRef = useRef<HTMLElement | null>(null);
   /** No nested quit confirmation exists on a read-only board. */
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: false, dismissQuitConfirmation: () => {}, requestClose: onClose});
-  useLayoutEffect(() => {active.current = true; return () => {active.current = false; pendingShare.current?.abort();};}, []);
   useEffect(() => {
     /** Effect lifetime prevents stale tournament reads from updating a retired board. */
     let current = true;
@@ -247,34 +173,13 @@ function RaceTournamentBoardPanel({locale, tournamentLocale, tournaments, coins,
       .finally(() => {window.clearTimeout(timeout); if (current) setLoading(false);});
     return () => {current = false; window.clearTimeout(timeout);};
   }, [locale, tournaments, retry]);
-  /** Target adapter fetches the fresh official best and owns its SDK dialog guard. */
-  const share = async () => {
-    /** Preserve the initiating method and receiver even if this capability later changes. */
-    const provider = tournaments, method = provider?.share, owner = shareOwner.current;
-    if (!active.current || sharing.current || !provider || !method ||
-      owner.provider !== provider || owner.share !== method) return;
-    sharing.current = true; setBusy(true);
-    /** Original SDK UI remains occupied even if this signal later retires presentation. */
-    const controller = new AbortController();
-    pendingShare.current = controller;
-    try {
-      /** Validated provider outcome controls the board refresh and localized error state. */
-      const result = await method.call(provider, locale, controller.signal);
-      if (!active.current || shareOwner.current !== owner) return;
-      if (result.status === "success") {setError(null); setRetry(value => value + 1);}
-      else if (result.status !== "cancelled") setError(result.message === "RaceTo10.ERROR_LOCALE_MISMATCH"
-        ? "RaceTo10.ERROR_LOCALE_MISMATCH" : "RaceTo10.ERROR_GENERIC");
-    } catch {if (active.current && shareOwner.current === owner) setError("RaceTo10.ERROR_GENERIC");}
-    finally {if (pendingShare.current === controller) pendingShare.current = null; sharing.current = false; if (active.current) setBusy(false);}
-  };
   return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby={presentation.titleId}
     tabIndex={-1} data-analytics-screen={presentation.analyticsScreen}>
     <header className="race-topbar"><h1 id={presentation.titleId}>{tr("RaceTo10.HUB_TOURNAMENTS")}</h1>
       <div className="race-topbar-actions"><strong aria-label={tr("Profile.TOTAL_COINS_LABEL")}>{coins.toLocaleString()}</strong>
         <button className="race-close" aria-label={tr("RaceTo10.CLOSE")} onClick={onClose}>×</button></div></header>
     {navigation}
-    {playerOverlay && platformPlayerId && <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />}
     {error && <div className="race-error" role="alert">{tr(error)}<button onClick={() => {setError(null); setRetry(value => value + 1);}}>{tr("RaceTo10.RETRY")}</button></div>}
-    <RaceTournamentPanel tournament={tournament} loading={loading} sharing={busy} onShare={tournaments?.share ? () => void share() : undefined} />
+    <RaceTournamentPanel tournament={tournament} loading={loading} />
   </section>;
 }

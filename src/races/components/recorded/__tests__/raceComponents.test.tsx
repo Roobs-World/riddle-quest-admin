@@ -116,39 +116,6 @@ describe("race presentation components", () => {
     expect(redditHtml).not.toContain("Find opponent");
     expect(redditHtml).not.toContain("Play with friends");
 
-    /** Provides reddit match html behavior. */
-    const redditMatchHtml = renderToString(
-      <RaceHubTabs active="play" onPlay={noop} onActivity={noop} onMatchPlayer={noop} />,
-    );
-    expect(redditMatchHtml).toContain("Find opponent");
-    expect(redditMatchHtml).not.toContain("Play with friends");
-
-    /** Provides facebook html behavior. */
-    const facebookHtml = renderToString(
-      <RaceHubTabs
-        active="tournaments"
-        onPlay={noop}
-        onActivity={noop}
-        onTournaments={noop}
-        onChooseContext={noop}
-        onMatchPlayer={noop}
-      />,
-    );
-    expect(facebookHtml).toContain("Tournaments");
-    expect(facebookHtml).toContain("Find opponent");
-    expect(facebookHtml).toContain("Play with friends");
-    /** Only the native social action currently awaiting its provider is announced busy. */
-    const socialPendingHtml = renderToString(
-      <RaceHubTabs
-        active="play"
-        onPlay={noop}
-        onActivity={noop}
-        onChooseContext={noop}
-        onMatchPlayer={noop}
-        socialPending="match"
-      />,
-    );
-    expect(socialPendingHtml.match(/aria-busy="true"/g)).toHaveLength(1);
   });
 
   it("renders identity-free, economy-free tournament standings", () => {
@@ -157,7 +124,7 @@ describe("race presentation components", () => {
       <RaceTournamentPanel
         loading={false}
         tournament={{
-          tournamentId: "facebook-race10-en-2026-08-19",
+          tournamentId: "reddit-race10-en-2026-08-19",
           locale: "en",
           startsAtMs: 1,
           endsAtMs: 2,
@@ -174,51 +141,8 @@ describe("race presentation components", () => {
     expect(html.replaceAll("<!-- -->", "")).toContain("#1");
     expect(html).toContain('dir="ltr"');
     expect(html).toContain("0:45.0");
-    expect(html).not.toContain("facebook_");
+    expect(html).not.toContain("reddit_");
     expect(html).not.toContain("Share tournament");
-  });
-
-  it("exposes the native tournament share control only for a current-player score and target capability", () => {
-    /** An identity-free score is required before offering native publication. */
-    const currentPlayer = {rank: 1, adjustedTimeMs: 45000, isCurrentPlayer: true};
-    /** A target without share support continues to render the same standings. */
-    const tournament = {tournamentId: "facebook-race10-en-2026-08-19", locale: "en" as const, startsAtMs: 1, endsAtMs: 2,
-      sortOrder: "LOWER_IS_BETTER" as const, rewardsEnabled: false as const, standings: [currentPlayer], currentPlayer};
-    /** Native-dialog occupancy is visible as a disabled, accessible button. */
-    const html = renderToString(<RaceTournamentPanel loading={false} tournament={tournament} sharing={true} onShare={noop} />);
-    expect(html).toContain("Share tournament");
-    expect(html).toContain('disabled=""');
-    expect(renderToString(<RaceTournamentPanel loading={false} tournament={{...tournament, standings: [], currentPlayer: undefined}} onShare={noop} />))
-      .not.toContain("Share tournament");
-  });
-
-  it("renders an identity-free context board inside Activity", () => {
-    /** Provides html behavior. */
-    const html = renderToString(
-      <RaceInboxPanel
-        items={[]}
-        loading={false}
-        safetyPending={null}
-        contextBoardLoading={false}
-        contextBoard={{
-          locale: "en",
-          startsAtMs: 1,
-          endsAtMs: 2,
-          sortOrder: "LOWER_IS_BETTER",
-          rewardsEnabled: false,
-          standings: [{rank: 2, adjustedTimeMs: 31_000, isCurrentPlayer: true}],
-          currentPlayer: {rank: 2, adjustedTimeMs: 31_000, isCurrentPlayer: true},
-        }}
-        onRematch={noop}
-        onBlock={noop}
-        onReport={noop}
-        onChooseCategory={noop}
-      />,
-    );
-    expect(html).toContain("race-context-board");
-    expect(html).toContain('data-rewards-enabled="false"');
-    expect(html).toContain("0:31.0");
-    expect(html).not.toContain("facebook_");
   });
 
   it("disables category starts while discovery owns the session and restores them afterward", async () => {
@@ -254,7 +178,7 @@ describe("race presentation components", () => {
           {
             itemId: "result-1",
             challengeId: "challenge-1",
-            opponentUserId: "facebook_1111111111111111111111111111111111111111",
+            opponentUserId: "reddit_1111111111111111111111111111111111111111",
             opponentDisplayName: "Nova",
             categoryId: "history",
             result: "win",
@@ -282,7 +206,7 @@ describe("race presentation components", () => {
           {
             itemId: "result-1",
             challengeId: "challenge-1",
-            opponentUserId: "facebook_1111111111111111111111111111111111111111",
+            opponentUserId: "reddit_1111111111111111111111111111111111111111",
             opponentDisplayName: "Nova",
             categoryId: "history",
             result: "win",
@@ -294,7 +218,7 @@ describe("race presentation components", () => {
         loading={false}
         safetyPending={{
           operation: "raceBlock",
-          targetUserId: "facebook_1111111111111111111111111111111111111111",
+          targetUserId: "reddit_1111111111111111111111111111111111111111",
         }}
         onRematch={noop}
         onBlock={noop}

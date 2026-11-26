@@ -4,7 +4,6 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const portalTargetHtmlPaths = [
   `${repositoryRoot}/platforms/web/jest/index.html`,
-  `${repositoryRoot}/platforms/web/facebook/index.html`,
   `${repositoryRoot}/platforms/web/reddit/index.html`,
   `${repositoryRoot}/platforms/web/reddit/reddit-inline.html`,
   `${repositoryRoot}/platforms/web/youtube/index.html`,
@@ -14,7 +13,6 @@ const portalTargetHtmlPaths = [
 ];
 const portalTargetSourceEntryPaths = [
   `${repositoryRoot}/platforms/web/jest/src/main.tsx`,
-  `${repositoryRoot}/platforms/web/facebook/src/main.tsx`,
   `${repositoryRoot}/platforms/web/reddit/src/main.tsx`,
   `${repositoryRoot}/platforms/web/youtube/src/main.tsx`,
 ];
@@ -34,10 +32,11 @@ const collectProductionFiles = (directory) => {
 
 collectProductionFiles(`${repositoryRoot}/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
-for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+for (const target of ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
   collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/src`);
   if (existsSync(`${repositoryRoot}/platforms/web/${target}/server`)) collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/server`);
 }
+collectProductionFiles(`${repositoryRoot}/platforms/web/facebook/server`);
 collectProductionFiles(`${repositoryRoot}/platforms/native/android/server`);
 collectProductionFiles(`${repositoryRoot}/platforms/native/android/src`);
 for (const directory of ["src", "server", "api", "public", "supabase/functions"]) {

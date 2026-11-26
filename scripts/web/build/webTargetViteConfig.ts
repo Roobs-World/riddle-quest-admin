@@ -1,6 +1,5 @@
 import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/tooling/jestArtifactPlugins.ts";
 import {redditArtifactPlugin} from "../../../platforms/web/reddit/tooling/redditArtifactPlugin.ts";
-import {facebookArtifactPlugin} from "../../../platforms/web/facebook/tooling/facebookArtifactPlugin.ts";
 import {webBuildFacts} from "../../release/release-registry.mjs";
 import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
@@ -36,8 +35,6 @@ const sharedShopModalPage = fileURLToPath(new URL("../../../src/commerce/compone
 const redditShopModalPage = fileURLToPath(new URL("../../../platforms/web/reddit/src/RedditShopModalPage.tsx", import.meta.url));
 /** Provides jest html entry behavior. */
 const jestHtmlEntry = fileURLToPath(new URL("../../../platforms/web/jest/index.html", import.meta.url));
-/** Provides facebook html entry behavior. */
-const facebookHtmlEntry = fileURLToPath(new URL("../../../platforms/web/facebook/index.html", import.meta.url));
 /** Provides reddit html entry behavior. */
 const redditHtmlEntry = fileURLToPath(new URL("../../../platforms/web/reddit/index.html", import.meta.url));
 /** Provides reddit inline html entry behavior. */
@@ -65,8 +62,8 @@ const youtubeLocales = [
   "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ] as const;
 
-/** The four compile-time Web Targets shipped by the portal package. */
-export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
+/** The compile-time Web Targets shipped by the portal package. */
+export type WebTarget = "jest" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
 
 /** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories = Object.freeze(Object.fromEntries(
@@ -331,14 +328,6 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
     htmlOutputs: Object.freeze([{source: jestHtmlEntry, fileName: "index.html"}] as const),
     createArtifactPlugins: () => [],
   }),
-  facebook: Object.freeze({
-    id: "facebook",
-    shopEntry: sharedShopModalPage,
-    publicDirectory: "public",
-    input: facebookHtmlEntry,
-    htmlOutputs: Object.freeze([{source: facebookHtmlEntry, fileName: "index.html"}] as const),
-    createArtifactPlugins: () => [facebookArtifactPlugin()],
-  }),
   reddit: Object.freeze({
     id: "reddit",
     shopEntry: redditShopModalPage,
@@ -404,7 +393,7 @@ function isWebTarget(mode: string): mode is WebTarget {
 /** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
-  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
+  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, reddit, youtube, netflix, yahoo, or gamesnacks`);
 }
 
 /** Provides contains path behavior. */
@@ -497,7 +486,6 @@ export function createWebTargetViteConfig({
   /** Builds output directories. */
   const buildOutputDirectories: Readonly<Record<WebTarget, string>> = {
     jest: jestBuildOutDir,
-    facebook: environment.FACEBOOK_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.facebook,
     reddit: environment.REDDIT_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.reddit,
     youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
     netflix: environment.NETFLIX_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.netflix,
@@ -569,7 +557,7 @@ export function createWebTargetViteConfig({
     define: {
       "import.meta.env.VITE_PLATFORM_TARGET": JSON.stringify(profile.id),
       // Error-only targets do not ship tracing or SDK debug instrumentation.
-      ...(["jest", "facebook"].includes(profile.id) ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
+      ...(profile.id === "jest" ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
     },
     envDir: targetRoot,
     envPrefix: "VITE_",

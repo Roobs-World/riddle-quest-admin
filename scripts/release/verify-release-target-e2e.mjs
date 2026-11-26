@@ -42,7 +42,7 @@ const definitions = listHtml5DistributionDefinitions();
 for (const {target, artifact} of definitions) await verifyZip(artifact, target);
 await verifyYouTubeZip();
 await verifyZip("build-gamesnacks.zip", "gamesnacks");
-for (const directory of ["jest", "facebook", "netflix", "yahoo"]) {
+for (const directory of ["jest", "netflix", "yahoo"]) {
   await requireFile(path.join(getWebBuildPaths(directory).outputDirectory, "index.html"));
 }
 await requireFile(path.join(getWebBuildPaths("reddit").buildDirectory, "devvit/client/game.html"));
@@ -54,4 +54,4 @@ const policed = new Set(policy.platforms.map(({platform}) => platform));
 const unpoliced = plans.map(expectedName).filter((name) => !policed.has(name));
 if (unpoliced.length) throw new Error(`Monetization policy is missing: ${unpoliced.join(", ")}`);
 
-console.log(`Release-target integrity passed for ${plans.length} executable release paths: ${definitions.length + 2} immutable ZIPs, 4 browser builds and the Reddit client/server package are valid, and every target has a monetization policy.`);
+console.log(`Release-target integrity passed for ${plans.length} executable release paths: ${definitions.length + 2} immutable ZIPs, 3 browser builds and the Reddit client/server package are valid, and every target has a monetization policy.`);

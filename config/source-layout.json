@@ -448,12 +448,6 @@
         "functions": 100,
         "lines": 100
       },
-      "platforms/web/facebook/src/commerce/facebookCatalog.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
       "platforms/web/reddit/src/shared/redditCatalog.ts": {
         "statements": 100,
         "branches": 100,

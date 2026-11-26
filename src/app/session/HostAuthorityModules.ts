@@ -49,7 +49,7 @@ export function createHostAuthorityModules(
   capabilities: PlatformCapabilities | undefined,
   commerceAvailable = capabilities?.commerce !== undefined,
   economyAvailable = true,
-  raceAvailable = Boolean(capabilities?.matchmaking || capabilities?.tournaments || capabilities?.contextBoard),
+  raceAvailable = Boolean(capabilities?.matchmaking || capabilities?.tournaments),
 ): HostAuthorityModules {
   /** Provides authenticated behavior. */
   const authenticated = capabilities?.accountUpgrade?.state === "complete";

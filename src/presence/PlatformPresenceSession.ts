@@ -8,7 +8,7 @@ export type PresenceConnection = {
   /** Stores session id. */
   sessionId: string;
   /** Stores platform. */
-  platform: "jest" | "facebook";
+  platform: "jest";
   /** Stores state. */
   state: ActivePresenceState;
   /** Stores updated at ms. */

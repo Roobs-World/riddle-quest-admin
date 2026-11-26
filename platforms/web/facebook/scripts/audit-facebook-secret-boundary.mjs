@@ -75,14 +75,13 @@ if (isMain) {
   const browserPaths = collectFiles(`${root}/src`, (name) => /\.(?:ts|tsx|js|jsx)$/u.test(name));
   browserPaths.push(
     `${root}/platforms/web/jest/index.html`,
-    `${root}/platforms/web/facebook/index.html`,
     `${root}/platforms/web/reddit/index.html`,
     `${root}/platforms/web/reddit/reddit-inline.html`,
     `${root}/platforms/web/youtube/index.html`,
     `${root}/vite.config.ts`,
   );
-  for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) browserPaths.push(...collectFiles(`${root}/platforms/web/${target}/src`, name => /\.(?:ts|tsx|js|jsx)$/u.test(name)));
-  const envPaths = ["jest", "facebook", "reddit", "yahoo"].map(target => `${root}/platforms/web/${target}/.env.${target}`);
+  for (const target of ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) browserPaths.push(...collectFiles(`${root}/platforms/web/${target}/src`, name => /\.(?:ts|tsx|js|jsx)$/u.test(name)));
+  const envPaths = ["jest", "reddit", "yahoo"].map(target => `${root}/platforms/web/${target}/.env.${target}`);
   const workflowPaths = collectFiles(`${root}/.github/workflows`, (name) => /\.ya?ml$/u.test(name));
   const failures = auditFacebookSecretBoundary({
     browserSources: readEntries(browserPaths),

@@ -6,10 +6,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
-const browserScope=process.env.PORTAL_BROWSER_SCOPE;
-assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
-const providers=browserScope==='jest-facebook'?['facebook']:['facebook','reddit'];
-if(browserScope&&process.env.PROVIDER_RECOVERY_ONLY)assert.ok(providers.includes(process.env.PROVIDER_RECOVERY_ONLY.split(':')[0]),'PROVIDER_RECOVERY_ONLY is outside PORTAL_BROWSER_SCOPE');
+const providers=['reddit'];
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.PROVIDER_RECOVERY_REACT_MODE??'development',baseline=process.env.PROVIDER_RECOVERY_BASELINE_DIR,wakeBaseline=process.env.PROVIDER_RECOVERY_WAKE_BASELINE_DIR;
 const output=path.resolve(process.env.PROVIDER_RECOVERY_REPORT_DIR??path.join(root,'builds/test-evidence/provider-save-recovery-2026-10-03',mode));
@@ -21,7 +18,7 @@ try {
   const dir=path.join(scratch,provider);await mkdir(dir);
   const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {${provider==='facebook'?'FacebookPlatformBootstrap':'RedditPlatformBootstrap'}} from ${JSON.stringify(path.join(root,'src',provider,provider==='facebook'?'FacebookPlatformBootstrap.ts':'RedditPlatformBootstrap.ts'))};
+import {RedditPlatformBootstrap} from ${JSON.stringify(path.join(root,"platforms/web/reddit/src/RedditPlatformBootstrap.ts"))};
 ${provider==='reddit'?"import {getWebViewMode} from '@devvit/client';":''}
 import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerProjectionPersistence.ts"))};
 import {usePlayerProjectionRecovery} from ${JSON.stringify(path.join(root,"src/accounts/hooks/usePlayerProjectionRecovery.ts"))};
@@ -29,7 +26,6 @@ import {PlayerSaveRecoveryLayout} from ${JSON.stringify(path.join(root,"src/acco
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
-import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root,"src/accounts/browser/deletion/LocalAccountDeletionGate.ts"))};
 import {applyPlayerPreferences,subscribeToPlayerPreferenceChanges,setPlayerReducedMotion} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
@@ -38,7 +34,7 @@ window.probe={writes:[],preferences:[],failures:[],errors:[],unhandled:[],flushe
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 const preferences={locale:'en',muted:true,reducedMotion:true,onboardingComplete:true};applyPlayerPreferences(preferences);
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
-let stored={riddleQuestPreferences:preferences},durable=structuredClone(stored),pauseNative,resumeNative,release;
+let stored={riddleQuestPreferences:preferences},durable=structuredClone(stored),release;
 const failed=counter=>{if(window.probe[counter]===0)return false;if(window.probe[counter]>0)window.probe[counter]--;return true;};
 async function save(key,value){const copy=structuredClone(value);if(key==='riddleQuestPlayerState')window.probe.writes.push(copy);else window.probe.preferences.push(copy);
  if(window.probe.holdNext&&value?.activeGame){window.probe.holdNext=false;window.probe.holding=true;await new Promise(r=>release=r);window.probe.holding=false;}
@@ -46,23 +42,21 @@ async function save(key,value){const copy=structuredClone(value);if(key==='riddl
  stored[key]=copy;
 }
 window.durableData=()=>structuredClone(durable.riddleQuestPlayerState??null);window.durablePreferences=()=>structuredClone(durable.riddleQuestPreferences??{});window.release=()=>release?.();
-const sdk={initializeAsync:async()=>window.probe.initializations++,setLoadingProgress:()=>{},startGameAsync:async()=>{},getSupportedAPIs:()=>[],onPause:fn=>{window.probe.nativePauseRegistrations++;pauseNative=fn;},onResume:fn=>{window.probe.nativeResumeRegistrations++;resumeNative=fn;},player:{getID:()=> 'fixture-facebook-player',getDataAsync:async keys=>Object.fromEntries(keys.map(k=>[k,structuredClone(stored[k])])),setDataAsync:async value=>{for(const [key,data]of Object.entries(value))await save(key,data);},flushDataAsync:async()=>{window.probe.flushes++;durable=structuredClone(stored);}}};
-if(new URL(location.href).searchParams.get('scenario')==='wake-budget')sdk.onResume=undefined;
 globalThis.devvit={context:{},entrypoints:{game:location.origin+'/game.html'},token:'injected-browser-fixture',webViewMode:2};
 ${provider==='reddit'?`window.fetch=async(input,init)=>{const pathname=new URL(typeof input==='string'?input:input.url,location.origin).pathname;window.probe.paths.push(pathname);let value;
 try {if(pathname==='/api/session')value={ok:true,authenticated:true,accountGeneration:1,features:{identity:true,gameplay:true,commerce:false,referrals:false,notifications:false,matchmaking:false,tournaments:false,presence:false}};
 else if(pathname==='/api/storage/read')value={ok:true,preferences:stored.riddleQuestPreferences,playerData:stored.riddleQuestPlayerState??null};
 else if(pathname==='/api/storage/write'){const input=JSON.parse(init.body);if(input.playerData)await save('riddleQuestPlayerState',input.playerData);if(input.preferences)await save('riddleQuestPreferences',input.preferences);durable=structuredClone(stored);value={ok:true};}
 else if(pathname==='/api/storage/clear'){stored={};durable={};value={ok:true};}else throw new Error('unexpected-gateway-path');return Response.json(value);}catch(error){return Response.json({ok:false,error:String(error)},{status:503});}};`:''}
-window.nativePause=()=>{${provider==='facebook'?'pauseNative?.();':"devvit.webViewMode=1;window.dispatchEvent(new Event('focus'));"}};
-window.nativeResume=()=>{${provider==='facebook'?'resumeNative?.();':"devvit.webViewMode=2;window.dispatchEvent(new Event('focus'));"}};
+window.nativePause=()=>{devvit.webViewMode=1;window.dispatchEvent(new Event('focus'));};
+window.nativeResume=()=>{devvit.webViewMode=2;window.dispatchEvent(new Event('focus'));};
 window.online=value=>{Object.defineProperty(navigator,'onLine',{configurable:true,value});window.dispatchEvent(new Event(value?'online':'offline'));};
 window.visible=value=>{Object.defineProperty(document,'visibilityState',{configurable:true,value:value?'visible':'hidden'});document.dispatchEvent(new Event('visibilitychange'));};
 const service=createFakeHostServices(),services={...service,submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
-const gate=new LocalAccountDeletionGate({crossContextLock:null,requireCrossContextLock:false,readEpoch:()=>null,writeEpoch:()=>{}});window.closeGate=()=>gate.close();
+let accountOpen=true;window.closeGate=()=>{accountOpen=false;};
 function App(){const [current,setCurrent]=React.useState(null);window.retire=()=>setCurrent(null);const owner=current?.owner??null;
- const recovery=usePlayerProjectionRecovery(owner,{lifecycle:current?.session.capabilities.lifecycle,canRecover:()=>gate.isOpen()${provider==='reddit'?"&&getWebViewMode()==='expanded'":''}});window.recovery=recovery;
- React.useEffect(()=>{let active=true;void new ${provider==='facebook'?'FacebookPlatformBootstrap(()=>sdk)':'RedditPlatformBootstrap()'}.initialize(()=>{}).then(async result=>{if(result.status!=='success')throw new Error('bootstrap-failed');const initial=await result.value.storage.readPlayerData();if(!active)return;const next=new PlayerProjectionPersistence(result.value.storage,initial,preferences,${provider==='facebook'?'gate':'undefined'});window.owner=next;setCurrent({owner:next,session:result.value});});return()=>{active=false;};},[]);
+ const recovery=usePlayerProjectionRecovery(owner,{lifecycle:current?.session.capabilities.lifecycle,canRecover:()=>accountOpen${provider==='reddit'?"&&getWebViewMode()==='expanded'":''}});window.recovery=recovery;
+ React.useEffect(()=>{let active=true;void new RedditPlatformBootstrap().initialize(()=>{}).then(async result=>{if(result.status!=='success')throw new Error('bootstrap-failed');const initial=await result.value.storage.readPlayerData();if(!active)return;const next=new PlayerProjectionPersistence(result.value.storage,initial,preferences,undefined);window.owner=next;setCurrent({owner:next,session:result.value});});return()=>{active=false;};},[]);
  React.useEffect(()=>owner?subscribeToPlayerPreferenceChanges(change=>{void owner.updatePreferences(change).catch(e=>window.probe.failures.push(String(e)));}):undefined,[owner]);
  React.useEffect(()=>{if(!current)return;const lifecycle=current.session.capabilities.lifecycle;const stopPause=lifecycle?.onPause(()=>{window.probe.pauseConsumers++;});const stopResume=lifecycle?.onResume?.(()=>{window.probe.resumeConsumers++;});return()=>{stopPause?.();stopResume?.();};},[current]);
  const write=update=>{void owner.update(update).catch(e=>window.probe.failures.push(String(e)));};
@@ -72,7 +66,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
 window.preference=()=>setPlayerReducedMotion(false);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
 `;
   await writeFile(path.join(dir,'main.tsx'),source);await writeFile(path.join(dir,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(dir,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
-  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
+  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
  }
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,parts=pathname.split('/').filter(Boolean),provider=parts.shift();if(!providers.includes(provider))throw new Error('unknown-fixture');const file=path.join(scratch,provider,'dist',parts.join('/')||'index.html');res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.PROVIDER_RECOVERY_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(r=>{process.once('SIGINT',r);process.once('SIGTERM',r);});}
@@ -127,7 +121,6 @@ window.preference=()=>setPlayerReducedMotion(false);window.draft=()=>Array.from(
   metric('save health does not restart initialization',await page.evaluate(()=>window.probe.initializations),initializations);
   metric('no browser error',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await page.evaluate(()=>window.probe.unhandled),[]);
   if(provider==='reddit')metric('Reddit adapter stays in same-origin gateway paths',await page.evaluate(()=>window.probe.paths.every(x=>x.startsWith('/api/'))),true);
-  if(provider==='facebook')metric('native listeners share one pause registration',await page.evaluate(()=>window.probe.nativePauseRegistrations),1);
   await context.close();
  }
  }

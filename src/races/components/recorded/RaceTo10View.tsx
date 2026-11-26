@@ -11,7 +11,6 @@ import type {
   RaceRunView,
   SocialReportCategory,
   ListFacebookTournamentResponse,
-  ListFacebookContextBoardResponse,
 } from "../../contracts/index";
 import {tr} from "../../../localization/browser/i18n";
 import {RaceCountdown} from "../gameplay/RaceCountdown";
@@ -26,9 +25,7 @@ import {
 } from "../lobby/RaceLobbyPanels";
 import {RaceQuitDialog} from "../gameplay/RaceQuitDialog";
 import {RaceResultPanel} from "../gameplay/RaceResultPanel";
-import {PlatformPlayerOverlay} from "../social/PlatformPlayerOverlay";
 import {type RaceOperation} from "../../rounds/raceOperations";
-import type {OverlayCapability} from "../../../platform/contracts/capabilities";
 
 /** Describes race stage. */
 export {type RaceStage} from "../../controllers/RaceSession.types.ts";
@@ -52,18 +49,10 @@ export type RaceTo10ViewProps = {
   categories: ListRaceCategoriesResponse["categories"];
   /** Stores inbox items. */
   inboxItems: RaceInboxItem[];
-  /** Identity-free active Facebook tournament view. */
+  /** Identity-free active provider tournament view. */
   tournament: ListFacebookTournamentResponse | null;
   /** Whether the optional tournament view is loading. */
   tournamentLoading: boolean;
-  /** Identity-free active Facebook context board. */
-  contextBoard: ListFacebookContextBoardResponse | null;
-  /** Whether the optional current-context board is loading. */
-  contextBoardLoading: boolean;
-  /** Provider-owned current-player identity renderer for Facebook social surfaces. */
-  playerOverlay?: OverlayCapability;
-  /** Stores platform player id. */
-  platformPlayerId?: string;
   /** Typed readiness for incoming invitations. */
   entryStatus?: RaceEntryResponse | null;
   /** Creator-only cancellation capability. */
@@ -120,8 +109,10 @@ export type RaceTo10ViewProps = {
   allowTypingWhilePending: boolean;
   /** Whether close is waiting for a just-started run to be abandoned. */
   closeAfterStart: boolean;
-  /** Stores the active Facebook social picker operation. */
-  socialPending: "context" | "match" | null;
+  /** Starts the current platform's recorded opponent search. */
+  onFindOpponent?: () => void;
+  /** Reflects discovery ownership independently of the pending race command. */
+  matchPending?: boolean;
   /** Stores dialog ref. */
   dialogRef: RefObject<HTMLElement | null>;
   /** Stores gameplay viewport ref. */
@@ -142,8 +133,6 @@ export type RaceTo10ViewProps = {
   onShowInbox: () => void;
   /** Opens the optional platform tournament view. */
   onShowTournaments?: () => void;
-  /** Opens the target's native tournament dialog from the optional standings surface. */
-  onShareTournament?: () => void;
   /** Stores on choose category. */
   onChooseCategory: () => void;
   /** Stores on select category. */
@@ -178,10 +167,6 @@ export type RaceTo10ViewProps = {
   onDismissQuit: () => void;
   /** Stores on abandon. */
   onAbandon: () => void;
-  /** Opens the platform friend/thread/group context picker when supported. */
-  onChooseNativeContext?: () => void;
-  /** Starts locale-isolated offline platform matchmaking when supported. */
-  onMatchNativePlayer?: () => void;
 };
 
 /** Pure presentation for the Race to 10 state machine. */
@@ -206,8 +191,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     inboxItems,
     tournament,
     tournamentLoading,
-    contextBoard,
-    contextBoardLoading,
     challenge,
     entryStatus,
     onCancelInvitation,
@@ -235,7 +218,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     raceGuessLoading,
     allowTypingWhilePending,
     closeAfterStart,
-    socialPending,
+    onFindOpponent,
+    matchPending = false,
     dialogRef,
     gameplayViewportRef,
     gameplayRef,
@@ -246,7 +230,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     onRequestClose,
     onShowInbox,
     onShowTournaments,
-    onShareTournament,
     onChooseCategory,
     onSelectCategory,
     onInboxRematch,
@@ -264,10 +247,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     onRematch,
     onDismissQuit,
     onAbandon,
-    onChooseNativeContext,
-    onMatchNativePlayer,
-    playerOverlay,
-    platformPlayerId,
   } = props;
   return (
     <section
@@ -297,22 +276,18 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onPlay={onChooseCategory}
           onActivity={onShowInbox}
           onTournaments={onShowTournaments}
-          onChooseContext={onChooseNativeContext}
-          onMatchPlayer={onMatchNativePlayer}
-          socialPending={socialPending}
+          onMatchPlayer={onFindOpponent}
+          matchPending={matchPending}
         />
-      )}
-      {(stage === "inbox" || stage === "tournaments") && playerOverlay && platformPlayerId && (
-        <PlatformPlayerOverlay overlay={playerOverlay} playerId={platformPlayerId} />
       )}
       {stage === "categories" && (
         <>
-        {props.onStartLive && <button className="race-primary live-race-start" disabled={Boolean(pending || socialPending) || categories.length === 0}
+        {props.onStartLive && <button className="race-primary live-race-start" disabled={Boolean(pending) || categories.length === 0}
           onClick={() => props.onStartLive?.(categories.find(category => category.categoryId === "mixed")?.categoryId ?? categories[0]!.categoryId)}>{tr("RaceTo10.LIVE_START")}</button>}
         <RaceCategoriesPanel
           categories={categories}
           loading={pending === "raceCategories"}
-          busy={Boolean(pending || socialPending)}
+          busy={Boolean(pending || matchPending)}
           onSelect={onSelectCategory}
           onShowInbox={onShowInbox}
         />
@@ -322,8 +297,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
         <RaceInboxPanel
           items={inboxItems}
           loading={pending === "raceInbox"}
-          contextBoard={contextBoard}
-          contextBoardLoading={contextBoardLoading}
           safetyPending={
             (pending === "raceBlock" || pending === "raceReport") && safetyTargetUserId
               ? {operation: pending, targetUserId: safetyTargetUserId}
@@ -335,9 +308,8 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onChooseCategory={onChooseCategory}
         />
       )}
-      {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading}
-        sharing={sharing} onShare={onShareTournament} />}
-      {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onShowResults={onShowInbox} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending)} />}
+      {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
+      {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onShowResults={onShowInbox} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending || matchPending)} />}
       {stage === "countdown" && (
         <RaceCountdown
           countdown={countdown}

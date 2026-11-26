@@ -4,7 +4,7 @@ import {createHostAuthorityModules} from "../HostAuthorityModules";
 import {createFakeHostServices} from "../../../gameplay/fixtures/fakeServices";
 
 describe("host authority modules", () => {
-  it("permits Facebook username and deletion without Jest upgrade, but denies avatar uploads", () => {
+  it("permits hosted username and deletion without Jest upgrade, but denies avatar uploads", () => {
     /** Fake services used to exercise target authority selection. */
     const services = createFakeHostServices();
     /** Authority granted without a Jest registration capability. */

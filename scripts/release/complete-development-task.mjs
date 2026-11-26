@@ -18,7 +18,7 @@ if (process.argv[2] === '--ci') {
   const requiredChecks = ['workspace-node24', 'functions-node22', 'browser-and-rules'];
   if (requiredChecks.some(id => jobs[id]?.result !== 'success')) throw new Error('CI verification is incomplete');
   const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-  completion = {taskId: `ci-production-readiness:${revision}`, revision, targets: JSON.parse(process.env.DEVELOPMENT_TARGETS ?? '["jest","facebook","reddit","youtube","netflix","yahoo","itch"]'),
+  completion = {taskId: `ci-production-readiness:${revision}`, revision, targets: JSON.parse(process.env.DEVELOPMENT_TARGETS ?? '["jest","reddit","youtube","netflix","yahoo","itch"]'),
     work: git(['log', '-1', '--format=%s']), completedAt: new Date().toISOString(), trigger: 'accepted-revision CI', requiredChecks,
     checks: requiredChecks.map(id => ({id, status: 'passed', evidence: `${runUrl} (${id})`})),
     remainingGates: ['Provider submission, review, approval and publication require separate receipts.'],

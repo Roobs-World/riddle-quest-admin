@@ -3,7 +3,7 @@ import type {Page, Route} from "@playwright/test";
 import {LiveRaceViewSchema, RetireLiveRaceJoinSchema, type JoinLiveRace, type RetireLiveRaceJoin} from "../../../../races/contracts/index";
 
 /** Exercises both rematch entry points and explicit inbox acceptance through each actual target adapter. */
-export async function installLiveRematchJourney(page: Page, target: "Facebook" | "Reddit", requestUrls: string[]) {
+export async function installLiveRematchJourney(page: Page, target: "Reddit", requestUrls: string[]) {
   /** Immutable provider join inputs prove exact source and retry binding. */
   const joins: JoinLiveRace[] = [];
   /** Explicit recipient acceptance has its own server-issued handle. */
@@ -55,7 +55,7 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     /** Rematch and inbox cleanup belong to their private original joins. */
     const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
     if (![...joins, ...accepts].some(join => join.requestId === input.requestId)) return route.fallback();
-    expect(input.expectedOwnerId).toBe(target === "Facebook" ? "jest-guest" : "reddit-account");
+    expect(input.expectedOwnerId).toBe("reddit-account");
     expect(retirements.some(previous => previous.requestId === input.requestId)).toBe(false);
     retirements.push(input);
     requestUrls.push(route.request().url());
@@ -85,9 +85,6 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     locale = activeLocale;
     /** Private rematches and accepted invitations show the owned seat in the friend lobby. */
     const ownedSeat = page.locator('.friend-lobby-seat[data-occupied="true"]').getByText(`${target}Solver`, {exact: true});
-    /** Facebook captures the synchronized native context while Reddit has no provider selector. */
-    const facebookContextId = target === "Facebook" ? await page.evaluate(() => window.FBInstant?.context?.getID()) : undefined;
-    if (target === "Facebook") expect(facebookContextId).toEqual(expect.any(String));
     await page.locator(".live-race-history .live-race-rematch").click();
     await page.locator(".race-error").waitFor();
     expect(await page.locator(".race-error").innerText()).not.toContain("private rematch diagnostic");
@@ -96,10 +93,8 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     expect(await page.locator('.friend-lobby-seat[data-occupied="true"]').count()).toBe(1);
     expect(await page.locator(".friend-lobby-play").isDisabled()).toBe(true);
     expect(joins[0]).toEqual(joins[1]);
-    // Facebook's trusted gameplay harness uses the existing synthetic host account; native provider identity is tested separately.
     expect(joins[0]).toEqual({locale, categoryId: "history", rematchOfTicketId: "d".repeat(64), requestId: expect.any(String),
-      requiresReady: true, retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
-      ...(target === "Facebook" ? {facebookContextId} : {})});
+      requiresReady: true, retirementAware: true, expectedOwnerId: "reddit-account"});
     expect(await page.locator(".live-race-invite-share").count()).toBe(0);
     complete = true;
     await page.locator(".live-race-victory .live-race-rematch").waitFor();
@@ -125,8 +120,7 @@ export async function installLiveRematchJourney(page: Page, target: "Facebook" |
     expect(await page.locator(".friend-lobby-play").getAttribute("aria-busy")).toBe("true");
     expect(await page.locator(".friend-lobby").getAttribute("data-state")).toBe("starting");
     expect(accepts).toEqual([{locale, categoryId: "history", challengeId: incomingId, requestId: expect.any(String),
-      requiresReady: true, retirementAware: true, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account",
-      ...(target === "Facebook" ? {facebookContextId} : {})}]);
+      requiresReady: true, retirementAware: true, expectedOwnerId: "reddit-account"}]);
     inbox = false;
     await page.locator(".race-close").click();
     await page.locator('[data-analytics-screen="multiplayer_live_intro"]').waitFor();

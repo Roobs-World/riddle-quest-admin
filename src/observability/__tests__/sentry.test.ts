@@ -49,7 +49,7 @@ describe("browser Sentry lifecycle", () => {
       dsn: "https://public@example.test/1",
       environment: " production-eu ",
       release: " release-1 ",
-      runtime: "facebook" as const,
+      runtime: "jest" as const,
     };
     expect(initializeBrowserSentry(configuration)).toBe(true);
     expect(initializeBrowserSentry(configuration)).toBe(true);
@@ -69,7 +69,7 @@ describe("browser Sentry lifecycle", () => {
         traceLifecycle: "static",
       }),
     );
-    expect(setTag).toHaveBeenCalledWith("runtime", "facebook-html5");
+    expect(setTag).toHaveBeenCalledWith("runtime", "jest-html5");
 
     /** Provides options behavior. */
     const options = init.mock.calls[0][0];

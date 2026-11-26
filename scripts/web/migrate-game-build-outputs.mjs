@@ -4,7 +4,6 @@ import {promisify} from "node:util";
 import path from "node:path";
 import {fileURLToPath} from "node:url";
 import {getWebBuildPaths, releaseRegistry, webBuildFacts} from "../release/release-registry.mjs";
-import {assertFacebookHandoffsSettled} from "../../platforms/web/facebook/scripts/facebook-release-state.mjs";
 
 const root = fileURLToPath(new URL("../../", import.meta.url));
 const args = process.argv.slice(2);
@@ -26,7 +25,6 @@ async function verifyReceipts(directory, provider) {
   if (!await exists(directory)) return;
   const names = await readdir(directory);
   if (names.some(name => name.endsWith(".lock") || name.endsWith("-lock"))) throw new Error(`Release state is locked: ${provider}`);
-  if (provider === "facebook") await assertFacebookHandoffsSettled(directory);
   for (const name of names.filter(name => name.endsWith(".json"))) {
     const record = JSON.parse(await readFile(path.join(directory, name), "utf8"));
     if (provider === "jest" && /(?:upload-attempt|unresolved-upload)/u.test(name) && record.state !== "accepted") {
@@ -51,7 +49,7 @@ async function verifyReceipts(directory, provider) {
 for (const [target, facts] of Object.entries(webBuildFacts)) await add(`builds/${target}`, facts.outputDirectory);
 for (const target of Object.keys(webBuildFacts)) await add(`dist-${target}`, `${getWebBuildPaths(target).buildDirectory}/legacy/dist-${target}`);
 const artifacts = new Map([
-  ["build.zip", "jest"], ["build-facebook.zip", "facebook"], ["build-youtube.zip", "youtube"],
+  ["build.zip", "jest"], ["build-youtube.zip", "youtube"],
   ["build-youtube.manifest.json", "youtube"], ["build-youtube.test-report.json", "youtube"],
   ["build-gamesnacks.zip", "gamesnacks"], ["build-gamesnacks.zip.manifest.json", "gamesnacks"],
   ["build-html5.zip", "netflix"], ["build-html5.zip.source.json", "netflix"], ["build-html5.sha256", "netflix"],
@@ -62,12 +60,8 @@ for (const definition of releaseRegistry.filter(item => item.artifact)) {
 }
 for (const [filename, target] of artifacts) await add(filename, `${getWebBuildPaths(target).buildDirectory}/${filename}`);
 for (const [source, target, name] of [
-  [".facebook-upload-receipts", "facebook", ".facebook-upload-receipts"],
-  ["platforms/web/facebook/.facebook-upload-receipts", "facebook", ".facebook-upload-receipts"],
   [".jest-upload-receipts", "jest", ".jest-upload-receipts"],
   ["platforms/web/jest/.jest-upload-receipts", "jest", ".jest-upload-receipts"],
-  [".facebook-setup-receipts", "facebook", ".facebook-setup-receipts"],
-  ["platforms/web/facebook/.facebook-setup-receipts", "facebook", ".facebook-setup-receipts"],
   [".jest-release-workspaces", "jest", ".jest-release-workspaces"],
   ["platforms/web/reddit/.reddit-release-receipts", "reddit", ".reddit-release-receipts"],
 ]) {

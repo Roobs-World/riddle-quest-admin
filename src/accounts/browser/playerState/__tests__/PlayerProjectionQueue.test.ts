@@ -3,7 +3,6 @@ import {PlayerProjectionPersistence} from "../PlayerProjectionPersistence";
 import type {PlatformStorage, PlayerData} from "../../../../platform/contracts/capabilities";
 import {createSavedGame} from "../../../../gameplay/session/checkpoints/GameSessionCheckpoints";
 import {createInitialGameSession, gameSessionReducer} from "../../../../gameplay/session/gameSession";
-import {LocalAccountDeletionGate} from "../../deletion/LocalAccountDeletionGate";
 
 /** Controlled adapter acknowledgement exposes waiting and in-flight work. */
 const deferred = () => {
@@ -35,101 +34,6 @@ const storage = (overrides: Partial<PlatformStorage>): PlatformStorage => ({
 });
 
 describe("player projection queue", () => {
-  it("merges updates while the real Facebook gate waits for a cross-context lock", async () => {
-    /** Target gate waits before permitting any SDK mutation. */
-    const held = deferred(), entered = deferred();
-    /** Real deletion ownership surrounds one merged write. */
-    const gate = new LocalAccountDeletionGate({readEpoch: () => null, requireCrossContextLock: false,
-      crossContextLock: {runShared: async operation => {entered.resolve(); await held.promise; return operation();},
-        runExclusive: async operation => operation()},
-    });
-    /** Adapter records actual SDK mutations. */
-    const write = jest.fn<(value: PlayerData) => Promise<void>>().mockResolvedValue(undefined);
-    /** One persistence owner accepts input before the target gate executes it. */
-    const owner = new PlayerProjectionPersistence(storage({writePlayerData: write}), null, {}, gate);
-    /** First draft waits for target ownership. */
-    const first = owner.update({activeGame: draft("P")});
-    await entered.promise;
-    /** New draft and independent profile join the waiting snapshot. */
-    const latest = owner.update({activeGame: draft("PIAN"), profile: profile(80)});
-    expect(write).not.toHaveBeenCalled();
-    held.resolve();
-    await Promise.all([first, latest]);
-    expect(write).toHaveBeenCalledTimes(1);
-    expect(write.mock.calls[0][0]).toMatchObject({profile: profile(80), activeGame: {currentLetters: ["P", "I", "A", "N", ""]}});
-  });
-
-  it("orders preferences behind an in-flight gated write without a nested-gate deadlock", async () => {
-    /** First SDK write holds the real target gate. */
-    const held = deferred(), entered = deferred();
-    /** Target gate serializes ownership checks. */
-    const gate = new LocalAccountDeletionGate({readEpoch: () => null, requireCrossContextLock: false});
-    /** SDK records independently queued snapshots. */
-    const write = jest.fn<(value: PlayerData) => Promise<void>>()
-      .mockImplementationOnce(async () => {entered.resolve(); await held.promise;}).mockResolvedValue(undefined);
-    /** SDK preference mutation must remain after the waiting draft. */
-    const preferences = jest.fn<PlatformStorage["writePreferences"]>().mockResolvedValue(undefined);
-    /** One persistence owner invokes the target gate only from its queue. */
-    const owner = new PlayerProjectionPersistence(storage({writePlayerData: write, writePreferences: preferences}), null, {}, gate);
-    /** In-flight draft is fixed while later changes arrive. */
-    const first = owner.update({activeGame: draft("P")});
-    await entered.promise;
-    /** Many edits coalesce before the preference ordering boundary. */
-    const waiting = Array.from({length: 100}, () => owner.update({activeGame: draft("PIAN")}));
-    /** Preference change has a distinct ordered acknowledgement. */
-    const preference = owner.updatePreferences({muted: true});
-    held.resolve();
-    await Promise.all([first, ...waiting, preference]);
-    expect(write).toHaveBeenCalledTimes(2);
-    expect(preferences).toHaveBeenCalledTimes(1);
-  });
-
-  it("retires a rejected ownership batch without poisoning a later permitted update", async () => {
-    /** Lock infrastructure recovers after one failed acquisition. */
-    let attempts = 0;
-    /** Real target gate releases its own queue even on lock failure. */
-    const gate = new LocalAccountDeletionGate({readEpoch: () => null, requireCrossContextLock: false,
-      crossContextLock: {runShared: async operation => {if (attempts++ === 0) throw new Error("lock-unavailable"); return operation();},
-        runExclusive: async operation => operation()},
-    });
-    /** SDK cannot receive fields from a rejected batch. */
-    const write = jest.fn<(value: PlayerData) => Promise<void>>().mockResolvedValue(undefined);
-    /** One persistence owner keeps failed target entry separate from accepted progress. */
-    const owner = new PlayerProjectionPersistence(storage({writePlayerData: write}), null, {}, gate);
-    await expect(owner.update({profile: profile(900), activeGame: draft("P")})).rejects.toThrow("lock-unavailable");
-    await owner.update({activeGame: draft("PIAN")});
-    expect(write).toHaveBeenCalledTimes(1);
-    expect(write.mock.calls[0][0]).not.toHaveProperty("profile");
-    expect(write.mock.calls[0][0].activeGame?.currentLetters.join("")).toBe("PIAN");
-  });
-
-  it("does not merge or write a waiting batch after target account ownership closes", async () => {
-    /** First entered SDK operation may finish before the deletion drain. */
-    const held = deferred(), entered = deferred();
-    /** Target ownership epoch is shared by accepted operations. */
-    let epoch: string | null = null;
-    /** Real target deletion gate invalidates work that has not entered. */
-    const gate = new LocalAccountDeletionGate({readEpoch: () => epoch, writeEpoch: value => {epoch = value;}, requireCrossContextLock: false});
-    /** SDK records only permitted mutations. */
-    const write = jest.fn<(value: PlayerData) => Promise<void>>()
-      .mockImplementationOnce(async () => {entered.resolve(); await held.promise;}).mockResolvedValue(undefined);
-    /** One persistence owner controls the deletion drain. */
-    const owner = new PlayerProjectionPersistence(storage({writePlayerData: write}), null, {}, gate);
-    /** Already entered update remains part of the drain. */
-    const first = owner.update({activeGame: draft("P")});
-    await entered.promise;
-    /** Queued update must fail when its ownership check eventually runs. */
-    const latest = owner.update({activeGame: draft("PIAN")});
-    gate.close();
-    /** Drain and every caller's rejection are observed before releasing the SDK. */
-    const completed = Promise.allSettled([first, latest, owner.closeAndFlush()]);
-    held.resolve();
-    expect((await completed).map(value => value.status)).toEqual(["fulfilled", "rejected", "fulfilled"]);
-    await owner.clear();
-    expect(write).toHaveBeenCalledTimes(1);
-    expect(write.mock.calls[0][0].activeGame?.currentLetters.join("")).toBe("P");
-  });
-
   it("merges waiting checkpoints and independent profile fields without writing obsolete snapshots", async () => {
     /** Adapter records the latest merged projection. */
     const write = jest.fn<(value: PlayerData) => Promise<void>>().mockResolvedValue(undefined);

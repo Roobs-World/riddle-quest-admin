@@ -49,7 +49,6 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node scripts/release/run-platform-release.mjs facebook
           if pnpm --filter @riddle-quest/reddit-app validate:contracts; then
             node scripts/release/run-platform-release.mjs reddit
           else

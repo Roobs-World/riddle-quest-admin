@@ -117,7 +117,7 @@ describe("Jest Firebase App Check adapter", () => {
   });
 
   it("rejects accidental use outside the Jest Web Target", async () => {
-    await expect(loadAdapter({platformTarget: "facebook" as "jest"})).rejects.toThrow(
+    await expect(loadAdapter({platformTarget: "reddit" as "jest"})).rejects.toThrow(
       "only initialize in the Jest Web Target",
     );
   });

@@ -3,33 +3,32 @@ import {execFileSync, spawnSync} from "node:child_process";
 import {existsSync, readFileSync} from "node:fs";
 import test from "node:test";
 import {fileURLToPath} from "node:url";
-import {createJestFacebookBrowserPlan, parseBrowserShard, runBrowserCommands} from "./run-jest-facebook-browser.mjs";
+import {createJestBrowserPlan, parseBrowserShard, runBrowserCommands} from "./run-jest-browser.mjs";
 
 const portal = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8"));
 const root = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8"));
 const source = portal.scripts["test:game-browser:playwright"];
-const excluded = ["pnpm test:reddit-delivery:browser", "pnpm test:playable-ime-boundary:browser", "pnpm test:playable-input-admission:browser", "pnpm test:playable-text-capacity:browser", "pnpm test:playable-action-focus:browser", "pnpm test:playable-unchanged-input:browser", "pnpm test:reddit-guest-durability:browser", "pnpm test:guidance-storage-recovery:browser", "pnpm test:reddit-guest-rounds:browser"];
+const excluded = ["pnpm test:provider-save-recovery:browser", "pnpm test:reddit-delivery:browser", "pnpm test:playable-ime-boundary:browser", "pnpm test:playable-input-admission:browser", "pnpm test:playable-text-capacity:browser", "pnpm test:playable-action-focus:browser", "pnpm test:playable-unchanged-input:browser", "pnpm test:reddit-guest-durability:browser", "pnpm test:guidance-storage-recovery:browser", "pnpm test:reddit-guest-rounds:browser"];
 const mixed = {
-  "pnpm test:live-immediate-submit:browser": "PORTAL_BROWSER_SCOPE=jest-facebook LIVE_IMMEDIATE_TARGETS=live",
-  "pnpm test:provider-save-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "pnpm test:race-profile-refresh-null:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "pnpm test:live-render-work:browser": "PORTAL_BROWSER_SCOPE=jest-facebook LIVE_RENDER_TARGETS=solo,race",
-  "pnpm test:stable-request-initialization:browser": "PORTAL_BROWSER_SCOPE=jest-facebook STABLE_REQUEST_TARGETS=solo,race",
-  "pnpm test:static-keyboard-work:browser": "PORTAL_BROWSER_SCOPE=jest-facebook STATIC_KEYBOARD_TARGETS=solo,race",
-  "pnpm test:native-navigation-tail:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_NAVIGATION_TARGETS=live",
-  "pnpm test:native-composition-delivery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook COMPOSITION_DELIVERY_TARGETS=live",
-  "pnpm test:native-composition-retirement:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_RETIRE_TARGETS=live",
-  "pnpm test:bounded-grapheme-input:browser": "PORTAL_BROWSER_SCOPE=jest-facebook BOUNDED_GRAPHEME_TARGETS=live",
-  "pnpm test:native-cancelled-keys:browser": "PORTAL_BROWSER_SCOPE=jest-facebook NATIVE_CANCELLED_TARGETS=live",
-  "pnpm test:rapid-answer-edits:browser": "PORTAL_BROWSER_SCOPE=jest-facebook RAPID_ANSWER_TARGETS=live",
-  "pnpm test:authority-terminal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook",
-  "pnpm test:terminal-journal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest-facebook"
+  "pnpm test:live-immediate-submit:browser": "PORTAL_BROWSER_SCOPE=jest LIVE_IMMEDIATE_TARGETS=live",
+  "pnpm test:race-profile-refresh-null:browser": "PORTAL_BROWSER_SCOPE=jest",
+  "pnpm test:live-render-work:browser": "PORTAL_BROWSER_SCOPE=jest LIVE_RENDER_TARGETS=solo,race",
+  "pnpm test:stable-request-initialization:browser": "PORTAL_BROWSER_SCOPE=jest STABLE_REQUEST_TARGETS=solo,race",
+  "pnpm test:static-keyboard-work:browser": "PORTAL_BROWSER_SCOPE=jest STATIC_KEYBOARD_TARGETS=solo,race",
+  "pnpm test:native-navigation-tail:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_NAVIGATION_TARGETS=live",
+  "pnpm test:native-composition-delivery:browser": "PORTAL_BROWSER_SCOPE=jest COMPOSITION_DELIVERY_TARGETS=live",
+  "pnpm test:native-composition-retirement:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_RETIRE_TARGETS=live",
+  "pnpm test:bounded-grapheme-input:browser": "PORTAL_BROWSER_SCOPE=jest BOUNDED_GRAPHEME_TARGETS=live",
+  "pnpm test:native-cancelled-keys:browser": "PORTAL_BROWSER_SCOPE=jest NATIVE_CANCELLED_TARGETS=live",
+  "pnpm test:rapid-answer-edits:browser": "PORTAL_BROWSER_SCOPE=jest RAPID_ANSWER_TARGETS=live",
+  "pnpm test:authority-terminal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest",
+  "pnpm test:terminal-journal-recovery:browser": "PORTAL_BROWSER_SCOPE=jest"
 };
-const runner = fileURLToPath(new URL("./run-jest-facebook-browser.mjs", import.meta.url));
+const runner = fileURLToPath(new URL("./run-jest-browser.mjs", import.meta.url));
 
 test("scoped planning excludes audited parked runtimes and scopes every retained mixed harness in order", () => {
   const commands = source.split(/\s*&&\s*/u);
-  const plan = createJestFacebookBrowserPlan(source);
+  const plan = createJestBrowserPlan(source);
   assert.equal(plan.sourceCommandCount, 149);
   assert.equal(plan.eligibleCommandCount, 140);
   assert.equal(plan.shard, null);
@@ -39,7 +38,7 @@ test("scoped planning excludes audited parked runtimes and scopes every retained
 });
 
 test("every mixed leaf receives its exact audited selector before invoking the unchanged package script", () => {
-  const plan = createJestFacebookBrowserPlan(source);
+  const plan = createJestBrowserPlan(source);
   assert.equal(Object.keys(mixed).length, 14);
   assert.equal(plan.commands.filter(command => command.startsWith("PORTAL_BROWSER_SCOPE=")).length, 14);
   for (const [command, prefix] of Object.entries(mixed)) {
@@ -52,46 +51,46 @@ test("explicit scope classification retains shared native-editor work and reject
   const first = source.split(/\s*&&\s*/u)[0];
   const shared = "pnpm test:native-editor-callbacks:browser";
   const provider = "pnpm test:provider-save-recovery:browser";
-  assert.deepEqual(createJestFacebookBrowserPlan([first, shared, provider, ...excluded].join(" && ")).commands,
-    [first, shared, `PORTAL_BROWSER_SCOPE=jest-facebook ${provider}`]);
+  assert.deepEqual(createJestBrowserPlan([first, shared, provider, ...excluded].join(" && ")).commands,
+    [first, shared, `PORTAL_BROWSER_SCOPE=jest ${provider}`]);
   for (const target of ["reddit", "youtube", "netflix", "yahoo", "gamesnacks", "unknown-provider"])
-    assert.throws(() => createJestFacebookBrowserPlan(`${first} && pnpm test:${target}:browser`), /Unaudited/u);
-  assert.throws(() => createJestFacebookBrowserPlan(`${first} && pnpm test:new-shared:browser`), /Unaudited/u);
-  assert.throws(() => createJestFacebookBrowserPlan(`${first} && ${shared} && ${shared}`), /Duplicate/u);
+    assert.throws(() => createJestBrowserPlan(`${first} && pnpm test:${target}:browser`), /Unaudited/u);
+  assert.throws(() => createJestBrowserPlan(`${first} && pnpm test:new-shared:browser`), /Unaudited/u);
+  assert.throws(() => createJestBrowserPlan(`${first} && ${shared} && ${shared}`), /Duplicate/u);
 });
 
 test("four round-robin shards are disjoint and their ordered union covers every eligible command exactly once", () => {
-  const all = createJestFacebookBrowserPlan(source).commands;
-  const shards = Array.from({length: 4}, (_unused, index) => createJestFacebookBrowserPlan(source, `${index + 1}/4`).commands);
+  const all = createJestBrowserPlan(source).commands;
+  const shards = Array.from({length: 4}, (_unused, index) => createJestBrowserPlan(source, `${index + 1}/4`).commands);
   for (let shard = 0; shard < shards.length; shard++)
     assert.deepEqual(shards[shard], all.filter((_command, index) => index % 4 === shard));
   const union = shards.flat();
   assert.equal(union.length, 140);
   assert.equal(new Set(union).size, 140);
   assert.deepEqual([...union].sort(), [...all].sort());
-  assert.deepEqual(createJestFacebookBrowserPlan(source, "1/1").commands, all);
+  assert.deepEqual(createJestBrowserPlan(source, "1/1").commands, all);
 });
 
 test("malformed shard and command definitions fail before execution", () => {
   for (const invalid of ["", "0/4", "1/0", "5/4", "-1/4", "1.5/4", "01/4", "1/2/3", "1/99999999999999999999"])
     assert.throws(() => parseBrowserShard(invalid), /Browser shard/u);
-  assert.throws(() => createJestFacebookBrowserPlan(undefined), /missing/u);
-  assert.throws(() => createJestFacebookBrowserPlan("pnpm test:shared"), /initial browser Jest/u);
-  assert.throws(() => createJestFacebookBrowserPlan("PORTAL_BROWSER_TESTS=1 jest x && echo unexpected"), /Unsupported/u);
+  assert.throws(() => createJestBrowserPlan(undefined), /missing/u);
+  assert.throws(() => createJestBrowserPlan("pnpm test:shared"), /initial browser Jest/u);
+  assert.throws(() => createJestBrowserPlan("PORTAL_BROWSER_TESTS=1 jest x && echo unexpected"), /Unsupported/u);
 });
 
 test("CLI dry run is deterministic, honors the shard environment and permits an explicit override", () => {
-  const env = {...process.env, JEST_FACEBOOK_BROWSER_SHARD: "2/4"};
+  const env = {...process.env, JEST_BROWSER_SHARD: "2/4"};
   const run = arguments_ => JSON.parse(execFileSync(process.execPath, [runner, "--dry-run", ...arguments_], {env, encoding: "utf8"}));
-  assert.deepEqual(run([]), createJestFacebookBrowserPlan(source, "2/4"));
+  assert.deepEqual(run([]), createJestBrowserPlan(source, "2/4"));
   assert.deepEqual(run([]), run([]));
-  assert.deepEqual(run(["--shard", "3/4"]), createJestFacebookBrowserPlan(source, "3/4"));
+  assert.deepEqual(run(["--shard", "3/4"]), createJestBrowserPlan(source, "3/4"));
   for (const arguments_ of [["--shard"], ["--shard", "0/4"], ["--unexpected"]])
     assert.notEqual(spawnSync(process.execPath, [runner, "--dry-run", ...arguments_], {env, encoding: "utf8"}).status, 0);
 });
 
 test("execution preserves commands and fails closed before later checks after a child failure", () => {
-  const commands = createJestFacebookBrowserPlan(source).commands.slice(0, 3), observed = [];
+  const commands = createJestBrowserPlan(source).commands.slice(0, 3), observed = [];
   assert.equal(runBrowserCommands(commands, (command, options) => {
     observed.push(command); assert.equal(options.shell, true); return {status: observed.length === 2 ? 7 : 0};
   }), 7);
@@ -122,7 +121,6 @@ test("selected browser harnesses import extracted game session modules from curr
     "verify-modal-keyboard-boundary-browser.mjs",
     "verify-modal-keyboard-admission-browser.mjs",
     "verify-modal-close-commit-browser.mjs",
-    "verify-attempt-recovery-retirement-browser.mjs",
     "verify-checkpoint-writer-recovery-browser.mjs",
     "verify-pending-play-scope-retirement-browser.mjs",
     "verify-pending-play-lifetime-browser.mjs",
@@ -130,7 +128,7 @@ test("selected browser harnesses import extracted game session modules from curr
 ];
   const legacy = /(["'])src\/play\/(?:gameSession|GameSessionCheckpoints|pendingGuessJournal|pendingPlayJournalDiagnostics)\.ts\1/u;
   const current = /(["'])(src\/gameplay\/session\/(?:journal\/|persistence\/)?(?:gameSession|GameSessionCheckpoints|pendingGuessJournal|pendingPlayJournalDiagnostics)\.ts)\1/gu;
-  assert.equal(harnesses.length, 24);
+  assert.equal(harnesses.length, 23);
   for (const harness of harnesses) {
     const source = readFileSync(new URL(harness, import.meta.url), "utf8");
     assert.doesNotMatch(source, legacy, harness);
@@ -149,5 +147,5 @@ test("the new profile preserves the default all-target public interfaces", () =>
   assert.match(root.scripts["check:types"], /@riddle-quest\/android check:types/u);
   assert.match(root.scripts.build, /@riddle-quest\/reddit-app build:package:from-client/u);
   assert.match(portal.scripts["verify:all-targets"], /test:reddit:playwright.*test:youtube:playwright.*test:standalone:playwright/u);
-  assert.equal(createJestFacebookBrowserPlan(source).sourceCommandCount, 149);
+  assert.equal(createJestBrowserPlan(source).sourceCommandCount, 149);
 });

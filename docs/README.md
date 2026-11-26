@@ -12,7 +12,7 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 | --- | --- |
 | Android / Google Play | [Android documentation](android/README.md) |
 | Jest | [Jest documentation](jest/README.md) |
-| Facebook Instant Games | [Setup guide](facebook/facebook-setup-guide.md), [Facebook documentation](facebook/README.md) |
+| Facebook server integration | [Retained backend and historical Facebook documentation](facebook/README.md) |
 | Reddit Devvit Web | [Game and review guide](reddit/README.md), [operations](reddit/reddit-games-operations.md), [progress](reddit/reddit-games-progress.html) |
 | YouTube Playables | [YouTube documentation](youtube/README.md) |
 | Netflix candidate | [Candidate build guide](netflix/README.md) |

@@ -18,7 +18,6 @@ const isEndToEndGate = ({args}) => args[0] === "scripts/release/verify-packaged-
 
 const expectedCommands = new Map([
   ["jest", ["--filter", "riddle-quest", "release:jest:timestamped"]],
-  ["facebook", ["--filter", "riddle-quest", "release:facebook:handoff"]],
   ["youtube", ["--filter", "riddle-quest", "preflight:youtube-upload"]],
   ["reddit", ["--filter", "@riddle-quest/reddit-app", "release:candidate"]],
   ["netflix", ["build:netflix"]],
@@ -69,7 +68,6 @@ const expectedCommands = new Map([
 ]);
 const expectedRunbooks = new Map([
   ["jest", "docs/jest/jest-html5-operations.md"],
-  ["facebook", "docs/facebook/facebook-instant-games-operations.md"],
   ["youtube", "docs/youtube/youtube-playables-operations.md"],
   ["reddit", "docs/reddit/reddit-games-operations.md"],
   ["netflix", "docs/common/releases/netflix-yahoo-candidate-builds.md"],
@@ -121,7 +119,7 @@ const expectedRunbooks = new Map([
 
 test("the public interface exposes one isolated canonical command per release target", () => {
   const plans = listPlatformReleasePlans();
-  assert.deepEqual(plans.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden", "noadsgames", "yalgames", "rando"]);
+  assert.deepEqual(plans.map(({target}) => target), ["jest", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden", "noadsgames", "yalgames", "rando"]);
   for (const plan of plans) {
     assert.equal(plan.publicCommand, `pnpm release:${plan.target}`);
     assert.equal("command" in plan, false);
@@ -132,7 +130,7 @@ test("the public interface exposes one isolated canonical command per release ta
 
 test("the root package exposes target releases and one combined release command", async () => {
   const packageJson = JSON.parse(await readFile(new URL("../../package.json", import.meta.url), "utf8"));
-  for (const target of ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden"]) {
+  for (const target of ["jest", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden"]) {
     assert.equal(
       packageJson.scripts[`release:${target}`],
       `node scripts/release/run-platform-release.mjs ${target}`,
@@ -147,8 +145,6 @@ test("target plans preserve distinct external effects", () => {
   assert.equal(getPlatformReleasePlan("jest").boundary, "remote-active-on-ready");
   assert.match(getPlatformReleasePlan("jest").externalEffect, /activates the exact build/u);
   assert.match(getPlatformReleasePlan("jest").externalEffect, /never.*publishes it/u);
-  assert.equal(getPlatformReleasePlan("facebook").boundary, "local-immutable-handoff");
-  assert.match(getPlatformReleasePlan("facebook").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("youtube").boundary, "local-manual-handoff");
   assert.match(getPlatformReleasePlan("youtube").externalEffect, /^None;/u);
   assert.equal(getPlatformReleasePlan("reddit").boundary, "local-immutable-handoff");
@@ -191,7 +187,7 @@ test("the combined release verifies once before running every adapter", async ()
   const packagedGates = invocations.flatMap((invocation, index) => invocation.args[0] === "scripts/release/verify-packaged-games.mjs"
     ? [{target: invocation.args.at(-1), previous: invocations[index - 1].args}] : []);
   assert.deepEqual(packagedGates.map(({target}) => target).sort(), listPlatformReleasePlans().map(({target}) => target)
-    .filter(target => !["jest", "youtube", "facebook", "reddit"].includes(target)).sort());
+    .filter(target => !["jest", "youtube", "reddit"].includes(target)).sort());
   for (const {target, previous} of packagedGates) assert.deepEqual(previous, expectedCommands.get(target));
   /** Reddit plays its freshly staged build after the candidate is prepared. */
   const redditGate = invocations.findIndex(({args}) => args.at(-1) === "test:reddit:playwright");
@@ -199,7 +195,6 @@ test("the combined release verifies once before running every adapter", async ()
   assert.equal(invocations[redditGate].environment.PORTAL_USE_EXISTING_BUILD, "1");
   assert.deepEqual(invocations.slice(1).filter(({args}) => args[0] !== "prepare:html5-handoffs").filter(command => !isEndToEndGate(command)).map(({args}) => args), [
     expectedCommands.get("jest"),
-    expectedCommands.get("facebook"),
     expectedCommands.get("youtube"),
     expectedCommands.get("reddit"),
     expectedCommands.get("netflix"),
@@ -248,38 +243,7 @@ test("the combined release verifies once before running every adapter", async ()
     expectedCommands.get("yalgames"),
     expectedCommands.get("rando"),
   ]);
-  assert.deepEqual(results.map(({target}) => target), ["jest", "facebook", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden", "noadsgames", "yalgames", "rando"]);
-});
-
-test("the Facebook adapter performs only the local preflight and immutable handoff", async () => {
-  const portalPackage = JSON.parse(await readFile(
-    new URL("../../package.json", import.meta.url),
-    "utf8",
-  ));
-  assert.equal(
-    portalPackage.scripts["release:facebook:handoff"],
-    "pnpm preflight:facebook-upload && pnpm facebook:draft begin",
-  );
-  assert.equal(
-    portalPackage.scripts["preflight:facebook-upload"],
-    "pnpm build:facebook && pnpm test:facebook:playwright && node platforms/web/facebook/scripts/prepare-facebook-draft.mjs",
-  );
-  assert.equal(portalPackage.scripts["facebook:draft"], "node platforms/web/facebook/scripts/facebook-draft-evidence.mjs");
-
-  const invocations = [];
-  const result = await runPlatformRelease("facebook", {
-    commandRunner: async (command) => invocations.push(command),
-    log: () => {},
-  });
-  assert.equal(invocations.length, 1);
-  assert.equal(invocations[0].executable, "pnpm");
-  assert.deepEqual(invocations[0].args, expectedCommands.get("facebook"));
-  assert.deepEqual(result, {
-    target: "facebook",
-    status: "handoff-ready",
-    boundary: "local-immutable-handoff",
-  });
-  assert.match(getPlatformReleasePlan("facebook").externalEffect, /^None;/u);
+  assert.deepEqual(results.map(({target}) => target), ["jest", "youtube", "reddit", "netflix", "yahoo", "gamesnacks", "itch", "crazygames", "newgrounds", "gamejolt", "coolmath", "armor", "gamepix", "addictinggames", "htmlgames", "playkovo", "kongregate", "lagged", "gamedistribution", "gamemonetize", "yandex", "telegram", "y8", "playgama", "amazon", "jiogames", "famobi", "gamepush", "softgames", "wgplayground", "miniplay", "kizi", "huawei", "gameflare", "shockwave", "airconsole", "world", "farcaster", "pi", "minipay", "zoom", "miro", "greenhouse", "ozogames", "slowden", "noadsgames", "yalgames", "rando"]);
 });
 
 test("dry runs describe a target without invoking its adapter", async () => {

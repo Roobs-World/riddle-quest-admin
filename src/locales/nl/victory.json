@@ -15,7 +15,6 @@
     "SHARE_CLASSIC_MODE_LABEL": "Klassieke modus",
     "SHARE_DAILY_CHALLENGE_LABEL": "Dagelijkse uitdaging",
     "SHARE_MESSAGE_TEMPLATE": "Ik heb de Riddle Quest {gameType} van vandaag opgelost in {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nKun jij mijn score verbeteren?\n\n#Riddle Quest #WordPuzzle #BrainGame",
-    "SHARE_RESULT_TITLE": "Bekijk mijn Riddle Quest resultaat!",
-    "INVITE_FRIEND": "Nodig een vriend uit"
+    "SHARE_RESULT_TITLE": "Bekijk mijn Riddle Quest resultaat!"
   }
 }

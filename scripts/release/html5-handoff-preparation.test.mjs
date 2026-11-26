@@ -39,7 +39,7 @@ test('one preparation creates many verified handoffs and supports a newly regist
   assert.equal(added.delivery, 'neutral-html5');
   assert.equal(added.displayName, 'Test Store');
   assert.equal((await preparation.handoff(added)).sha256, itch.sha256);
-  assert.equal(releaseRegistry.find(row => row.target === 'facebook').delivery, 'web-target');
+  assert.equal(releaseRegistry.find(row => row.target === 'reddit').delivery, 'web-target');
 });
 test('single destination prepares fresh and changed source cannot be reused', async t => {
   const f = await fixture(t);

@@ -274,7 +274,6 @@ export function RedditPlatformEntry() {
                   }
                 : undefined,
               platformCapabilities: startup.session.capabilities,
-              platformPlayerId: startup.session.playerId,
               initialPlayerData: startup.playerData,
               onPlayerDataChange: (update) => void writePlayerData(update),
               raceLocalePolicy: "all",
@@ -307,7 +306,6 @@ export function RedditPlatformEntry() {
               hostServices: guestHostServices,
               economyAvailable: false,
               platformCapabilities: startup.session.capabilities,
-              platformPlayerId: startup.session.playerId,
               initialPlayerData: startup.playerData,
               onPlayerDataChange: (update) => void writePlayerData(update),
               raceLocalePolicy: "english-only",

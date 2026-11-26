@@ -32,8 +32,6 @@ export type GameModalViewProps = {
   onClose: () => void;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
-  /** Optional target-funded continuation and its exclusive operation lock. */
-  onRecoverAttempt?: () => void;
   /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
   /** Suspends modal focus and keyboard ownership while its parent is inert. */
@@ -72,7 +70,6 @@ export function GameModalView({
   state,
   onClose,
   onContinue,
-  onRecoverAttempt,
   continuationPending = false,
   interactionBlocked = false,
   onPurchase,
@@ -296,7 +293,6 @@ export function GameModalView({
           state={state}
           onClose={onClose}
           onContinue={onContinue}
-          onRecoverAttempt={onRecoverAttempt}
           continuationPending={continuationPending}
           onPurchase={onPurchase}
           onOpenModal={onOpenModal}
