@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "41cd937a3f53314dc0ce3b46a8287986759ae8f7",
+  "behavior": {
+    "victoryOpensWithConfirmedContent": true,
+    "solvedBoardRemainsVisibleWhileConfirmationIsPending": true,
+    "completionDeliveryContinuesWithoutMountedVictoryDialog": true,
+    "firstMilestoneVisibleOnInitialRender": true,
+    "extraRevealAnimationFrames": 0,
+    "firstMilestoneEntranceAnimation": false,
+    "achievementHoldMs": 3000,
+    "zeroCoinReceiptsRemainVisible": true,
+    "pendingConfirmationAnnouncedOutsideInertBoard": true,
+    "rewardsRemainServerAuthoritative": true
+  },
+  "backend": {
+    "function": "submitSinglePlayerGuess",
+    "authorization": "User explicitly approved the targeted production server deployment during this task.",
+    "previousDeployment": "Both deployed strict request schemas lacked includeCompletion, while the active Jest client sent that opt-in field.",
+    "change": "Accept includeCompletion and return the completion receipt already committed by a terminal guess, allowing the host cache to avoid the separate completion request.",
+    "deployment": "Canonical Firebase CLI targeted only functions:submitSinglePlayerGuess with predeploy validation and build intact. The connector's earlier empty success result was verified to have made no update.",
+    "checkedAt": "2026-11-26 11:49:40 UTC",
+    "deployedCallableSha256": "7ec98e5111c1334041b63378490046d6c0fe93549aaece694cb4a93b21738430",
+    "exactArchivesMatchLocalCallable": true,
+    "regions": [
+      {
+        "region": "europe-west1",
+        "usedByJestGameplay": true,
+        "state": "ACTIVE",
+        "revision": "submitsingleplayerguess-00017-doq",
+        "sourceGeneration": "1795693674269371",
+        "updatedAt": "2026-11-26T11:49:13.426570803Z"
+      },
+      {
+        "region": "us-central1",
+        "state": "ACTIVE",
+        "revision": "submitsingleplayerguess-00046-xaf",
+        "sourceGeneration": "1795693672409890",
+        "updatedAt": "2026-11-26T11:49:23.621111653Z"
+      }
+    ]
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126114817.41cd937a3f53.12bb30c5",
+    "versionId": "01a217b0-3062-716a-b0ed-6c02155db364",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a217b0-3062-716a-b0ed-6c02155db364",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2587866,
+    "archiveSha256": "390d44f911436eee3f072b04069792e75823fc9ed25279f628462f7330be3006",
+    "activationRequested": true
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 11:50:23 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T11:49:20.613Z"
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "sharedTypeCheckPassed": true,
+    "functionsBuildPassed": true,
+    "cleanMainCheckoutUsed": true,
+    "sourceReviewCompleted": true,
+    "regressionCoverageAdded": true,
+    "testsAndBrowserHarnessesRun": false,
+    "hostedGameplayAcceptanceRun": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
