@@ -18,6 +18,7 @@ const source = `
 import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
+import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
 import {LiveRaceViewSchema, RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
@@ -25,6 +26,8 @@ import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 applyPlayerPreferences({locale:'en', muted:true, reducedMotion:true, onboardingComplete:true});
 const scenario = new URLSearchParams(location.search).get('scenario');
 window.probe = {joins:[], retirements:[], updates:[], grants:[], errors:[], shares:[], outerCloses:0};
+const heldPolls=[];
+window.releasePoll=(index,name='Recovered owner')=>heldPolls[index](name);
 window.addEventListener('error', e => window.probe.errors.push(String(e.error ?? e.message)));
 window.addEventListener('unhandledrejection', e => window.probe.errors.push(String(e.reason)));
 const intents = new Map(), tickets = new Map();
@@ -36,7 +39,7 @@ function snapshot(record) {
     ...(record.private ? {challengeId:'live_'+record.ticketId} : {waitForPlayer:true}),
     phase:record.left?'cancelled':searching?'searching':'racing',
     serverNowMs:now, searchEndsAtMs:now+60000, startsAtMs:searching?null:start,
-    player:{displayName:'Owner', avatarUrl:null, bot:false, correctCount:record.correct},
+    player:{displayName:record.displayName??'Owner', avatarUrl:null, bot:false, correctCount:record.correct},
     opponent:searching?null:{displayName:'Fixture Rival', avatarUrl:null, bot:false, correctCount:0},
     result:null, rewardCoins:0, run:searching||record.left?null:{runId:record.ticketId, role:'creator', status:'active',
       categoryId:'mixed', locale:'en', rules:RACE_RULES, correctCount:record.correct, wallElapsedMs:now-start,
@@ -78,11 +81,12 @@ const transport = {
     const record=tickets.get(challengeId.slice(5));
     return {challengeId,creator:{displayName:'Owner',avatarUrl:null,bot:false,correctCount:0},locale:'en',categoryId:'mixed',expiresAtMs:Date.now()+60000,status:record?.left?'unavailable':'own'};
   },
-  async shareChallenge(input) {window.probe.shares.push(input);return 'cancelled';},
   async update(input) {
     window.probe.updates.push(input);
     if(input.action==='leave')throw new Error('Modern cleanup must use the original join, never a replacement ticket');
     const record=tickets.get(input.ticketId);
+    if(scenario==='slow-private-poll'&&input.action==='poll')
+      return new Promise(resolve=>heldPolls.push(name=>{record.displayName=name;resolve(snapshot(record));}));
     if(input.action==='guess') {
       if(record.left)throw new Error('Retired replacement');
       if(input.guess.toLowerCase()!=='piano')throw new Error('Unexpected answer');
@@ -95,9 +99,12 @@ const catalog=await createFakeRaceServices().listRaceCategories({locale:'en'});
 window.authority=()=>({activeJoin,records:[...intents].map(([requestId,record])=>({requestId,...record}))});
 window.pairReplacement=()=>{intents.get(activeJoin).paired=true;window.dispatchEvent(new Event('online'));};
 createRoot(document.querySelector('#root')).render(<React.StrictMode>
+  <ReferralSharingProvider capability={{rewardCoins:0,shareResult:()=>{},shareInvite:()=>{},shareRace:async()=>'cancelled',
+    shareLiveRace:async input=>{window.probe.shares.push(input);return 'cancelled';}}}>
   <RaceTo10Game locale='en' ownerId='original-owner' coins={100} initialCategories={catalog.categories}
     postToHost={()=>{}} matchmaking={{live:transport}} onLiveResult={value=>window.probe.grants.push(value)}
     onClose={()=>window.probe.outerCloses++}/>
+  </ReferralSharingProvider>
 </React.StrictMode>);
 `;
 await writeFile(path.join(scratch,"main.tsx"),source);
@@ -215,6 +222,47 @@ try {
       row.passed=true;
       await page.screenshot({path:path.join(output,`cold-private-16s-${width}.png`)});
     }catch(error){row.error=String(error);throw error;}finally{await context.close();}
+  }
+  for(const width of widths)for(const recovery of ['slow','late','outage']){
+    const row={width,height:844,scenario:`private-poll-${recovery}`,passed:false};observations.push(row);
+    const {context,page}=await silentPage({width,height:844});
+    try {
+      await page.clock.install();
+      await page.goto(`${url}/?scenario=slow-private-poll`);
+      await page.getByRole('button',{name:'Challenge a friend',exact:true}).click();
+      await page.locator('.friend-lobby[data-state="waiting"]').waitFor();
+      await page.waitForFunction(()=>window.probe.shares.length===1);
+      await page.evaluate(()=>window.dispatchEvent(new Event('online')));
+      await page.waitForFunction(()=>window.probe.updates.length===1);
+      await page.clock.runFor(recovery==='slow'?3000:10500);
+      assert.equal(await page.locator('.race-error').count(),0,
+        'A private waiting poll gets the search budget and first-timeout recovery grace');
+      assert.equal(await page.locator('.friend-lobby-play').isDisabled(),true,'A slow poll cannot start the race');
+      let receipt=0;
+      if(recovery==='outage'){
+        await page.clock.runFor(2000);
+        await page.waitForFunction(()=>window.probe.updates.length===2);
+        await page.clock.runFor(10500);
+        await page.locator('.race-error').waitFor();
+        assert.equal(await page.locator('.race-error button').innerText(),'Retry','Repeated timeout keeps explicit recovery');
+        receipt=1;
+      }
+      await page.evaluate(index=>window.releasePoll(index),receipt);
+      await page.locator('.friend-lobby-seat').getByText('Recovered owner',{exact:true}).waitFor();
+      assert.equal(await page.locator('.race-error').count(),0,'The owned receipt clears its delivery error without Retry');
+      assert.equal(await page.locator('.friend-lobby').getAttribute('data-state'),'waiting');
+      if(recovery==='outage'){
+        await page.evaluate(()=>window.releasePoll(0,'Stale owner'));
+        assert.equal(await page.getByText('Stale owner',{exact:true}).count(),0,'An older timed-out receipt cannot replace recovered state');
+      }
+      assert.equal(await page.evaluate(()=>window.probe.joins.length),1,'Poll recovery never reserves another lobby');
+      assert.deepEqual(await page.evaluate(()=>window.probe.shares),[{challengeId:'live_'+'a'.repeat(64)}],
+        'Poll recovery never reopens the native invitation');
+      assert.deepEqual(await page.evaluate(()=>window.probe.errors),[]);
+      row.passed=true;
+      await page.screenshot({path:path.join(output,`private-poll-${recovery}-${width}.png`)});
+    }catch(error){row.error=String(error);row.probe=await page.evaluate(()=>window.probe);throw error;}
+    finally{await context.close();}
   }
 }finally{
   await browser?.close();if(server?.listening)await new Promise(resolve=>server.close(resolve));

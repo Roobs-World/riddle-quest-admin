@@ -1,0 +1,194 @@
+{
+  "date": "2026-11-26",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+  "version": "1.0.0-dev.20261126171348.54179b9a9da6.71ce691b",
+  "sourceCommit": "54179b9a9da6c356e00b357c52574df7bfc91588",
+  "environment": {
+    "browser": "Authenticated Chrome through the connected browser extension",
+    "host": "Jest Developer Console Simulator",
+    "sdkHost": "mocked",
+    "physicalDevice": false,
+    "connection": "Working; user configuration was correct"
+  },
+  "checklistCheckpoint": {
+    "basicLaunch": {
+      "passed": 17,
+      "applicable": 17
+    },
+    "fund": {
+      "passed": 6,
+      "applicable": 6
+    },
+    "recommended": {
+      "passed": 3,
+      "applicable": 4
+    },
+    "eligibilityDisplayed": "Eligible to apply",
+    "note": "Observed checkpoint; recheck the current session before any submission"
+  },
+  "observedFlows": {
+    "guestOnboarding": "Native Jest login prompt opened and was dismissed; guest play continued",
+    "incompletePurchaseRecovery": {
+      "completed": 1,
+      "pendingAtStart": 1,
+      "environment": "Simulator-seeded incomplete purchase"
+    },
+    "guestPurchase": {
+      "product": "coin pack 1",
+      "awarded": 250,
+      "before": 7325,
+      "after": 7575,
+      "realCharge": false
+    },
+    "completionCadence": {
+      "wins": [
+        {
+          "mode": "Daily",
+          "answer": "GOAT",
+          "awarded": 180,
+          "balance": 7755
+        },
+        {
+          "mode": "Classic",
+          "answer": "COMPASS",
+          "awarded": 45,
+          "balance": 7800
+        },
+        {
+          "mode": "Classic",
+          "answer": "GIRAFFE",
+          "awarded": 35,
+          "balance": 7835
+        }
+      ],
+      "result": "Next action opened native registration after the third completed riddle"
+    },
+    "registrationContinuity": {
+      "balanceRetained": 7835,
+      "progressRetained": true
+    },
+    "notifications": {
+      "scheduled": 7,
+      "offsets": "D1–D7",
+      "observedDelayAfterRegistrationSeconds": 3,
+      "offRemaining": 0,
+      "onRestored": 7,
+      "actualDeliveryVerified": false
+    },
+    "subscription": {
+      "checkoutCancellationBalance": 7835,
+      "successfulRetryAward": 3400,
+      "balanceAfterSuccess": 11235,
+      "balanceAfterReload": 11235,
+      "activeOfferHidden": true,
+      "cancelKeepThenConfirm": "Keep preserved the subscription; a later Confirm completed cancellation",
+      "simulatorRevokedEntitlementOnConfirmation": true,
+      "cancellationGrantedExtraCoins": false,
+      "limitation": "Mock-host cancellation does not prove live end-of-paid-period behavior or recurring grants"
+    },
+    "registeredGameplay": {
+      "answer": "TOASTER",
+      "awarded": 25,
+      "balance": 11260
+    },
+    "screenshotProvider": {
+      "visuallyInspectedScreens": [
+        "gameplay",
+        "shop",
+        "Profile",
+        "settings",
+        "result",
+        "multiplayer"
+      ],
+      "readable": true,
+      "evidenceRetention": "Visual inspection in the browser/conversation; data URL download was blocked, so no local screenshot files are claimed"
+    },
+    "desktopDuration": "More than ten minutes usable in the Simulator; not a mobile performance or physical-device soak result",
+    "devicePreviews": {
+      "hostBrowser": "Chrome",
+      "presets": [
+        {
+          "device": "iPhone SE",
+          "width": 375,
+          "height": 667,
+          "mode": "Safari"
+        },
+        {
+          "device": "Galaxy S25",
+          "width": 360,
+          "height": 780,
+          "mode": "Chrome"
+        },
+        {
+          "device": "Galaxy Z Fold 7 unfolded",
+          "width": 984,
+          "height": 1092,
+          "mode": "Installed"
+        }
+      ],
+      "visible": [
+        "game clue",
+        "board",
+        "keyboard",
+        "navigation"
+      ],
+      "multiplayerMenuVerticalScrollWorked": true,
+      "physicalDevice": false,
+      "safariEngineTest": false
+    }
+  },
+  "openFindings": [
+    {
+      "area": "Recommended referral imagery",
+      "observation": "One of three race friend invitations used a generic fallback image",
+      "status": "Fixed in source with targeted checks passing; pending new uploaded-build retest"
+    },
+    {
+      "area": "Race flow",
+      "observation": "Transient race error observed during referral checks",
+      "status": "Fixed in source with targeted checks passing; pending new uploaded-build retest"
+    }
+  ],
+  "remainingAcceptance": [
+    "New uploaded-build retest of the locally verified race/referral source fixes",
+    "Live sandbox interrupted-purchase recovery and guest-to-registered continuity",
+    "Fresh live sandbox subscription checkout, cancellation, restoration and recurring-grant checks",
+    "Actual Jest notification delivery and notification-entry routing",
+    "Two-user referrals and advertised rewards",
+    "Physical iPhone Safari and Android Chrome layout, standardized under-ten-second loading and ten-minute stability",
+    "Manual quality/monetization review, final submission and Fund decision; later per-app Fund Terms remain separate"
+  ],
+  "simulatedActivityIsRevenue": false,
+  "publicationOrReviewSubmitted": false,
+  "manualFundReviewComplete": false,
+  "fundAwardSecured": false,
+  "privacy": "No raw signed payloads, tokens, sandbox login links or player identities retained",
+  "sourceFollowUpChecks": {
+    "raceScenariosPassed": 48,
+    "inviteCasesPassed": 6,
+    "pngRendersPassed": 30,
+    "newUploadedBuildVerified": false,
+    "baselineObservedSource": "54179b9a9da6c356e00b357c52574df7bfc91588",
+    "note": "These checks cover later source fixes and do not change the recorded build or Simulator score"
+  },
+  "teamAgreements": {
+    "verification": "Live Chrome Team Settings",
+    "documents": [
+      {
+        "name": "Application Development and Publishing Agreement",
+        "versionDate": "2026-10-11",
+        "status": "Signed",
+        "signedWhenDisplayed": "1 month ago"
+      },
+      {
+        "name": "Acceptable Use Policy",
+        "versionDate": "2026-10-11",
+        "status": "Signed",
+        "signedWhenDisplayed": "1 month ago"
+      }
+    ],
+    "acceptedDuringThisSession": false,
+    "fundTermsAcceptedDuringThisSession": false
+  }
+}

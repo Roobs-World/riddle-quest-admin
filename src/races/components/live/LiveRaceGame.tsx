@@ -198,7 +198,7 @@ export function LiveRaceGame({transport, locale, categoryId, createChallenge, ch
       inFlight.current && (!inFlight.current.poll || !command)) return;
     /** Receipt ownership prevents a superseded poll from replacing an accepted answer. */
     const delivery = {poll: Boolean(viewRef.current && !command),
-      searching: !command && viewRef.current?.phase === "searching" && !viewRef.current.challengeId};
+      searching: !command && viewRef.current?.phase === "searching"};
     /** All deliveries share the mounted journey's local cancellation boundary. */
     const lifetime = waitOwner.current ??= new AbortController();
     /** Definitively rejected commands reconcile against the current authoritative question. */

@@ -198,11 +198,11 @@ render();
     assert.equal(await page.evaluate(() => window.probe.shares.length), 0,
       "Jest sharing waits for the authoritative lobby handle");
     await page.evaluate(() => window.reserveLobby());
-    await invite.waitFor();
     await page.waitForFunction(() => window.probe.shares.length === 1 && typeof window.settleShare === "function");
     assert.deepEqual(await page.evaluate(() => window.probe.events.slice(1)),
       ["reserve-private", "reserved-private", "sdk-share"],
       "The first friend click reserves the private lobby and automatically opens Jest sharing without a second click");
+    const shareImages = [];
     const checkShare = async (index, expectedChallenge, directClick) => {
       const call = await page.evaluate(index => window.probe.shares[index], index);
       if (officialSdk) {
@@ -221,15 +221,30 @@ render();
       assert.ok(call.input.shareText.includes(registered ? "Stella" : call.input.entryPayload.inviterName));
       assert.deepEqual(call.input.entryPayload, {inviteKind: "race", campaign: "live_pvp_v1",
         challengeDestination: "multiplayer", challengeId: expectedChallenge, inviterName: registered ? "Stella" : "Solver"});
-      assert.equal(await invite.isDisabled(), true);
-      const count = await page.evaluate(() => window.probe.shares.length);
-      await invite.evaluate(button => button.click());
-      assert.equal(await page.evaluate(() => window.probe.shares.length), count, "Pending Jest dialog excludes duplicates");
+      assert.match(call.input.shareImage, /^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/,
+        "Automatic invitations and retries include a PNG preview");
+      const dataUrlBytes = Buffer.byteLength(call.input.shareImage, "utf8");
+      assert.ok(dataUrlBytes <= 2 * 1024 * 1024, "The complete image data URL fits the Jest 2 MiB limit");
+      const png = Buffer.from(call.input.shareImage.slice("data:image/png;base64,".length), "base64");
+      assert.deepEqual([...png.subarray(0, 8)], [137, 80, 78, 71, 13, 10, 26, 10], "The preview has a PNG signature");
+      const dimensions = await page.evaluate(async dataUrl => {
+        const image = new Image();
+        image.src = dataUrl;
+        await image.decode();
+        return {width: image.naturalWidth, height: image.naturalHeight};
+      }, call.input.shareImage);
+      assert.deepEqual(dimensions, {width: 1200, height: 630}, "The actual invitation preview decodes at the recommended size");
+      shareImages.push({index, dataUrlBytes, pngBytes: png.length, ...dimensions,
+        sha256: createHash("sha256").update(png).digest("hex")});
+      if (index === 0) await writeFile(path.join(output, `invite-preview-${width}-${registered ? "registered" : "guest"}.png`), png);
+      assert.equal(await invite.count(), 0, "A pending Jest dialog exposes no duplicate share action");
       return call.input;
     };
     const original = await checkShare(0, "live_" + "a".repeat(64), false);
     await page.evaluate(() => window.settleShare("cancelled"));
-    await page.waitForFunction(() => !document.querySelector(".live-race-invite-share > button")?.disabled);
+    await invite.waitFor();
+    assert.equal(await invite.isEnabled(), true, "Cancelling the automatic dialog exposes an enabled retry");
+    assert.equal(await invite.textContent(), "Retry");
     assert.equal(await page.locator(".live-race-invite-share [role=alert]").count(), 0,
       "Cancelling the automatic Jest dialog keeps the lobby available for retry");
     const directInvite = page.locator(".live-race-direct-invite > button");
@@ -249,7 +264,13 @@ render();
       await page.waitForFunction(before => window.probe.shares.length === before + 1, before);
       await checkShare(before, original.entryPayload.challengeId, true);
       await page.evaluate(outcome => window.settleShare(outcome), outcome);
-      await page.waitForFunction(() => !document.querySelector(".live-race-invite-share > button")?.disabled);
+      if (outcome === "error") {
+        await invite.waitFor();
+        assert.equal(await invite.isEnabled(), true, "A failed share exposes an enabled retry");
+      } else {
+        await page.locator(".live-race-invite-share [role=alert]").waitFor({state: "detached"});
+        assert.equal(await invite.count(), 0, "A completed share leaves the lobby's primary Play game action");
+      }
       assert.equal(await page.locator(".live-race-invite-share [role=alert]").count(), outcome === "error" ? 1 : 0);
     }
     await page.evaluate(() => window.fixture.next());
@@ -258,19 +279,20 @@ render();
     await page.waitForFunction(() => typeof window.reserveLobby === "function");
     assert.equal(await page.evaluate(() => window.probe.shares.length), 3);
     await page.evaluate(() => window.reserveLobby());
-    await invite.waitFor();
     await page.waitForFunction(() => window.probe.shares.length === 4);
     const next = await checkShare(3, "live_" + "b".repeat(64), false);
     assert.notEqual(next.reference, original.reference, "A new lobby never overwrites an older invite link");
     await page.evaluate(() => window.settleShare("error"));
     await page.locator(".live-race-invite-share [role=alert]").waitFor();
-    await page.waitForFunction(() => !document.querySelector(".live-race-invite-share > button")?.disabled);
+    await invite.waitFor();
+    assert.equal(await invite.isEnabled(), true);
     await invite.focus();
     await page.keyboard.press("Enter");
     await page.waitForFunction(() => window.probe.shares.length === 5);
     await checkShare(4, next.entryPayload.challengeId, true);
     await page.evaluate(() => window.settleShare("cancelled"));
-    await page.waitForFunction(() => !document.querySelector(".live-race-invite-share > button")?.disabled);
+    await invite.waitFor();
+    assert.equal(await invite.isEnabled(), true);
     await page.waitForFunction(() => Array.from(document.querySelectorAll(".race-screen img"))
       .every(image => image.complete && image.naturalWidth > 0));
     await page.screenshot({path: path.join(output, `lobby-${width}-${registered ? "registered" : "guest"}.png`)});
@@ -292,9 +314,15 @@ render();
       width, registered, outcomes: ["cancelled", "error", "success"], firstClickOpensJestSdk: true,
       publicMatchmakingDoesNotShare: true, privateReservationBeforeShare: true, automaticFailureCanRetry: true,
       immutableInvites: true, recipientJoinedOriginalLobby: true, accountDeletionBlocked: true,
-      matchingInviteStyles: introStyle, lobbyInviteWidth: nativeBounds.width});
+      matchingInviteStyles: introStyle, lobbyInviteWidth: nativeBounds.width, shareImages});
     await context.close();
     console.log(`PASS ${mode} ${sdkMode} Jest friend invitation at ${width}px, ${registered ? "registered" : "guest"}`);
+  }
+  for (const width of [320, 390, 1280]) {
+    const guest = observations.find(observation => observation.width === width && !observation.registered);
+    const registered = observations.find(observation => observation.width === width && observation.registered);
+    assert.notEqual(guest.shareImages[0].sha256, registered.shareImages[0].sha256,
+      "A named player's invitation preview differs from the guest fallback preview");
   }
   await writeFile(path.join(output, "browser.json"), JSON.stringify(observations, null, 2) + "\n");
 } finally {

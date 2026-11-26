@@ -1,0 +1,185 @@
+{
+  "date": "2026-11-26",
+  "scope": "Keep Profile guidance readable in a short Jest game frame and record hosted Fund preparation",
+  "sourceCommit": "54179b9a9da6c356e00b357c52574df7bfc91588",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+  "version": "1.0.0-dev.20261126171348.54179b9a9da6.71ce691b",
+  "buildStatus": "ready",
+  "isActive": true,
+  "activatedAt": "2026-11-26T17:14:32.761Z",
+  "confirmation": "Root confirmed the exact uploaded version ready and active in Jest",
+  "archiveSha256": "59c0e12ab717df4c65cea0c2d873f095ec61093ce6d69d1060aa1a764c60f04a",
+  "archiveBytes": 2571794,
+  "behavior": {
+    "guidance": "Removes the side-space height cap so the complete card can remain within a short viewport while retaining normal above/below positioning",
+    "reportedIssue": "Profile tutorial step 9/9 was clipped in a 424 by 452 game frame on the preceding release",
+    "exactVersionUiRetest": "passed: Profile tutorial steps 1–9 replayed on the exact current uploaded build"
+  },
+  "checks": {
+    "productionReleaseGate": "passed",
+    "productionTypeChecks": "passed",
+    "jestArtifactAudit": "passed: 97 files, 3.99 MiB total, 0.55 MiB initial resources",
+    "w3cHtmlValidation": "passed with zero findings",
+    "dependencyAudit": "Production dependencies: no known vulnerabilities; complete workspace: three moderate advisories, below the configured high-severity release threshold",
+    "localRegressions": "291 passed across 13 suites; local browser harness not executed",
+    "backendSourceAndConfiguration": "unchanged"
+  },
+  "priorVersionHostedEvidence": {
+    "path": "fund-hosted-2026-11-26/observations.json",
+    "versionId": "01a218ad-89d6-73c9-b0b9-44aaedbd5ef4",
+    "scope": "Registered onboarding, three Classic wins/rewards/persistence, race through results, checkout cancellation, screenshot provider and extended desktop use",
+    "appliesToCurrentVersion": false
+  },
+  "pendingAcceptance": [
+    "Upload and retest race/referral source fixes that passed targeted checks",
+    "Live sandbox interrupted-purchase recovery and guest continuity",
+    "Fresh live sandbox subscription lifecycle and recurring-grant checks",
+    "Actual Jest notification delivery/entry and two-user referrals",
+    "Real iPhone and Android layout, loading and extended stability",
+    "Manual review, separately authorized submission, Fund decision and any later Fund Terms acceptance"
+  ],
+  "authorizationUpdate": "Authorized live sandbox purchases completed; authenticated Chrome Simulator worked through the connected extension and passed every applicable Basic/Fund automated check. No submission or publication occurred.",
+  "backendDeployed": false,
+  "localBrowserHarnessRun": false,
+  "exactVersionHostedAcceptanceRun": true,
+  "physicalDeviceAcceptanceRun": false,
+  "publicationOrReviewSubmitted": false,
+  "fundApprovalVerified": false,
+  "exactVersionHostedRetest": {
+    "browser": "Firefox",
+    "shellViewport": {
+      "width": 500,
+      "height": 682
+    },
+    "gameFrame": {
+      "width": 424,
+      "height": 452
+    },
+    "observed": [
+      "Profile tutorial steps 1–9 replayed",
+      "Achievements step 5, Statistics step 7 and Your Treasure Chest step 9 titles, body text and Got it action were fully visible",
+      "Enter completed the final tutorial step",
+      "4,560-coin balance persisted"
+    ],
+    "evidence": "fund-hosted-2026-11-26/profile-guidance-visible-after.png",
+    "physicalDevice": false,
+    "scope": "Profile tutorial layout and retained balance only; not complete Fund acceptance"
+  },
+  "exactVersionSandboxCommerce": {
+    "evidence": "fund-hosted-2026-11-26/sandbox-purchases.json",
+    "screenshot": "fund-hosted-2026-11-26/six-purchases-retained-after-reload.png",
+    "completedCoinPacks": [
+      6,
+      5,
+      4,
+      3,
+      2,
+      1
+    ],
+    "awardsInPurchaseOrder": [
+      7000,
+      3400,
+      1600,
+      900,
+      550,
+      250
+    ],
+    "balancesAfterPurchase": [
+      11560,
+      14960,
+      16560,
+      17460,
+      18010,
+      18260
+    ],
+    "startingBalance": 4560,
+    "endingBalance": 18260,
+    "reloadBalance": 18260,
+    "nextRiddleRetained": "SNAIL",
+    "jestTransactions": "Six complete transactions, each sandbox with zero credits and zero revenue",
+    "paidSettlementVerified": false,
+    "interruptedPurchaseRecoveryVerified": false,
+    "subscription": {
+      "existingPremiumActive": true,
+      "duplicateOfferHidden": true,
+      "newSubscriptionCompleted": false,
+      "cancellationObserved": "Profile showed cancellation unavailable for a repeat request; exact-account verification confirmed renewal was already cancelled before this session",
+      "diagnosis": "Expected not_active result for an already-ending subscription, not an application defect",
+      "lifecycleVerified": false,
+      "verifiedProviderState": "ending",
+      "startedAt": "2026-11-22T21:25:22.949Z",
+      "currentPeriodEnd": "2026-12-22T21:25:20Z",
+      "renewalCancelledBeforeThisSession": true,
+      "newLifecycleAcceptance": "Fresh sandbox account required for new checkout, cancellation and recurring-grant checks",
+      "evidence": "fund-hosted-2026-11-26/sandbox-existing-subscription.json"
+    }
+  },
+  "simulatorEvidence": "fund-hosted-2026-11-26/simulator-checklist-2026-11-26.json",
+  "simulatorChecklist": {
+    "basicLaunch": "17/17 pass",
+    "fund": "6/6 pass",
+    "recommended": "3/4",
+    "eligibilityDisplayed": "Eligible to apply",
+    "submitted": false
+  },
+  "teamAgreements": {
+    "verification": "Live Chrome Team Settings",
+    "documents": [
+      {
+        "name": "Application Development and Publishing Agreement",
+        "versionDate": "2026-10-11",
+        "status": "Signed",
+        "signedWhenDisplayed": "1 month ago"
+      },
+      {
+        "name": "Acceptable Use Policy",
+        "versionDate": "2026-10-11",
+        "status": "Signed",
+        "signedWhenDisplayed": "1 month ago"
+      }
+    ],
+    "acceptedDuringThisSession": false,
+    "fundTermsAcceptedDuringThisSession": false
+  },
+  "simulatorDevicePreviews": {
+    "hostBrowser": "Chrome",
+    "presets": [
+      {
+        "device": "iPhone SE",
+        "width": 375,
+        "height": 667,
+        "mode": "Safari"
+      },
+      {
+        "device": "Galaxy S25",
+        "width": 360,
+        "height": 780,
+        "mode": "Chrome"
+      },
+      {
+        "device": "Galaxy Z Fold 7 unfolded",
+        "width": 984,
+        "height": 1092,
+        "mode": "Installed"
+      }
+    ],
+    "visible": [
+      "game clue",
+      "board",
+      "keyboard",
+      "navigation"
+    ],
+    "multiplayerMenuVerticalScrollWorked": true,
+    "physicalDevice": false,
+    "safariEngineTest": false
+  },
+  "sourceFollowUpChecks": {
+    "raceScenariosPassed": 48,
+    "inviteCasesPassed": 6,
+    "pngRendersPassed": 30,
+    "newUploadedBuildVerified": false,
+    "baselineObservedSource": "54179b9a9da6c356e00b357c52574df7bfc91588",
+    "note": "These checks cover later source fixes and do not change the recorded build or Simulator score"
+  }
+}

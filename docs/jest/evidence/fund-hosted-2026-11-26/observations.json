@@ -35,17 +35,15 @@
   "issues": [
     {
       "id": "short-profile-guidance",
-      "status": "fixed in source; pending uploaded-build retest",
+      "status": "fixed in released source; exact uploaded-build retest passed",
       "description": "Profile tutorial 9/9, Your Treasure Chest, has a tiny scrolling tooltip (about 112 pixels high) on the short game viewport, leaving the action and most copy initially hidden",
       "evidence": "profile-guidance-clipped-before.png",
-      "fix": "Keep full card within viewport instead of limiting its height to the room beside the target."
+      "fix": "Keep full card within viewport instead of limiting its height to the room beside the target.",
+      "afterEvidence": "profile-guidance-visible-after.png"
     }
   ],
   "notVerified": [
-    "authenticated Simulator Basic/Fund statuses",
-    "guest onboarding/registration in the real host",
-    "all six completed purchases and recovery",
-    "subscription activation, cancellation, restoration and renewal",
+    "fresh live sandbox subscription activation and renewal",
     "actual D1-D7 message delivery",
     "two-user referrals",
     "physical iPhone/Android browser and installed modes",
@@ -53,10 +51,7 @@
     "agreement acceptance",
     "Fund submission and approval"
   ],
-  "pendingUser": [
-    "signed-in Chrome connection for Developer Console Google SSO",
-    "approval for zero-charge sandbox checkouts under displayed Terms"
-  ],
+  "pendingUser": [],
   "backendChanged": false,
   "localTests": {
     "suites": 13,
@@ -67,5 +62,23 @@
   "sdkEventsAfterHostedChecks": {
     "events": [],
     "nextCursor": null
-  }
+  },
+  "followUpRelease": {
+    "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+    "version": "1.0.0-dev.20261126171348.54179b9a9da6.71ce691b",
+    "runtimeSource": "54179b9a9da6c356e00b357c52574df7bfc91588",
+    "buildStatus": "ready",
+    "isActive": true,
+    "profileTourRetest": "All nine steps completed in the same 424x452 frame; steps 5, 7 and 9 title, body and Got it visibly fit; 4,560 starting balance retained.",
+    "simulatorEvidence": "simulator-checklist-2026-11-26.json",
+    "sandboxPurchasesEvidence": "sandbox-purchases.json",
+    "simulatorChecks": {
+      "basicLaunch": "17/17 passing",
+      "fund": "6/6 passing",
+      "recommended": "3/4; race invite preview warning under investigation",
+      "publicationOrReviewSubmitted": false
+    }
+  },
+  "browserConnection": "Authenticated Chrome access established through the browser extension; separate DevTools connection timed out.",
+  "checkoutAuthorization": "User explicitly approved six zero-charge sandbox coin-pack tests and subscription under displayed Jest terms."
 }
