@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-26",
+  "scope": "Jest frontend private-race waiting recovery and live invitation imagery; release verification with prior Fund baseline kept separate",
+  "sourceCommit": "47bcd335e3d96dc707b2d945a9aeea13cc7affbc",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a218ff-992c-7775-9adc-7ac38d761c30",
+  "version": "1.0.0-dev.20261126175458.47bcd335e3d9.e99db118",
+  "buildStatus": "ready",
+  "isActive": true,
+  "activatedAt": "2026-11-26T17:55:41.184Z",
+  "confirmation": "Root verified this exact uploaded version ready and active through the Jest API",
+  "archiveSha256": "e2d50c343a2f082190e5fcbb09e8685dc001efeae801660aad4876e762f199c2",
+  "hostedFileSizeBytes": 4183731,
+  "behavior": {
+    "privateWaitingPoll": "Apply existing searching timeout, first-timeout grace and guarded late-receipt recovery to private as well as public searching lobbies; active racing and command deadlines unchanged",
+    "raceInvitations": "Send a size-checked 1200x630 PNG preview for initial and retried live race invitations while preserving the canonical lobby entry payload"
+  },
+  "checks": {
+    "productionReleaseGate": "passed",
+    "productionTypeChecks": "passed",
+    "jestArtifactAudit": "passed: 97 files, 3.99 MB total, 0.55 MB initial resources",
+    "w3cHtmlValidation": "passed with zero findings",
+    "privateRaceScenariosPassed": 48,
+    "inviteCasesPassed": 6,
+    "pngRendersValidated": 30,
+    "regressionEvidence": "fund-hosted-2026-11-26/race-invite-client-regressions.json",
+    "backendSourceAndConfiguration": "unchanged"
+  },
+  "priorSimulatorBaseline": {
+    "sourceCommit": "54179b9a9da6c356e00b357c52574df7bfc91588",
+    "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+    "basicLaunch": "17/17 pass",
+    "fund": "6/6 pass",
+    "recommended": "3/4",
+    "eligibilityDisplayed": "Eligible to apply",
+    "evidence": "fund-hosted-2026-11-26/simulator-checklist-2026-11-26.json",
+    "appliesToCurrentVersion": false
+  },
+  "exactVersionHostedRetest": "pending",
+  "exactVersionHostedAcceptanceRun": false,
+  "pendingLiveSubscription": {
+    "account": "Existing inactive account confirmed as Sandbox User; no identity retained in this record",
+    "checkoutHost": "pay.jest.com",
+    "displayedPrice": "£0.00/month",
+    "configuredPlanPrice": {
+      "priceCents": 499,
+      "currency": "USD",
+      "billingPeriod": "monthly",
+      "verifiedVia": "Jest list_subscription_plans API on 2026-11-26",
+      "sandboxPriceOnly": "The zero-charge checkout does not change the normal US$4.99/month plan"
+    },
+    "requiredDetails": [
+      "full name",
+      "US shipping address"
+    ],
+    "emptyFormRejected": true,
+    "subscriptionCreated": false,
+    "status": "At the user’s request, the £0.00/month checkout is open in Firefox for manual entry; no subscription completion is claimed",
+    "thenVerify": [
+      "activation and 3400-coin grant",
+      "reload/restoration and duplicate-offer suppression",
+      "cancellation and period-end behavior",
+      "recurring grant timing"
+    ],
+    "testDetailsInvented": false
+  },
+  "pendingAcceptance": [
+    "Exact new uploaded-build Simulator and hosted race/invitation retest",
+    "Live sandbox subscription checkout/lifecycle and real interrupted-purchase recovery",
+    "Live guest continuity, notification delivery/entry and two-user referral rewards",
+    "Physical iPhone/Android layout, mobile loading and extended stability",
+    "Manual review, separately authorized submission, Fund decision and later Fund Terms as applicable"
+  ],
+  "backendDeployed": false,
+  "physicalDeviceAcceptanceRun": false,
+  "publicationOrReviewSubmitted": false,
+  "fundApprovalVerified": false
+}
