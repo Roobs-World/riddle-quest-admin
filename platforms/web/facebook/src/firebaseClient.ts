@@ -1,4 +1,4 @@
-import {httpsCallable} from "firebase/functions";
+import {encryptedHttpsCallable as httpsCallable} from "../../../../src/platform/firebase/encryptedCallable";
 import type {
   ListFacebookTournamentRequest,
   RecordFacebookTournamentRunRequest,

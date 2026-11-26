@@ -133,6 +133,7 @@ export const yahooOAuthCallback = onRequestWithSentry("yahooOAuthCallback", opti
     /** Provides token response behavior. */
     const tokenResponse = await fetch(tokenUrl, {
       method: "POST",
+      redirect: "error",
       headers: {
         authorization: `Basic ${Buffer.from(`${clientId}:${yahooSecret.value()}`).toString("base64")}`,
         "content-type": "application/x-www-form-urlencoded",

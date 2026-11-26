@@ -36,9 +36,10 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     },
   ): Promise<void> {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
-    const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
+    const [{getFunctions}, {firebaseApp}, {encryptedHttpsCallable: httpsCallable}] = await Promise.all([
       import("firebase/functions"),
       import("../../../../src/platform/firebase/browserClient"),
+      import("../../../../src/platform/firebase/encryptedCallable"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "joinFacebookContext")(input);
   }
@@ -49,9 +50,10 @@ class FirebaseFacebookContextBackend implements FacebookContextBackendPort {
     contextId: string;
   }): Promise<void> {
     /** Provides [{get functions, https callable}, {firebase app}] behavior. */
-    const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
+    const [{getFunctions}, {firebaseApp}, {encryptedHttpsCallable: httpsCallable}] = await Promise.all([
       import("firebase/functions"),
       import("../../../../src/platform/firebase/browserClient"),
+      import("../../../../src/platform/firebase/encryptedCallable"),
     ]);
     await httpsCallable<typeof input, unknown>(getFunctions(firebaseApp, "us-central1"), "leaveFacebookContext")(input);
   }

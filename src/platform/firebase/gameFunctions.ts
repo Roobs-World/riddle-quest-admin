@@ -1,4 +1,4 @@
-import {readProtectedContent} from "../../content/transport/contentProtection";
+import {encryptedHttpsCallable} from "./encryptedCallable";
 import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "../../races/contracts/index";
 import {httpsCallable as rawHttpsCallable, type Functions} from "firebase/functions";
 import {type ClassicRiddleBufferResponse, type SkipRiddleResponse, type SpendCoinsRequest} from "../contracts/requestSchemas";
@@ -38,33 +38,17 @@ export const DEFAULT_GAMEPLAY_REGION = "europe-west1";
 /** Region that hosts account, profile, and provider callables unless a target overrides it. */
 export const DEFAULT_ACCOUNT_REGION = "us-central1";
 
-/** Answer and hint delivery opts into encryption; older backend responses remain readable. */
-const protectedEndpoints = new Set(["getCurrentDailyChallenge", "getCurrentClassicRiddle", "getClassicRiddleBuffer",
-  "getHint", "skipRiddle", "startRaceRun", "readyRaceRun", "submitRaceGuess", "requestRaceHint", "skipRaceRiddle", "resumeRaceRun"]);
 /** Host choices for how the client talks to the backend. */
 export type GameFunctionsOptions = Readonly<{
   /**
-   * Whether answer-bearing responses are requested as AES-GCM envelopes decoded with Web Crypto.
-   * Browser hosts keep this on to deter casual inspection; a native app whose bundle already
-   * holds the decoding key turns it off, which also avoids requiring `crypto.subtle` at runtime.
+   * Whether app-owned request and response bodies use AES-GCM envelopes to deter casual inspection.
+   * Native Android opts out until its runtime provides Web Crypto. HTTPS remains required.
    */
   contentProtection?: boolean;
 }>;
 /** Builds the callable wrapper for one host's protection choice. */
 function createCallableFactory(options: GameFunctionsOptions) {
-  /** Whether protected endpoints negotiate encrypted transport. */
-  const protect = options.contentProtection ?? true;
-  /** Keeps the SDK result contract while decoding only opted-in gameplay transports. */
-  return function httpsCallable<Input = unknown, Output = unknown>(functions: Parameters<typeof rawHttpsCallable>[0], name: string) {
-    /** SDK operation bound to its target region. */
-    const call = rawHttpsCallable<Input, Output>(functions, name);
-    if (!protect || !protectedEndpoints.has(name)) return call;
-    return async (input?: Input) => {
-      /** Encrypted response from a supporting backend, or a legacy plaintext response. */
-      const result = await call({...input, contentProtection: 1} as Input);
-      return {...result, data: await readProtectedContent(result.data) as Output};
-    };
-  };
+  return options.contentProtection === false ? rawHttpsCallable : encryptedHttpsCallable;
 }
 
 /** Region-bound Functions handles a host prepares before creating the client. */
@@ -489,7 +473,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   /** Optional private receipt observation leaves existing command transports unchanged. */
   const confirmLiveGuessReceipt = httpsCallable<import("../../races/contracts/index").LiveGuessReceiptQuery, import("../../races/contracts/index").LiveGuessReceiptResult>(regions.race, "confirmLiveGuessReceipt");
   /** Reads live progress and commits idempotent commands. */
-  const updateLiveRace = rawHttpsCallable<import("../../races/contracts/index").UpdateLiveRace, import("../../races/contracts/index").LiveRaceView, {
+  const updateLiveRace = httpsCallable<import("../../races/contracts/index").UpdateLiveRace, import("../../races/contracts/index").LiveRaceView, {
     /** Private wake-up notification received through the same authenticated endpoint. */
     revision: string | null;
   }>(regions.race, "updateLiveRace");

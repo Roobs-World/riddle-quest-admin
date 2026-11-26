@@ -1,4 +1,5 @@
 import hostedConfigDocument from "#hosted-config";
+import {isFirebaseFunctionsRegion} from "../../../../../src/platform/firebase/secureConfiguration";
 /** Public Firebase web-app configuration; never a secret, identical to the Jest Web Target's client config. */
 export type HostedFirebaseConfig = Readonly<{
   /** Stores api key. */
@@ -42,38 +43,42 @@ export type HostedConfig = Readonly<{
 }>;
 /** Whether a value is a non-empty string. */
 const isText = (value: unknown): value is string => typeof value === "string" && value.length > 0;
+/** Plaintext emulator connections are confined to local development hosts. */
+const isEmulatorHost = (value: unknown): value is string => value === "10.0.2.2" || value === "127.0.0.1" || value === "localhost";
 /** Whether a value is a TCP port. */
 const isPort = (value: unknown): value is number => Number.isInteger(value) && Number(value) > 0 && Number(value) < 65_536;
-/** Shape of the bundled document before validation. */
-type UntrustedHostedConfig = {
-  /** Unvalidated Firebase block. */
-  firebase?: Record<string, unknown>;
-  /** Unvalidated emulator block. */
-  emulators?: Record<string, unknown> | null;
-};
+/** Configuration values remain unknown until their owning block is validated. */
+const isRecord = (value: unknown): value is Record<string, unknown> => typeof value === "object" && value !== null && !Array.isArray(value);
 /** Validates the bundled hosted configuration before any Firebase initialization. */
 export function parseHostedConfig(value: unknown): HostedConfig {
-  if (typeof value !== "object" || value === null) throw new Error("hosted-config-invalid");
-  /** Untrusted document. */
-  const document = value as UntrustedHostedConfig;
+  if (!isRecord(value)) throw new Error("hosted-config-invalid");
   /** Untrusted Firebase block. */
-  const firebase = document.firebase;
+  const firebase = value.firebase;
   if (
-    !firebase ||
+    !isRecord(firebase) ||
     !isText(firebase.apiKey) ||
     !isText(firebase.appId) ||
     !isText(firebase.authDomain) ||
     !isText(firebase.messagingSenderId) ||
     !isText(firebase.projectId) ||
-    !isText(firebase.functionsRegion) ||
-    !isText(firebase.gameplayRegion)
+    !isFirebaseFunctionsRegion(firebase.functionsRegion) ||
+    !isFirebaseFunctionsRegion(firebase.gameplayRegion)
   ) {
     throw new Error("hosted-config-firebase-invalid");
   }
   /** Untrusted emulator block. */
-  const emulators = document.emulators ?? null;
-  if (emulators !== null && (!isText(emulators.host) || !isPort(emulators.authPort) || !isPort(emulators.functionsPort) || !isPort(emulators.firestorePort))) {
-    throw new Error("hosted-config-emulators-invalid");
+  const emulatorDocument = value.emulators ?? null;
+  let emulators: HostedEmulatorConfig | null = null;
+  if (emulatorDocument !== null) {
+    if (!isRecord(emulatorDocument) || !isEmulatorHost(emulatorDocument.host) || !isPort(emulatorDocument.authPort) || !isPort(emulatorDocument.functionsPort) || !isPort(emulatorDocument.firestorePort)) {
+      throw new Error("hosted-config-emulators-invalid");
+    }
+    emulators = {
+      host: emulatorDocument.host,
+      authPort: emulatorDocument.authPort,
+      functionsPort: emulatorDocument.functionsPort,
+      firestorePort: emulatorDocument.firestorePort,
+    };
   }
   return {
     firebase: {
@@ -88,14 +93,7 @@ export function parseHostedConfig(value: unknown): HostedConfig {
       functionsRegion: firebase.functionsRegion,
       gameplayRegion: firebase.gameplayRegion,
     },
-    emulators: emulators
-      ? {
-          host: emulators.host as string,
-          authPort: emulators.authPort as number,
-          functionsPort: emulators.functionsPort as number,
-          firestorePort: emulators.firestorePort as number,
-        }
-      : null,
+    emulators,
   };
 }
 /** Hosted configuration bundled into this build. */

@@ -4,6 +4,8 @@ Project documentation lives in this folder. Platform documentation belongs in `d
 
 Start with the [project setup guide](common/project/README.md), [platform source ownership](common/architecture/platform-layout.md), [shared feature folders](common/architecture/shared-source-layout.md), [Functions source organisation](common/architecture/functions-source-layout.md), or [shared module index](common/README.md).
 
+The [security policy](common/security/SECURITY.md) describes transport encryption, Android development exceptions and the limits of browser payload concealment.
+
 ## Platforms
 
 | Platform | Documentation |

@@ -1,9 +1,11 @@
+import {REDDIT_REQUEST_BYTES, REDDIT_RESPONSE_BYTES} from "../shared/redditPayloadTransport";
+
 /** Fixed server gateway routes; callers cannot turn this helper into an arbitrary proxy. */
 const ROUTES = new Set(["exchangeRedditIdentity", "deleteRedditAccount", "redditStorage", "redditGameplay"]);
 /** Existing 64 KiB provider-response budget, now enforced during consumption. */
-const RESPONSE_BYTES = 64 * 1024;
+const RESPONSE_BYTES = REDDIT_RESPONSE_BYTES;
 /** Allows the existing 64 KiB payload plus its signed context envelope. */
-const REQUEST_BYTES = 72 * 1024;
+const REQUEST_BYTES = REDDIT_REQUEST_BYTES;
 /** One deadline covers headers and response consumption, with no automatic retry. */
 const TIMEOUT_MS = 10_000;
 /** Fixed diagnostics cannot expose provider bodies, credentials, user IDs or exceptions. */

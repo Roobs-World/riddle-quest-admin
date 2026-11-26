@@ -1,4 +1,7 @@
 import {contentProtectionRequest, protectContent} from "../../../src/content/transport/contentProtection.js";
+import {
+  isProtectedPayload, parsePayloadEnvelope, protectPayload, readProtectedPayload,
+} from "../../../src/platform/transport/payloadProtection.js";
 import type {
   CallableFunction,
   CallableOptions,
@@ -81,33 +84,42 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
   boundaryOptions: CallableBoundaryOptions = {},
 ): CallableFunction<T, Promise<Result>, Stream> {
   return withCachedPreflight(onCall<T, Promise<Result>, Stream>(options, async (request, response) => {
-    /** Negotiates only the transport format before domain validation. */
-    const negotiation = contentProtectionRequest(request.data);
-    /** Preserves authentication and request metadata. */
-    const decodedRequest = negotiation.protected ? {...request, data: negotiation.data} : request;
-    /** Validates and authorizes domain actions before wrapping their response. */
-    const invoke = async (): Promise<Result> => {
-      /** Domain response never trusted back from the client. */
-      const result = await invokeWithSentry(functionName, handler, [decodedRequest, response]);
-      // Transport wrapping happens after handler validation and never changes authoritative state.
-      return negotiation.protected ? await protectContent(result) as Result : result;
-    };
-    /** Only a caller-declared pure observer may skip the mutation lease for a streaming request. */
-    const skipLease = typeof boundaryOptions.skipJestAccountOperationLease === "function"
-      ? boundaryOptions.skipJestAccountOperationLease(request) : boundaryOptions.skipJestAccountOperationLease;
-    if (skipLease || !request.auth) {
-      return invoke();
+    let requestId: string | undefined;
+    if (isProtectedPayload(request.data)) {
+      try {requestId = parsePayloadEnvelope(request.data).requestId;}
+      catch {throw new HttpsError("invalid-argument", "Invalid protected request.");}
     }
-    /** Provides timeout seconds behavior. */
-    const timeoutSeconds =
-      typeof options.timeoutSeconds === "number" ? options.timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
     try {
-      return await runWithJestAccountOperationLease(request.auth.uid, timeoutSeconds, invoke);
-    } catch (error) {
-      if (isJestAccountDeletedError(error)) {
-        throw new HttpsError("failed-precondition", "This account was permanently deleted.");
+      let input = request.data;
+      if (requestId) {
+        try {
+          input = await readProtectedPayload(input, {operation: functionName, direction: "request", requestId}) as T;
+        } catch {throw new HttpsError("invalid-argument", "Invalid protected request.");}
       }
-      throw error;
+      // Older published clients retain their response-only content negotiation.
+      const negotiation = contentProtectionRequest(input);
+      const decodedRequest = {...request, data: negotiation.data};
+      const protectedResponse = response && requestId ? {
+        signal: response.signal,
+        sendChunk: async (chunk: Stream) => response.sendChunk(await protectPayload(chunk,
+          {operation: functionName, direction: "chunk", requestId}) as Stream),
+      } satisfies CallableResponse<Stream> : response;
+      const invoke = () => invokeWithSentry(functionName, handler, [decodedRequest, protectedResponse]);
+      const skipLease = typeof boundaryOptions.skipJestAccountOperationLease === "function"
+        ? boundaryOptions.skipJestAccountOperationLease(decodedRequest) : boundaryOptions.skipJestAccountOperationLease;
+      const timeoutSeconds = typeof options.timeoutSeconds === "number" ? options.timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
+      const result = skipLease || !decodedRequest.auth ? await invoke()
+        : await runWithJestAccountOperationLease(decodedRequest.auth.uid, timeoutSeconds, invoke);
+      if (requestId) return await protectPayload(result, {operation: functionName, direction: "response", requestId}) as Result;
+      return negotiation.protected ? await protectContent(result) as Result : result;
+    } catch (error) {
+      const failure = isJestAccountDeletedError(error)
+        ? new HttpsError("failed-precondition", "This account was permanently deleted.") : error;
+      if (!requestId) throw failure;
+      const callableFailure = failure instanceof HttpsError ? failure : new HttpsError("internal", "INTERNAL");
+      const details = await protectPayload({code: callableFailure.code, message: callableFailure.message,
+        details: callableFailure.details ?? null}, {operation: functionName, direction: "response", requestId});
+      throw new HttpsError(callableFailure.code, "Protected game request failed.", details);
     }
   }));
 }

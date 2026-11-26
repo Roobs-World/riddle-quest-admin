@@ -18,7 +18,7 @@ export function notificationDatabase(deadline: Deadline): SupabaseClient {
   const database = createClient(endpoint, secret, {auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false},
     global: {fetch: (input, init) => {
       const signal = deadlineSignal(deadline, 12_000);
-      return fetch(input, {...init, signal: init?.signal ? AbortSignal.any([init.signal, signal]) : signal});
+      return fetch(input, {...init, redirect: "error", signal: init?.signal ? AbortSignal.any([init.signal, signal]) : signal});
     }}});
   clients.set(deadline, database);
   return database;

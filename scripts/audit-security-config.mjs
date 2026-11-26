@@ -8,6 +8,9 @@ const portalTargetHtmlPaths = [
   `${repositoryRoot}/platforms/web/reddit/index.html`,
   `${repositoryRoot}/platforms/web/reddit/reddit-inline.html`,
   `${repositoryRoot}/platforms/web/youtube/index.html`,
+  `${repositoryRoot}/platforms/web/netflix/index.html`,
+  `${repositoryRoot}/platforms/web/yahoo/index.html`,
+  `${repositoryRoot}/platforms/web/gamesnacks/index.html`,
 ];
 const portalTargetSourceEntryPaths = [
   `${repositoryRoot}/platforms/web/jest/src/main.tsx`,
@@ -25,7 +28,7 @@ const collectProductionFiles = (directory) => {
       collectProductionFiles(path);
       continue;
     }
-    if (/\.(?:ts|tsx|html)$/u.test(name) && !/\.(?:test|spec)\./u.test(name)) productionFiles.push(path);
+    if (/\.(?:ts|tsx|js|html)$/u.test(name) && !/\.(?:test|spec)\./u.test(name)) productionFiles.push(path);
   }
 };
 
@@ -36,6 +39,10 @@ for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo
   if (existsSync(`${repositoryRoot}/platforms/web/${target}/server`)) collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/server`);
 }
 collectProductionFiles(`${repositoryRoot}/platforms/native/android/server`);
+collectProductionFiles(`${repositoryRoot}/platforms/native/android/src`);
+for (const directory of ["src", "server", "api", "public", "supabase/functions"]) {
+  collectProductionFiles(`${repositoryRoot}/notification-manager/${directory}`);
+}
 productionFiles.push(...portalTargetHtmlPaths);
 
 /** Audits source text for network references that bypass encrypted transport. */
@@ -48,6 +55,14 @@ export function hasPlaintextNetworkReference(path, source) {
     /\bconst emulator\s*=\s*process\.env\.FUNCTIONS_EMULATOR\s*===\s*"true"\s*\?\s*process\.env\.FIREBASE_STORAGE_EMULATOR_HOST\s*:\s*undefined;/u.test(source)) {
     // Exempt only the guarded emulator origin; the production fallback must stay encrypted.
     source = source.replace(/\bconst origin\s*=\s*emulator\s*\?\s*new URL\(`http:\/\/\$\{emulator\}`\)\.origin\s*:\s*"https:\/\/firebasestorage\.googleapis\.com";/u, "");
+  }
+  if (path === "platforms/native/android/src/hosted/firebaseClient.ts") {
+    // Parsed emulator hosts are local-only; release builds reject emulator configuration.
+    source = source.replace('connectAuthEmulator(auth, `http://${config.emulators.host}:${config.emulators.authPort}`, {disableWarnings: true});', "");
+  }
+  if (path === "platforms/native/android/src/avatar/avatarUrl.ts") {
+    // Only local Storage emulator URLs are rewritten for the Android emulator's host bridge.
+    source = source.replace('`http://${emulatorHost}`', "");
   }
   return /(?:http|ws):\/\/(?!localhost(?::|\/)|127\.0\.0\.1(?::|\/)|\[::1\](?::|\/))/iu.test(source);
 }
@@ -110,6 +125,13 @@ const globalHeaders = firebaseConfig.hosting?.headers?.find((entry) => entry.sou
 const headerValues = new Map(globalHeaders.map(({key, value}) => [key.toLowerCase(), value]));
 const hsts = headerValues.get("strict-transport-security") ?? "";
 const contentSecurityPolicy = headerValues.get("content-security-policy") ?? "";
+const androidManifest = readFileSync(`${repositoryRoot}/platforms/native/android/android/app/src/main/AndroidManifest.xml`, "utf8");
+const androidNetworkSecurity = readFileSync(`${repositoryRoot}/platforms/native/android/android/app/src/main/res/xml/network_security_config.xml`, "utf8");
+const notificationHosting = JSON.parse(readFileSync(`${repositoryRoot}/notification-manager/vercel.json`, "utf8"));
+const notificationHeaders = new Map((notificationHosting.headers?.find(entry => entry.source === "/(.*)")?.headers ?? [])
+  .map(({key, value}) => [key.toLowerCase(), value]));
+const notificationHsts = notificationHeaders.get("strict-transport-security") ?? "";
+const notificationCsp = notificationHeaders.get("content-security-policy") ?? "";
 
 const requirements = [
   [legacyPortalEnvironmentFiles.length === 0,
@@ -126,6 +148,16 @@ const requirements = [
     "CSP must block mixed content."],
   [!/(?:^|[;\s])(?:http|ws):\/\//i.test(contentSecurityPolicy),
     "CSP must not allow plaintext HTTP or WebSocket origins."],
+  [/android:usesCleartextTraffic="false"/u.test(androidManifest) &&
+    /android:networkSecurityConfig="@xml\/network_security_config"/u.test(androidManifest) &&
+    /<base-config\s+cleartextTrafficPermitted="false"/u.test(androidNetworkSecurity) &&
+    !/cleartextTrafficPermitted="true"/u.test(androidNetworkSecurity),
+    "Android release networking must reject cleartext traffic; emulator exceptions belong only in debug resources."],
+  [Number(/max-age=(\d+)/iu.exec(notificationHsts)?.[1] ?? 0) >= 31_536_000 &&
+    /\bincludesubdomains\b/iu.test(notificationHsts) &&
+    /\bupgrade-insecure-requests\b/u.test(notificationCsp) && /\bblock-all-mixed-content\b/u.test(notificationCsp) &&
+    !/(?:^|[;\s])(?:http|ws):\/\//iu.test(notificationCsp),
+    "Notification manager hosting must enforce HTTPS through HSTS and mixed-content protection."],
   [encryptedJestBackend, "The production Jest backend URL must use HTTPS."],
   [encryptedSentryDsn, "The production Sentry DSN must use an official encrypted Sentry endpoint."],
   [googleAnalyticsMeasurementId === "G-7CWWGNE52Q",

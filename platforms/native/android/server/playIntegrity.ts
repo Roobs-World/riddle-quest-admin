@@ -54,6 +54,7 @@ export function createPlayIntegrityDecoder(
     /** Google's response. */
     const response = await fetchImpl(url, {
       method: "POST",
+      redirect: "error",
       headers: {"Authorization": `Bearer ${await getAccessToken()}`, "Content-Type": "application/json"},
       body: JSON.stringify({integrity_token: integrityToken}),
     });

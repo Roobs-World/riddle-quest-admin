@@ -40,8 +40,9 @@ export function facebookLaunchFromEntryData(value: unknown, nowMs = Date.now()):
 /** Issues a fresh server-owned token without exposing the authenticated Firebase identity. */
 export async function createFacebookReferralToken(): Promise<FacebookReferralToken> {
   /** Firebase remains confined to the Facebook target's authenticated authority. */
-  const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
+  const [{getFunctions}, {firebaseApp}, {encryptedHttpsCallable: httpsCallable}] = await Promise.all([
     import("firebase/functions"), import("../../../../src/platform/firebase/browserClient"),
+    import("../../../../src/platform/firebase/encryptedCallable"),
   ]);
   /** Token response is validated before entering the provider share payload. */
   const result = await httpsCallable<Record<string, never>, unknown>(
@@ -75,9 +76,10 @@ export async function bindFacebookEntryReferral(sdk: FacebookInstantSdk): Promis
   const token = facebookReferralTokenFromEntryData(sdk.getEntryPointData?.());
   if (!token) return false;
   /** Provides [{get functions, https callable}, {firebase app}] behavior. */
-  const [{getFunctions, httpsCallable}, {firebaseApp}] = await Promise.all([
+  const [{getFunctions}, {firebaseApp}, {encryptedHttpsCallable: httpsCallable}] = await Promise.all([
     import("firebase/functions"),
     import("../../../../src/platform/firebase/browserClient"),
+    import("../../../../src/platform/firebase/encryptedCallable"),
   ]);
   /** Provides bind behavior. */
   const bind = httpsCallable<

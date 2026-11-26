@@ -1,17 +1,28 @@
 import {createClient} from "@supabase/supabase-js";
 import {PublicSupabaseSettings} from "./publicConfiguration";
+import {secureManagementOrigin} from "./secureTransport";
+
+const managementFetch: typeof fetch = (input, init) => {
+  secureManagementOrigin();
+  return fetch(input, {...init, redirect: "error"});
+};
 
 function initializeManagementConnection() {
+  secureManagementOrigin();
   const parsed = PublicSupabaseSettings.safeParse({
     url: import.meta.env.VITE_NOTIFICATION_SUPABASE_URL,
     key: import.meta.env.VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY,
   });
   if (!parsed.success) throw new Error("Connect this Vercel project to Supabase and rebuild, or set VITE_NOTIFICATION_SUPABASE_URL and VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY. Enable Google sign-in and allow this website's redirect URL in Supabase Authentication.");
   const settings = parsed.data;
-  const client = createClient(settings.url, settings.key, {auth: {flowType: "pkce", storageKey: "riddle-quest-notification-studio"}});
+  const client = createClient(settings.url, settings.key, {
+    auth: {flowType: "pkce", storageKey: "riddle-quest-notification-studio"},
+    global: {fetch: managementFetch},
+  });
   let currentUserId: string | null = null;
   client.auth.onAuthStateChange((_event, session) => {currentUserId = session?.user.id ?? null;});
   const credentials = async (expectedId: string) => {
+    secureManagementOrigin();
     const {data, error} = await client.auth.getSession();
     if (error || !data.session) throw new Error("Your sign-in has expired. Sign in again.");
     if (data.session.user.id !== expectedId || currentUserId !== expectedId) throw new Error("The signed-in account changed. Please try again.");
@@ -37,7 +48,7 @@ function initializeManagementConnection() {
       const storage = createClient(settings.url, settings.key, {
         accessToken: async () => token,
         auth: {persistSession: false, autoRefreshToken: false, detectSessionInUrl: false},
-        global: {fetch: (input, init) => fetch(input, {...init, signal})},
+        global: {fetch: (input, init) => managementFetch(input, {...init, signal})},
       }).storage.from("notification-images");
       const path = `${userId}/${crypto.randomUUID()}.${extension}`;
       const {error} = await storage.upload(path, file, {upsert: false, contentType: file.type, cacheControl: "31536000"});

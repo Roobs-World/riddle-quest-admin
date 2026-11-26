@@ -12,9 +12,12 @@ import {REDDIT_RECOVERY_METADATA_KEY, redditCommerceRecoveryKey} from "./redditC
 import {recoverRedditCommerceOrders} from "./recoverRedditCommerce";
 import {ensureCanonicalPost} from "./canonicalPost";
 import {fetchRedditGateway} from "./redditGatewayTransport";
+import {redditPayloadProtection} from "./redditPayloadProtection";
 
 /** Provides app behavior. */
 const app = new Hono();
+app.onError((_error, request) => request.json({ok: false, error: "gateway-unavailable"}, 500));
+app.use("/api/*", redditPayloadProtection);
 /** Ensures riddle quest post. */
 async function ensureRiddleQuestPost() {
   /** Capture the installation scope before the asynchronous creation claim. */

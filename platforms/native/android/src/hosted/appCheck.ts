@@ -38,7 +38,7 @@ const attestationBase = (config: HostedConfig): string =>
  * @remarks
  * The backend issues a single-use nonce, the device binds a Play Integrity
  * token to it, and the backend verifies the verdict before minting the App
- * Check token. These endpoints are plain HTTP: the callable client would try to
+ * Check token. These endpoints use direct HTTPS requests: the callable client would try to
  * attach the App Check token this exchange is still obtaining.
  */
 export async function attestDevice(config: HostedConfig, integrity: PlayIntegrityPort, fetchImpl: Fetch, now: () => number = Date.now): Promise<AttestedToken> {

@@ -1,3 +1,6 @@
+import {assertSecureBrowserOrigin, resolveSecureHttpUrl} from "../../../../src/platform/browser/secureTransport";
+import {createPayloadRequestId, protectPayload, readProtectedPayload} from "../../../../src/platform/transport/payloadProtection";
+
 /** Describes facebook identity credentials. */
 export type FacebookIdentityCredentials = {
   /** Stores custom token. */
@@ -105,36 +108,27 @@ export function parseFacebookIdentityCredentials(value: unknown): FacebookIdenti
 
 /** Resolves facebook backend url. */
 export function resolveFacebookBackendUrl(baseUrl: string, options: FacebookBackendClientOptions = {}): string {
-  /** Provides trimmed behavior. */
   const trimmed = baseUrl.trim();
-  if (trimmed.startsWith("/")) {
-    if (trimmed.startsWith("//")) throw new Error("Facebook backend URL must not be protocol-relative.");
-    return trimmed;
-  }
-  /** Parses d. */
-  let parsed: URL;
+  if (trimmed.startsWith("//")) throw new Error("Facebook backend URL must not be protocol-relative.");
   try {
-    parsed = new URL(trimmed);
+    return resolveSecureHttpUrl(trimmed, options);
   } catch {
-    throw new Error("Facebook backend URL must be HTTPS or root-relative.");
+    throw new Error("Facebook backend URL must use HTTPS.");
   }
-  if (parsed.protocol === "https:") return parsed.toString();
-  /** Provides loopback behavior. */
-  const loopback = parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1" || parsed.hostname === "[::1]";
-  if (options.allowInsecureLoopback && parsed.protocol === "http:" && loopback) return parsed.toString();
-  throw new Error("Facebook backend URL must use HTTPS.");
 }
 
 /** Provides facebook backend client behavior. */
 export class FacebookBackendClient implements FacebookBackendPort {
   /** Stores base url. */
   private readonly baseUrl: string;
+  private readonly allowInsecureLoopback: boolean;
   /** Stores request timeout ms. */
   private readonly requestTimeoutMs: number;
 
   /** Creates a facebook backend client instance. */
   constructor(baseUrl: string, options: FacebookBackendClientOptions = {}) {
     this.baseUrl = resolveFacebookBackendUrl(baseUrl, options);
+    this.allowInsecureLoopback = options.allowInsecureLoopback === true;
     this.requestTimeoutMs = options.requestTimeoutMs ?? FACEBOOK_BACKEND_REQUEST_TIMEOUT_MS;
     if (!Number.isFinite(this.requestTimeoutMs) || this.requestTimeoutMs <= 0) {
       throw new Error("Facebook backend timeout must be positive.");
@@ -142,21 +136,30 @@ export class FacebookBackendClient implements FacebookBackendPort {
   }
 
   /** Provides post behavior. */
-  private async post<T>(path: string, body: unknown): Promise<T> {
+  private async post(path: string, body: unknown): Promise<unknown> {
+    const transportOptions = {allowInsecureLoopback: this.allowInsecureLoopback};
+    assertSecureBrowserOrigin(transportOptions);
+    const url = new URL(resolveSecureHttpUrl(`${this.baseUrl.replace(/\/$/, "")}/${path}`, transportOptions),
+      globalThis.location.origin).href;
     /** Provides controller behavior. */
     const controller = new AbortController();
     /** Provides timeout behavior. */
     let timeout: ReturnType<typeof setTimeout> | undefined;
     return Promise.race([
-      fetch(`${this.baseUrl.replace(/\/$/, "")}/${path}`, {
-        method: "POST",
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify(body),
-        signal: controller.signal,
-      }).then(async (response) => {
+      (async () => {
+        const context = {operation: path, requestId: createPayloadRequestId()};
+        const envelope = await protectPayload(body, {...context, direction: "request"});
+        const response = await fetch(url, {
+          method: "POST",
+          redirect: "error",
+          headers: {"content-type": "application/json"},
+          body: JSON.stringify(envelope),
+          signal: controller.signal,
+        });
+        const payload = await readProtectedPayload(await response.json(), {...context, direction: "response"});
         if (!response.ok) throw new Error(`Facebook backend ${path} failed (${response.status})`);
-        return response.json() as Promise<T>;
-      }),
+        return payload;
+      })(),
       new Promise<never>((_resolve, reject) => {
         timeout = setTimeout(() => {
           controller.abort();
@@ -175,7 +178,7 @@ export class FacebookBackendClient implements FacebookBackendPort {
     /** Stores expires at ms. */
     expiresAtMs: number;
   }> {
-    return this.post<unknown>("issueFacebookIdentityNonce", {}).then(parseFacebookIdentityNonceResponse);
+    return this.post("issueFacebookIdentityNonce", {}).then(parseFacebookIdentityNonceResponse);
   }
 
   /** Provides exchange identity behavior. */
@@ -187,6 +190,6 @@ export class FacebookBackendClient implements FacebookBackendPort {
     /** Stores nonce. */
     nonce: string;
   }): Promise<FacebookIdentityCredentials> {
-    return this.post<unknown>("exchangeFacebookIdentity", input).then(parseFacebookIdentityCredentials);
+    return this.post("exchangeFacebookIdentity", input).then(parseFacebookIdentityCredentials);
   }
 }

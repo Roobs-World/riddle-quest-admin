@@ -19,7 +19,7 @@ import {purchase} from "@devvit/payments/client";
 import {getWebViewMode} from "@devvit/client";
 import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../../../src/platform/browser/storage/browserStorage";
 import {raceMatchmakingFailureResult} from "../../../../src/races/browser/raceMatchmakingFailure";
-import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
+import {requestRedditGateway} from "./redditGatewayRequest";
 export {REDDIT_GATEWAY_REQUEST_TIMEOUT_MS} from "./redditGatewayDeadline";
 
 /** Defines the guest key value. */
@@ -27,19 +27,6 @@ const GUEST_KEY = "riddleQuestRedditGuestV1";
 /** Indicates whether is record. */
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
-
-/** Rejects paths that could escape Reddit's same-origin Devvit gateway namespace. */
-const assertRedditGatewayPath = (path: string): void => {
-  /** Provides segments behavior. */
-  const segments = path.split("/");
-  if (
-    !/^\/api\/[A-Za-z0-9._/-]+$/.test(path) ||
-    path.includes("//") ||
-    segments.some((segment) => segment === "." || segment === "..")
-  ) {
-    throw new Error("invalid-reddit-gateway-path");
-  }
-};
 
 /** Parses preferences. */
 const parsePreferences = (value: unknown): PlatformPreferences => {
@@ -66,32 +53,20 @@ export const selectMigratableGuestPreferences = (preferences: PlatformPreference
 
 /** Provides post reddit gateway behavior. */
 export const postRedditGateway = async (path: string, body: unknown = {}): Promise<Record<string, unknown>> => {
-  assertRedditGatewayPath(path);
-  return withRedditGatewayDeadline(async signal => {
-    /** Provides response behavior. */
-    const response = await fetch(path, {
-      method: "POST",
-      // A valid initial API path must never authorize a redirect to another route or origin.
-      redirect: "error",
-      headers: {"content-type": "application/json"},
-      body: JSON.stringify(body),
-      signal,
-    });
-    /** Provides payload behavior. */
-    const payload: unknown = await response.json();
-    if (!response.ok || !isRecord(payload) || payload.ok !== true) {
-      /** Stable HTTP categories remain available when older gateways omit typed details. */
-      const code = response.status === 404 && path === "/api/game/race.live.retire" &&
-        isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "not-found" ? "not-found" :
-        response.status === 409 && /^\/api\/game\/race\.live\.(join|update|retire)$/.test(path) &&
-        isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
-        [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
-        response.status === 429 ? "resource-exhausted" : "unavailable";
-      throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
-        details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
-    }
-    return payload;
-  });
+  const response = await requestRedditGateway(path, body);
+  const payload = response.payload;
+  if (!response.ok || !isRecord(payload) || payload.ok !== true) {
+    /** Stable HTTP categories remain available when older gateways omit typed details. */
+    const code = response.status === 404 && path === "/api/game/race.live.retire" &&
+      isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "not-found" ? "not-found" :
+      response.status === 409 && /^\/api\/game\/race\.live\.(join|update|retire)$/.test(path) &&
+      isRecord(payload) && payload.error === "live-race-request-failed" && payload.code === "failed-precondition" ? "failed-precondition" :
+      [401, 403].includes(response.status) ? "permission-denied" : [400, 413].includes(response.status) ? "invalid-argument" :
+      response.status === 429 ? "resource-exhausted" : "unavailable";
+    throw Object.assign(new Error("reddit-gateway-request-failed"), {code,
+      details: {matchmaking: isRecord(payload) ? payload.matchmaking : undefined}});
+  }
+  return payload;
 };
 
 /** Provides reddit server storage behavior. */

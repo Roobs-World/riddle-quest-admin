@@ -2,6 +2,7 @@ import {CampaignEnvelope, CampaignList, ManagementOverview, type CampaignRequest
 import {localDayBounds} from "./dates";
 import type {ManagementConnection} from "./supabase";
 import {z} from "zod";
+import {secureManagementOrigin} from "./secureTransport";
 
 const errorMessages: Record<string, string> = {
   "operator-forbidden": "Your account does not have permission to manage notifications.",
@@ -72,8 +73,9 @@ function parseResponse<T extends z.ZodType>(schema: T, value: unknown): z.output
 /** Credentials never leave this same-origin management boundary. */
 export function createManagementApi(connection: ManagementConnection, expectedUid: string, onAccessDenied?: (message: string) => void) {
   const request = async (path: string, signal: AbortSignal, method = "GET", input?: CampaignRequest) => {
-    const url = new URL(path, window.location.origin);
-    if (url.origin !== window.location.origin || !/^\/api\/management\/(?:config|campaigns(?:\/[a-f0-9]{64})?)$/u.test(url.pathname))
+    const origin = secureManagementOrigin();
+    const url = new URL(path, origin);
+    if (url.origin !== origin || !/^\/api\/management\/(?:config|campaigns(?:\/[a-f0-9]{64})?)$/u.test(url.pathname))
       throw new Error("Invalid management API route.");
     const controller = new AbortController();
     const abort = () => controller.abort();

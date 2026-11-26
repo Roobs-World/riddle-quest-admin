@@ -1,10 +1,9 @@
-import {readProtectedContent} from "../../../../src/content/transport/contentProtection";
 import {RaceEntryResponseSchema} from "../../../../src/races/contracts/index";
 import {BridgeProfileSchema, BridgeRiddleSchema, type BridgeProfile, type BridgeUser} from "../../../../src/platform/bridge/messages";
 import {ClassicRiddleBufferResponseSchema, CompleteGameResponseDataSchema, GetCurrentDailyChallengeResponseSchema, GetHintResponseSchema, GetLeaderboardResponseSchema, SkipRiddleResponseSchema, SpendCoinsResponseSchema, SubmitSinglePlayerGuessResponseDataSchema} from "../../../../src/platform/contracts/requestSchemas";
 import type {AuthSnapshot, HostServices} from "../../../../src/platform/contracts/hostServices";
 import {tr} from "../../../../src/localization/browser/i18n";
-import {withRedditGatewayDeadline} from "./redditGatewayDeadline";
+import {requestRedditGateway} from "./redditGatewayRequest";
 import {
   AbandonRaceRunResponseSchema,
   ListRaceCategoriesResponseSchema,
@@ -23,33 +22,16 @@ import {
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-/** Same-origin operations whose responses carry answers or hint reveals. */
-const protectedOperations = new Set(["riddle.classic", "riddle.classic-buffer", "riddle.daily", "hint.request", "riddle.skip",
-  "race.start", "race.ready", "race.guess", "race.hint", "race.skip", "race.resume"]);
-
 /** Provides post behavior. */
-const post = async (operation: string, body: unknown): Promise<unknown> => withRedditGatewayDeadline(async signal => {
-  /** Provides response behavior. */
-  const response = await fetch(`/api/game/${operation}`, {
-    method: "POST",
-    signal,
-    // Keep the selected operation on the same-origin gateway even when an intermediary redirects.
-    redirect: "error",
-    headers: {"content-type": "application/json"},
-    body: JSON.stringify(protectedOperations.has(operation) && isRecord(body) ? {...body, contentProtection: 1} : body),
-  });
-  /** Provides payload behavior. */
-  const payload: unknown = await response.json();
+const post = async (operation: string, body: unknown): Promise<unknown> => {
+  const response = await requestRedditGateway(`/api/game/${operation}`, body);
+  const payload = response.payload;
   if (!response.ok || !isRecord(payload) || payload.ok !== true || !("result" in payload)) {
-    /** The error used by the current operation. */
-    const error = new Error("reddit-gameplay-request-failed") as Error & {
-      /** Structured rejection code for host classification. */ code?: string;
-    };
-    if (isRecord(payload) && payload.error === "guess-rejected") error.code = "failed-precondition";
-    throw error;
+    throw Object.assign(new Error("reddit-gameplay-request-failed"),
+      isRecord(payload) && payload.error === "guess-rejected" ? {code: "failed-precondition"} : {});
   }
-  return readProtectedContent(payload.result);
-});
+  return payload.result;
+};
 
 /** Provides unavailable behavior. */
 const unavailable = async (): Promise<never> => {
@@ -310,16 +292,8 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
     },
     /** Deletes account. */
     async deleteAccount() {
-      /** Provides response behavior. */
-      const response = await withRedditGatewayDeadline(signal => fetch("/api/account/delete", {
-        signal,
-        method: "POST",
-        // Redirects cannot turn an unrelated success response into confirmation of account deletion.
-        redirect: "error",
-        headers: {"content-type": "application/json"},
-        body: JSON.stringify({accountGeneration}),
-      }));
-      if (!response.ok) throw new Error("reddit-account-deletion-failed");
+      const response = await requestRedditGateway("/api/account/delete", {accountGeneration});
+      if (!response.ok || !isRecord(response.payload) || response.payload.ok !== true) throw new Error("reddit-account-deletion-failed");
       accountActive = false;
       profileRevision += 1;
       profile = null;

@@ -4,7 +4,7 @@ import {logger} from "firebase-functions";
 import {defineSecret} from "firebase-functions/params";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {captureException, flushSentry} from "../../../../firebase-functions/src/shared/sentry";
-import {onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
+import {onProtectedJsonRequestWithSentry} from "../../../../firebase-functions/src/shared/protectedJsonHttp";
 import {facebookFirebaseUid, MAX_FACEBOOK_ACCOUNT_GENERATION, verifyFacebookSignedPlayer} from "./facebookSecurity";
 import {createReservedFacebookUser} from "./facebookUser";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
@@ -12,6 +12,7 @@ import {FACEBOOK_NONCE_COLLECTION as NONCE_COLLECTION,
   FACEBOOK_NONCE_TIMESTAMP_MAX_MS, createFacebookIdentityNonceRecord, readFacebookIdentityNonceRecord} from "./facebookIdentityNonce";
 import {
   acceptFacebookRequest,
+  MAX_FACEBOOK_HTTP_BODY_BYTES,
   consumeFacebookRequestQuota,
   parseFacebookExchangeBody,
   type FacebookHttpResponse,
@@ -31,6 +32,10 @@ const facebookAppSecret = defineSecret("FACEBOOK_APP_SECRET");
 const facebookUidSecret = defineSecret("FACEBOOK_UID_SECRET");
 /** Provides facebook http options behavior. */
 const facebookHttpOptions = {secrets: [facebookAppSecret, facebookUidSecret], invoker: "public" as const};
+const facebookProtectedJsonBoundary = {
+  maxDecodedBodyBytes: MAX_FACEBOOK_HTTP_BODY_BYTES,
+  acceptRequest: acceptFacebookRequest,
+} satisfies Parameters<typeof onProtectedJsonRequestWithSentry>[3];
 /** Defines the identity collection value. */
 const IDENTITY_COLLECTION = "providerIdentities";
 /** Defines the app check ttl ms value. */
@@ -271,11 +276,10 @@ const reject = async (functionName: string, response: FacebookHttpResponse, erro
 };
 
 /** Provides issue facebook identity nonce behavior. */
-export const issueFacebookIdentityNonce = onRequestWithSentry(
+export const issueFacebookIdentityNonce = onProtectedJsonRequestWithSentry(
   "issueFacebookIdentityNonce",
   facebookHttpOptions,
   async (request, response) => {
-    if (!acceptFacebookRequest(request, response)) return;
     if (!isFacebookFeatureEnabled("identity")) {
       response.status(503).json({error: "temporarily-unavailable"});
       return;
@@ -302,14 +306,14 @@ export const issueFacebookIdentityNonce = onRequestWithSentry(
       await reject("issueFacebookIdentityNonce", response, error);
     }
   },
+  facebookProtectedJsonBoundary,
 );
 
 /** Provides exchange facebook identity behavior. */
-export const exchangeFacebookIdentity = onRequestWithSentry(
+export const exchangeFacebookIdentity = onProtectedJsonRequestWithSentry(
   "exchangeFacebookIdentity",
   facebookHttpOptions,
   async (request, response) => {
-    if (!acceptFacebookRequest(request, response)) return;
     if (!isFacebookFeatureEnabled("identity")) {
       response.status(503).json({error: "temporarily-unavailable"});
       return;
@@ -408,4 +412,5 @@ export const exchangeFacebookIdentity = onRequestWithSentry(
       await reject("exchangeFacebookIdentity", response, error);
     }
   },
+  facebookProtectedJsonBoundary,
 );

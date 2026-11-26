@@ -8,7 +8,7 @@ import {JEST_SUBSCRIPTIONS, resolvePremiumCoinGrant} from "../../../../firebase-
 import {ACHIEVEMENT_UNLOCK_COIN_REWARD} from "../../../../firebase-functions/src/shared/constants";
 import {JEST_REFERRAL_REWARD_COINS} from "../src/referrals/referralCampaigns.js";
 import {captureException, flushSentry} from "../../../../firebase-functions/src/shared/sentry";
-import {onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
+import {onProtectedJsonRequestWithSentry} from "../../../../firebase-functions/src/shared/protectedJsonHttp";
 import {
   createJestPurchaseGrantId,
   currentJestCoinBalance,
@@ -71,6 +71,10 @@ export const JEST_HTTP_INPUT_LIMITS = {
 } as const;
 /** Maximum raw JSON body size accepted by any Jest HTTP endpoint. */
 export const MAX_JEST_HTTP_BODY_BYTES = 600 * 1_024;
+const jestProtectedJsonBoundary = {
+  maxDecodedBodyBytes: MAX_JEST_HTTP_BODY_BYTES,
+  acceptRequest: acceptJestRequest,
+} satisfies Parameters<typeof onProtectedJsonRequestWithSentry>[3];
 /** Describes jest http response. */
 type JestHttpResponse = {
   /** Provides set behavior. */
@@ -187,7 +191,7 @@ function rejection(error: unknown) {
  * @param response Response adapter used to emit boundary failures.
  * @returns `true` only for trusted, rate-limited JSON POST requests.
  */
-export function acceptJestRequest(request: Request, response: JestHttpResponse): boolean {
+export function acceptJestRequest(request: Request, response: JestHttpResponse, maxRawBodyBytes = MAX_JEST_HTTP_BODY_BYTES): boolean {
   /** Provides origin behavior. */
   const origin = request.get("origin");
   applyJestCors(response, origin);
@@ -209,7 +213,7 @@ export function acceptJestRequest(request: Request, response: JestHttpResponse):
   }
   /** Provides raw body behavior. */
   const rawBody = request.rawBody;
-  if (rawBody && rawBody.byteLength > MAX_JEST_HTTP_BODY_BYTES) {
+  if (rawBody && rawBody.byteLength > maxRawBodyBytes) {
     response.status(413).json({error: "payload-too-large"});
     return false;
   }
@@ -236,11 +240,10 @@ const resolveSignedJestPlayer = (playerSigned: string) => {
 };
 
 /** Provides exchange jest identity behavior. */
-export const exchangeJestIdentity = onRequestWithSentry(
+export const exchangeJestIdentity = onProtectedJsonRequestWithSentry(
   "exchangeJestIdentity",
   {...jestHttpOptions, minInstances: 0},
   async (request, response) => {
-    if (!acceptJestRequest(request, response)) return;
     try {
       /** Provides {player signed} behavior. */
       const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
@@ -285,14 +288,14 @@ export const exchangeJestIdentity = onRequestWithSentry(
       response.status(401).json({error: rejection(error)});
     }
   },
+  jestProtectedJsonBoundary,
 );
 
 /** Retries authoritative deletion from a fresh signed platform assertion without minting Firebase credentials. */
-export const retryJestAccountDeletion = onRequestWithSentry(
+export const retryJestAccountDeletion = onProtectedJsonRequestWithSentry(
   "retryJestAccountDeletion",
   {...jestHttpOptions, timeoutSeconds: 540},
   async (request, response) => {
-    if (!acceptJestRequest(request, response)) return;
     try {
       /** Provides {player signed} behavior. */
       const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
@@ -310,14 +313,14 @@ export const retryJestAccountDeletion = onRequestWithSentry(
       response.status(400).json({error: rejection(error)});
     }
   },
+  jestProtectedJsonBoundary,
 );
 
 /** Provides grant jest purchase behavior. */
-export const grantJestPurchase = onRequestWithSentry(
+export const grantJestPurchase = onProtectedJsonRequestWithSentry(
   "grantJestPurchase",
   jestHttpOptions,
   async (request, response) => {
-    if (!acceptJestRequest(request, response)) return;
     try {
       /** Provides {purchase signed, player id, purchase token: requested token} behavior. */
       const {
@@ -435,14 +438,14 @@ export const grantJestPurchase = onRequestWithSentry(
       response.status(400).json({error: rejection(error)});
     }
   },
+  jestProtectedJsonBoundary,
 );
 
 /** Provides sync jest subscriptions behavior. */
-export const syncJestSubscriptions = onRequestWithSentry(
+export const syncJestSubscriptions = onProtectedJsonRequestWithSentry(
   "syncJestSubscriptions",
   jestHttpOptions,
   async (request, response) => {
-    if (!acceptJestRequest(request, response)) return;
     try {
       /** Provides {subscriptions signed, player id} behavior. */
       const {subscriptionsSigned, playerId} = parseJestStringBody(request.body, {
@@ -509,14 +512,14 @@ export const syncJestSubscriptions = onRequestWithSentry(
       response.status(400).json({error: rejection(error)});
     }
   },
+  jestProtectedJsonBoundary,
 );
 
 /** Provides verify jest referrals behavior. */
-export const verifyJestReferrals = onRequestWithSentry(
+export const verifyJestReferrals = onProtectedJsonRequestWithSentry(
   "verifyJestReferrals",
   jestHttpOptions,
   async (request, response) => {
-    if (!acceptJestRequest(request, response)) return;
     try {
       /** Provides {referrals signed, player id} behavior. */
       const {referralsSigned, playerId} = parseJestStringBody(request.body, {
@@ -565,6 +568,7 @@ export const verifyJestReferrals = onRequestWithSentry(
       response.status(400).json({error: rejection(error)});
     }
   },
+  jestProtectedJsonBoundary,
 );
 
 /** Indicates whether is record. */

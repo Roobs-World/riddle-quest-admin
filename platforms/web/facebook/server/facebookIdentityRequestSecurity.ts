@@ -17,7 +17,7 @@ const RATE_LIMIT_RETENTION_MS = 24 * 60 * 60 * 1_000;
 /** Defines the maximum Firestore timestamp in milliseconds. */
 const MAX_FIRESTORE_MILLISECONDS = 253_402_300_799_999;
 /** Defines the maximum accepted identity-request body size. */
-const MAX_BODY_BYTES = 24 * 1_024;
+export const MAX_FACEBOOK_HTTP_BODY_BYTES = 24 * 1_024;
 /** Defines the maximum number of in-process rate-limit keys. */
 const MAX_RATE_LIMIT_KEYS = 10_000;
 
@@ -216,7 +216,7 @@ export function applyFacebookCors(response: Pick<FacebookHttpResponse, "set">, o
 }
 
 /** Validates a Facebook identity HTTP request and emits any rejection response. */
-export function acceptFacebookRequest(request: Request, response: FacebookHttpResponse): boolean {
+export function acceptFacebookRequest(request: Request, response: FacebookHttpResponse, maxRawBodyBytes = MAX_FACEBOOK_HTTP_BODY_BYTES): boolean {
   /** Provides origin behavior. */
   const origin = request.get("origin");
   applyFacebookCors(response, origin);
@@ -236,7 +236,7 @@ export function acceptFacebookRequest(request: Request, response: FacebookHttpRe
     response.status(415).json({error: "unsupported-media-type"});
     return false;
   }
-  if (request.rawBody && request.rawBody.byteLength > MAX_BODY_BYTES) {
+  if (request.rawBody && request.rawBody.byteLength > maxRawBodyBytes) {
     response.status(413).json({error: "payload-too-large"});
     return false;
   }

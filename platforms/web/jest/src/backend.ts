@@ -1,3 +1,20 @@
+import {assertSecureBrowserOrigin, resolveSecureHttpUrl} from "../../../../src/platform/browser/secureTransport";
+import {createPayloadRequestId, protectPayload, readProtectedPayload} from "../../../../src/platform/transport/payloadProtection";
+import {z} from "zod";
+
+const identityResponse = z.union([
+  z.object({customToken: z.string().min(1), uid: z.string().min(1)}),
+  z.object({status: z.literal("account-deleted")}),
+]);
+const deletedResponse = z.object({accountDeleted: z.literal(true)});
+const purchaseResponse = z.object({granted: z.boolean(), purchaseToken: z.string(), coinsAwarded: z.number(), newCoins: z.number(),
+  newlyUnlockedAchievementIds: z.array(z.string()).optional()});
+const referralResponse = z.object({verified: z.boolean(), references: z.array(z.string()).optional(), conversionCount: z.number().optional(),
+  rewardsGranted: z.number().optional(), referredRewardsGranted: z.number().optional(), coinsPerPlayer: z.number().optional(), newCoins: z.number().optional()});
+const subscriptionResponse = z.object({verified: z.boolean(), activeSkus: z.array(z.string()), blockedSkus: z.array(z.string()).optional(),
+  premiumCoinsAwarded: z.number().optional(), newCoins: z.number().optional()});
+const deletedErrorResponse = z.object({error: z.literal("account-deleted")});
+
 /** Operations exposed by the authoritative Jest backend to the browser client. */
 export interface JestBackendPort {
   /** Exchanges a signed Jest player assertion for a Firebase custom token. */
@@ -93,41 +110,27 @@ export const JEST_BACKEND_REQUEST_TIMEOUT_MS = 30_000;
  * purchase payload is transmitted.
  */
 export function resolveSecureBackendUrl(baseUrl: string, options: JestBackendClientOptions = {}): string {
-  /** Provides trimmed base url behavior. */
   const trimmedBaseUrl = baseUrl.trim();
-  if (trimmedBaseUrl.startsWith("/")) {
-    if (trimmedBaseUrl.startsWith("//")) throw new Error("Jest backend URL must not be protocol-relative.");
-    return trimmedBaseUrl;
-  }
-
-  /** Parses d url. */
-  let parsedUrl: URL;
+  if (trimmedBaseUrl.startsWith("//")) throw new Error("Jest backend URL must not be protocol-relative.");
   try {
-    parsedUrl = new URL(trimmedBaseUrl);
+    return resolveSecureHttpUrl(trimmedBaseUrl, options);
   } catch {
-    throw new Error("Jest backend URL must be an HTTPS URL or a root-relative path.");
+    throw new Error("Jest backend URL must use HTTPS.");
   }
-
-  if (parsedUrl.protocol === "https:") return parsedUrl.toString();
-
-  /** Indicates whether is loopback. */
-  const isLoopback =
-    parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "[::1]";
-  if (options.allowInsecureLoopback && parsedUrl.protocol === "http:" && isLoopback) return parsedUrl.toString();
-
-  throw new Error("Jest backend URL must use HTTPS.");
 }
 
 /** HTTPS-only client for the server-authoritative Jest trust boundary. */
 export class JestBackendClient implements JestBackendPort {
   /** Stores base url. */
   private readonly baseUrl: string;
+  private readonly allowInsecureLoopback: boolean;
   /** Stores the per-request deadline. */
   private readonly requestTimeoutMs: number;
 
   /** Creates a jest backend client instance. */
   constructor(baseUrl: string, options: JestBackendClientOptions = {}) {
     this.baseUrl = resolveSecureBackendUrl(baseUrl, options);
+    this.allowInsecureLoopback = options.allowInsecureLoopback === true;
     /** Requests timeout ms. */
     const requestTimeoutMs = options.requestTimeoutMs ?? JEST_BACKEND_REQUEST_TIMEOUT_MS;
     if (!Number.isFinite(requestTimeoutMs) || requestTimeoutMs <= 0) {
@@ -140,7 +143,8 @@ export class JestBackendClient implements JestBackendPort {
   private async post<T>(
     path: string,
     body: unknown,
-    mapHttpError?: (response: Response) => Promise<
+    schema: z.ZodType<T>,
+    mapHttpError?: (response: Response, body: unknown) => Promise<
       | {
           /** Stores handled. */
           handled: true; /** Stores value. */
@@ -164,12 +168,18 @@ export class JestBackendClient implements JestBackendPort {
     /** Provides request behavior. */
     const request = async (): Promise<T> => {
       /** Provides response behavior. */
-      const url = `${this.baseUrl.replace(/\/$/, "")}/${path}`;
+      const transportOptions = {allowInsecureLoopback: this.allowInsecureLoopback};
+      assertSecureBrowserOrigin(transportOptions);
+      const url = new URL(resolveSecureHttpUrl(`${this.baseUrl.replace(/\/$/, "")}/${path}`, transportOptions),
+        globalThis.location.origin).href;
+      const context = {operation: path, requestId: createPayloadRequestId()};
+      const envelope = await protectPayload(body, {...context, direction: "request"});
       /** Serialize before the transport catch so programming failures are never retried. */
       const requestOptions = {
         method: "POST",
+        redirect: "error",
         headers: {"content-type": "application/json"},
-        body: JSON.stringify(body),
+        body: JSON.stringify(envelope),
         signal: controller.signal,
       } satisfies RequestInit;
       /** Only a rejected native fetch may retry subscription reconciliation once. */
@@ -181,13 +191,14 @@ export class JestBackendClient implements JestBackendPort {
           Date.now() >= deadline) throw error;
         response = await fetch(url, requestOptions);
       }
+      const payload = await readProtectedPayload(await response.json(), {...context, direction: "response"});
       if (!response.ok) {
         /** Maps ped. */
-        const mapped = await mapHttpError?.(response);
+        const mapped = await mapHttpError?.(response, payload);
         if (mapped?.handled) return mapped.value;
         throw new Error(`Jest backend ${path} failed (${response.status})`);
       }
-      return response.json() as Promise<T>;
+      return schema.parse(payload);
     };
     return Promise.race([
       request(),
@@ -216,20 +227,10 @@ export class JestBackendClient implements JestBackendPort {
           /** Stores status. */
           status: "account-deleted";
         }
-    >("exchangeJestIdentity", {playerSigned}, async (response) => {
+    >("exchangeJestIdentity", {playerSigned}, identityResponse, async (response, errorBody) => {
       if (response.status !== 409) return {handled: false};
-      try {
-        /** Provides error body behavior. */
-        const errorBody = (await response.json()) as {
-          /** Stores error. */
-          error?: unknown;
-        };
-        if (errorBody.error === "account-deleted") {
-          return {handled: true, value: {status: "account-deleted"}};
-        }
-      } catch {
-        // Preserve the generic status-only transport failure for malformed responses.
-      }
+      if (deletedErrorResponse.safeParse(errorBody).success)
+        return {handled: true, value: {status: "account-deleted"}};
       return {handled: false};
     });
     return "status" in result ? result : {status: "success", ...result};
@@ -242,7 +243,7 @@ export class JestBackendClient implements JestBackendPort {
     return this.post<{
       /** Stores account deleted. */
       accountDeleted: true;
-    }>("retryJestAccountDeletion", {playerSigned});
+    }>("retryJestAccountDeletion", {playerSigned}, deletedResponse);
   }
   /** Provides grant purchase behavior. */
   grantPurchase(purchaseSigned: string, playerId: string, purchaseToken: string) {
@@ -257,11 +258,11 @@ export class JestBackendClient implements JestBackendPort {
       newCoins: number;
       /** Stores newly unlocked achievement ids. */
       newlyUnlockedAchievementIds?: string[];
-    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken});
+    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken}, purchaseResponse);
   }
   /** Provides verify referrals behavior. */
   verifyReferrals(referralsSigned: string, playerId: string) {
-    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId});
+    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId}, referralResponse);
   }
   /** Provides sync subscriptions behavior. */
   syncSubscriptions(subscriptionsSigned: string, playerId: string) {
@@ -276,6 +277,6 @@ export class JestBackendClient implements JestBackendPort {
       premiumCoinsAwarded?: number;
       /** Coin balance after this sync. */
       newCoins?: number;
-    }>("syncJestSubscriptions", {subscriptionsSigned, playerId});
+    }>("syncJestSubscriptions", {subscriptionsSigned, playerId}, subscriptionResponse);
   }
 }

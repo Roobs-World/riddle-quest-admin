@@ -92,6 +92,17 @@ if (nativeFirebaseAppId != null && !(nativeFirebaseAppId ==~ /1:[0-9]+:android:[
 }
 def analyticsDeactivated = hostedBuildConfig.emulators != null || nativeFirebaseAppId == null
 
+def validateHostedReleaseConfig = tasks.register("validateHostedReleaseConfig") {
+    doLast {
+        if (hostedBuildConfig.emulators != null) {
+            throw new GradleException("Release builds require encrypted production Firebase connections; use a debug build for local emulators")
+        }
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    dependsOn(validateHostedReleaseConfig)
+}
+
 // Metro imports shared game source and JSON config outside the bundle task's default source inputs.
 tasks.withType(com.facebook.react.tasks.BundleHermesCTask).configureEach {
     inputs.dir(file("../../../../../src")).withPropertyName("sharedGameSources").withPathSensitivity(PathSensitivity.RELATIVE)

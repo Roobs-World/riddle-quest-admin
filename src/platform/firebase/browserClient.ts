@@ -1,11 +1,18 @@
 import {initializeApp} from "firebase/app";
 import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
-import {doc, getDoc, getFirestore} from "firebase/firestore/lite";
 import {getFunctions} from "firebase/functions";
+import {z} from "zod";
 import {createGameFunctionsClient} from "./gameFunctions";
 import {firebaseEnvironment} from "./browserEnvironment";
 import {DEFAULT_GAMEPLAY_REGION} from "../../app/startup/startupWarmup";
+import {assertSecureBrowserOrigin} from "../browser/secureTransport";
+import {firebaseFunctionsRegion} from "./secureConfiguration";
+import {encryptedHttpsCallable} from "./encryptedCallable";
 export type {CurrentRiddleResponse, GetHintInput, GetHintOutput, SpendCoinsOutput} from "./gameFunctions";
+
+assertSecureBrowserOrigin({allowInsecureLoopback: !firebaseEnvironment.production});
+const functionsRegion = firebaseFunctionsRegion(firebaseEnvironment.functionsRegion || "us-central1");
+const gameplayRegion = firebaseFunctionsRegion(firebaseEnvironment.gameplayRegion || DEFAULT_GAMEPLAY_REGION);
 
 /** Provides raw firebase config behavior. */
 const rawFirebaseConfig = {
@@ -37,14 +44,14 @@ export const firebaseApp = initializeApp(firebaseConfig);
 export const auth = firebaseEnvironment.platformTarget === "jest"
   ? initializeAuth(firebaseApp, {persistence: inMemoryPersistence})
   : getAuth(firebaseApp);
-/** Provides firestore behavior. */
-export const firebaseFirestore = getFirestore(firebaseApp);
 /** Provides functions behavior. */
-const functions = getFunctions(firebaseApp, firebaseEnvironment.functionsRegion || "us-central1");
+const functions = getFunctions(firebaseApp, functionsRegion);
+const getPlayerProfile = encryptedHttpsCallable<Record<string, never>, unknown>(functions, "getPlayerProfile");
+const playerProfileSchema = z.record(z.string(), z.unknown()).nullable();
 /** Multiplayer on every target runs beside eur3; other capabilities retain their configured region. */
 const raceFunctions = getFunctions(firebaseApp, DEFAULT_GAMEPLAY_REGION);
 /** Solo on every target runs beside eur3; the explicit region override permits rollback. */
-const gameplayFunctions = getFunctions(firebaseApp, firebaseEnvironment.gameplayRegion || DEFAULT_GAMEPLAY_REGION);
+const gameplayFunctions = getFunctions(firebaseApp, gameplayRegion);
 /** Shared Functions instance used by target-specific lazy adapters. */
 export const firebaseFunctions = functions;
 
@@ -145,7 +152,8 @@ export const updateLiveRace = gameFunctions.updateLiveRace;
 
 /** Loads user document. */
 export const loadUserDocument = async (userId: string): Promise<Record<string, unknown> | null> => {
-  /** Provides snapshot behavior. */
-  const snapshot = await getDoc(doc(firebaseFirestore, "users", userId));
-  return snapshot.exists() ? snapshot.data() : null;
+  if (auth.currentUser?.uid !== userId) throw new Error("Profile account changed.");
+  const result = await getPlayerProfile({});
+  if (auth.currentUser?.uid !== userId) throw new Error("Profile account changed.");
+  return playerProfileSchema.parse(result.data);
 };

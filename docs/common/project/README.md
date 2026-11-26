@@ -102,7 +102,7 @@ Never place `JEST_SHARED_SECRET`, `OPENAI_API_KEY`, a service-account key, or `J
 
 ### Encryption and transport security
 
-Production browser-to-backend traffic must use HTTPS. The Jest backend client rejects plaintext production endpoint URLs, Firebase Hosting sends a one-year HSTS policy, and the Content Security Policy upgrades insecure requests and blocks mixed content. Plain HTTP is permitted only for explicitly enabled loopback development endpoints.
+Production game traffic uses HTTPS in both directions. Browser API clients validate page and endpoint schemes and reject redirects. Firebase region configuration cannot select custom endpoint URLs. Android release builds forbid cleartext and emulator configuration; debug builds permit local emulator hosts. Firebase Hosting and the notification manager send one-year HSTS policies and block mixed content. Plain HTTP is limited to explicit local development and Google's private runtime metadata token service.
 
 Firebase Authentication identifies players, App Check protects production browser-facing callables, and Firebase-managed Firestore, Storage, Functions, logging, and secrets are encrypted at rest by Google Cloud. Run the committed configuration audit after changing hosting headers or endpoint policy:
 

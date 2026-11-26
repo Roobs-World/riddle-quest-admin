@@ -90,6 +90,7 @@ export function createMetadataAccessToken(fetchImpl: typeof fetch = fetch, scope
     if (cached && cached.expiresAt > Date.now()) return cached.token;
     /** Metadata server response. */
     const response = await fetchImpl(`${METADATA_TOKEN_URL}?scopes=${encodeURIComponent(scope)}`, {
+      redirect: "error",
       headers: {"Metadata-Flavor": "Google"},
     });
     if (!response.ok) throw new Error("play-api-unavailable");
@@ -122,6 +123,7 @@ export function createPlayDeveloperApi(options: PlayDeveloperApiOptions = {}): P
     /** Play response. */
     const response = await fetchImpl(`${root}/${path}`, {
       method,
+      redirect: "error",
       headers: {Authorization: `Bearer ${await getAccessToken()}`},
     });
     if (response.status === 404 || response.status === 410) throw new PlayPurchaseNotFoundError();
