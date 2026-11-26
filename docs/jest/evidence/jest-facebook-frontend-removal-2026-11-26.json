@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-26",
+  "sourceCommit": "9d5a99657405a19c97af2ef37c460b23b62edf36",
+  "scope": "Facebook frontend removal before the subsequent Jest-only frontend cleanup",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a217e3-534e-70e8-8702-61d498c3b398",
+  "version": "1.0.0-dev.20261126124418.9d5a99657405.08dff2fb",
+  "buildStatus": "ready",
+  "isActive": true,
+  "activatedAt": "2026-11-26T12:45:09.672Z",
+  "confirmation": "Jest list_game_versions returned this exact version ready and active",
+  "archiveSha256": "c198bb0b2f173cecad2e8f3d610c2c32886e85ad5dd046744c3e618c14729175",
+  "backendDeployed": false,
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "hostedGameplayAcceptanceRun": false,
+  "note": "The release was already accepted before termination for the expanded cleanup; no duplicate upload was attempted."
+}

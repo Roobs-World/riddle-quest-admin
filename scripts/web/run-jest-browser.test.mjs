@@ -8,7 +8,6 @@ import {createJestBrowserPlan, parseBrowserShard, runBrowserCommands} from "./ru
 const portal = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8"));
 const root = JSON.parse(readFileSync(new URL("../../package.json", import.meta.url), "utf8"));
 const source = portal.scripts["test:game-browser:playwright"];
-const excluded = ["pnpm test:provider-save-recovery:browser", "pnpm test:reddit-delivery:browser", "pnpm test:playable-ime-boundary:browser", "pnpm test:playable-input-admission:browser", "pnpm test:playable-text-capacity:browser", "pnpm test:playable-action-focus:browser", "pnpm test:playable-unchanged-input:browser", "pnpm test:reddit-guest-durability:browser", "pnpm test:guidance-storage-recovery:browser", "pnpm test:reddit-guest-rounds:browser"];
 const mixed = {
   "pnpm test:live-immediate-submit:browser": "PORTAL_BROWSER_SCOPE=jest LIVE_IMMEDIATE_TARGETS=live",
   "pnpm test:race-profile-refresh-null:browser": "PORTAL_BROWSER_SCOPE=jest",
@@ -50,7 +49,6 @@ test("every mixed leaf receives its exact audited selector before invoking the u
 test("explicit scope classification retains shared native-editor work and rejects unaudited leaves", () => {
   const first = source.split(/\s*&&\s*/u)[0];
   const shared = "pnpm test:native-editor-callbacks:browser";
-  const provider = "pnpm test:provider-save-recovery:browser";
   assert.deepEqual(createJestBrowserPlan([first, shared, provider, ...excluded].join(" && ")).commands,
     [first, shared, `PORTAL_BROWSER_SCOPE=jest ${provider}`]);
   for (const target of ["reddit", "youtube", "netflix", "yahoo", "gamesnacks", "unknown-provider"])
@@ -121,7 +119,6 @@ test("selected browser harnesses import extracted game session modules from curr
     "verify-modal-keyboard-boundary-browser.mjs",
     "verify-modal-keyboard-admission-browser.mjs",
     "verify-modal-close-commit-browser.mjs",
-    "verify-checkpoint-writer-recovery-browser.mjs",
     "verify-pending-play-scope-retirement-browser.mjs",
     "verify-pending-play-lifetime-browser.mjs",
     "verify-journal-write-work-browser.mjs"

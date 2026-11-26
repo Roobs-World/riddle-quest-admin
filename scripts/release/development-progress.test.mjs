@@ -5,7 +5,7 @@ import path from 'node:path';
 import {tmpdir} from 'node:os';
 import {recordDevelopmentCompletion, validateDevelopmentCompletion} from './development-progress.mjs';
 const revision = 'a'.repeat(40);
-const receipt = {taskId: 'isolate-jest-itch', revision, targets: ['jest','itch'], work: 'Verify isolated handoffs',
+const receipt = {taskId: 'verify-jest', revision, targets: ['jest'], work: 'Verify isolated handoffs',
   requiredChecks: ['build','browser'], checks: [{id:'build',status:'passed',evidence:'isolated build audit'}, {id:'browser',status:'passed',evidence:'play/save/reload'}],
   completedAt:'2026-09-29T12:00:00Z', remainingGates:['Manual provider review'], nextAction:'Upload reviewed handoff.'};
 test('stale, incomplete, failed and duplicate verification cannot claim completion', () => {

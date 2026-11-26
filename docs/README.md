@@ -1,5 +1,7 @@
 # Riddle Quest documentation
 
+This branch has a [Jest-only game frontend](jest/jest-only-frontend.md). Other provider backends and the notification manager remain intact. Other platform frontend runbooks and dated evidence are historical references.
+
 Project documentation lives in this folder. Platform documentation belongs in `docs/<platform>/`. Documentation for shared modules and operations belongs in `docs/common/<module>/`. Keep each module's evidence and documentation assets with its documents.
 
 Start with the [project setup guide](common/project/README.md), [platform source ownership](common/architecture/platform-layout.md), [shared feature folders](common/architecture/shared-source-layout.md), [Functions source organisation](common/architecture/functions-source-layout.md), or [shared module index](common/README.md).
@@ -10,16 +12,13 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 
 | Platform | Documentation |
 | --- | --- |
-| Android / Google Play | [Android documentation](android/README.md) |
-| Jest | [Jest documentation](jest/README.md) |
+| Jest frontend | [Jest documentation](jest/README.md), [frontend source boundary](jest/jest-only-frontend.md) |
+| Retained Android backend | [Android backend operations and historical app documentation](android/README.md) |
 | Facebook server integration | [Retained backend and historical Facebook documentation](facebook/README.md) |
-| Reddit Devvit Web | [Game and review guide](reddit/README.md), [operations](reddit/reddit-games-operations.md), [progress](reddit/reddit-games-progress.html) |
-| YouTube Playables | [YouTube documentation](youtube/README.md) |
-| Netflix candidate | [Candidate build guide](netflix/README.md) |
-| Yahoo candidate | [Candidate build guide](yahoo/README.md) |
-| GameSnacks | [Build and handoff guide](gamesnacks/README.md) |
+| Retained Reddit backend | [Backend operations and historical game documentation](reddit/README.md) |
+| Retained Yahoo backend | [Yahoo documentation](yahoo/README.md) |
 
-Other web destinations use the [shared release guides](common/releases/README.md) and [platform integration matrix](common/architecture/platform-integration-matrix.md).
+The [shared release guides](common/releases/README.md) describe Jest release operations. Previous destination research remains available as historical evidence.
 
 ## Monitoring
 

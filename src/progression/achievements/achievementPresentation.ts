@@ -1,18 +1,6 @@
 import type {AchievementDefinition, AchievementPlayerData, AchievementRequirement} from "./catalog/achievementTypes";
-import type {YouTubeProgress} from "../../gameplay/local/types";
 
-/** Maps durable offline progress to the same counters used by hosted achievement views. */
-export function createLocalAchievementPlayer(progress: YouTubeProgress): AchievementPlayerData {
-  return {coins: progress.coins, stats: {
-    ...progress,
-    highestLevelClassic: progress.highestClassicLevel,
-    bestStreak: progress.bestDailyStreak,
-    winRate: progress.gamesPlayed > 0 ? progress.totalWins / progress.gamesPlayed * 100 : 0,
-    averageGuesses: progress.totalWins > 0 ? progress.totalGuessesInWins / progress.totalWins : 0,
-  }};
-}
-
-/** Values shared by accessible native and browser progress bars. */
+/** Values displayed by accessible achievement progress bars. */
 export type AchievementProgressView = Readonly<{
   labelKey: string | null;
   value: number | null;

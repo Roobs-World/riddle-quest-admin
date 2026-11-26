@@ -37,14 +37,10 @@ export type HostedPlaySession = Readonly<{
   initialRaceInbox: boolean;
   /** Opens category selection for an incoming multiplayer invitation. */
   initialRaceLobby?: boolean;
-  /** Incoming tournament destination; availability remains target-owned. */
-  initialRaceTournamentLocale?: RaceLocale;
   /** Stores presence enabled. */
   presenceEnabled?: boolean;
   /** Stores on toggle presence. */
   onTogglePresence?: () => void;
-  /** Stores race locale policy. */
-  raceLocalePolicy: "english-only" | "all";
   /** Stores on presence state change. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
   /** Stores referral sharing. */
@@ -202,6 +198,5 @@ export function createHostedPlaySession(
     externalInteractionBlocked: input.externalInteractionBlocked ?? false,
     initialRaceInbox: input.initialRaceInbox ?? false,
     initialRaceLobby: input.initialRaceLobby ?? false,
-    raceLocalePolicy: input.raceLocalePolicy ?? "english-only",
   };
 }

@@ -223,39 +223,6 @@
   width: 100%;
   margin-top: 14px;
 }
-.race-tournaments ol {
-  display: grid;
-  gap: 8px;
-  padding: 0;
-  list-style: none;
-}
-.race-tournaments li {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 12px 14px;
-  border: 1px solid #c7d8d3;
-  border-radius: 12px;
-  font-variant-numeric: tabular-nums;
-}
-.race-tournaments li[aria-current="true"] {
-  background: #edf7f3;
-}
-.race-tournaments > button {
-  min-height: 44px;
-  padding: 10px 14px;
-  border: 1px solid #247147;
-  border-radius: 12px;
-  color: #17252c;
-  background: #edf7f3;
-  font: inherit;
-  font-weight: 700;
-}
-.race-tournaments > button:focus-visible {
-  outline: 3px solid #247147;
-  outline-offset: 2px;
-}
 .race-result-score {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));

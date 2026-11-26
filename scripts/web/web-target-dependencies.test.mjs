@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from './build/webTargetDependencies.ts';
-const targets = ['jest', 'reddit', 'youtube', 'netflix', 'yahoo', 'gamesnacks'];
+const targets = ['jest'];
 test('retained-race artifact validates the configured inventory directory and rebuilds altered bytes', {timeout: 180_000}, async t => {
   const {mkdtemp,readFile,writeFile,rm}=await import('node:fs/promises');
   const {tmpdir}=await import('node:os');
@@ -29,7 +29,7 @@ test('retained-race artifact validates the configured inventory directory and re
   assert.equal(await readFile(entry,'utf8'),original);
 });
 test('each target rejects every other provider module, including resolved aliases and dynamic imports', () => {
-  for (const target of targets) for (const owner of targets) {
+  for (const target of targets) for (const owner of ['jest', 'foreign-provider']) {
     const id = `/workspace/platforms/web/${owner}/src/adapter.ts`;
     if (target === owner) assert.doesNotThrow(() => assertTargetDependency(target, id));
     else assert.throws(() => assertTargetDependency(target, id), /owned module/u);
@@ -83,7 +83,7 @@ test('real bundler rejects aliased and lazy provider imports plus SDK packages b
   await writeFile(path.join(sdk,'package.json'),JSON.stringify({name:'jest-gaming-sdk',main:'index.js'}));
   await writeFile(path.join(sdk,'index.js'),'export default function sdk(){return 1}');
   for(const [index,target] of targets.entries()){
-    const foreign=targets[(index+1)%targets.length];
+    const foreign='foreign-provider';
     const adapter=path.join(root,`platforms/web/${foreign}/src/adapter.js`);await mkdir(path.dirname(adapter),{recursive:true});
     await writeFile(adapter,'export const provider=()=>1');
     const config={configFile:false,root,logLevel:'silent',resolve:{alias:{'other-adapter':adapter}},
@@ -250,106 +250,6 @@ test('published inventory reflects final chunk bytes after private map cleanup',
   assert.throws(() => createNotice(new Set(['react'])),/ENOENT/u);
   process.env.RIDDLE_QUEST_LICENSE_INVENTORY_PATH = 'relative.json';
   assert.throws(() => createNotice(new Set(['react'])),/must be absolute/u);
-});
-
-
-test('GameSnacks packaging uses relocated audited evidence and rejects changed or untracked runtime files', async t => {
-  const {copyFile, mkdir, mkdtemp, readFile, rm, writeFile} = await import('node:fs/promises');
-  const {createHash} = await import('node:crypto');
-  const {spawnSync} = await import('node:child_process');
-  const {tmpdir} = await import('node:os');
-  const path = await import('node:path');
-  const {fileURLToPath} = await import('node:url');
-  const repository = fileURLToPath(new URL('../..', import.meta.url));
-  const root = await mkdtemp(path.join(tmpdir(), 'gamesnacks-packaging-evidence-'));
-  t.after(() => rm(root, {recursive: true, force: true}));
-  // Copy the production packager and resolver dependencies into a tiny repository;
-  // the subprocess exercises real packaging without touching canonical artifacts.
-  for (const relative of [
-    'platforms/web/gamesnacks/scripts/package-gamesnacks.mjs',
-    'scripts/web/build/webTargetDependencies.ts',
-    'src/notifications/contracts/notificationPolicy.ts',
-    'scripts/web/generate-third-party-licenses.mjs',
-    'scripts/release/release-registry.mjs',
-    'scripts/release/release-targets.json',
-    ...JSON.parse(await readFile(path.join(repository, 'scripts/release/release-targets.json'), 'utf8'))
-      .map(target => `platforms/web/${target}/release.json`),
-  ]) {
-    const destination = path.join(root, relative);
-    await mkdir(path.dirname(destination), {recursive: true});
-    await copyFile(path.join(repository, relative), destination);
-  }
-  for (const relative of [
-    'docs/facebook/assets/icon-1024.png',
-    'docs/jest/assets/riddle-quest-hero.png',
-    'docs/common/web-game/visual-parity/current/05-game.png',
-    'node_modules/.modules.yaml',
-  ]) {
-    const destination = path.join(root, relative);
-    await mkdir(path.dirname(destination), {recursive: true});
-    await writeFile(destination, relative.endsWith('.yaml')
-      ? JSON.stringify({storeDir: path.join(root, 'package-store')})
-      : 'fixture marketing asset');
-  }
-  const output = path.join(root, 'platforms/web/gamesnacks/build/dist');
-  await mkdir(path.join(output, 'assets'), {recursive: true});
-  const runtime = 'globalThis.GameSnacks;';
-  const content = new Map([
-    ['index.html', '<script src="assets/runtime.js"></script>'],
-    ['assets/runtime.js', runtime],
-  ]);
-  for (const [file, bytes] of content) await writeFile(path.join(output, file), bytes);
-  const inventory = {schemaVersion: 1, target: 'gamesnacks', outputDirectory: output,
-    packages: [], modules: [], chunks: [],
-    files: [...content].map(([file, bytes]) => ({file,
-      sha256: createHash('sha256').update(bytes).digest('hex')}))};
-  const defaultInventory = path.join(root, 'platforms/web/gamesnacks/build/evidence/target-dependencies.json');
-  const evidenceDirectory = path.join(root, 'release-evidence');
-  const relocatedInventory = path.join(evidenceDirectory, 'gamesnacks.json');
-  await mkdir(path.dirname(defaultInventory), {recursive: true});
-  await mkdir(evidenceDirectory);
-  const staleInventory = JSON.stringify({...inventory,
-    files: inventory.files.map(row => ({...row, sha256: '0'.repeat(64)}))});
-  await writeFile(defaultInventory, staleInventory);
-  await writeFile(relocatedInventory, JSON.stringify(inventory));
-  /** Runs the real packager with explicit evidence and a bounded child lifetime. */
-  const runPackager = (evidence = evidenceDirectory) => spawnSync(process.execPath,
-    [path.join(root, 'platforms/web/gamesnacks/scripts/package-gamesnacks.mjs')], {
-      cwd: root, encoding: 'utf8', timeout: 10_000,
-      env: {...process.env, RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR: evidence},
-    });
-  const success = runPackager();
-  assert.equal(success.status, 0, success.stderr || success.error?.message);
-  const packagedInventory = JSON.parse(await readFile(relocatedInventory, 'utf8'));
-  assert.deepEqual(packagedInventory.files.map(row => row.file).sort(), [
-    ...content.keys(), 'game.json', 'marketing/icon.png',
-    'marketing/horizontal.png', 'marketing/vertical.png',
-  ].sort());
-  for (const row of packagedInventory.files) {
-    assert.equal(row.sha256, createHash('sha256')
-      .update(await readFile(path.join(output, row.file))).digest('hex'));
-  }
-  const archive = await readFile(path.join(root, 'platforms/web/gamesnacks/build/build-gamesnacks.zip'));
-  const archiveManifest = JSON.parse(await readFile(path.join(root, 'platforms/web/gamesnacks/build/build-gamesnacks.zip.manifest.json'), 'utf8'));
-  assert.equal(archiveManifest.sha256, createHash('sha256').update(archive).digest('hex'));
-  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
-  await writeFile(relocatedInventory, JSON.stringify(inventory));
-  await writeFile(path.join(output, 'assets/runtime.js'), `${runtime}/* changed */`);
-  const changed = runPackager();
-  assert.notEqual(changed.status, 0);
-  assert.match(changed.stderr, /Changed audited GameSnacks runtime: assets\/runtime\.js/u);
-  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
-  await writeFile(path.join(output, 'assets/runtime.js'), runtime);
-  await writeFile(path.join(output, 'untracked.txt'), 'unexpected runtime file');
-  const untracked = runPackager();
-  assert.notEqual(untracked.status, 0);
-  assert.match(untracked.stderr, /Untracked GameSnacks package file: untracked\.txt/u);
-  assert.deepEqual(JSON.parse(await readFile(relocatedInventory, 'utf8')), inventory);
-  await rm(path.join(output, 'untracked.txt'));
-  const relative = runPackager('relative-evidence');
-  assert.notEqual(relative.status, 0);
-  assert.match(relative.stderr, /Dependency evidence directory must be absolute/u);
-  assert.equal(await readFile(defaultInventory, 'utf8'), staleInventory);
 });
 
 

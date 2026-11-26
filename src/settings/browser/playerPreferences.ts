@@ -1,5 +1,4 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "../../localization/browser/i18n";
-import {isJestWebTarget} from "../../platform/browser/webTargetEnvironment";
 import {trackEvent} from "../../observability/analytics/events";
 import {
   readBrowserStorage,
@@ -138,7 +137,7 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   const storedLocale = parseLocale(safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale));
   /** Provides locale behavior. */
   const locale =
-    isJestWebTarget ? "en" : parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+    "en";
   /** Stores d sound enabled. */
   const storedSoundEnabled = readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled);
   /** Provides muted behavior. */
@@ -197,7 +196,7 @@ export function subscribeToPlayerNotifications(subscriber: () => void): () => vo
 /** Persists and applies a locale selected by the player. */
 export function setPlayerLocale(locale: Locale): void {
   /** Platform persistence and the rendered locale must use the same target policy. */
-  const nextLocale = isJestWebTarget ? "en" : locale;
+  const nextLocale = "en";
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, nextLocale);
   setLocale(nextLocale);
   emitPreferenceChange({locale: nextLocale});

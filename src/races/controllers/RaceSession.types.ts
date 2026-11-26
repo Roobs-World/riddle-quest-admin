@@ -9,14 +9,13 @@ import type {MatchmakingCapability} from "./matchmaking";
 import type {RaceOperation} from "../rounds/raceOperations";
 
 /** Screens in one player-owned Race Session. */
-export type RaceStage = "categories" | "challenge" | "inbox" | "tournaments" | "countdown" | "racing" | "result";
+export type RaceStage = "categories" | "challenge" | "inbox" | "countdown" | "racing" | "result";
 /** Inputs whose replacement invalidates the entire Race Session. */
 export type RaceSessionEntry = Readonly<{
   /** Account owning the attempt and resume hint. */ ownerId?: string;
   /** Content language for all session commands. */ locale: RaceLocale;
   /** Incoming challenge intent. */ challengeId?: string;
   /** Initial activity-screen intent. */ openInbox?: boolean;
-  /** Incoming tournament language; provider capabilities are checked before entering. */ tournamentLocale?: RaceLocale;
   /** Previously validated lobby catalog. */ initialCategories?: ListRaceCategoriesResponse["categories"];
 }>;
 /** Stable observable state; protocol refs and provisional checkpoints remain private. */

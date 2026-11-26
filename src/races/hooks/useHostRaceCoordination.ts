@@ -30,8 +30,6 @@ type HostRaceCoordinationOptions = Readonly<{
   identity: Pick<HostServices, "loadProfile">;
   /** Challenge deep link, which makes category preloading unnecessary. */
   initialRaceChallengeId?: string;
-  /** Locale eligibility policy supplied by the active target. */
-  raceLocalePolicy: "english-only" | "all";
   /** Applies an authoritative balance to authenticated host state. */
   applyCoinBalance: (coins?: number, ownerId?: string) => void;
   /** Replaces authenticated host profile state after a refresh. */
@@ -62,7 +60,6 @@ export function useHostRaceCoordination({
   race,
   identity,
   initialRaceChallengeId,
-  raceLocalePolicy,
   applyCoinBalance,
   replaceProfile,
   ownsAccount,
@@ -79,7 +76,7 @@ export function useHostRaceCoordination({
     [],
   );
   /** Catalog selection identity changes before passive effect cleanup can clear stale data. */
-  const prefetchScope = useMemo(() => ({}), [authSnapshot.user?.uid, captureAccount, enabled, initialRaceChallengeId, locale, race, raceLocalePolicy]);
+  const prefetchScope = useMemo(() => ({}), [authSnapshot.user?.uid, captureAccount, enabled, initialRaceChallengeId, locale, race]);
   /** Categories remain attached to the account, locale and authority that loaded them. */
   const [prefetched, setPrefetched] = useState<{
     /** Exact selection lifetime under which access and categories were fetched. */
@@ -104,7 +101,7 @@ export function useHostRaceCoordination({
     /** Prevents stale requests from updating a changed session or locale. */
     let cancelled = false;
     setPrefetched(null);
-    if (!enabled || !race || !authSnapshot.user || accountScope?.() === false || (raceLocalePolicy === "english-only" && locale !== "en")) return;
+    if (!enabled || !race || !authSnapshot.user || accountScope?.() === false || locale !== "en") return;
 
     void Promise.resolve()
       .then(() => {

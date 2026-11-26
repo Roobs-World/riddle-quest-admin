@@ -9,7 +9,6 @@ import test from "node:test";
 
 for (const [scope, manifest] of [
   ["web", "../../package.json"],
-  ["Android", "../../platforms/native/android/package.json"],
   ["Functions", "../../firebase-functions/package.json"],
 ]) {
   test(`${scope} Realtime Database registers on its Firebase app instance`, async () => {

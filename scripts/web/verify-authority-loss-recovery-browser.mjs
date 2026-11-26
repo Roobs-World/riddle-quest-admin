@@ -21,7 +21,6 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
-import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'platforms/web/reddit/src/RedditGuestHostServices.ts'))};
 import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
 import {createSavedGame} from ${JSON.stringify(path.join(root,"src/gameplay/session/checkpoints/GameSessionCheckpoints.ts"))};
 import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,"src/gameplay/session/journal/pendingGuessJournal.ts"))};
@@ -31,7 +30,7 @@ import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=6,provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');
-const rawSource=attempts===6?createFakeHostServices():createRedditGuestHostServices();
+const rawSource=createFakeHostServices();
 const paidReceipts=new Map();
 const source={...rawSource,spendCoins:input=>{
  if(!input.requestId)throw Error('Paid fixture requires an explicit request identity');
@@ -43,7 +42,7 @@ const source={...rawSource,spendCoins:input=>{
  paidReceipts.set(input.requestId,{fingerprint,receipt});
  return receipt;
 }};
-const uid=attempts===6?'jest-guest':'reddit-guest';
+const uid='jest-guest';
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');

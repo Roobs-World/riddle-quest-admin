@@ -8,9 +8,6 @@ const packageDirectory = fileURLToPath(new URL("../../", import.meta.url));
 const sharedCommands = new Set(`
 test:online-status-commit:browser
 test:offline-keyboard-boundary:browser
-test:race-navigation-focus:browser
-test:race-tab-order:browser
-test:race-keyboard-boundary:browser
 test:race:live:browser
 test:live-confirmation-retirement:browser
 test:live-wait-retirement:browser
@@ -96,12 +93,8 @@ test:live-poll-scheduling:browser
 test:live-recovery-wakeups:browser
 test:riddle-recovery-coalescing:browser
 test:host-riddle-commit-retirement:browser
-test:checkpoint-writer-recovery:browser
 test:pending-play-scope-retirement:browser
 test:pending-play-lifetime:browser
-test:live-history-provider:browser
-test:live-destination-capability:browser
-test:live-rematch-owner:browser
 test:host-recovery-suspension:browser
 test:host-retired-warmups:browser
 test:host-deferred-warmups:browser
@@ -121,16 +114,9 @@ test:pagehide-checkpoint:browser
 test:journal-write-work:browser
 `.trim().split(/\s+/u));
 const excludedCommands = new Set([
-  "test:provider-save-recovery:browser",
   "test:reddit-delivery:browser",
   "test:reddit-guest-durability:browser",
-  "test:guidance-storage-recovery:browser",
   "test:reddit-guest-rounds:browser",
-  "test:playable-ime-boundary:browser",
-  "test:playable-input-admission:browser",
-  "test:playable-text-capacity:browser",
-  "test:playable-action-focus:browser",
-  "test:playable-unchanged-input:browser"
 ]);
 // Restrict mixed-provider runtime loops while retaining all Jest/shared cases.
 const mixedCommands = {

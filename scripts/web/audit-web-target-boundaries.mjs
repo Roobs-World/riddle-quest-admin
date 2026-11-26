@@ -4,7 +4,7 @@ import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../../src", import.meta.url));
-const targetOwners = new Set(["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]);
+const targetOwners = new Set(["jest"]);
 const repositoryDirectory = fileURLToPath(new URL("../../", import.meta.url));
 const sharedOwner = "shared";
 const externalOwner = "external";
@@ -235,22 +235,17 @@ export async function auditWebTargetBoundaries({sourceDirectory = defaultSourceD
         });
       }
 
-      if ((["reddit", "youtube", "netflix", "yahoo", "gamesnacks"].includes(owner)) &&
-          (isFirebasePackage(specifier) || isSentryPackage(specifier))) {
-        addViolation({
-          code: "FORBIDDEN_PROVIDER_IMPORT",
-          file,
-          node,
-          owner,
-          sourceFile,
-          specifier,
-          message: `${syntax} of ${specifier} is forbidden in ${owner}-owned source`,
-        });
-      }
-
       if (!isRelativeSpecifier(specifier)) continue;
       const cleanSpecifier = cleanRelativeSpecifier(specifier);
       const lexicalPath = path.resolve(path.dirname(file), cleanSpecifier);
+      const foreignPlatform = toPortablePath(path.relative(repositoryDirectory, lexicalPath))
+        .match(/^platforms\/web\/([^/]+)\//u)?.[1];
+      if (foreignPlatform && foreignPlatform !== "jest") {
+        addViolation({
+          code: "FOREIGN_TARGET_IMPORT", file, node, owner, sourceFile, specifier,
+          message: `${syntax} imports removed game frontend ${foreignPlatform}: ${specifier}`,
+        });
+      }
       const lexicalOwner = classifyPath(root, lexicalPath);
       const resolution = ts.resolveModuleName(
         cleanSpecifier,

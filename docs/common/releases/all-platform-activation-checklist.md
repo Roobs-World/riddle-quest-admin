@@ -1,5 +1,7 @@
 # All-platform activation checklist
 
+Only the Jest frontend checklist applies on this branch. Other frontend activation instructions are historical; backend configuration remains retained and unchanged. See the [Jest-only frontend boundary](../../jest/jest-only-frontend.md).
+
 Never paste credentials into source control or chat. Store browser build values in the deployment environment, backend secrets in the provider's secret manager, and CI credentials as protected GitHub environment secrets.
 
 ## Shared release

@@ -11,7 +11,6 @@ const {RACE_RULES,LiveRaceViewSchema}=require("../../firebase-functions/lib/src/
 const {computeFeedback}=require('../../firebase-functions/lib/src/gameplay/rules/computeFeedback.js');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.NATIVE_NAVIGATION_REACT_MODE??'development';
-const fixture=path.join(root,'firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');
 const output=path.resolve(process.env.NATIVE_NAVIGATION_REPORT_DIR??path.join(root,'builds/test-evidence/native-navigation-tail-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/native-navigation-tail-'));
@@ -22,7 +21,6 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
-import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(),user=new URLSearchParams(location.search).get('user')??'Alice';
@@ -36,10 +34,9 @@ async function call(owner,operation,input){window.probe.calls.push({owner,operat
 }
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
 const app=createRoot(document.querySelector('#root'));
-const sdk={inPlayablesEnvironment:true,firstFrameReady(){},gameReady(){},async loadData(){window.probe.loads++;return '';},async saveData(data){if(!window.probe.loads)throw Error('Save before load');window.probe.saves.push(data);},async getLanguage(){return 'en';},isAudioEnabled(){return false;},onAudioEnabledChange(){return ()=>{};},onPause(fn){window.pauseGame=fn;return ()=>{};},onResume(fn){window.resumeGame=fn;return ()=>{};},logError(){},logWarning(){}};
-app.render(<React.StrictMode>{new URLSearchParams(location.search).has('playable')?<YouTubePlayableApp sdk={sdk}/>:<RaceTo10Game locale="en" ownerId={user} coins={100} matchmaking={adapter(user)} postToHost={postToHost} onClose={()=>{}}/>}</React.StrictMode>);
+app.render(<React.StrictMode>{<RaceTo10Game locale="en" ownerId={user} coins={100} matchmaking={adapter(user)} postToHost={postToHost} onClose={()=>{}}/>}</React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'native-retire-baseline',async load(id){if(process.env.NATIVE_NAVIGATION_BASELINE_DIR&&id.endsWith('/LocalAnswerInput.tsx'))return readFile(path.join(process.env.NATIVE_NAVIGATION_BASELINE_DIR,'local-editor.before.txt'),'utf8');if(process.env.NATIVE_NAVIGATION_BASELINE_DIR&&id.endsWith('/NativeAnswerInput.tsx'))return readFile(path.join(process.env.NATIVE_NAVIGATION_BASELINE_DIR,'live-editor.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'native-retire-baseline',async load(id){if(process.env.NATIVE_NAVIGATION_BASELINE_DIR&&id.endsWith())return readFile(path.join(process.env.NATIVE_NAVIGATION_BASELINE_DIR,'local-editor.before.txt'),'utf8');if(process.env.NATIVE_NAVIGATION_BASELINE_DIR&&id.endsWith('/NativeAnswerInput.tsx'))return readFile(path.join(process.env.NATIVE_NAVIGATION_BASELINE_DIR,'live-editor.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  const state=user=>{
   const ticket=tickets.get(user),rival=[...tickets.values()].find(t=>t.user!==user),now=Date.now(),phase=ticket.left?'cancelled':started?'racing':'searching';
   const identity=t=>({displayName:t.user,avatarUrl:null,bot:false,correctCount:t.count});
@@ -74,13 +71,12 @@ app.render(<React.StrictMode>{new URLSearchParams(location.search).has('playable
  if(process.env.NATIVE_NAVIGATION_SERVE_ONLY==='1'){console.log(JSON.stringify({url:baseUrl,scratch,mode}));await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});}
  else{
   browser=await chromium.launch({headless:true});const quick=process.env.NATIVE_NAVIGATION_QUICK==='1';
-  for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const target of process.env.NATIVE_NAVIGATION_TARGETS?.split(',')??(quick?['playable']:['playable','live']))for(const key of process.env.NATIVE_NAVIGATION_KEYS?.split(',')??(quick?['ArrowLeft']:['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Shift','Control','Alt','Meta','Tab','Shift+Tab','printable-edit'])){
+  for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const target of process.env.NATIVE_NAVIGATION_TARGETS?.split(',')??(quick?['live']:['live']))for(const key of process.env.NATIVE_NAVIGATION_KEYS?.split(',')??(quick?['ArrowLeft']:['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Home','End','Shift','Control','Alt','Meta','Tab','Shift+Tab','printable-edit'])){
    tickets=new Map();started=null;const context=await browser.newContext({viewport:{width,height}}),a=await context.newPage();
    const metric=(name,actual,expected)=>{observations.push({width,height,target,key,name,actual,expected});assert.deepEqual(actual,expected,name);};
-   if(target==='playable'){await a.goto(baseUrl+'/?playable=1');await a.getByRole('button',{name:/Classic/}).click();await a.locator('.yt-answer-native').waitFor();await a.waitForFunction(()=>window.probe.saves.length===1&&document.querySelector('.yt-puzzle')?.getAttribute('aria-busy')!=='true');}
-   else {const b=await context.newPage();for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}await a.locator('.race-gameplay .guess-board').waitFor();}
-   const selector=target==='playable'?'.yt-answer-native':'.race-native-answer-input',prefix=target==='playable'?'ro':'te',suffix=target==='playable'?'me':'st';
-   const letters=()=>a.locator(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row:has([aria-current="true"]) button').allTextContents().then(values=>values.slice(0,4).join('').toLowerCase());
+   {const b=await context.newPage();for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}await a.locator('.race-gameplay .guess-board').waitFor();}
+   const selector='.race-native-answer-input',prefix='te',suffix='st';
+   const letters=()=>a.locator('.guess-row:has([aria-current="true"]) button').allTextContents().then(values=>values.slice(0,4).join('').toLowerCase());
    await a.locator(selector).focus();
    await a.evaluate(({selector,prefix})=>{const input=document.querySelector(selector);input.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true}));input.value=prefix;input.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:prefix}));},{selector,prefix});
    metric('composition commits its prefix once',await letters(),prefix);metric('committed composition has already cleared the native buffer',await a.locator(selector).inputValue(),'');
@@ -92,10 +88,9 @@ app.render(<React.StrictMode>{new URLSearchParams(location.search).has('playable
     metric('non-editing key retains trailing-input deduplication',await letters(),prefix);metric('trailing input preserves focus chosen by navigation',await a.evaluate(()=>document.activeElement===window.tailFocusOwner),true);
     if(key.endsWith('Tab'))await a.locator(selector).focus();
    }
-   metric('consumed native value is empty',await a.locator(selector).inputValue(),'');metric('editing sends no guess',await a.evaluate(()=>window.probe.calls.filter(c=>c.action==='guess').length),0);metric('editing adds no material save',await a.evaluate(()=>window.probe.saves.length),target==='playable'?1:0);
+   metric('consumed native value is empty',await a.locator(selector).inputValue(),'');metric('editing sends no guess',await a.evaluate(()=>window.probe.calls.filter(c=>c.action==='guess').length),0);metric('editing adds no material save',await a.evaluate(()=>window.probe.saves.length),0);
    await a.keyboard.type(suffix);metric('fresh physical suffix reaches the complete answer',await letters(),prefix+suffix);await a.keyboard.press('Enter');
-   if(target==='playable'){await a.locator('.yt-result').waitFor();metric('explicit native Enter wins once',await a.evaluate(()=>JSON.parse(window.probe.saves.at(-1)).progression.totalWins),1);metric('explicit native Enter adds one save',await a.evaluate(()=>window.probe.saves.length),2);}
-   else {await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('explicit native Enter advances once',tickets.get('Alice').count,1);metric('explicit native Enter sends one guess',await a.evaluate(()=>window.probe.calls.filter(c=>c.action==='guess').map(c=>c.guess.toLowerCase())),[prefix+suffix]);}
+   {await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('explicit native Enter advances once',tickets.get('Alice').count,1);metric('explicit native Enter sends one guess',await a.evaluate(()=>window.probe.calls.filter(c=>c.action==='guess').map(c=>c.guess.toLowerCase())),[prefix+suffix]);}
    metric('no page errors',await a.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await a.evaluate(()=>window.probe.unhandled),[]);
    await a.screenshot({path:path.join(output,[width,height,target,key,'settled.png'].join('-'))});await context.close();
   }

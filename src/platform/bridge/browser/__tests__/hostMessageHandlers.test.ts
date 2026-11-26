@@ -606,22 +606,6 @@ describe("play host message handlers", () => {
       "host-account-capability-unavailable");
   });
 
-  it("deletes a hosted account through explicit account permissions without a Jest upgrade", async () => {
-    /** Isolated game services for account-operation regression checks. */
-    const services = createFakeHostServices();
-    /** Records whether deletion preparation starts. */
-    const requested = jest.fn();
-    /** Records calls to the authoritative deletion service. */
-    const deleted = jest.spyOn(services, "deleteAccount");
-    /** Uses actual capability-shaped account authority. */
-    const harness = createHarness(services, undefined, requested, undefined, undefined,
-      createHostAuthorityModules(services, {accountManagement: {username: true, avatar: false, deletion: true}}));
-    await harness.handlers.deleteAccount({type: "game:deleteAccount", requestId: "jest", payload: {}});
-    expect(requested).toHaveBeenCalledTimes(1);
-    expect(deleted).toHaveBeenCalledTimes(1);
-    expect(harness.postOperation).toHaveBeenCalledWith("jest", "accountDeletion", true, {success: true});
-  });
-
   it("reports account deletion as failed when post-server client cleanup must be retried", async () => {
     /** Provides services behavior. */
     const services = createFakeHostServices();

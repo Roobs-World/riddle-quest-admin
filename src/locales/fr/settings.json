@@ -8,7 +8,6 @@
     "CREDITS_BUTTON": "Crédits",
     "DATA_EXPORT_BUTTON": "Exporter mes données",
     "HELP_BUTTON": "Aide",
-    "LANGUAGE_LABEL": "Langue",
     "LANGUAGE_SELECTED": "Choisi",
     "LICENSES_BUTTON": "Licences",
     "LOGOUT_BUTTON": "Déconnexion",
@@ -19,6 +18,8 @@
     "TERMS_BUTTON": "Conditions d'utilisation",
     "TITLE": "Paramètres",
     "TOGGLE_OFF": "Désactivé",
-    "TOGGLE_ON": "Activé"
+    "TOGGLE_ON": "Activé",
+    "REDUCED_MOTION": "Mouvements réduits",
+    "NOTIFICATION_SAVE_FAILED": "Les paramètres de notification n’ont pas pu être enregistrés. Réessayez."
   }
 }

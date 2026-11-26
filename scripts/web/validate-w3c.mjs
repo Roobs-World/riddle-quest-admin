@@ -8,8 +8,8 @@ import path from "node:path";
 const requireFromPackage = createRequire(path.join(process.cwd(), "package.json"));
 const checkerPackage = path.dirname(requireFromPackage.resolve("vnu-jar/package.json"));
 const documents = process.argv.slice(2);
-const documentPaths = (documents.length ? documents : ["jest", "reddit", "youtube", "netflix", "yahoo"]
-  .flatMap(target => (target === "reddit" ? ["index.html", "reddit-inline.html"] : ["index.html"])
+const documentPaths = (documents.length ? documents : ["jest"]
+  .flatMap(target => ["index.html"]
     .map(document => `platforms/web/${target}/build/dist/${document}`))).map(document => path.resolve(process.cwd(), document));
 // Nu can silently skip nonexistent inputs; require every requested artifact first.
 for (const document of documentPaths) {

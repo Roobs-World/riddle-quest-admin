@@ -27,7 +27,7 @@ export function useRaceSession(entry: RaceSessionEntry, options: RaceSessionOpti
     session.enter(entry);
     return () => {session.dispose(); window.removeEventListener(HOST_TO_GAME_EVENT, handle);};
     // Catalog updates do not create a new player journey.
-  }, [session, entry.ownerId, entry.locale, entry.challengeId, entry.openInbox, entry.tournamentLocale]);
+  }, [session, entry.ownerId, entry.locale, entry.challengeId, entry.openInbox]);
   useEffect(() => {
     /** Browser timer is an adapter; the session chooses all clock transitions. */
     const timer = window.setInterval(session.tick, 50);

@@ -10,7 +10,6 @@ import type {
   RaceOutcome,
   RaceRunView,
   SocialReportCategory,
-  ListFacebookTournamentResponse,
 } from "../../contracts/index";
 import {tr} from "../../../localization/browser/i18n";
 import {RaceCountdown} from "../gameplay/RaceCountdown";
@@ -21,7 +20,6 @@ import {
   RaceCategoriesPanel,
   RaceChallengePanel,
   RaceInboxPanel,
-  RaceTournamentPanel,
 } from "../lobby/RaceLobbyPanels";
 import {RaceQuitDialog} from "../gameplay/RaceQuitDialog";
 import {RaceResultPanel} from "../gameplay/RaceResultPanel";
@@ -49,10 +47,6 @@ export type RaceTo10ViewProps = {
   categories: ListRaceCategoriesResponse["categories"];
   /** Stores inbox items. */
   inboxItems: RaceInboxItem[];
-  /** Identity-free active provider tournament view. */
-  tournament: ListFacebookTournamentResponse | null;
-  /** Whether the optional tournament view is loading. */
-  tournamentLoading: boolean;
   /** Typed readiness for incoming invitations. */
   entryStatus?: RaceEntryResponse | null;
   /** Creator-only cancellation capability. */
@@ -131,8 +125,6 @@ export type RaceTo10ViewProps = {
   onRequestClose: () => void;
   /** Stores on show inbox. */
   onShowInbox: () => void;
-  /** Opens the optional platform tournament view. */
-  onShowTournaments?: () => void;
   /** Stores on choose category. */
   onChooseCategory: () => void;
   /** Stores on select category. */
@@ -189,8 +181,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     safetyTargetUserId,
     categories,
     inboxItems,
-    tournament,
-    tournamentLoading,
     challenge,
     entryStatus,
     onCancelInvitation,
@@ -229,7 +219,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
     retryDisabled = false,
     onRequestClose,
     onShowInbox,
-    onShowTournaments,
     onChooseCategory,
     onSelectCategory,
     onInboxRematch,
@@ -270,12 +259,11 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           {safetyNotice}
         </p>
       )}
-      {(stage === "categories" || stage === "inbox" || stage === "tournaments") && (
+      {(stage === "categories" || stage === "inbox") && (
         <RaceHubTabs
-          active={stage === "inbox" ? "activity" : stage === "tournaments" ? "tournaments" : "play"}
+          active={stage === "inbox" ? "activity" : "play"}
           onPlay={onChooseCategory}
           onActivity={onShowInbox}
-          onTournaments={onShowTournaments}
           onMatchPlayer={onFindOpponent}
           matchPending={matchPending}
         />
@@ -308,7 +296,6 @@ export function RaceTo10View(props: RaceTo10ViewProps) {
           onChooseCategory={onChooseCategory}
         />
       )}
-      {stage === "tournaments" && <RaceTournamentPanel tournament={tournament} loading={tournamentLoading} />}
       {stage === "challenge" && <RaceChallengePanel challenge={challenge} entryStatus={entryStatus} onShowResults={onShowInbox} onAccept={onSelectCategory} onCancel={onCancelInvitation} busy={Boolean(pending || matchPending)} />}
       {stage === "countdown" && (
         <RaceCountdown

@@ -9,15 +9,11 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
 export async function auditPlatformMonetization() {
-  const [policySource, jestPurchases, jestCheckout, jestRecovery,
-    redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry, yahooApp] = await Promise.all([
+  const [policySource, jestPurchases, jestCheckout, jestRecovery] = await Promise.all([
     read("config/platform-monetization.json"),
-    read("platforms/web/jest/src/purchases.ts"), read("platforms/web/jest/src/purchaseCheckout.ts"),
-    read("platforms/web/jest/src/purchaseReconciliation.ts"), read("platforms/web/reddit/devvit.json"),
-    read("platforms/web/reddit/products.json"), read("platforms/web/reddit/src/RedditPlatformBootstrap.ts"),
-    read("platforms/web/youtube/scripts/audit-youtube-artifact.mjs"),
-    read("scripts/web/audit-standalone-artifact.mjs"), read("platforms/web/yahoo/src/main.tsx"),
-    read("platforms/web/yahoo/src/YahooApp.tsx"),
+    read("platforms/web/jest/src/purchases.ts"),
+    read("platforms/web/jest/src/purchaseCheckout.ts"),
+    read("platforms/web/jest/src/purchaseReconciliation.ts"),
   ]);
   const policy = JSON.parse(policySource);
   const failures = [];
@@ -40,16 +36,6 @@ export async function auditPlatformMonetization() {
       !/import\("\.\/purchaseReconciliation"\)/u.test(jestPurchases) || !/return reconcileJestPurchases\(/u.test(jestPurchases) ||
       !/getIncompletePurchases/u.test(jestRecovery) || !grantsBeforeCompletion(jestCheckout) || !grantsBeforeCompletion(jestRecovery))
     failures.push("Jest purchase grant/recovery ordering is missing.");
-  const redditConfig = JSON.parse(redditConfigSource);
-  const redditProducts = JSON.parse(redditProductsSource);
-  if (redditConfig.permissions?.payments !== true || !redditConfig.payments?.endpoints?.fulfillOrder || !redditConfig.payments?.endpoints?.refundOrder) failures.push("Reddit payment permissions and handlers must be configured.");
-  if (!Array.isArray(redditProducts.products) || redditProducts.products.length < 1 || !/purchase\(productId/u.test(redditClient)) failures.push("Reddit Gold products or client purchase flow is missing.");
-  if (!/purchase integration/u.test(youtubeAudit)) failures.push("YouTube artifact audit must continue rejecting purchase integration.");
-  if (!/import\s*\{YahooApp\}\s*from\s*"\.\/YahooApp"/u.test(yahooEntry) || !/<YahooApp\s*\//u.test(yahooEntry) ||
-      !/src\/gameplay\/components\/local\/LocalGameApp/u.test(yahooApp) ||
-      !/src\/app\/standalone\/standaloneSdk/u.test(yahooApp) || !/useState\(createStandaloneSdkPort\)/u.test(yahooApp) ||
-      !/<YouTubePlayableApp\s+sdk=\{sdk\}/u.test(yahooApp)) failures.push("Yahoo candidate must use the provider-neutral standalone entry.");
-  if (!/commerce or advertising/u.test(standaloneAudit) || !/checkout/u.test(standaloneAudit)) failures.push("Yahoo and Netflix candidate audits must reject checkout integration.");
   if (failures.length) throw new Error(`Platform monetization audit failed:\n- ${failures.join("\n- ")}`);
   return rows;
 }

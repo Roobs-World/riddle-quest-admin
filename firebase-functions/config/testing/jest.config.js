@@ -46,7 +46,6 @@ module.exports = {
     "src/race/content/raceContentMigration.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/content/raceContentValidation.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "../platforms/web/jest/server/jestSecurity.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "../platforms/web/facebook/server/commerce/facebookCatalog.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/runs/raceEngine.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceReadService.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/gameplay/achievements.ts": {statements: 100, branches: 100, functions: 100, lines: 100},

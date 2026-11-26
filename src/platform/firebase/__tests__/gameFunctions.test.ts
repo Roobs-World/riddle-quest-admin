@@ -46,7 +46,7 @@ describe("createGameFunctionsClient", () => {
     expect(mockBindings.get("startRaceRun")).toBe("race");
     expect(mockBindings.get("updateLiveRace")).toBe("race");
     expect(mockBindings.size).toBe(Object.keys(client).length);
-    expect(Object.keys(client).length).toBe(45);
+    expect(Object.keys(client).length).toBe(43);
     expect(typeof client.updateLiveRace).toBe("function");
   });
 
@@ -58,14 +58,6 @@ describe("createGameFunctionsClient", () => {
     expect(mockInputs.at(-1)).toEqual({locale: "en", contentProtection: 1});
     await client.updateUsername({username: "name"});
     expect(mockInputs.at(-1)).toEqual({username: "name"});
-  });
-
-  it("skips protection negotiation when the host opts out", async () => {
-    /** Native-style client. */
-    const client = createGameFunctionsClient(regions, {contentProtection: false});
-    mockResponse = {challenge: {questions: [], totalQuestions: 0}};
-    await client.getClassicRiddleBuffer({locale: "en"});
-    expect(mockInputs.at(-1)).toEqual({locale: "en"});
   });
 
   it("passes plaintext protected responses through unchanged", async () => {

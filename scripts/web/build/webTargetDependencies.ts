@@ -118,7 +118,7 @@ export function webTargetDependencyPlugin(
       /** Runtime packages that need target-specific license notices. */
       const packages = [...new Set(modules.map(runtimePackage).filter((name): name is string => name !== null))].sort();
       /** License text contains only packages in this artifact. */
-      const notice = createNotice(new Set(packages), {includeHomepages: target !== "youtube"});
+      const notice = createNotice(new Set(packages), {includeHomepages: true});
       this.emitFile({type: "asset", fileName: "third-party-licenses.txt", source: notice});
       pendingInventory = JSON.stringify({
         schemaVersion: 1,

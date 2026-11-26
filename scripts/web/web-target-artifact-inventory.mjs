@@ -3,10 +3,6 @@ import path from "node:path";
 
 const targetNames = Object.freeze({
   jest: "Jest",
-  reddit: "Reddit",
-  youtube: "YouTube",
-  netflix: "Netflix candidate",
-  yahoo: "Yahoo candidate",
 });
 
 const inspectableTextExtension = /\.(?:css|html?|js|mjs|cjs|json|svg|xml|txt|webmanifest)$/iu;

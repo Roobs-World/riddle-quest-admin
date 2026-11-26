@@ -153,8 +153,6 @@ export class RaceSession {
     this.pollAt = Infinity;
     this.pollAttempt = 0;
     if (!resetOwnedRaceState(entry, () => this.clock.now(), current, state => this.update(state))) return;
-    // Incoming tournament navigation reads only the provider view; retained race hints stay untouched.
-    if (entry.tournamentLocale) return;
     if (entry.openInbox) this.send("raceInbox", "game:listRaceInbox", {limit: 20});
     else if (entry.challengeId) this.send("raceEntry", "game:getRaceEntry", {challengeId: entry.challengeId, locale: entry.locale});
     else {
@@ -292,7 +290,7 @@ export class RaceSession {
       run?.runId === this.state.run?.runId && published?.challengeId === this.state.published?.challengeId;
   };
   /** Player navigation ends outstanding reads and discovery without losing a live attempt. */
-  navigate = (stage: "categories" | "inbox" | "tournaments"): void => {
+  navigate = (stage: "categories" | "inbox"): void => {
     if (!this.active || this.state.run && ["prepared", "scheduled", "active"].includes(this.state.run.status) && ["countdown", "racing"].includes(this.state.stage)) return;
     if (stage === "categories") {this.rematch(); return;}
     this.generation++;
@@ -383,7 +381,7 @@ export class RaceSession {
     this.startRetry = null;
     this.resumeDraft = null;
     this.loadedAt = null;
-    if (!resetOwnedRaceState({...this.entry, challengeId: undefined, openInbox: false, tournamentLocale: undefined},
+    if (!resetOwnedRaceState({...this.entry, challengeId: undefined, openInbox: false},
       () => this.clock.now(), current, state => this.update(state), {categories: this.state.categories, inboxItems: this.state.inboxItems})) return;
     if (fallbackRematch) {
       /** Current provider adapter retains the accepted scope for the replacement search. */
@@ -806,7 +804,7 @@ export class RaceSession {
   };
   /** Explicit player search creates a new intent; Retry uses the retained intent and recovery policy. */
   findOpponent = async (matchmaking: MatchmakingCapability, categoryId?: RaceCategoryId): Promise<void> => {
-    if (!this.active || this.state.findingOpponent || this.state.pending || !["categories", "inbox", "tournaments"].includes(this.state.stage)) return;
+    if (!this.active || this.state.findingOpponent || this.state.pending || !["categories", "inbox"].includes(this.state.stage)) return;
     this.lastMatchmaking = matchmaking;
     this.matchOffer = null;
     this.matchIntent = {adapter: matchmaking, request: {locale: this.entry.locale,

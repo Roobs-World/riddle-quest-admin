@@ -1,6 +1,6 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 import {z} from "zod";
-import {resolveFacebookProduct} from "./commerce/facebookCatalog.js";
+import {resolveFacebookProduct} from "../src/commerce/facebookCatalog.js";
 
 /** Largest provider integer preserved without rounding its decimal representation. */
 const MAX_INT64 = 9_223_372_036_854_775_807n;

@@ -178,16 +178,6 @@ describe("Firebase environment variants", () => {
     expect(mockGetAuth).not.toHaveBeenCalled();
   });
 
-  it("retains the existing authentication initialization for other target assemblies", async () => {
-    mockInitializeAuth.mockClear();
-    mockGetAuth.mockClear();
-    /** Loaded browser Firebase module exercises session persistence configuration. */
-    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "android"});
-    expect(module.auth).toEqual({name: "auth"});
-    expect(mockGetAuth).toHaveBeenCalledWith(module.firebaseApp);
-    expect(mockInitializeAuth).not.toHaveBeenCalled();
-  });
-
   it.each(["jest"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
     mockGetFunctions.mockClear();
     mockHttpsCallable.mockClear();

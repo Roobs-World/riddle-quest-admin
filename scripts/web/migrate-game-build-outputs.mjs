@@ -48,12 +48,7 @@ async function verifyReceipts(directory, provider) {
 
 for (const [target, facts] of Object.entries(webBuildFacts)) await add(`builds/${target}`, facts.outputDirectory);
 for (const target of Object.keys(webBuildFacts)) await add(`dist-${target}`, `${getWebBuildPaths(target).buildDirectory}/legacy/dist-${target}`);
-const artifacts = new Map([
-  ["build.zip", "jest"], ["build-youtube.zip", "youtube"],
-  ["build-youtube.manifest.json", "youtube"], ["build-youtube.test-report.json", "youtube"],
-  ["build-gamesnacks.zip", "gamesnacks"], ["build-gamesnacks.zip.manifest.json", "gamesnacks"],
-  ["build-html5.zip", "netflix"], ["build-html5.zip.source.json", "netflix"], ["build-html5.sha256", "netflix"],
-]);
+const artifacts = new Map([["build.zip", "jest"]]);
 for (const definition of releaseRegistry.filter(item => item.artifact)) {
   artifacts.set(definition.artifact, definition.target);
   artifacts.set(`${definition.artifact}.manifest.json`, definition.target);
@@ -63,13 +58,10 @@ for (const [source, target, name] of [
   [".jest-upload-receipts", "jest", ".jest-upload-receipts"],
   ["platforms/web/jest/.jest-upload-receipts", "jest", ".jest-upload-receipts"],
   [".jest-release-workspaces", "jest", ".jest-release-workspaces"],
-  ["platforms/web/reddit/.reddit-release-receipts", "reddit", ".reddit-release-receipts"],
 ]) {
   if (name.includes("receipts") && !name.includes("setup")) await verifyReceipts(path.join(root, source), target);
   await add(source, `${getWebBuildPaths(target).buildDirectory}/${name}`);
 }
-await add("platforms/web/reddit/dist", `${getWebBuildPaths("reddit").buildDirectory}/devvit`);
-await add("platforms/web/reddit/build-reddit.zip", `${getWebBuildPaths("reddit").buildDirectory}/build-reddit.zip`);
 if (await exists(path.join(root, "builds"))) {
   for (const name of await readdir(path.join(root, "builds"))) {
     const match = /^([a-z]+)-[a-f0-9]+\.zip$/u.exec(name);

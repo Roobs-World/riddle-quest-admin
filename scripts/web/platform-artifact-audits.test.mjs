@@ -13,24 +13,14 @@ const packageDirectory = fileURLToPath(new URL("../..", import.meta.url));
 const repositoryDirectory = path.resolve(packageDirectory);
 const platformDirectory = target => path.join(repositoryDirectory, "platforms/web", target);
 const jestAudit = path.join(platformDirectory("jest"), "scripts/audit-jest-artifact.mjs");
-const redditAudit = path.join(platformDirectory("reddit"), "scripts/audit-reddit-artifact.mjs");
-const youtubeAudit = path.join(platformDirectory("youtube"), "scripts/audit-youtube-artifact.mjs");
-const standaloneAudit = path.join(packageDirectory, "scripts/web/audit-standalone-artifact.mjs");
-const targetName = (platform) => platform === "youtube"
-  ? "YouTube"
-  : platform[0].toUpperCase() + platform.slice(1);
+const targetName = () => "Jest";
 
 const runAudit = (script, directory, extraArguments = []) => spawnSync(process.execPath, [script, directory, ...extraArguments], {
   cwd: packageDirectory,
   encoding: "utf8",
 });
 
-const runPlatformAudit = (platform, directory) => {
-  if (platform === "jest") return runAudit(jestAudit, directory);
-
-  if (platform === "reddit") return runAudit(redditAudit, directory);
-  return runAudit(youtubeAudit, directory, ["--allow-incomplete-fixture"]);
-};
+const runPlatformAudit = (_platform, directory) => runAudit(jestAudit, directory);
 
 const pluginNames = (plugins) => plugins.flat(Infinity)
   .filter((plugin) => plugin && typeof plugin === "object" && typeof plugin.name === "string")
@@ -147,7 +137,7 @@ test("Vite configuration requires an explicit known Web Target for build and ser
   for (const command of ["build", "serve"]) {
     assert.throws(
       () => createWebTargetViteConfig({command, mode: "unknown-target", environment: {}}),
-      /Unknown Web Target mode: unknown-target; expected jest, reddit, youtube, netflix, yahoo, or gamesnacks/u,
+      /Unknown Web Target mode: unknown-target; expected jest/u,
     );
   }
   assert.throws(
@@ -156,136 +146,10 @@ test("Vite configuration requires an explicit known Web Target for build and ser
   );
 });
 
-test("YouTube Vite configuration rejects private Sentry upload configuration", async () => {
-  const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  assert.throws(
-    () => createWebTargetViteConfig({
-      command: "build",
-      mode: "youtube",
-      environment: {
-        YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE: "1",
-        SENTRY_UPLOAD_SOURCEMAPS: "1",
-      },
-    }),
-    /Sentry source-map upload is forbidden/u,
-  );
-});
-
-test("the Web Target config resolves one isolated build profile for every release target", async () => {
-  const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  const expectations = {
-    jest: {
-      outDir: path.join(repositoryDirectory, "platforms/web/jest/build/dist"),
-      htmlEntry: "/platforms/web/jest/index.html",
-      shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
-      artifactPlugin: "riddle-quest-jest-firebase-script-policy",
-    },
-    reddit: {
-      outDir: path.join(repositoryDirectory, "platforms/web/reddit/build/dist"),
-      htmlEntry: undefined,
-      shopEntry: "/platforms/web/reddit/src/RedditShopModalPage.tsx",
-      artifactPlugin: "riddle-quest-reddit-artifact",
-    },
-    youtube: {
-      outDir: path.join(repositoryDirectory, "platforms/web/youtube/build/dist"),
-      htmlEntry: "/platforms/web/youtube/index.html",
-      shopEntry: "virtual:youtube-forbidden-shop-entry",
-      artifactPlugin: "riddle-quest-youtube-artifact",
-    },
-    netflix: {
-      outDir: path.join(repositoryDirectory, "platforms/web/netflix/build/dist"),
-      htmlEntry: "/platforms/web/netflix/index.html",
-      shopEntry: "virtual:youtube-forbidden-shop-entry",
-      artifactPlugin: "riddle-quest-youtube-artifact",
-    },
-    yahoo: {
-      outDir: path.join(repositoryDirectory, "platforms/web/yahoo/build/dist"),
-      htmlEntry: "/platforms/web/yahoo/index.html",
-      shopEntry: "virtual:youtube-forbidden-shop-entry",
-      artifactPlugin: "riddle-quest-youtube-artifact",
-    },
-  };
-
-  for (const [mode, expected] of Object.entries(expectations)) {
-    const config = createWebTargetViteConfig({command: "build", mode, environment: {}});
-    assert.equal(config.base, "./");
-    assert.equal(config.define["import.meta.env.VITE_PLATFORM_TARGET"], JSON.stringify(mode));
-    if (["jest",].includes(mode)) {
-      assert.equal(config.define.__SENTRY_DEBUG__, "false");
-      assert.equal(config.define.__SENTRY_TRACING__, "false");
-    } else {
-      assert.equal(Object.hasOwn(config.define, "__SENTRY_DEBUG__"), false);
-      assert.equal(Object.hasOwn(config.define, "__SENTRY_TRACING__"), false);
-    }
-    assert.equal(config.build.outDir, expected.outDir);
-    assert.equal(Object.hasOwn(config.resolve.alias, "#platform-entry"), false);
-    if (expected.htmlEntry) {
-      assert.equal(config.build.rolldownOptions.input.endsWith(expected.htmlEntry), true);
-    }
-    assert.equal(config.resolve.alias["#shop-modal-page"].endsWith(expected.shopEntry), true);
-    const names = pluginNames(config.plugins);
-    assert.equal(names.includes("riddle-quest-web-target-build-contract"), true);
-    assert.equal(names.includes("riddle-quest-web-target-html"), true);
-    if (expected.artifactPlugin) assert.equal(names.includes(expected.artifactPlugin), true);
-    else assert.equal(names.some((name) =>
-      name.startsWith("riddle-quest-") && ![
-        "riddle-quest-web-target-build-contract",
-        "riddle-quest-web-target-html",
-        "riddle-quest-target-dependencies",
-      ].includes(name)
-    ), false);
-    runBuildContract(config);
-  }
-
-  const reddit = createWebTargetViteConfig({command: "build", mode: "reddit", environment: {}});
-  assert.deepEqual(Object.keys(reddit.build.rolldownOptions.input).sort(), ["game", "splash"]);
-  assert.equal(reddit.build.rolldownOptions.input.game.endsWith("/platforms/web/reddit/index.html"), true);
-  assert.equal(reddit.build.rolldownOptions.input.splash.endsWith("/platforms/web/reddit/reddit-inline.html"), true);
-  const youtube = createWebTargetViteConfig({command: "build", mode: "youtube", environment: {}});
-  assert.equal(youtube.publicDir, false);
-  assert.deepEqual(youtube.build.modulePreload, {polyfill: false});
-});
-
-test("the private HTML adapter emits host filenames with artifact-root-relative URLs", async () => {
-  const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  const config = createWebTargetViteConfig({command: "build", mode: "reddit", environment: {}});
-  const plugin = config.plugins.flat(Infinity).find(
-    (candidate) => candidate?.name === "riddle-quest-web-target-html",
-  );
-  assert.ok(plugin);
-  const gameFileName = path.relative(config.root, config.build.rolldownOptions.input.game)
-    .split(path.sep).join("/");
-  const splashFileName = path.relative(config.root, config.build.rolldownOptions.input.splash)
-    .split(path.sep).join("/");
-  const bundle = {
-    game: {
-      type: "asset",
-      fileName: gameFileName,
-      source: '<script type="module" src="./assets/game.js"></script>',
-    },
-    splash: {
-      type: "asset",
-      fileName: splashFileName,
-      source: '<script type="module" src="./assets/splash.js"></script>',
-    },
-  };
-
-  plugin.generateBundle.handler({}, bundle);
-
-  assert.equal(bundle.game.fileName, "index.html");
-  assert.equal(bundle.game.source, '<script type="module" src="./assets/game.js"></script>');
-  assert.equal(bundle.splash.fileName, "reddit-inline.html");
-  assert.equal(bundle.splash.source, '<script type="module" src="./assets/splash.js"></script>');
-});
-
 test("one selected output directory drives each Web Target build", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
   for (const [mode, environmentName] of [
     ["jest", "JEST_BUILD_OUT_DIR"],
-    ["reddit", "REDDIT_BUILD_OUT_DIR"],
-    ["youtube", "YOUTUBE_BUILD_OUT_DIR"],
-    ["netflix", "NETFLIX_BUILD_OUT_DIR"],
-    ["yahoo", "YAHOO_BUILD_OUT_DIR"],
   ]) {
     const outputDirectory = path.join(tmpdir(), `riddle-quest-${mode}-output`);
     const config = createWebTargetViteConfig({
@@ -387,7 +251,7 @@ test("the build contract rejects roots, repository paths, and another target's c
 
 test("explicit development profiles serve their owned HTML without redirecting signed query parameters", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  for (const mode of ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+  for (const mode of ["jest",]) {
     const development = createWebTargetViteConfig({command: "serve", mode, environment: {}});
     const plugin = development.plugins.flat(Infinity).find(
       (candidate) => candidate?.name === "riddle-quest-web-target-html",
@@ -441,71 +305,18 @@ test("each target-owned HTML document imports one explicit target main and only 
 });
 
 async function withFixture(platform, operation) {
-  const directory = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-`));
+  assert.equal(platform, "jest");
+  const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-jest-audit-"));
   try {
-    await writeFile(
-      path.join(directory, "app.js"),
-      platform === "youtube"
-        ? "const sdk = globalThis.ytgame; sdk.game.firstFrameReady(); sdk.game.gameReady(); sdk.game.loadData(); sdk.game.saveData('{}'); sdk.system.getLanguage(); sdk.system.isAudioEnabled(); sdk.system.onAudioEnabledChange(()=>{}); sdk.system.onPause(()=>{}); sdk.system.onResume(()=>{});\n"
-        : platform === "reddit"
-          ? 'const copy = {RedditPlatform: {TAGLINE: "fixture"}}; console.log(copy);\n'
-          : 'console.log("grindheadgames@gmail.com");\n',
-    );
-    if (!["youtube", "netflix", "yahoo"].includes(platform)) {
-      await writeFile(
-        path.join(directory, "third-party-licenses.txt"),
-        "@sentry/browser@1\nfirebase@1\nreact@1\nreact-dom@1\nthree@1\n",
-      );
-    }
-    if (platform === "jest") {
-      await writeFile(path.join(directory, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><script async src="https://cdn.jest.com/sdk/latest/jestsdk.js"></script></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-    } else if (platform === "reddit") {
-      await writeFile(path.join(directory, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-      await writeFile(path.join(directory, "reddit-inline.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-    } else if (platform === "netflix" || platform === "yahoo") {
-      await writeFile(path.join(directory, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-      await writeFile(path.join(directory, "youtube-content-manifest.json"), `${JSON.stringify({
-        target: `${platform}-candidate`,
-        fixture: false,
-        releaseReady: true,
-        locales: Array.from({length: 16}, (_, index) => `fixture-${index}`),
-        classicRiddleCount: 180,
-      })}\n`);
-    } else {
-      await writeFile(path.join(directory, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><script src="https://www.youtube.com/game_api/v1"></script></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-      await writeFile(path.join(directory, "youtube-content-manifest.json"), `${JSON.stringify({
-        schemaVersion: 1,
-        target: "youtube-playables",
-        contentVersion: "fixture-v1",
-        contentSha256: "a".repeat(64),
-        releaseReady: false,
-        fixture: true,
-        locales: ["en"],
-        classicRiddleCount: 3,
-        dailyScheduleEntries: 3,
-      })}\n`);
-    }
+    await writeFile(path.join(directory, "app.js"), "console.log('fixture');\n");
+    await writeFile(path.join(directory, "index.html"), '<!doctype html><html lang="en"><head><meta charset="UTF-8"><script async src="https://cdn.jest.com/sdk/latest/jestsdk.js"></script></head><body><script type="module" src="./app.js"></script></body></html>\n');
     await operation(directory);
-  } finally {
-    await rm(directory, {recursive: true, force: true});
-  }
+  } finally {await rm(directory, {recursive: true, force: true});}
 }
 
 test("artifact audits follow the same output override selected by each Web Target", async () => {
   for (const [platform, script, environmentName, extraArguments] of [
     ["jest", jestAudit, "JEST_BUILD_OUT_DIR", []],
-    ["reddit", redditAudit, "REDDIT_BUILD_OUT_DIR", []],
-    ["youtube", youtubeAudit, "YOUTUBE_BUILD_OUT_DIR", ["--allow-incomplete-fixture"]],
   ]) {
     await withFixture(platform, async (directory) => {
       const result = spawnSync(process.execPath, [script, ...extraArguments], {
@@ -517,66 +328,6 @@ test("artifact audits follow the same output override selected by each Web Targe
     });
   }
 });
-
-for (const platform of ["netflix", "yahoo"]) {
-  test(`${platform} package audit rejects contaminated selected output despite a clean default artifact`, async () => {
-    await withFixture(platform, async (directory) => {
-      const workspace = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-command-`));
-      try {
-        await cp(directory, path.join(workspace, `dist-${platform}`), {recursive: true});
-        await mkdir(path.join(workspace, "scripts/web"), {recursive: true});
-        await symlink(standaloneAudit, path.join(workspace, "scripts/web/audit-standalone-artifact.mjs"));
-        const {scripts} = JSON.parse(await readFile(path.join(packageDirectory, "package.json"), "utf8"));
-        const command = `audit:${platform}-artifact`;
-        await writeFile(path.join(workspace, "package.json"), JSON.stringify({scripts: {[command]: scripts[command]}}));
-        await writeFile(path.join(directory, "app.js"), "globalThis.FBInstant.initializeAsync();\n");
-        const result = spawnSync("pnpm", ["run", command], {
-          cwd: workspace,
-          encoding: "utf8",
-          env: {...process.env, [`${platform.toUpperCase()}_BUILD_OUT_DIR`]: directory},
-        });
-        assert.notEqual(result.status, 0, `${platform} audited the clean stale artifact instead of the contaminated build`);
-        assert.match(result.stderr, new RegExp(`Facebook integration found in ${platform} candidate artifact`, "u"));
-      } finally {
-        await rm(workspace, {recursive: true, force: true});
-      }
-    });
-  });
-
-  test(`${platform} audit respects explicit directory, target-specific environment and default precedence`, async () => {
-    await withFixture(platform, async (directory) => {
-      const workspace = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-audit-precedence-`));
-      try {
-        const portalDirectory = path.join(workspace, ".");
-        await mkdir(portalDirectory, {recursive: true});
-        const defaultDirectory = path.join(workspace, `platforms/web/${platform}/build/dist`);
-        const contaminatedDirectory = path.join(workspace, "contaminated");
-        await cp(directory, defaultDirectory, {recursive: true});
-        await cp(directory, contaminatedDirectory, {recursive: true});
-        await writeFile(path.join(contaminatedDirectory, "app.js"), "globalThis.FBInstant.initializeAsync();\n");
-        const environmentName = `${platform.toUpperCase()}_BUILD_OUT_DIR`;
-        const otherEnvironmentName = platform === "netflix" ? "YAHOO_BUILD_OUT_DIR" : "NETFLIX_BUILD_OUT_DIR";
-        const invoke = (args, overrides) => spawnSync(process.execPath, [standaloneAudit, platform, ...args], {
-          cwd: portalDirectory,
-          encoding: "utf8",
-          env: {...process.env, [environmentName]: "", [otherEnvironmentName]: contaminatedDirectory, ...overrides},
-        });
-        const selected = invoke([], {[environmentName]: `  ${directory}  `});
-        assert.equal(selected.status, 0, selected.stderr);
-        const explicit = invoke([directory], {[environmentName]: contaminatedDirectory});
-        assert.equal(explicit.status, 0, explicit.stderr);
-        const fallback = invoke([], {[environmentName]: "  "});
-        assert.equal(fallback.status, 0, fallback.stderr);
-        const missingDirectory = path.join(workspace, "missing");
-        const missing = invoke([], {[environmentName]: missingDirectory});
-        assert.notEqual(missing.status, 0);
-        assert.ok(missing.stderr.includes(missingDirectory), missing.stderr);
-      } finally {
-        await rm(workspace, {recursive: true, force: true});
-      }
-    });
-  });
-}
 
 test("Jest audit accepts Firebase account services and rejects browser push, FCM and Facebook", async () => {
   await withFixture("jest", async (directory) => {
@@ -616,71 +367,8 @@ test("Jest audit reject the other target's App Check adapter", async () => {
   });
 });
 
-test("Reddit audit reject the Jest-only sharing event bridge", async () => {
-  await withFixture("reddit", async (directory) => {
-    await writeFile(
-      path.join(directory, "app.js"),
-      'window.dispatchEvent(new CustomEvent("riddle-quest:share-race"));\n',
-    );
-    const result = runAudit(redditAudit, directory);
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /Jest sharing event bridge/u);
-  });
-});
-
-test("Reddit audit accepts both entry documents and rejects platform SDKs and telemetry", async () => {
-  await withFixture("reddit", async (directory) => {
-    const clean = runAudit(redditAudit, directory);
-    assert.equal(clean.status, 0, clean.stderr);
-    for (const [contamination, expected] of [
-      ["window.JestSDK.init();\n", /Jest SDK/],
-      ["window.FBInstant.initializeAsync();\n", /Facebook SDK/],
-      ["globalThis.__SENTRY__ = {version: 'fixture'};\n", /external analytics/],
-    ]) {
-      await writeFile(path.join(directory, "app.js"), contamination);
-      const result = runAudit(redditAudit, directory);
-      assert.notEqual(result.status, 0);
-      assert.match(result.stderr, expected);
-    }
-  });
-});
-
-test("Reddit audit requires and validates the shipped inline entry document", async () => {
-  await withFixture("reddit", async (directory) => {
-    await rm(path.join(directory, "reddit-inline.html"));
-    const missing = runAudit(redditAudit, directory);
-    assert.notEqual(missing.status, 0);
-    assert.match(missing.stderr, /missing reddit-inline\.html/u);
-  });
-  await withFixture("reddit", async (directory) => {
-    await writeFile(path.join(directory, "reddit-inline.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"></head>
-<body><script src="https://example.test/remote.js"></script></body></html>\n`);
-    const external = runAudit(redditAudit, directory);
-    assert.notEqual(external.status, 0);
-    assert.match(external.stderr, /reddit-inline\.html contains an external resource/u);
-  });
-});
-
-test("YouTube audit accepts only its explicit engineering fixture and rejects other platform SDKs", async () => {
-  await withFixture("youtube", async (directory) => {
-    const clean = runPlatformAudit("youtube", directory);
-    assert.equal(clean.status, 0, clean.stderr);
-    for (const [contamination, expected] of [
-      ["window.JestSDK.init();\n", /Jest SDK/u],
-      ["window.FBInstant.initializeAsync();\n", /Facebook Instant Games SDK/u],
-      ["globalThis.devvit = {};\n", /Reddit Devvit integration/u],
-    ]) {
-      await writeFile(path.join(directory, "app.js"), contamination);
-      const result = runPlatformAudit("youtube", directory);
-      assert.notEqual(result.status, 0);
-      assert.match(result.stderr, expected);
-    }
-  });
-});
-
 test("existing target audits reject YouTube SDK, adapter, and bundled-content contamination", async () => {
-  for (const platform of ["jest", "reddit"]) {
+  for (const platform of ["jest",]) {
     await withFixture(platform, async (directory) => {
       for (const [kind, contamination] of [
         ["SDK", "globalThis.ytgame = {}; // www.youtube.com/game_api/v1\n"],
@@ -696,22 +384,7 @@ test("existing target audits reject YouTube SDK, adapter, and bundled-content co
   }
 });
 
-test("Reddit audit rejects forbidden commerce UI in compiled commerce chunks", async () => {
-  await withFixture("reddit", async (directory) => {
-    for (const [contamination, expected] of [
-      ["const css = 'shop-subscription-card';\n", /subscription UI/],
-      ["const copy = 'Premium subscription';\n", /premium shop copy/],
-      ["const sku = 'remove_interstitial_ads';\n", /advertising|Remove Ads product/],
-    ]) {
-      await writeFile(path.join(directory, "GameModalView-fixture.js"), contamination);
-      const result = runAudit(redditAudit, directory);
-      assert.notEqual(result.status, 0);
-      assert.match(result.stderr, expected);
-    }
-  });
-});
-
-test("Jest and Facebook audits reject Reddit Devvit contamination", async () => {
+test("Jest audit reject Reddit Devvit contamination", async () => {
   for (const platform of ["jest",]) {
     await withFixture(platform, async (directory) => {
       await writeFile(path.join(directory, "app.js"), "globalThis.devvit = {redditGatewaySecret: 'fixture'};\n");
@@ -723,7 +396,7 @@ test("Jest and Facebook audits reject Reddit Devvit contamination", async () => 
 });
 
 test("every non-Reddit audit rejects Reddit-owned locale copy", async () => {
-  for (const platform of ["jest", "youtube"]) {
+  for (const platform of ["jest",]) {
     await withFixture(platform, async (directory) => {
       await writeFile(path.join(directory, "app.js"), "const copy = {RedditPlatform: {TAGLINE: 'fixture'}};\n");
       const result = runPlatformAudit(platform, directory);
@@ -739,7 +412,7 @@ for (const [label, contamination] of [
   ["service-account JSON", `const credential = {"type":"service_account","private_key_id":"fixture"};\n`],
 ]) {
   test(`both artifact audits reject ${label}`, async () => {
-    for (const platform of ["jest", "reddit", "youtube"]) {
+    for (const platform of ["jest",]) {
       await withFixture(platform, async (directory) => {
         await writeFile(path.join(directory, "app.js"), contamination);
         const result = runPlatformAudit(platform, directory);
@@ -751,7 +424,7 @@ for (const [label, contamination] of [
 }
 
 test("all artifact audits reject symbolic links escaping the build root", async () => {
-  for (const platform of ["jest", "reddit", "youtube"]) {
+  for (const platform of ["jest",]) {
     await withFixture(platform, async (directory) => {
       const externalDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-external-artifact-"));
       try {
@@ -773,7 +446,7 @@ test("all artifact audits reject symbolic links escaping the build root", async 
 });
 
 test("all artifact audits reject a linked artifact root before following it", async () => {
-  for (const platform of ["jest", "reddit", "youtube"]) {
+  for (const platform of ["jest",]) {
     await withFixture(platform, async (directory) => {
       const linkDirectory = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-root-link-`));
       const linkedRoot = path.join(linkDirectory, "artifact");
@@ -795,7 +468,7 @@ test("all artifact audits scan environment and text files for common credentials
     [".env.production", "OPENAI_API_KEY=fixture-secret\n", /server secret/iu],
     ["credentials.txt", "-----BEGIN PRIVATE KEY-----\nfixture\n", /private key/iu],
   ]) {
-    for (const platform of ["jest", "reddit", "youtube"]) {
+    for (const platform of ["jest",]) {
       await withFixture(platform, async (directory) => {
         await writeFile(path.join(directory, filename), contamination);
         await assert.rejects(
@@ -865,7 +538,7 @@ test("the Jest audit scans progress files for common credentials", async () => {
 });
 
 test("all artifact audits reject an empty real directory through the common inventory", async () => {
-  for (const platform of ["jest", "reddit", "youtube"]) {
+  for (const platform of ["jest",]) {
     const directory = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-empty-artifact-`));
     try {
       await assert.rejects(

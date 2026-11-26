@@ -1,9 +1,5 @@
 import {ACHIEVEMENT_DEFINITIONS} from "../../catalog/achievements";
-import {createLocalAchievementPlayer, getAchievementProgressViews, orderAchievementDefinitions} from "../../achievementPresentation";
-import {LOCAL_ACHIEVEMENT_DEFINITIONS, YOUTUBE_ACHIEVEMENTS} from "../../localAchievements";
-import {createEmptyYouTubeSave} from "../../../../gameplay/persistence/localSave";
-import {achievementText} from "../../../../localization/copy/achievementCopy";
-import {SUPPORTED_LOCALES} from "../../../../localization/locales";
+import {getAchievementProgressViews, orderAchievementDefinitions} from "../../achievementPresentation";
 
 describe("achievement requirements", () => {
   it("shows the minimum sample and win rate as separate conditions", () => {
@@ -40,27 +36,5 @@ describe("achievement requirements", () => {
     expect(orderAchievementDefinitions(definitions, player, ["wins_25"]).map(({id}) => id))
       .toEqual(["wins_25", "first_win", "wins_5"]);
     expect(definitions.map(({id}) => id)).toEqual(["first_win", "wins_5", "wins_25"]);
-  });
-});
-
-describe("offline achievement collection", () => {
-  it("offers exactly the goals the local authority supports", () => {
-    expect(new Set(LOCAL_ACHIEVEMENT_DEFINITIONS.map(({id}) => id)))
-      .toEqual(new Set(YOUTUBE_ACHIEVEMENTS.map(({id}) => id)));
-    expect(LOCAL_ACHIEVEMENT_DEFINITIONS.some(({id}) => id === "first_purchase" || id.startsWith("race_"))).toBe(false);
-    const progress = createEmptyYouTubeSave("test").progression;
-    progress.highestClassicLevel = 10;
-    progress.bestDailyStreak = 7;
-    expect(createLocalAchievementPlayer(progress).stats).toMatchObject({highestLevelClassic: 10, bestStreak: 7});
-  });
-
-  it("provides existing names and requirements in every supported locale", () => {
-    for (const locale of SUPPORTED_LOCALES) {
-      for (const definition of LOCAL_ACHIEVEMENT_DEFINITIONS) {
-        expect(achievementText(locale, definition.nameKey ?? "", "missing")).not.toBe("missing");
-        expect(achievementText(locale, definition.descriptionKey ?? "", "missing")).not.toBe("missing");
-      }
-      expect(achievementText(locale, "StatsModal.AVG_GUESSES", "missing")).not.toBe("missing");
-    }
   });
 });

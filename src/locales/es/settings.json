@@ -8,7 +8,6 @@
     "CREDITS_BUTTON": "Créditos",
     "DATA_EXPORT_BUTTON": "Exportar mis datos",
     "HELP_BUTTON": "Ayuda",
-    "LANGUAGE_LABEL": "Idioma",
     "LANGUAGE_SELECTED": "Seleccionado",
     "LICENSES_BUTTON": "Licencias",
     "LOGOUT_BUTTON": "Cerrar sesión",
@@ -19,6 +18,8 @@
     "TERMS_BUTTON": "Términos de uso",
     "TITLE": "Configuración",
     "TOGGLE_OFF": "Apagado",
-    "TOGGLE_ON": "Encendido"
+    "TOGGLE_ON": "Encendido",
+    "REDUCED_MOTION": "Movimiento reducido",
+    "NOTIFICATION_SAVE_FAILED": "No se pudieron guardar los ajustes de notificaciones. Inténtalo de nuevo."
   }
 }

@@ -1,5 +1,7 @@
 # Riddle Quest for Reddit
 
+The Reddit game frontend is removed from this branch. Its Firebase integration, trusted Devvit gateway, shared backend contracts and backend tooling remain intact. Frontend build and release instructions here are historical; see the [Jest-only frontend boundary](../jest/jest-only-frontend.md).
+
 Solve word riddles directly in an interactive Reddit post. Read the clue, enter
 your answer, and use the letter feedback to narrow down your next guess. You have
 five attempts to solve each riddle.

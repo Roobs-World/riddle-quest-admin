@@ -4,7 +4,6 @@ import type {LiveRaceView, ListRaceCategoriesResponse, RaceLocale} from "../../c
 import type {LiveRacePlayerIdentity} from "../social/LiveRaceIdentity";
 import type {
   MatchmakingCapability,
-  TournamentCapability,
 } from "../../../platform/contracts/capabilities";
 
 /** Inputs required by the server-authoritative Race to 10 coordinator. */
@@ -15,8 +14,6 @@ export type RaceTo10GameProps = Readonly<{
   challengeId?: string;
   /** Stores open inbox. */
   openInbox?: boolean;
-  /** Incoming native tournament language; ignored without the target tournament capability. */
-  tournamentLocale?: RaceLocale;
   /** Stores coins. */
   coins: number;
   /** Authenticated game account that owns persisted race runs. */
@@ -35,8 +32,6 @@ export type RaceTo10GameProps = Readonly<{
   onLiveResult?: (view: LiveRaceView) => void;
   /** Stores matchmaking. */
   matchmaking?: MatchmakingCapability;
-  /** Stores tournaments. */
-  tournaments?: TournamentCapability;
 }>;
 
 /** Stable empty category list used as the default prop value. */

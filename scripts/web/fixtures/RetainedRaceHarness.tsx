@@ -2,7 +2,7 @@
  * The public RaceTo10Game entry remains live PvP; this fixture never enters a platform artifact. */
 import {raceEntryView} from "../../../src/races/matchmaking/raceEntrySelection";
 import {needsRaceCatalog} from "../../../src/races/matchmaking/raceDiscoveryRecovery";
-import {useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import "../../../src/races/styles/lobby.css";
 import "../../../src/races/styles/gameplay.css";
 import type {PublishRaceChallengeResponse, RaceAnalyticsEventName, RaceInboxItem} from "../../../src/races/contracts/index";
@@ -19,19 +19,18 @@ import {useRaceEntryTracking} from "../../../src/races/hooks/useRaceRuntimeEffec
 import {RaceTo10View} from "../../../src/races/components/recorded/RaceTo10View";
 import {EMPTY_RACE_CATEGORIES, type RaceTo10GameProps} from "../../../src/races/components/recorded/RaceTo10Game.types.ts";
 import {type RaceSessionEffect} from "../../../src/races/controllers/RaceSession.types.ts";
-import {RaceProviderViews} from "../../../src/races/browser/controllers/RaceProviderViews";
 
 /** Replaces the whole rendered journey before a changed entry can display preceding authority. */
 export function RetainedRaceHarness(props: RaceTo10GameProps) {
   /** Catalog and balance updates preserve the journey; account and entry intent changes replace it. */
   const entryKey = JSON.stringify([props.ownerId ?? null, props.locale, props.challengeId ?? null,
-    props.openInbox ?? false, props.tournaments ? props.tournamentLocale ?? null : null]);
+    props.openInbox ?? false]);
   return <RaceJourneyGame key={entryKey} {...props} />;
 }
 
 /** Rendering and optional provider adapters owned by one mounted Race Session journey. */
-function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLocale, coins, ownerId, postToHost, onClose,
-  initialCategories = EMPTY_RACE_CATEGORIES, matchmaking, tournaments}: RaceTo10GameProps) {
+function RaceJourneyGame({locale, challengeId, openInbox = false, coins, ownerId, postToHost, onClose,
+  initialCategories = EMPTY_RACE_CATEGORIES, matchmaking}: RaceTo10GameProps) {
   /** Sharing remains a target capability, independent of competitive scoring. */
   const referralSharing = useReferralSharing();
   /** Replacing a sharing provider retires its dialogs without replacing competitive state. */
@@ -59,33 +58,10 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
   const quitDialogRef = useRef<HTMLDivElement | null>(null);
   /** Current effect implementation used by the session adapter. */
   const effectRef = useRef<(effect: RaceSessionEffect) => void>(() => undefined);
-  /** Only a configured target can select the incoming tournament surface. */
-  const incomingTournamentLocale = tournaments ? tournamentLocale : undefined;
   /** The session owns every protocol and competitive presentation transition. */
-  const {session, state} = useRaceSession({ownerId, locale, challengeId, openInbox, tournamentLocale: incomingTournamentLocale, initialCategories}, {
+  const {session, state} = useRaceSession({ownerId, locale, challengeId, openInbox, initialCategories}, {
     postToHost, effect: effect => effectRef.current(effect), getMatchmaking: () => matchmaking,
   });
-  /** Replaced provider adapters receive a fresh cache before the next frame commits. */
-  const providerViews = useMemo(() => new RaceProviderViews({reportError: session.reportError}), [session, tournaments]);
-  /** A still-owned native dialog refreshes the latest optional view selection on completion. */
-  const currentProviderViews = useRef(providerViews);
-  currentProviderViews.current = providerViews;
-  /** Rendering consumes whole provider cache transitions. */
-  const providerState = useSyncExternalStore(providerViews.subscribe, providerViews.getSnapshot, providerViews.getSnapshot);
-  useEffect(() => {
-    providerViews.enter({locale, tournaments});
-    /** A synchronous resume can confirm the outcome before provider ownership is installed. */
-    const completedRunId = session.getConfirmedOutcomeRunId();
-    if (completedRunId) providerViews.record(completedRunId);
-    /** A removed optional target screen returns to supported navigation without a race mutation. */
-    if (!tournaments && session.getSnapshot().stage === "tournaments") session.navigate("categories");
-    /** Session notifications invalidate old reads before a late provider can settle. */
-    const select = () => providerViews.selectStage(session.getSnapshot().stage);
-    select();
-    /** Subscription follows navigation, rematch and authority transitions synchronously. */
-    const unsubscribe = session.subscribe(select);
-    return () => {unsubscribe(); providerViews.dispose();};
-  }, [providerViews, session, ownerId, locale, challengeId, openInbox, incomingTournamentLocale, tournaments]);
   /** Optional analytics transport cannot interrupt a share dialog or rematch action. */
   const trackAnalytics = useCallback((event: RaceAnalyticsEventName, params: Record<string, string | number | boolean> = {}) => {
     try {
@@ -124,8 +100,6 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     else if (effect.kind === "publication") {
       window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: effect.publication}));
       if (effect.share) void sharePublishedChallenge(effect.publication);
-    } else if (effect.kind === "outcome") {
-      providerViews.record(effect.outcome.runId);
     }
   };
   useEffect(() => {
@@ -133,24 +107,15 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     sharingRef.current = null;
     setSharingReceipt(null);
     return () => {adapterGeneration.current++;};
-  }, [ownerId, locale, challengeId, openInbox, incomingTournamentLocale]);
+  }, [ownerId, locale, challengeId, openInbox]);
   useRaceEntryTracking(state.stage, challengeId);
   useRaceDialogFocus({dialogRef, quitDialogRef, quitConfirmationOpen: state.quitConfirmationOpen,
     dismissQuitConfirmation: session.dismissQuit, requestClose: session.requestClose});
   useRaceGameplayFit({active: state.stage === "racing", screenRef: dialogRef, viewportRef: gameplayViewportRef, gameplayRef});
   useAnswerKeyboard({active: state.stage === "racing" && !state.quitConfirmationOpen && (!state.pending || state.allowTypingWhilePending),
     onLetter: letter => session.input("letter", letter), onBackspace: () => session.input("backspace"), onSubmit: session.submit});
-  /** Activity navigation remains independent of optional tournament reads. */
-  const showInbox = () => {
-    session.navigate("inbox");
-    providerViews.refresh("inbox");
-  };
-  /** Optional tournament discovery uses the platform's own adapter. */
-  const showTournaments = () => {
-    if (!tournaments) return;
-    session.navigate("tournaments");
-    providerViews.refresh("tournaments");
-  };
+  /** Activity navigation is owned by the retained recorded-race session. */
+  const showInbox = () => session.navigate("inbox");
   /** Confirmed opponent events replay against the owned adjusted clock. */
   const ghostCorrect = useMemo(() => getGhostCorrectCount(state.run?.opponent, state.adjustedNow), [state.run?.opponent, state.adjustedNow]);
   /** Keyboard coloring follows the owned scored history. */
@@ -166,22 +131,14 @@ function RaceJourneyGame({locale, challengeId, openInbox = false, tournamentLoca
     challenge={acceptedEntry?.status === "ready" ? acceptedEntry.challenge : state.challenge} coins={coins}
     error={state.error ? tr(state.error) : null} penaltyFlash={state.penaltyFlash ? tr(state.penaltyFlash) : null}
     safetyNotice={state.safetyNotice ? tr(state.safetyNotice) : null}
-    tournament={providerState.tournament} tournamentLoading={providerState.tournamentLoading}
     opponentCorrect={ghostCorrect} letterStates={letterStates} dialogRef={dialogRef} gameplayViewportRef={gameplayViewportRef} gameplayRef={gameplayRef} quitDialogRef={quitDialogRef}
     matchPending={state.findingOpponent || Boolean(state.pending)}
     sharingRewardCoins={referralSharing?.rewardCoins} sharing={sharing}
     sharingLabel={referralSharing?.raceShareLabel} sharingReadyText={referralSharing?.raceReadyText}
-    onClose={session.requestClose} onRetry={() => {
-      if (providerState.failed) {
-        providerViews.refresh(state.stage);
-        if (state.stage === "inbox") session.retry();
-      }
-      else if (state.stage === "tournaments" && !["failed", "empty"].includes(state.matchSearchStatus)) showTournaments();
-      else session.retry();
-    }} onRequestClose={session.requestClose}
+    onClose={session.requestClose} onRetry={session.retry} onRequestClose={session.requestClose}
     requiresRunRefresh={state.requiresRunRefresh}
     retryDisabled={state.findingOpponent || Boolean(state.pending) || state.matchSearchStatus === "failed" && !state.matchRetryReady && !needsRaceCatalog(state)}
-    onShowInbox={showInbox} onShowTournaments={tournaments ? showTournaments : undefined}
+    onShowInbox={showInbox}
     onChooseCategory={() => session.navigate("categories")}
     onSelectCategory={session.begin} onInboxRematch={inboxRematch} onBlockRival={item => session.safety("block", item)} onReportRival={(item, category) => session.safety("report", item, category)}
     onSelectSlot={index => session.input("slot", index)} onLetter={letter => session.input("letter", letter)} onText={text => session.input("text", text)} onBackspace={() => session.input("backspace")}

@@ -1,4 +1,4 @@
-import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
+import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore} from "react";
 import type {GameToHostMessage} from "../../platform/bridge/messages";
 import {BRIDGE_PROTOCOL_VERSION} from "../../platform/bridge/constants";
 import musicUrl from "../../../assets/audio-web/music.webm";
@@ -13,7 +13,6 @@ import {SpinningWheel, SpinningWheelLoader} from "../../app/components/feedback/
 import type {
   MatchmakingCapability,
   SavedGame,
-  TournamentCapability,
 } from "../../platform/contracts/capabilities";
 import {
   ForwardIcon,
@@ -51,7 +50,6 @@ import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../.
 
 /** Provides game frame app behavior. */
 export function GameFrameApp({
-  raceSurface,
   localBridge = false,
   economyAvailable = true,
   prepareClassicQuestions = false,
@@ -66,16 +64,11 @@ export function GameFrameApp({
   initialRaceChallengeId,
   initialRaceInbox = false,
   initialRaceLobby = false,
-  initialRaceTournamentLocale,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
   matchmaking,
-  tournaments,
-  raceLocalePolicy = "english-only",
   onPresenceStateChange,
 }: {
-  /** Target-owned multiplayer presentation; provider modules stay outside shared imports. */
-  raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores local bridge. */
   localBridge?: boolean;
   /** Presentation exposes paid actions only when the host has an economy authority. */
@@ -104,18 +97,12 @@ export function GameFrameApp({
   initialRaceInbox?: boolean;
   /** Opens the multiplayer lobby for an incoming platform invitation. */
   initialRaceLobby?: boolean;
-  /** Incoming native tournament language; never changes the selected content locale. */
-  initialRaceTournamentLocale?: RaceLocale;
   /** Stores race feature enabled. */
   raceFeatureEnabled?: boolean;
   /** Stores prefetched race categories. */
   prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
   /** Stores matchmaking. */
   matchmaking?: MatchmakingCapability;
-  /** Stores tournaments. */
-  tournaments?: TournamentCapability;
-  /** Stores race locale policy. */
-  raceLocalePolicy?: "english-only" | "all";
   /** Stores on presence state change. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
 } = {}) {
@@ -154,15 +141,13 @@ export function GameFrameApp({
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
-  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, raceTournamentLocale, guidanceActive, setGuidanceActive} =
+  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, guidanceActive, setGuidanceActive} =
     useGameSurfaceCoordination({
       session: {...state, modal: visibleModal},
       raceFeatureEnabled,
-      raceLocalePolicy,
       initialRaceChallengeId,
       initialRaceInbox,
       initialRaceLobby,
-      initialRaceTournamentLocale: tournaments ? initialRaceTournamentLocale : undefined,
       onPresenceStateChange,
     });
   /** Provides offline dialog ref behavior. */
@@ -174,9 +159,7 @@ export function GameFrameApp({
   useOfflineDialog(online, offlineDialogRef);
 
   /** Provides {game modal view, race to10 game} behavior. */
-  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled && raceSurface === undefined);
-  /** Supplied by the target entry rather than imported across platform boundaries. */
-  const RaceTo10Game = raceSurface ?? SharedRaceTo10Game;
+  const {GameModalView, RaceTo10Game} = useGameSurfaces(raceEnabled);
   /** Exact account visit owning interactive surface retirement. */
   const surfaceOwner = JSON.stringify([state.user?.uid ?? null, state.user?.accountGeneration ?? null]);
   /** Failed modal code must not leave an acknowledged outcome without its Next action. */
@@ -534,14 +517,12 @@ export function GameFrameApp({
               locale={raceLocale ?? "en"}
               challengeId={raceChallengeId}
               openInbox={raceInbox}
-              tournamentLocale={tournaments ? raceTournamentLocale : undefined}
               initialCategories={prefetchedRaceCategories}
               coins={state.profile?.coins ?? 0}
               postToHost={postToHost}
               onLiveResult={acceptLiveRaceBalance}
               onClose={() => setRaceOpen(false)}
               matchmaking={matchmaking}
-              tournaments={tournaments}
             />
           </Suspense>
         </GameSurfaceBoundary>

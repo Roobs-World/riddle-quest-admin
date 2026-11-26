@@ -9,7 +9,7 @@ import {collectFirebaseFixtureExports} from './firebase-fixture-exports.mjs';
 
 const browserScope=process.env.PORTAL_BROWSER_SCOPE;
 assert.ok(browserScope===undefined||browserScope==='jest','PORTAL_BROWSER_SCOPE must be jest or unset');
-const requestedProviders=process.env.RACE_NULL_PROVIDERS?.split(',')??['reddit','firebase'];
+const requestedProviders=['firebase'];
 const providers=browserScope==='jest'?requestedProviders.filter(provider=>provider==='firebase'):requestedProviders;
 if(browserScope)assert.ok(providers.length>0,'RACE_NULL_PROVIDERS is outside PORTAL_BROWSER_SCOPE');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
@@ -27,16 +27,15 @@ try {
 import React from 'react';import {createRoot} from 'react-dom/client';
 import {useHostAuthSession} from ${JSON.stringify(path.join(root,"src/accounts/hooks/useHostAuthSession.ts"))};
 import {useHostRaceCoordination} from ${JSON.stringify(path.join(root,"src/races/hooks/useHostRaceCoordination.ts"))};
-${browserScope==='jest'?'':`import {createRedditHostServices} from ${JSON.stringify(path.join(root,'platforms/web/reddit/src/RedditHostServices.ts'))};`}
 import {createFirebaseHostServices} from ${JSON.stringify(path.join(root,"src/platform/firebase/browserHostServices.ts"))};
 const profile={username:'Player',coins:300,xp:0,level:1,gamesPlayed:0,wins:0,winStreak:0,achievements:[],classicIndex:1};
 window.probe={requests:[],posts:[],errors:[],unhandled:[],followups:[],replacements:[],failures:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
-const provider=new URL(location.href).searchParams.get('provider')??${JSON.stringify(browserScope==='jest'?'firebase':'reddit')};window.newBalance=Number(new URL(location.href).searchParams.get('balance')??777);
+const provider=new URL(location.href).searchParams.get('provider')??'firebase';window.newBalance=Number(new URL(location.href).searchParams.get('balance')??777);
 let hold=false;const pending=[];const response=result=>({ok:true,json:async()=>({ok:true,result})});
 window.fetch=async (url,options)=>{window.probe.requests.push(String(url));if(String(url)!=='/api/game/profile.load')throw new Error('Unexpected fixture gateway route');if(!hold)return response(profile);return new Promise((resolve,reject)=>pending.push({resolve,reject}));};
 window.readDocument=async uid=>{window.probe.requests.push('document:'+uid);if(!hold)return profile;return new Promise((resolve,reject)=>pending.push({resolve,reject}));};
-const identity=${browserScope==='jest'?'createFirebaseHostServices()':"provider==='firebase'?createFirebaseHostServices():createRedditHostServices()"};window.pending=()=>pending.length;window.hold=()=>{hold=true;};window.newer=(explicit=false)=>(provider==='firebase'&&!explicit?identity.spendCoins({reason:'continue',requestId:'fixture-spend',amount:25,riddleId:'riddle-1',gameMode:'classic',sessionToken:'owned-session'}):identity.loadProfile(provider==='firebase'?'Alice':'reddit-account')).then(value=>{if(explicit&&value&&typeof value.coins==='number')window.replaceFromExplicit(value);return value;}).catch(error=>window.probe.failures.push(String(error)));window.release=(index,coins)=>pending[index].resolve(provider==='firebase'?{...profile,coins}:response({...profile,coins}));window.fail=index=>pending[index].reject(new Error('Fixture profile transport failed'));
+const identity=createFirebaseHostServices();window.pending=()=>pending.length;window.hold=()=>{hold=true;};window.newer=(explicit=false)=>(provider==='firebase'&&!explicit?identity.spendCoins({reason:'continue',requestId:'fixture-spend',amount:25,riddleId:'riddle-1',gameMode:'classic',sessionToken:'owned-session'}):identity.loadProfile('Alice')).then(value=>{if(explicit&&value&&typeof value.coins==='number')window.replaceFromExplicit(value);return value;}).catch(error=>window.probe.failures.push(String(error)));window.release=(index,coins)=>pending[index].resolve({...profile,coins});window.fail=index=>pending[index].reject(new Error('Fixture profile transport failed'));
 const postToGame=message=>window.probe.posts.push(message);
 function App(){const host=useHostAuthSession({services:identity,postToGame});
  const race=useHostRaceCoordination({authSnapshot:host.snapshot,bridgeUser:host.bridgeUser,locale:'en',race:undefined,identity,raceLocalePolicy:'all',applyCoinBalance:host.applyCoinBalance,replaceProfile:(value,owner)=>{window.probe.replacements.push(value);host.replaceProfile(value,owner);},ownsAccount:host.ownsAccount,captureAccount:host.captureAccount,postToGame});
@@ -83,7 +82,7 @@ window.root=createRoot(document.querySelector('#root'));window.root.render(<Reac
  metric('race follow-up never replaces a valid profile with null',await page.evaluate(()=>window.probe.replacements.filter(x=>x===null).length),0);
  metric('current accounts retain follow-up ownership and retired accounts reject it',await page.evaluate(()=>window.probe.followups),followups);
  if(['current','race-reordered'].includes(scenario))metric('current race refresh still applies one valid profile',await page.evaluate(()=>window.probe.replacements.length),1);
- metric('provider transport stays on its injected local seam',await page.evaluate(provider=>window.probe.requests.every(x=>x===(provider==='reddit'?'/api/game/profile.load':'document:Alice')),provider),true);
+ metric('provider transport stays on its injected local seam',await page.evaluate(provider=>window.probe.requests.every(x=>x===('document:Alice')),provider),true);
  metric('no browser errors',await page.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejections',await page.evaluate(()=>window.probe.unhandled),[]);metric('no external provider traffic',external,[]);await context.close();
 
  }

@@ -14,9 +14,3 @@ it("preserves incoming Race destinations while checking Daily for solo play", ()
   expect(session.initialRaceInbox).toBe(true);
   expect(session.initialGameMode).toBe("challenge");
 });
-
-it.each([undefined, "all" as const, "english-only" as const])("keeps Jest multiplayer English-only despite incoming policy %s", raceLocalePolicy => {
-  /** Jest overrides wider shared policies at its target boundary. */
-  const session = createJestHostedPlaySession({hostServices: createFakeHostServices(), raceLocalePolicy});
-  expect(session.raceLocalePolicy).toBe("english-only");
-});

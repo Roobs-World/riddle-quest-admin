@@ -4,7 +4,6 @@ import {captureBrowserException} from "../../../observability/browserErrorReport
 import {getHostErrorMessage} from "./hostMessageHandlers";
 import {GAME_TO_HOST_EVENT} from "./localBridge";
 import {createRequestId} from "../../../gameplay/session/requestIds";
-import type {LifecycleCapability} from "../../contracts/capabilities";
 import {BridgeParserLoadError} from "./bridgeRouter";
 
 /** Routes one untrusted local bridge value after schema validation. */
@@ -22,12 +21,10 @@ type HostBridgeLifecycleOptions = Readonly<{
   ownsMessage: () => boolean;
   /** Shows document-reload recovery when the browser cannot load shared validation code. */
   onUnavailable?: () => void;
-  /** Optional target SDK lifecycle, including pauses while the document remains visible. */
-  lifecycle?: LifecycleCapability;
 }>;
 
 /** Owns stable local bridge routing and document visibility delivery for hosted targets. */
-export function useHostBridgeLifecycle({router, postToGame, setNotice, ownsMessage, onUnavailable, lifecycle}: HostBridgeLifecycleOptions): void {
+export function useHostBridgeLifecycle({router, postToGame, setNotice, ownsMessage, onUnavailable}: HostBridgeLifecycleOptions): void {
   /** Latest router, allowing one stable DOM subscription across host state changes. */
   const routerRef = useRef(router);
   /** Latest message sender used by the stable visibility subscription. */
@@ -54,7 +51,7 @@ export function useHostBridgeLifecycle({router, postToGame, setNotice, ownsMessa
     const owner = {};
     subscriptionOwner.current = owner;
     return () => {if (subscriptionOwner.current === owner) subscriptionOwner.current = null;};
-  }, [lifecycle]);
+  }, []);
 
   useEffect(() => {
     /** SDK callbacks and pending rejections cannot outlive this subscription group. */
@@ -115,43 +112,10 @@ export function useHostBridgeLifecycle({router, postToGame, setNotice, ownsMessa
     };
     window.addEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
     document.addEventListener("visibilitychange", handleVisibilityChange);
-    /** Keeps independent optional SDK signals usable when another registration or cleanup fails. */
-    const subscribeLifecycle = (operation: string, subscribe: (callback: () => void) => (() => void) | undefined, callback: () => void) => {
-      /** Some SDKs retain the callback even when their registration subsequently throws. */
-      let subscribed = true;
-      try {
-        /** Wraps each signal with its own registration lifetime as well as the effect lifetime. */
-        const unsubscribe = subscribe(() => {if (isActive() && subscribed) callback();});
-        return () => {
-          subscribed = false;
-          try {
-            unsubscribe?.();
-          } catch (error) {
-            captureBrowserException(error, {component: "play_host", operation: `unsubscribe_${operation}`});
-          }
-        };
-      } catch (error) {
-        subscribed = false;
-        captureBrowserException(error, {component: "play_host", operation: `subscribe_${operation}`});
-        return undefined;
-      }
-    };
-    /** Detaches provider pause notifications when the host unmounts. */
-    const unsubscribePause = lifecycle ? subscribeLifecycle("platform-pause", (callback) => lifecycle.onPause(callback), () => {
-      deliverLifecycle("host:pause", "platform-pause");
-    }) : undefined;
-    /** Detaches provider resume notifications when the host unmounts. */
-    const unsubscribeResume = lifecycle?.onResume ? subscribeLifecycle("platform-resume", (callback) => lifecycle.onResume?.(callback), () => {
-      if (document.visibilityState !== "hidden") {
-        deliverLifecycle("host:resume", "platform-resume");
-      }
-    }) : undefined;
     return () => {
       active = false;
       window.removeEventListener(GAME_TO_HOST_EVENT, handleLocalMessage);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      unsubscribePause?.();
-      unsubscribeResume?.();
     };
-  }, [lifecycle]);
+  }, []);
 }

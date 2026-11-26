@@ -69,6 +69,6 @@ function inspect(directory) {
     }
   }
 }
-for (const directory of ["src", ...webApplications.map(target => `platforms/web/${target}/src`), "platforms/native/android/src"]) inspect(resolve(root, directory));
+for (const directory of ["src", ...webApplications.map(target => `platforms/web/${target}/src`)]) inspect(resolve(root, directory));
 if (failures.length) throw new Error(failures.join("\n"));
-console.log(`Platform layout passed: ${webApplications.length} web apps, ${targets.length} release owners and Android.`);
+console.log(`Platform layout passed: ${webApplications.length} web apps, ${targets.length} release owners and ${platformServerRoots.length} retained backend roots.`);

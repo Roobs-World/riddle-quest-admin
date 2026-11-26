@@ -8,7 +8,6 @@
     "CREDITS_BUTTON": "Créditos",
     "DATA_EXPORT_BUTTON": "Exportar meus dados",
     "HELP_BUTTON": "Ajuda",
-    "LANGUAGE_LABEL": "Idioma",
     "LANGUAGE_SELECTED": "Selecionado",
     "LICENSES_BUTTON": "Licenças",
     "LOGOUT_BUTTON": "Sair",
@@ -19,6 +18,8 @@
     "TERMS_BUTTON": "Termos de uso",
     "TITLE": "Configurações",
     "TOGGLE_OFF": "Desligado",
-    "TOGGLE_ON": "Ligado"
+    "TOGGLE_ON": "Ligado",
+    "REDUCED_MOTION": "Movimento reduzido",
+    "NOTIFICATION_SAVE_FAILED": "Não foi possível salvar as configurações de notificações. Tente novamente."
   }
 }

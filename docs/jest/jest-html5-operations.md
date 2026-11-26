@@ -4,6 +4,8 @@ Riddle Quest is a standard React HTML5 game. It has no React Native, Expo, Andro
 
 For the source-audited map of player data, system boundaries, deletion, export, retention, and unresolved owner/counsel decisions, see the [privacy data inventory](../common/security/privacy-data-inventory.md).
 
+The game frontend on this branch is [Jest only](jest-only-frontend.md). Other provider server integrations and the notification manager remain intact; they are outside the frontend cleanup.
+
 ## Hosted acceptance
 
 Use an uploaded build in Jest's Developer Console and sandbox. The root package no longer exposes local development servers, local previews, browser harnesses or test-suite commands. Release preparation builds and audits the artifact without running local tests.

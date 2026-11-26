@@ -1,5 +1,7 @@
 # One-shot target release
 
+This is a historical multi-target release guide. The `jest` branch now exposes only the Jest game release; use [current release operations](release-operations.md). Retained backend services are outside the frontend cleanup.
+
 Run every release target from the repository root:
 
 ```bash

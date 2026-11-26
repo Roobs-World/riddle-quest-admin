@@ -2,14 +2,13 @@ import {useRef, type KeyboardEvent} from "react";
 import {tr} from "../../../localization/browser/i18n";
 
 /** Describes race hub tab. */
-export type RaceHubTab = "play" | "activity" | "tournaments";
+export type RaceHubTab = "play" | "activity";
 
 /** Accessible, capability-aware navigation for the shared social hub. */
 export function RaceHubTabs({
   active,
   onPlay,
   onActivity,
-  onTournaments,
   onMatchPlayer,
   matchPending = false,
 }: {
@@ -19,8 +18,6 @@ export function RaceHubTabs({
   onPlay: () => void;
   /** Stores on activity. */
   onActivity: () => void;
-  /** Stores on tournaments. */
-  onTournaments?: () => void;
   /** Starts the target-owned recorded opponent search. */
   onMatchPlayer?: () => void;
   /** Disables discovery while its owned operation is pending. */
@@ -30,12 +27,8 @@ export function RaceHubTabs({
   const tabs = [
     {id: "play" as const, label: tr("RaceTo10.HUB_PLAY"), onSelect: onPlay},
     {id: "activity" as const, label: tr("RaceTo10.HUB_ACTIVITY"), onSelect: onActivity},
-    ...(onTournaments
-      ? [{id: "tournaments" as const, label: tr("RaceTo10.HUB_TOURNAMENTS"), onSelect: onTournaments}]
-      : []),
   ];
-  /** Capability removal must leave a reachable supported tab before parent navigation settles. */
-  const selected = active === "tournaments" && !onTournaments ? "play" : active;
+  const selected = active;
   /** Provides tab refs behavior. */
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   /** Handles tab key. */

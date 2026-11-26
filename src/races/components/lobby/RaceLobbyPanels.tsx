@@ -7,7 +7,6 @@ import type {
   RaceEntryResponse,
   RaceInboxItem,
   SocialReportCategory,
-  ListFacebookTournamentResponse,
 } from "../../contracts/index";
 import {tr} from "../../../localization/browser/i18n";
 import {canCancelRaceInvitation} from "../../matchmaking/raceEntrySelection";
@@ -53,40 +52,6 @@ export function RaceCategoriesPanel({
       <button className="race-secondary" onClick={onShowInbox}>
         {tr("RaceTo10.CHECK_RESULTS")}
       </button>
-    </div>
-  );
-}
-
-/** Displays identity-free server-authoritative tournament standings. */
-export function RaceTournamentPanel({
-  tournament,
-  loading,
-}: {
-  /** Stores tournament. */
-  tournament: ListFacebookTournamentResponse | null;
-  /** Stores loading. */
-  loading: boolean;
-}) {
-  return (
-    <div className="race-panel race-tournaments" data-rewards-enabled="false">
-      <h2>{tr("RaceTo10.HUB_TOURNAMENTS")}</h2>
-      {loading ? (
-        <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
-      ) : !tournament || tournament.standings.length === 0 ? (
-        <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>
-      ) : (
-        <ol>
-          {tournament.standings.map((standing, index) => (
-            <li
-              key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
-              aria-current={standing.isCurrentPlayer || undefined}
-            >
-              <strong dir="ltr">#{standing.rank}</strong>
-              <span dir="ltr">{formatRaceTime(standing.adjustedTimeMs)}</span>
-            </li>
-          ))}
-        </ol>
-      )}
     </div>
   );
 }

@@ -10,7 +10,6 @@ import {
   RaceCategoriesPanel,
   RaceChallengePanel,
   RaceInboxPanel,
-  RaceTournamentPanel,
 } from "../../lobby/RaceLobbyPanels";
 import {RaceQuitDialog} from "../../gameplay/RaceQuitDialog";
 import {RaceResultPanel} from "../../gameplay/RaceResultPanel";
@@ -59,7 +58,7 @@ function findElement(
 }
 
 describe("race presentation components", () => {
-  it.each([false, true])("supports keyboard wraparound and endpoint navigation with tournament capability %s", tournaments => {
+  it("supports keyboard wraparound and endpoint navigation", () => {
     /** Player navigation effects are observable independently of rendering. */
     const selected: string[] = [];
     /** Focus adapters represent the mounted accessible buttons. */
@@ -71,7 +70,7 @@ describe("race presentation components", () => {
     try {
       /** Optional tournament capability changes the set of reachable tabs. */
       const rendered = RaceHubTabs({active: "play", onPlay: () => selected.push("play"), onActivity: () => selected.push("activity"),
-        ...(tournaments ? {onTournaments: () => selected.push("tournaments")} : {})});
+});
       /** First accessible tab receives arrow/home/end events. */
       const play = findElement(rendered, props => props.role === "tab")!;
       for (const key of ["ArrowLeft", "ArrowRight", "Home", "End"]) {
@@ -80,22 +79,15 @@ describe("race presentation components", () => {
         play.props.onKeyDown!({key, preventDefault});
         expect(preventDefault).toHaveBeenCalledTimes(1);
       }
-      expect(selected).toEqual([tournaments ? "tournaments" : "activity", "activity", "play", tournaments ? "tournaments" : "activity"]);
+      expect(selected).toEqual(["activity", "activity", "play", "activity"]);
       expect(focus[0]).toHaveBeenCalledTimes(1);
-      expect(focus[tournaments ? 2 : 1]).toHaveBeenCalledTimes(tournaments ? 2 : 3);
+      expect(focus[1]).toHaveBeenCalledTimes(3);
       /** Non-navigation keys retain browser behavior and do not switch tabs. */
       const unchanged = jest.fn();
       play.props.onKeyDown!({key: "Enter", preventDefault: unchanged});
       expect(unchanged).not.toHaveBeenCalled();
       expect(selected).toHaveLength(4);
     } finally {ref.mockRestore();}
-  });
-  it("retains a keyboard entry point when the selected tournament capability disappears", () => {
-    /** A provider update can remove the tab before its parent navigation effect runs. */
-    const html = renderToString(<RaceHubTabs active="tournaments" onPlay={noop} onActivity={noop} />);
-    expect(html.match(/tabindex="0"/g)).toHaveLength(1);
-    expect(html).toMatch(/aria-selected="true"[^>]*>Play</);
-    expect(html).not.toContain("Tournaments");
   });
   it("renders capability-appropriate accessible hub tabs", () => {
     /** Provides jest html behavior. */
@@ -116,33 +108,6 @@ describe("race presentation components", () => {
     expect(redditHtml).not.toContain("Find opponent");
     expect(redditHtml).not.toContain("Play with friends");
 
-  });
-
-  it("renders identity-free, economy-free tournament standings", () => {
-    /** Provides html behavior. */
-    const html = renderToString(
-      <RaceTournamentPanel
-        loading={false}
-        tournament={{
-          tournamentId: "reddit-race10-en-2026-08-19",
-          locale: "en",
-          startsAtMs: 1,
-          endsAtMs: 2,
-          sortOrder: "LOWER_IS_BETTER",
-          rewardsEnabled: false,
-          standings: [{rank: 1, adjustedTimeMs: 45_000, isCurrentPlayer: true}],
-          currentPlayer: {rank: 1, adjustedTimeMs: 45_000, isCurrentPlayer: true},
-        }}
-      />,
-    );
-    expect(html).toContain("Tournaments");
-    expect(html).toContain('data-rewards-enabled="false"');
-    expect(html).toContain('aria-current="true"');
-    expect(html.replaceAll("<!-- -->", "")).toContain("#1");
-    expect(html).toContain('dir="ltr"');
-    expect(html).toContain("0:45.0");
-    expect(html).not.toContain("reddit_");
-    expect(html).not.toContain("Share tournament");
   });
 
   it("disables category starts while discovery owns the session and restores them afterward", async () => {
@@ -602,7 +567,7 @@ describe("race presentation components", () => {
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
     /** Shared intro inputs isolate navigation from historical challenge state. */
     const commonProps = {locale: "en" as const, coins: 10, postToHost: noop, onClose: noop, initialCategories: categories};
-    for (const entry of [{}, {openInbox: true}, {tournamentLocale: "en" as const}, {challengeId: "retired-challenge"}]) {
+    for (const entry of [{}, {openInbox: true}, {challengeId: "retired-challenge"}]) {
       /** Retired entry renders the same live multiplayer intro. */
       const html = renderToString(<RaceTo10Game {...commonProps} {...entry} />);
       expect(html).toContain("race-category-grid");

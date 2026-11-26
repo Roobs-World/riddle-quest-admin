@@ -50,7 +50,7 @@ let server,browser;const observations=[];
 try {
  await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'observe-native-input-ownership',enforce:'pre',async load(id){
   if(!['/useAnswerKeyboard.ts','/NativeAnswerInput.tsx','/useNativeAnswerBackspace.ts'].some(name=>id.endsWith(name)))return;
-  let code=await readFile(baseline?path.join(baseline,path.basename(id).replace('LocalGameApp','YouTubePlayableApp').replace('LocalAnswerInput','YouTubeNativeAnswerInput').replace('useLocalReadySession','useYouTubeReadySession').replace(/\.tsx?$/,'.before.txt')):id,'utf8');
+  let code=await readFile(baseline?path.join(baseline,path.basename(id).replace(/\.tsx?$/,'.before.txt')):id,'utf8');
   if(id.endsWith('/useAnswerKeyboard.ts'))code=code.replace('window.addEventListener("keydown", handleKeyDown);','window.keyboardObserveAdd(handleKeyDown);window.addEventListener("keydown", handleKeyDown);').replace('window.removeEventListener("keydown", handleKeyDown)','(window.keyboardObserveRemove(handleKeyDown),window.removeEventListener("keydown", handleKeyDown))');
   if(id.endsWith('/useNativeAnswerBackspace.ts'))code=code.replace('input.removeEventListener("beforeinput", beforeInput)','(window.deleteObserveRemove(input,beforeInput),input.removeEventListener("beforeinput", beforeInput))');return code;
  }}],build:{outDir:'dist',minify:false}});

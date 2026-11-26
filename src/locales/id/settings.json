@@ -8,7 +8,6 @@
     "CREDITS_BUTTON": "Kredit",
     "DATA_EXPORT_BUTTON": "Ekspor Data Saya",
     "HELP_BUTTON": "Bantuan",
-    "LANGUAGE_LABEL": "Bahasa",
     "LANGUAGE_SELECTED": "Terpilih",
     "LICENSES_BUTTON": "Lisensi",
     "LOGOUT_BUTTON": "Keluar",
@@ -19,6 +18,8 @@
     "TERMS_BUTTON": "Ketentuan Penggunaan",
     "TITLE": "Pengaturan",
     "TOGGLE_OFF": "Mati",
-    "TOGGLE_ON": "Hidup"
+    "TOGGLE_ON": "Hidup",
+    "REDUCED_MOTION": "Kurangi gerakan",
+    "NOTIFICATION_SAVE_FAILED": "Pengaturan notifikasi tidak dapat disimpan. Silakan coba lagi."
   }
 }

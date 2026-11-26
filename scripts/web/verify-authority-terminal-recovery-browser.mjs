@@ -25,7 +25,6 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
-${browserScope==='jest'?'':`import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'platforms/web/reddit/src/RedditGuestHostServices.ts'))};`}
 import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
 import {createSavedGame} from ${JSON.stringify(path.join(root,"src/gameplay/session/checkpoints/GameSessionCheckpoints.ts"))};
 import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,"src/gameplay/session/journal/pendingGuessJournal.ts"))};
@@ -35,10 +34,9 @@ import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=Number(params.get('attempts')??1),provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');
-${browserScope==='jest'?`const fixtureAuthority=createFakeHostServices(),completionReceipts=new Map();
+const fixtureAuthority=createFakeHostServices(),completionReceipts=new Map();
 const source={...fixtureAuthority,completeGame:input=>{const key=input.gameMode+':'+input.riddleId+':'+input.sessionToken;if(!completionReceipts.has(key))completionReceipts.set(key,fixtureAuthority.completeGame(input));return completionReceipts.get(key);}};
-const uid='jest-guest';`:`const source=attempts===6?createFakeHostServices():createRedditGuestHostServices();
-const uid=attempts===6?'jest-guest':'reddit-guest';`}
+const uid='jest-guest';
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');

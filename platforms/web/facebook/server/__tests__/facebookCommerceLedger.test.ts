@@ -3,7 +3,7 @@ import {
   grantVerifiedFacebookPurchase,
   refundVerifiedFacebookPurchase,
 } from "../facebookCommerceLedger";
-import {FACEBOOK_PRODUCTS} from "../commerce/facebookCatalog.js";
+import {FACEBOOK_PRODUCTS} from "../../src/commerce/facebookCatalog.js";
 
 /** Describes stored. */
 type Stored = Record<string, unknown>;

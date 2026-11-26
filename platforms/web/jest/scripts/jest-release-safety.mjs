@@ -283,7 +283,7 @@ export const findUnresolvedUploadBarriers = ({receiptDirectory, sourceCommit}) =
 };
 
 const mutableDependencyCacheDirectories = new Set([".cache", ".rolldown", ".vite", ".vite-temp"]);
-const releaseWorkspacePackageDirectories = ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
+const releaseWorkspacePackageDirectories = ["jest", "reddit"]
   .map(name => join("platforms", "web", name));
 const dependencyInputs = [
   "package.json",

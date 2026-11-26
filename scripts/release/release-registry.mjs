@@ -5,7 +5,7 @@ const definitions = targets.map(target => JSON.parse(readFileSync(new URL(`../..
 const sharedRuntimePackages = ["react", "react-dom", "scheduler", "three", "zod", "@babel/runtime"];
 /** Packages permitted only in Firebase-backed provider adapters. */
 const firebaseRuntimePackages = ["firebase", "@firebase/*", "@sentry/browser", "@sentry/core", "@sentry/browser-utils", "@sentry/conventions", "@sentry/feedback", "@sentry/replay", "@sentry/replay-canvas", "web-vitals", "idb", "tslib"];
-const providerRuntimePackages = {jest: [...firebaseRuntimePackages, "html2canvas-pro"], reddit: ["@devvit/*", "valibot", "jwt-decode"]};
+const providerRuntimePackages = {jest: [...firebaseRuntimePackages, "html2canvas-pro"]};
 /** Keeps generated game files inside the provider that owns them. */
 export function getWebBuildPaths(target) {
   if (typeof target !== "string" || !/^[a-z][a-z0-9-]*$/.test(target)) throw new Error("Invalid web build target");
@@ -15,25 +15,23 @@ export function getWebBuildPaths(target) {
 }
 /** Canonical build facts consumed by Vite, dependency enforcement and release evidence. */
 export const webBuildFacts = Object.freeze(Object.fromEntries(
-  ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"].map(target => [target,
+  ["jest"].map(target => [target,
     Object.freeze({...getWebBuildPaths(target), runtimePackages: Object.freeze([...sharedRuntimePackages, ...(providerRuntimePackages[target] ?? [])])})]),
 ));
 // Canonical release facts consumed by commands, CI, packaging and release evidence.
 
 
-/** Validates and freezes target facts; adding a neutral destination adds no game implementation. */
-export function createReleaseRegistry(plans, html5 = {}) {
+/** Validates and freezes target facts; only the Jest frontend has a release definition. */
+export function createReleaseRegistry(plans) {
   const targets = new Set();
   return Object.freeze(plans.map(plan => {
     if (!/^[a-z][a-z0-9-]*$/.test(plan.target) || targets.has(plan.target)) throw new Error(`Invalid or duplicate target: ${plan.target}`);
     if (!plan.displayName) throw new Error(`Missing display name: ${plan.target}`);
     targets.add(plan.target);
-    const neutral = html5[plan.target];
     return Object.freeze({...plan,
       ...(webBuildFacts[plan.target] ? {build: webBuildFacts[plan.target]} : {}),
       command: Object.freeze({...plan.command, args: Object.freeze([...plan.command.args])}),
-      delivery: neutral ? 'neutral-html5' : plan.delivery ?? 'web-target',
-      ...(neutral ? {artifact: neutral.artifact, releaseGate: neutral.boundary} : {}),
+      delivery: plan.delivery ?? 'web-target',
     });
   }));
 }
