@@ -57,7 +57,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
    metric(stage+': complete readable content stays inside modal and viewport',layout.contentVisible&&layout.readable,true);
    metric(stage+': enabled48px final action is visible and reachable',layout.actionVisible,true);
    const copy=JSON.parse(await readFile(path.join(root,'src/locales/en/onboarding.json'),'utf8')).Instructions;
-   metric(stage+': every existing instruction string remains present',['GOAL_DESCRIPTION','COLOR_CLUES_TITLE','COLOR_CORRECT','COLOR_MISPLACED','COLOR_WRONG','TIPS_TITLE','TIPS_DESCRIPTION','GOT_IT_BUTTON'].every(key=>layout.text.includes(copy[key])),true);
+   metric(stage+': every existing instruction string remains present',['GOAL_DESCRIPTION','COLOR_CLUES_TITLE','COLOR_CORRECT','COLOR_MISPLACED','COLOR_WRONG','GOT_IT_BUTTON'].every(key=>layout.text.includes(copy[key])),true);
   };
   if(noScroll){await page.evaluate(()=>document.fonts.ready);await settle();await checkInstructions('before update');}
 

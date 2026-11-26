@@ -6,9 +6,7 @@
     "COLOR_WRONG": "Huruf tidak ada dalam kata sama sekali",
     "GOAL_DESCRIPTION": "Tebak teka-teki tersembunyi dalam 5 percobaan menggunakan petunjuk warna untuk memandu Anda.",
     "GOAL_TITLE": "Tujuannya",
-    "GOT_IT_BUTTON": "Mengerti!",
-    "TIPS_DESCRIPTION": "Mulailah dengan huruf-huruf umum dan gunakan umpan balik warna untuk mempersempit tebakan Anda. Ingat, Anda hanya punya 5 kesempatan!",
-    "TIPS_TITLE": "Kiat untuk Sukses"
+    "GOT_IT_BUTTON": "Mengerti!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Ketuk untuk melanjutkan",
