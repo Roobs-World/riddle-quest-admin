@@ -28,7 +28,7 @@ import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvi
 import {hasTrustedTestHarnessMarker} from "../../../../src/app/services/testHarnessPolicy";
 import {resolveRaceChallengeId} from "./entryIntent";
 import {createJestBackend} from "./createJestBackend";
-import {JestAccountDeleted, JestStartupError, JestStartupProgress} from "./JestSessionViews";
+import {JestStartupError, JestStartupProgress} from "./JestSessionViews";
 import {useJestProductCatalog} from "./useJestProductCatalog";
 import {useJestPurchase} from "./useJestPurchase";
 import {useJestPurchaseRecovery} from "./useJestPurchaseRecovery";
@@ -39,6 +39,7 @@ import {
   completeTombstonedAccountDeletion,
   discardAccountDeletionForDifferentPlayer,
   getAccountDeletionPendingPhase,
+  getAccountDeletionPendingUid,
   isAccountDeletionCleanupPending,
   markAccountDeletionRequested,
   purgeDeletedPlayerState,
@@ -95,6 +96,17 @@ function warmJestFirebaseStartup(): void {
 
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
+  const [reset, setReset] = useState({generation: 0, deletedUid: undefined as string | undefined});
+  const restartAfterDeletion = useCallback((deletedUid?: string) =>
+    setReset(current => ({generation: current.generation + 1, deletedUid})), []);
+  return <JestPlaySession key={reset.generation} freshStart={reset.generation > 0}
+    deletedUid={reset.deletedUid} onAccountReset={restartAfterDeletion} />;
+}
+
+function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
+  freshStart: boolean; deletedUid?: string; onAccountReset: (deletedUid?: string) => void;
+}) {
+  const deletedUidRef = useRef(deletedUid);
   /** Continues the saved guest win count across Daily and Classic riddles. */
   const guestCompletedRiddlesRef = useRef<number | null>(null);
   /** Keeps completion counting and deduplication scoped to the active account. */
@@ -181,7 +193,6 @@ export function JestPlayApp() {
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
   /** Provides [account deleted, set account deleted] behavior. */
-  const [accountDeleted, setAccountDeleted] = useState(false);
   /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
   /** Provides [notification operation gate] behavior. */
@@ -343,26 +354,33 @@ export function JestPlayApp() {
   );
   /** Completes tombstoned player cleanup. */
   const completeTombstonedPlayerCleanup = useCallback(
-    async (playerSigned: string) => {
+    async (playerSigned: string, deletedUid?: string) => {
+      deletedUidRef.current = deletedUid ?? getAccountDeletionPendingUid();
       await completeTombstonedAccountDeletion(
         platform,
         playerSigned,
         notificationOperationGate,
         async (signed) => {
           /** Provides result behavior. */
-          const result = await backend.retryAccountDeletion(signed);
+          const result = await backend.retryAccountDeletion(signed, getAccountDeletionPendingUid());
           if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
+          deletedUidRef.current = result.deletedUid ?? deletedUidRef.current;
+          return result;
         },
         deletionCleanupOptions.clearFirebaseAuthentication,
+        deletedUid,
       );
       notificationOperationGate.close();
       playerStateWrites.disable();
       sessionRef.current = null;
       setSession(null);
-      setAccountDeleted(true);
     },
     [backend, deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites],
   );
+  const resetDeletedRegistration = useCallback(async (playerSigned: string) => {
+    await completeTombstonedPlayerCleanup(playerSigned);
+    onAccountReset(deletedUidRef.current);
+  }, [completeTombstonedPlayerCleanup, onAccountReset]);
   useEffect(() => {
     /** Provides active behavior. */
     let active = true;
@@ -373,8 +391,12 @@ export function JestPlayApp() {
     if (!authHarness && !mockRuntime) warmJestFirebaseStartup();
     /** Provides deletion recovery behavior. */
     void startJestSession(platform, backend, purchases, authenticateJestIdentity, setStartup, {
+      freshStart,
+      deletedUid,
+      isCurrent: () => active && notificationOperationGate.isOpen(),
       onInitialized: () => {
         discardAccountDeletionForDifferentPlayer(platform.getPlayer().playerId);
+        deletedUidRef.current = getAccountDeletionPendingUid() ?? deletedUidRef.current;
         return recoverPendingAccountDeletion(platform, "initialized", deletionCleanupOptions);
       },
       onAuthenticated: isAccountDeletionCleanupPending,
@@ -385,8 +407,10 @@ export function JestPlayApp() {
           clearFirebaseAuthentication: deletionCleanupOptions.clearFirebaseAuthentication,
           retryAuthoritativeDeletion: async () => {
             /** Provides result behavior. */
-            const result = await backend.retryAccountDeletion(playerSigned);
+            const result = await backend.retryAccountDeletion(playerSigned, getAccountDeletionPendingUid());
             if (!result.accountDeleted) throw new Error("account-deletion-recovery-rejected");
+            deletedUidRef.current = result.deletedUid ?? deletedUidRef.current;
+            return result;
           },
           waitForPendingNotificationOperations: notificationOperationGate.waitForPending,
         }).then((recovered) => {
@@ -405,7 +429,7 @@ export function JestPlayApp() {
       if (!active) return;
       if (result.status === "account-deleted") {
         notificationOperationGate.close();
-        setAccountDeleted(true);
+        onAccountReset(deletedUidRef.current);
         return;
       }
       if (result.status === "success") {
@@ -491,6 +515,9 @@ export function JestPlayApp() {
     playerStateWrites,
     purchases,
     trackFunnel,
+    freshStart,
+    deletedUid,
+    onAccountReset,
   ]);
   /** Clears app-owned browser and Jest state only after server-side account deletion succeeds. */
   const clearPlayerState = useCallback(async () => {
@@ -511,8 +538,8 @@ export function JestPlayApp() {
     }
     sessionRef.current = null;
     setSession(null);
-    setAccountDeleted(true);
-  }, [deletionCleanupOptions, notificationOperationGate, platform, playerStateWrites, trackFunnel]);
+    onAccountReset(deletedUidRef.current);
+  }, [deletionCleanupOptions, notificationOperationGate, onAccountReset, platform, playerStateWrites, trackFunnel]);
   /** Provides {
     show registration,
     registration pending,
@@ -542,7 +569,7 @@ export function JestPlayApp() {
       return typeof user.notificationsEnabled === "boolean" ? user.notificationsEnabled : undefined;
     },
     isCurrent: notificationOperationGate.isOpen,
-    completeDeletedPlayerCleanup: completeTombstonedPlayerCleanup,
+    completeDeletedPlayerCleanup: resetDeletedRegistration,
     withPlatformActivity,
     trackFunnel,
   });
@@ -624,20 +651,15 @@ export function JestPlayApp() {
     trackScreen(
       error
         ? "startup_error"
-        : accountDeleted
-          ? "account_deleted"
-          : !session
+        : !session
             ? "startup_loading"
             : !session.player.registered && showRegistration
               ? "registration_prompt"
               : "game",
     );
-  }, [accountDeleted, error, session, showRegistration]);
+  }, [error, session, showRegistration]);
   if (error) {
     return <JestStartupError message={error} />;
-  }
-  if (accountDeleted) {
-    return <JestAccountDeleted />;
   }
   if (!session || accountDeletionQuiesced) {
     return <JestStartupProgress startup={startup} />;
@@ -709,7 +731,8 @@ export function JestPlayApp() {
             onAuthoritativeComplete={handleAuthoritativeComplete}
             onAccountDeletionRequested={() => {
               analyticsLifetimeRef.current.abort();
-              markAccountDeletionRequested(platform.getPlayer().playerId);
+              deletedUidRef.current = session.firebaseUid;
+              markAccountDeletionRequested(platform.getPlayer().playerId, session.firebaseUid);
             }}
             onAccountDeleted={clearPlayerState}
           />

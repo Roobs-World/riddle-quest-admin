@@ -94,8 +94,19 @@ export function verifyJestSigned(
 }
 
 /** Provides jest firebase uid behavior. */
-export const jestFirebaseUid = (playerId: string): string =>
-  `jest_${createHmac("sha256", "riddle-quest-jest-uid-v1").update(playerId).digest("hex").slice(0, 40)}`;
+export const jestFirebaseUid = (playerId: string, accountGeneration = 1): string => {
+  if (!Number.isSafeInteger(accountGeneration) || accountGeneration < 1) throw new Error("invalid-jest-generation");
+  const identity = accountGeneration === 1 ? playerId : `${playerId}\0generation:${accountGeneration}`;
+  return `jest_${createHmac("sha256", "riddle-quest-jest-uid-v1").update(identity).digest("hex").slice(0, 40)}`;
+};
+
+export const jestGenerationFromClaims = (claims: Record<string, unknown>): number => {
+  const generation = claims.jestAccountGeneration ?? 1;
+  if (typeof generation !== "number" || !Number.isSafeInteger(generation) || generation < 1) {
+    throw new Error("invalid-jest-generation");
+  }
+  return generation;
+};
 
 /** Returns whether a Firebase UID belongs to the deterministic Jest identity namespace. */
 export const isJestFirebaseUid = (userId: string): boolean => /^jest_[0-9a-f]{40}$/.test(userId);

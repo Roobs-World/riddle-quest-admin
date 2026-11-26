@@ -2,7 +2,7 @@ import {HttpsError, type CallableRequest} from "firebase-functions/v2/https";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
 import {browserCallableSecurityOptions} from "../../../../../firebase-functions/src/shared/callableSecurity";
 import {onCallWithSentry} from "../../../../../firebase-functions/src/shared/sentryHandlers";
-import {jestFirebaseUid} from "../jestSecurity";
+import {jestFirebaseUid, jestGenerationFromClaims} from "../jestSecurity";
 import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../../firebase-functions/src/shared/accountDeletion";
 
 /** Fills an empty game avatar from the registered player's Jest profile. */
@@ -18,7 +18,7 @@ export const syncJestAvatar = onCallWithSentry(
       !uid ||
       request.auth?.token.jestRegistered !== true ||
       typeof playerId !== "string" ||
-      jestFirebaseUid(playerId) !== uid
+      jestFirebaseUid(playerId, jestGenerationFromClaims(request.auth.token)) !== uid
     ) {
       throw new HttpsError("permission-denied", "A registered Jest account is required.");
     }

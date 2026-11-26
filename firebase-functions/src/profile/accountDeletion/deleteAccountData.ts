@@ -5,7 +5,7 @@ import {admin} from "../../shared/firebaseAdmin";
 import {createJestPurchaseGrantId} from "../../../../platforms/web/jest/server/jestPurchaseReceipts";
 import {createJestReferralVerificationId} from "../../../../platforms/web/jest/server/jestReferralReceipts";
 import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
-import {isJestFirebaseUid} from "../../../../platforms/web/jest/server/jestSecurity";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {hashRaceCohortUser} from "../../race/access/raceRollout";
 import {deleteUsernameReservationAndProfiles} from "../usernameReservations";
 import {deletePresenceForUser} from "../../presence/presenceVisibility";
@@ -13,6 +13,7 @@ import {removeUserFromFacebookContextCompetitions} from "../../../../platforms/w
 import {
   deleteMatchingCollectionGroupDocuments,
   deleteMatchingDocuments,
+  settleAccountDeletionTasks,
   SINGLE_WRITE_BATCH_SIZE,
 } from "./accountDeletionBatches";
 import {removeCrossUserRaceIdentitySnapshots} from "./raceAccountDeletion";
@@ -260,18 +261,13 @@ function isMissingStorageBucket(error: unknown): boolean {
 
 /** Removes player-owned files when the project has a Firebase Storage bucket. */
 async function deletePlayerStorageFiles(userId: string): Promise<void> {
-  try {
-    await Promise.all(
-      ["avatars", "exports"].map((folder) =>
-        admin
-          .storage()
-          .bucket()
-          .deleteFiles({prefix: `${folder}/${userId}/`}),
-      ),
-    );
-  } catch (error) {
-    if (!isMissingStorageBucket(error)) throw error;
-  }
+  await settleAccountDeletionTasks(["avatars", "exports"].map(async (folder) => {
+    try {
+      await admin.storage().bucket().deleteFiles({prefix: `${folder}/${userId}/`});
+    } catch (error) {
+      if (!isMissingStorageBucket(error)) throw error;
+    }
+  }));
 }
 
 /** Permanently removes an authenticated player's Riddle Quest data and Firebase identity. */
@@ -284,7 +280,7 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
   await recordJestAccountDeletion(userId);
   await removeCrossUserRaceIdentitySnapshots(userId);
   await removeUserFromFacebookContextCompetitions(userId, db);
-  await Promise.all([
+  await settleAccountDeletionTasks([
     ...USER_OWNED_COLLECTIONS.map(({collection, field}) => deleteMatchingDocuments(collection, field, userId)),
     deleteMatchingDocuments("raceAnalytics", "cohortUserHash", hashRaceCohortUser(userId)),
     deleteMatchingDocuments("socialModerationQueue", "targetUserId", userId),
@@ -326,22 +322,21 @@ export async function deleteAccountForUser(userId: string, jestPlayerId?: string
   // removes any remaining private subcollection documents under that path.
   await db.recursiveDelete(userRef);
   await deletePlayerStorageFiles(userId);
-  if (!isJestFirebaseUid(userId)) {
-    try {
-      await admin.auth().deleteUser(userId);
-    } catch (error) {
-      if (!(
-        typeof error === "object" &&
-        error !== null &&
-        "code" in error &&
-        (
-          error as {
-            /** Stores code. */
-            code?: string;
-          }
-        ).code === "auth/user-not-found"
-      ))
-        throw error;
-    }
+  try {
+    await admin.auth().deleteUser(userId);
+  } catch (error) {
+    if (!(
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (
+        error as {
+          /** Stores code. */
+          code?: string;
+        }
+      ).code === "auth/user-not-found"
+    ))
+      throw error;
   }
+  await getJestAccountDeletionRef(db, userId).set({cleanupComplete: true}, {merge: true});
 }

@@ -33,7 +33,6 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "تعذر حذف الحساب",
     "DELETE_ACCOUNT_LOADING": "حذف...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "لقد تم حذف حسابك.",
-    "DELETE_ACCOUNT_SUCCESS_TITLE": "تم حذف الحساب",
     "EDIT_BUTTON": "تحرير",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "أدخل اسم مستخدم جديد",
     "GAMES_PLAYED_STAT": "الألعاب التي تم لعبها",

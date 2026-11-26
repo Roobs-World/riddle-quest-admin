@@ -4,11 +4,13 @@ import type {z} from "zod";
 /** Operations exposed by the authoritative Jest backend to the browser client. */
 export interface JestBackendPort {
   /** Exchanges a signed Jest player assertion for a Firebase custom token. */
-  exchangeIdentity(playerSigned: string): Promise<JestIdentityExchangeResult>;
+  exchangeIdentity(playerSigned: string, freshStart?: boolean, deletedUid?: string): Promise<JestIdentityExchangeResult>;
   /** Idempotently retries deletion from a fresh signed Jest assertion without minting auth. */
-  retryAccountDeletion(playerSigned: string): Promise<{
+  retryAccountDeletion(playerSigned: string, deletedUid?: string): Promise<{
     /** Stores account deleted. */
     accountDeleted: true;
+    deletedUid?: string;
+    activeAccountUid?: string;
   }>;
   /** Verifies and grants an idempotent signed Jest purchase. */
   grantPurchase(
@@ -56,10 +58,13 @@ export type JestIdentityExchangeResult =
       customToken: string; /** Stores uid. */
       /** Stores uid. */
       uid: string;
+      accountGeneration?: number;
+      freshAccount?: boolean;
     }
   | {
       /** Stores status. */
       status: "account-deleted";
+      deletedUid?: string;
     };
 
 /** Trusted result of reconciling Jest-signed referral registrations. */
@@ -107,6 +112,7 @@ export function resolveSecureBackendUrl(baseUrl: string, options: JestBackendCli
 
 /** HTTPS-only client for the server-authoritative Jest trust boundary. */
 export class JestBackendClient implements JestBackendPort {
+  private accountUid: string | undefined;
   /** Stores base url. */
   private readonly baseUrl: string;
   private readonly allowInsecureLoopback: boolean;
@@ -204,7 +210,7 @@ export class JestBackendClient implements JestBackendPort {
   }
 
   /** Provides exchange identity behavior. */
-  async exchangeIdentity(playerSigned: string): Promise<JestIdentityExchangeResult> {
+  async exchangeIdentity(playerSigned: string, freshStart = false, deletedUid?: string): Promise<JestIdentityExchangeResult> {
     /** Provides result behavior. */
     const result = await this.post<
       | {
@@ -212,29 +218,38 @@ export class JestBackendClient implements JestBackendPort {
           customToken: string; /** Stores uid. */
           /** Stores uid. */
           uid: string;
+          accountGeneration?: number;
+          freshAccount?: boolean;
         }
       | {
           /** Stores status. */
           status: "account-deleted";
+          deletedUid?: string;
         }
-    >("exchangeJestIdentity", {playerSigned}, import("./backendResponses").then(module => module.identityResponse), async (response, errorBody) => {
+    >("exchangeJestIdentity", {playerSigned, ...(freshStart && deletedUid ? {freshStart: true, deletedUid} : {})}, import("./backendResponses").then(module => module.identityResponse), async (response, errorBody) => {
       if (response.status !== 409) return {handled: false};
       const {deletedErrorResponse} = await import("./backendResponses");
-      if (deletedErrorResponse.safeParse(errorBody).success)
-        return {handled: true, value: {status: "account-deleted"}};
+      const deleted = deletedErrorResponse.safeParse(errorBody);
+      if (deleted.success)
+        return {handled: true, value: {status: "account-deleted", deletedUid: deleted.data.deletedUid}};
       return {handled: false};
     });
+    this.accountUid = "status" in result ? undefined : result.uid;
     return "status" in result ? result : {status: "success", ...result};
   }
   /** Provides idempotent signed account-deletion recovery without creating Firebase identity. */
-  retryAccountDeletion(playerSigned: string): Promise<{
+  retryAccountDeletion(playerSigned: string, deletedUid?: string): Promise<{
     /** Stores account deleted. */
     accountDeleted: true;
+    deletedUid?: string;
+    activeAccountUid?: string;
   }> {
     return this.post<{
       /** Stores account deleted. */
       accountDeleted: true;
-    }>("retryJestAccountDeletion", {playerSigned}, import("./backendResponses").then(module => module.deletedResponse));
+      deletedUid?: string;
+      activeAccountUid?: string;
+    }>("retryJestAccountDeletion", {playerSigned, ...(deletedUid ? {deletedUid} : {})}, import("./backendResponses").then(module => module.deletedResponse));
   }
   /** Provides grant purchase behavior. */
   grantPurchase(purchaseSigned: string, playerId: string, purchaseToken: string) {
@@ -249,11 +264,11 @@ export class JestBackendClient implements JestBackendPort {
       newCoins: number;
       /** Stores newly unlocked achievement ids. */
       newlyUnlockedAchievementIds?: string[];
-    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken}, import("./backendResponses").then(module => module.purchaseResponse));
+    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken, accountUid: this.accountUid}, import("./backendResponses").then(module => module.purchaseResponse));
   }
   /** Provides verify referrals behavior. */
   verifyReferrals(referralsSigned: string, playerId: string) {
-    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId},
+    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId, accountUid: this.accountUid},
       import("./backendResponses").then(module => module.referralResponse));
   }
   /** Provides sync subscriptions behavior. */
@@ -269,6 +284,6 @@ export class JestBackendClient implements JestBackendPort {
       premiumCoinsAwarded?: number;
       /** Coin balance after this sync. */
       newCoins?: number;
-    }>("syncJestSubscriptions", {subscriptionsSigned, playerId}, import("./backendResponses").then(module => module.subscriptionResponse));
+    }>("syncJestSubscriptions", {subscriptionsSigned, playerId, accountUid: this.accountUid}, import("./backendResponses").then(module => module.subscriptionResponse));
   }
 }

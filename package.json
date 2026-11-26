@@ -41,6 +41,7 @@
     "validate:w3c": "node scripts/web/validate-w3c.mjs",
     "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/runtime/run-with-functions-node.js firebase-functions/scripts/runtime/verify-node-runtime.js",
     "verify:production": "pnpm check:braces-security && pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm check:facebook-secrets && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm build && pnpm check:w3c && pnpm preflight:jest-upload",
+    "verify:production:jest": "pnpm verify:production",
     "check:facebook-profile-boundary": "node platforms/web/facebook/scripts/audit-facebook-profile-boundary.mjs",
     "check:facebook-secrets": "node platforms/web/facebook/scripts/audit-facebook-secret-boundary.mjs",
     "preflight:facebook-backend": "pnpm check:facebook-secrets && pnpm --dir firebase-functions preflight:facebook-backend"

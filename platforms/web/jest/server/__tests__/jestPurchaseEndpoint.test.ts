@@ -5,15 +5,20 @@ const documents = new Map<string, Record<string, unknown>>();
 /** Firestore document IDs requested by endpoint code. */
 const requestedDocumentIds: string[] = [];
 /** Transactional document creation mock. */
-const mockCreate = jest.fn();
+const mockCreate = jest.fn((ref: {path: string}, data: Record<string, unknown>) => documents.set(ref.path, data));
 /** Transactional document update mock. */
-const mockUpdate = jest.fn();
+const mockUpdate = jest.fn((ref: {path: string}, data: Record<string, unknown>) => {
+  const next = {...documents.get(ref.path), ...data};
+  for (const [key, value] of Object.entries(next)) if (value === "field-delete") delete next[key];
+  documents.set(ref.path, next);
+});
+const mockSet = jest.fn((ref: {path: string}, data: Record<string, unknown>, options?: {merge?: boolean}) => documents.set(ref.path, {...(options?.merge ? documents.get(ref.path) : {}), ...data}));
 /** Transactional document deletion mock. */
 const mockDelete = jest.fn();
 /** Firebase custom-token creation mock. */
 const mockCreateCustomToken = jest.fn(async () => "custom-token");
 /** Authoritative deletion-only retry mock. */
-const mockDeleteAccountForUser = jest.fn(async () => undefined);
+const mockDeleteAccountForUser = jest.fn(async (_uid: string, _playerId?: string) => undefined);
 /** Deployment options captured for each exported Jest HTTP boundary. */
 const deployedOptions = new Map<string, Record<string, unknown>>();
 
@@ -21,7 +26,7 @@ const deployedOptions = new Map<string, Record<string, unknown>>();
 const snapshot = (path: string) => {
   /** Provides data behavior. */
   const data = documents.get(path);
-  return {exists: data !== undefined, data: () => data};
+  return {exists: data !== undefined, data: () => data, get: (field: string) => data?.[field]};
 };
 
 /** Firestore transaction runner used by the purchase endpoint. */
@@ -40,6 +45,7 @@ const runTransaction = jest.fn(
       update: typeof mockUpdate;
       /** Stores delete. */
       delete: typeof mockDelete;
+      set: typeof mockSet;
     }) => Promise<void>,
   ) =>
     operation({
@@ -47,6 +53,7 @@ const runTransaction = jest.fn(
       create: mockCreate,
       update: mockUpdate,
       delete: mockDelete,
+      set: mockSet,
     }),
 );
 
@@ -65,13 +72,14 @@ const firestore = Object.assign(
           /** Provides get behavior. */
           get(): Promise<ReturnType<typeof snapshot>>;
         };
+        Object.defineProperty(ref, "id", {value: id, enumerable: false});
         Object.defineProperty(ref, "get", {value: async () => snapshot(path), enumerable: false});
         return ref;
       },
     }),
     runTransaction,
   }),
-  {FieldValue: {serverTimestamp: () => "server-timestamp"}},
+  {FieldValue: {serverTimestamp: () => "server-timestamp", delete: () => "field-delete"}},
 );
 
 jest.mock("../../../../../firebase-functions/src/shared/firebaseAdmin", () => ({
@@ -81,7 +89,7 @@ jest.mock("../../../../../firebase-functions/src/shared/firebaseAdmin", () => ({
   },
 }));
 jest.mock("../jestSecurity", () => ({
-  jestFirebaseUid: (playerId: string) => `uid-${playerId}`,
+  jestFirebaseUid: (playerId: string, generation = 1) => generation === 1 ? `uid-${playerId}` : `uid-${playerId}-g${generation}`,
   verifyJestSigned: () => verifiedPayload,
 }));
 jest.mock("../../../../../firebase-functions/src/profile/accountDeletion/deleteAccountData", () => ({
@@ -172,7 +180,7 @@ const invokeIdentity = async (body: Record<string, unknown> = {playerSigned: "si
 };
 
 /** Invokes the dedicated signed deletion-only retry handler. */
-const invokeDeletionRetry = async () => {
+const invokeDeletionRetry = async (body: Record<string, unknown> = {playerSigned: "signed"}) => {
   /** Provides output behavior. */
   const output = response();
   await (
@@ -186,7 +194,7 @@ const invokeDeletionRetry = async () => {
   )(
     {
       ...request("unused", "deletion-retry"),
-      body: {playerSigned: "signed"},
+      body,
     },
     output,
   );
@@ -201,6 +209,11 @@ describe("grantJestPurchase receipt idempotency", () => {
     jest.clearAllMocks();
     documents.clear();
     requestedDocumentIds.length = 0;
+    mockDeleteAccountForUser.mockImplementation(async (uid: string) => {
+      documents.delete(`users/${uid}`);
+      const path = `jestAccountDeletionTombstones/${uid}`;
+      documents.set(path, {...documents.get(path), recreationBlocked: true, cleanupComplete: true});
+    });
   });
 
   it("deploys every signed browser endpoint with deterministic public ingress", () => {
@@ -232,6 +245,87 @@ describe("grantJestPurchase receipt idempotency", () => {
     expect(mockCreate).not.toHaveBeenCalledWith({path: "users/uid-player-1"}, expect.anything());
   });
 
+  it("creates a clean generation only after the requested deletion finishes", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    documents.set("jestAccountDeletionTombstones/uid-player-1", {recreationBlocked: true});
+    documents.set("users/uid-player-1", {coins: 9000, premiumCoinsGrantedAt: 123456, stats: {xp: 500, level: 20}});
+    const freshStart = {playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"};
+    expect((await invokeIdentity(freshStart)).statusCode).toBe(409);
+    await invokeDeletionRetry();
+    const result = await invokeIdentity(freshStart);
+    expect(result).toMatchObject({statusCode: 200, body: {uid: "uid-player-1-g2", accountGeneration: 2, freshAccount: true}});
+    expect(documents.get("users/uid-player-1-g2")).toMatchObject({coins: 300, stats: {xp: 0, level: 1}, progress: {classicIndex: 1}, unlockedAchievements: []});
+    expect([...documents.entries()].find(([path]) => path.startsWith("providerIdentities/"))?.[1]).toMatchObject({premiumCoinsGrantedAt: 123456});
+    expect(mockCreateCustomToken).toHaveBeenCalledWith("uid-player-1-g2", expect.objectContaining({jestAccountGeneration: 2}));
+    expect((await invokeIdentity(freshStart)).body).toMatchObject({uid: "uid-player-1-g2", freshAccount: false});
+  });
+
+  it("old deletion retries preserve a replacement account and expose its UID", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    documents.set("jestAccountDeletionTombstones/uid-player-1", {recreationBlocked: true});
+    await invokeDeletionRetry();
+    await invokeIdentity({playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"});
+    documents.set("users/uid-player-1-g2", {coins: 777});
+    mockDeleteAccountForUser.mockClear();
+    expect((await invokeDeletionRetry()).body).toMatchObject({accountDeleted: true, deletedUid: "uid-player-1", activeAccountUid: "uid-player-1-g2"});
+    expect((await invokeDeletionRetry({playerSigned: "signed", deletedUid: "uid-player-1"})).statusCode).toBe(200);
+    expect(mockDeleteAccountForUser).not.toHaveBeenCalled();
+    expect(documents.get("users/uid-player-1-g2")).toEqual({coins: 777});
+  });
+
+  it("recovers a legacy initial deletion marker even when its first server request never started", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    documents.set("users/uid-player-1", {coins: 999});
+    expect((await invokeDeletionRetry()).body).toMatchObject({accountDeleted: true, deletedUid: "uid-player-1"});
+    expect(mockDeleteAccountForUser).toHaveBeenCalledWith("uid-player-1", "player-1");
+    expect(documents.has("users/uid-player-1")).toBe(false);
+    expect((await invokeIdentity({playerSigned: "signed", freshStart: true})).statusCode).toBe(401);
+  });
+
+  it("never uses the legacy initial-generation fallback for an active replacement", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    await invokeDeletionRetry();
+    await invokeIdentity({playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"});
+    const provider = [...documents.entries()].find(([path]) => path.startsWith("providerIdentities/"))![1];
+    delete provider.lastDeletedUid;
+    mockDeleteAccountForUser.mockClear();
+    expect((await invokeDeletionRetry()).statusCode).toBe(400);
+    expect(mockDeleteAccountForUser).not.toHaveBeenCalled();
+    expect(documents.get("users/uid-player-1-g2")?.coins).toBe(300);
+  });
+
+  it("rejects legacy purchase requests from an old client after recreation", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    documents.set("jestAccountDeletionTombstones/uid-player-1", {recreationBlocked: true});
+    await invokeDeletionRetry();
+    await invokeIdentity({playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"});
+    verifiedPayload = {purchase: {purchaseToken: "old-client-token", productSku}};
+    expect((await invokePurchase("old-client-token", "old-client")).statusCode).toBe(400);
+    expect(documents.get("users/uid-player-1-g2")?.coins).toBe(300);
+  });
+
+  it("does not release fresh start while a concurrent deletion sweep is still running", async () => {
+    verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    let release: () => void = () => undefined;
+    let entered: () => void = () => undefined;
+    const started = new Promise<void>((resolve) => { entered = resolve; });
+    const pending = new Promise<void>((resolve) => { release = resolve; });
+    mockDeleteAccountForUser.mockImplementationOnce(async (uid) => {
+      const path = `jestAccountDeletionTombstones/${uid}`;
+      documents.set(path, {...documents.get(path), cleanupComplete: true});
+      entered();
+      await pending;
+    });
+    const deleting = invokeDeletionRetry({playerSigned: "signed", deletedUid: "uid-player-1"});
+    await started;
+    expect((await invokeDeletionRetry({playerSigned: "signed", deletedUid: "uid-player-1"})).statusCode).toBe(409);
+    expect((await invokeIdentity({playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"})).statusCode).toBe(409);
+    release();
+    expect((await deleting).statusCode).toBe(200);
+    expect((await invokeIdentity({playerSigned: "signed", freshStart: true, deletedUid: "uid-player-1"})).statusCode).toBe(200);
+    expect(mockDeleteAccountForUser).toHaveBeenCalledTimes(1);
+  });
+
   it("withholds a token when deletion commits during custom-token minting", async () => {
     verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
     mockCreateCustomToken.mockImplementationOnce(async () => {
@@ -259,6 +353,7 @@ describe("grantJestPurchase receipt idempotency", () => {
 
   it("keeps deletion retryable while an older authenticated operation drains", async () => {
     verifiedPayload = {sub: "player-1", player: {playerId: "player-1", registered: true}};
+    documents.set("jestAccountDeletionTombstones/uid-player-1", {recreationBlocked: true});
     mockDeleteAccountForUser.mockRejectedValueOnce(new Error("account-deletion-in-progress"));
 
     await expect(invokeDeletionRetry()).resolves.toMatchObject({

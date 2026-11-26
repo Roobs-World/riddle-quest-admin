@@ -36,15 +36,6 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   liveRaceLobby: "riddleQuest:liveRaceLobby",
 } as const;
 
-/** Local-storage prefixes containing app-owned tooltip state. */
-const GUIDANCE_STORAGE_PREFIXES = [
-  "riddleQuest:achievementFanfare:",
-  "riddleQuest:tooltipSeen:",
-  "riddleQuest:tooltipSequenceSeen:",
-  "riddleQuest:notificationEnrollment:",
-] as const;
-/** Session-storage prefixes containing app-owned transient guidance state. */
-const SESSION_GUIDANCE_STORAGE_PREFIXES = ["riddleQuest:welcomeSession:"] as const;
 /** Supported locale identifiers accepted from low-integrity persisted preferences. */
 const supportedLocales = new Set<Locale>(LANGUAGE_OPTIONS.map(({code}) => code));
 /** Active platform listeners that persist user-initiated preference changes. */
@@ -257,42 +248,34 @@ export function subscribeToPlayerReducedMotion(subscriber: () => void): () => vo
   };
 }
 
-/** Removes exact app-owned browser state after authoritative account deletion. */
-export function clearBrowserPlayerState(): void {
-  /** Removes keys. */
-  const removeKeys = (storage: Storage | undefined, exactKeys: readonly string[], prefixes: readonly string[]) => {
+/** Clears browser persistence after deletion, retaining only temporary recovery protocol keys. */
+export function clearBrowserPlayerState(preserveKeys: readonly string[] = []): void {
+  const preserved = new Set(preserveKeys);
+  const removeKeys = (storage: Storage | undefined) => {
     if (!storage) return;
-    /** Provides keys behavior. */
     const keys = Array.from({length: storage.length}, (_, index) => storage.key(index)).filter(
-      (key): key is string => key !== null,
+      (key): key is string => key !== null && !preserved.has(key),
     );
-    /** Provides player keys behavior. */
-    const playerKeys = keys.filter(
-      (key) => exactKeys.includes(key) || prefixes.some((prefix) => key.startsWith(prefix)),
-    );
-    playerKeys.forEach((key) => storage.removeItem(key));
-    /** Provides remaining keys behavior. */
-    const remainingKeys = Array.from({length: storage.length}, (_, index) => storage.key(index)).filter(
-      (key): key is string => key !== null,
-    );
-    if (remainingKeys.some((key) => exactKeys.includes(key) || prefixes.some((prefix) => key.startsWith(prefix)))) {
-      throw new Error("browser-player-state-clear-incomplete");
+    const failures: unknown[] = [];
+    for (const key of keys) {
+      try {storage.removeItem(key);} catch (error) {failures.push(error);}
     }
+    const remaining = Array.from({length: storage.length}, (_, index) => storage.key(index));
+    if (remaining.some(key => key !== null && !preserved.has(key))) {
+      failures.push(new Error("browser-player-state-clear-incomplete"));
+    }
+    if (failures.length > 0) throw new AggregateError(failures, "browser-player-state-clear-incomplete");
   };
 
   /** Provides failures behavior. */
   const failures: unknown[] = [];
   try {
-    removeKeys(
-      getBrowserStorage("local", true),
-      [...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS), "riddleQuest:highContrast"],
-      GUIDANCE_STORAGE_PREFIXES,
-    );
+    removeKeys(getBrowserStorage("local", true));
   } catch (error) {
     failures.push(error);
   }
   try {
-    removeKeys(getBrowserStorage("session", true), [], SESSION_GUIDANCE_STORAGE_PREFIXES);
+    removeKeys(getBrowserStorage("session", true));
   } catch (error) {
     failures.push(error);
   } finally {
