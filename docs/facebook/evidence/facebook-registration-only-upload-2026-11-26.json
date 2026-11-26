@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-26",
+  "appId": "1748953042991569",
+  "sourceCommit": "c14ad8248253a27a0aecf190d5c609baff956974",
+  "authorization": {
+    "upload": "Existing explicit request to update Facebook using the package uploader",
+    "activation": "Explicit request to activate the build once uploaded",
+    "activationRemainsAuthorizedAfterCredentialRefresh": true,
+    "appModeChangeRequested": false,
+    "reviewSubmissionRequested": false
+  },
+  "requestedBehavior": {
+    "registrationOnlyImplementationCommit": "89eb0c737e39327fe7fc369e2c743aa934d914f6",
+    "gameSavesConsentAndIssuesManagerHandoff": true,
+    "gameDeviceStatusPollingRemoved": true,
+    "gameEnrollmentResponseListenerRemoved": true,
+    "managerAndDeviceRetainDeliveryOwnership": true
+  },
+  "previousVersion8": {
+    "version": 8,
+    "bundleInstanceId": "40318677164443644",
+    "sourceCommit": "304a1b925a69c93ef49b0dd083a35e870a176739",
+    "archiveSha256": "262621f7a15de0c5a7250c2a876b7c724810e1ef4b457df6c9996d51bb17eeb7",
+    "submissionIdentityReconciled": true,
+    "basis": "The verified immutable archive and successful upload receipt are bound to exactly one new bundle in complete before/after inventories. A fresh authenticated inventory still contains that bundle.",
+    "currentInventoryCheckedAt": "2026-11-26T02:55:58.859Z",
+    "canonicalAcceptCommandUsed": true,
+    "localBarrierStatus": "accepted",
+    "processingReadinessConfirmed": false,
+    "processingLimitation": "The documented Bundles read API exposes identity and version, not processing readiness.",
+    "activatedDuringReconciliation": false,
+    "archiveAndOriginalReceiptsPreserved": true,
+    "retransmitted": false
+  },
+  "build": {
+    "command": "pnpm preflight:facebook-upload",
+    "passed": true,
+    "sourceCleanAndPushed": true,
+    "artifactFiles": 413,
+    "archiveEntries": 414,
+    "archiveBytes": 2897897,
+    "archiveSha256": "7f5df9bfaef376d161fb6932b5d55f094c79b70b41550f8520f87de4858d02ad",
+    "immutableArchiveRetained": true,
+    "canonicalUploadDryRunPassed": true,
+    "checks": [
+      "platform layout and target boundaries",
+      "Facebook commerce activation",
+      "locale completeness",
+      "third-party licenses",
+      "TypeScript",
+      "Facebook artifact isolation and notification ownership",
+      "Meta secret boundary"
+    ],
+    "jestGameBuildPerformed": false,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "uploadAttempt": {
+    "command": "pnpm facebook:draft upload --archive-hash 7f5df9bfaef376d161fb6932b5d55f094c79b70b41550f8520f87de4858d02ad",
+    "recordedAt": "2026-11-26T02:57:50.604Z",
+    "sessionAttempts": 1,
+    "failedStage": "session",
+    "httpStatus": 401,
+    "providerErrorType": "OAuthException",
+    "providerErrorCode": 190,
+    "providerReason": "credential-rejected",
+    "responseBytes": 130,
+    "responseSha256": "03daedd3d1a06fb46060928fed13bb8ad4daa0a4a27a0f983fe7114acd0f73fc",
+    "archiveStageOccurred": false,
+    "binaryGameBytesTransmitted": 0,
+    "newBundleCreated": false,
+    "retriedWithRejectedCredential": false
+  },
+  "inventoryReconciliation": {
+    "provider": "Authenticated Meta Bundles API",
+    "beforeCheckedAt": "2026-11-26T02:57:32.064Z",
+    "afterCheckedAt": "2026-11-26T02:58:28.078Z",
+    "beforeHttpStatus": 200,
+    "afterHttpStatus": 200,
+    "completeBeforeAndAfter": true,
+    "versionsBeforeAndAfter": [8, 7, 6, 5, 4, 3, 2, 1],
+    "inventoryUnchanged": true,
+    "rejectedSessionBarrierStatus": "reconciled-absent",
+    "privateEvidenceSha256": "808edba8b311a2090b248fd812575ad7dc7917cd7e6f6df095425f548dea95da",
+    "allHandoffsSettled": true,
+    "archivesAndFailureReceiptsPreserved": true,
+    "rolloutBeforeAttempt": {
+      "checkedAt": "2026-11-26T02:57:33.105Z",
+      "httpStatus": 200,
+      "bundleInstanceId": null,
+      "rolloutPercentage": null,
+      "limitation": "Rollout is a separate assignment and does not prove the current production bundle."
+    }
+  },
+  "credentialDiagnosis": {
+    "endpoint": "Meta Graph API debug_token",
+    "checkedAt": "2026-11-26T03:00:19.691Z",
+    "httpStatus": 200,
+    "isValid": false,
+    "errorCode": 190,
+    "errorSubcode": null,
+    "expiryReported": false,
+    "scopesReported": [],
+    "roleEligibility": "Not established with the invalid token",
+    "credentialSource": "ignored root .env",
+    "longLivedExchangeAttempted": false,
+    "refreshLimitation": "Meta requires a valid User token for its short-to-long-lived exchange. The stored credential does not meet that prerequisite.",
+    "connectedCredentialRefreshToolAvailable": false,
+    "existingAdminBrowserAvailable": false,
+    "browserLimitations": "Chrome remote debugging is unavailable, the Firefox tool exits before opening, and CUA reports no connected browser or app."
+  },
+  "activation": {
+    "requested": true,
+    "attempted": false,
+    "pending": true,
+    "reason": "No new bundle was uploaded because Meta rejected the session credential.",
+    "testingAssignmentChanged": false,
+    "productionAssignmentChanged": false,
+    "appModeChanged": false,
+    "reviewSubmitted": false
+  },
+  "nextStep": "Save a valid User or System User upload credential authorized as an admin or developer of this app in the ignored root .env as FACEBOOK_APP_ACCESS_TOKEN. Run fresh canonical preflight from the final clean pushed main, upload once, and activate the exact new bundle under the existing authorization. Preserve these earlier archives and receipts.",
+  "secretsOrActorIdentifiersExposed": false,
+  "references": [
+    "https://developers.facebook.com/documentation/games/launch/upload-bundle",
+    "https://developers.facebook.com/docs/graph-api/reference/debug_token/",
+    "https://developers.facebook.com/documentation/facebook-login/guides/access-tokens/get-long-lived"
+  ]
+}

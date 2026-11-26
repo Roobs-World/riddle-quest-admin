@@ -1,0 +1,196 @@
+{
+  "recordedAt": "2026-11-26",
+  "status": "read-only-audit-rollout-pending",
+  "sourceCommit": "c14ad8248253a27a0aecf190d5c609baff956974",
+  "branch": "main",
+  "workingTreeClean": true,
+  "liveProbeWindow": {
+    "first": "2026-11-26T02:52:29.627Z",
+    "last": "2026-11-26T02:56:03.000Z"
+  },
+  "targets": {
+    "supabaseProjectRef": "vqyjgcqyudqonfhgymoy",
+    "firebaseProjectId": "riddle-quest-ec2b2",
+    "vercelProjectId": "prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz",
+    "edgeFunction": "fcm-push"
+  },
+  "vercel": {
+    "deploymentId": "dpl_9f5w34qdEX3VRRkpSZuRhkVhPAMk",
+    "state": "READY",
+    "target": "production",
+    "sourceCommit": "2e18916ed43fee9f77396f6b31317bd831a9e0d4",
+    "url": "https://riddle-quest-admin.vercel.app",
+    "deploymentUrl": "https://riddle-quest-admin-o6s23ktai.vercel.app",
+    "pushPageStatus": 200,
+    "workerStatus": 200,
+    "workerSha256": "0f77254913926c284ef0a05127bf185340d25d665670d68824abfc147d329544",
+    "currentSourceWorkerSha256": "8ead29a2648c9812989559e3cd299e85dc0b744b5fb6f6985eeab898355f1ef7",
+    "workerMatchesFcmSource": false,
+    "fcmCspReleased": false,
+    "dashboardAsset": {
+      "status": 200,
+      "globalUpcomingLabel": true,
+      "pushAcceptanceLabel": true,
+      "browserRegistrationSubtitle": true,
+      "misleadingFirebaseAccountsLabel": false
+    },
+    "productionConfigurationNamesPresent": [
+      "ANDROID_NOTIFICATION_BRIDGE_URL",
+      "FIREBASE_NOTIFICATION_TARGETS",
+      "FIREBASE_NOTIFICATION_BRIDGE_URL",
+      "NOTIFICATION_MANAGER_URL",
+      "CRON_SECRET",
+      "NOTIFICATION_MANAGER_BRIDGE_SECRET",
+      "SUPABASE_URL",
+      "SUPABASE_PUBLISHABLE_KEY",
+      "SUPABASE_SECRET_KEY",
+      "SUPABASE_SERVICE_ROLE_KEY"
+    ],
+    "serverCredentialValuesRead": false
+  },
+  "supabase": {
+    "mcpToolsAvailable": false,
+    "cliVersion": "3.2.0",
+    "functionInventoryRead": {
+      "result": "blocked",
+      "errorCode": "AccessTokenRequiredError",
+      "projectRef": "vqyjgcqyudqonfhgymoy"
+    },
+    "environmentAccessTokenPresent": false,
+    "standardSavedCliTokenFilesPresent": false,
+    "administrativeBrowserSession": "Supabase sign-in required",
+    "edgeUnsignedHealth": {
+      "url": "https://vqyjgcqyudqonfhgymoy.supabase.co/functions/v1/fcm-push/health",
+      "httpStatus": 404,
+      "code": "NOT_FOUND"
+    },
+    "edgeFunctionLive": false,
+    "edgeSecretNamesRemotelyVerified": false,
+    "migrationHistoryFreshlyVerified": false,
+    "fcmCommitChangesDatabaseSchema": false,
+    "localMigrationVersions": [
+      "20261124055801",
+      "20261124060208",
+      "20261124080803"
+    ],
+    "dataApiReadback": {
+      "status": "not performed",
+      "reason": "No approved local server key or database credential available; production server keys are sensitive and not exported.",
+      "deviceCount": null,
+      "originalCampaignStatuses": null
+    },
+    "anonymousRlsCountsUsed": false,
+    "protectionBypassed": false
+  },
+  "googleProvisioning": {
+    "serviceAccount": "notification-fcm-sender",
+    "role": "projects/riddle-quest-ec2b2/roles/notificationFcmSender",
+    "permissions": [
+      "cloudmessaging.messages.create"
+    ],
+    "onlyProjectRoleVerified": true,
+    "secretVersions": {
+      "FCM_SERVICE_ACCOUNT_JSON": {
+        "version": 1,
+        "state": "ENABLED"
+      },
+      "NOTIFICATION_FCM_EDGE_SECRET": {
+        "version": 1,
+        "state": "ENABLED"
+      }
+    },
+    "secretValuesRead": false,
+    "enabledApis": [
+      "fcm.googleapis.com",
+      "fcmregistrations.googleapis.com",
+      "firebaseinstallations.googleapis.com"
+    ]
+  },
+  "firebaseRuntime": {
+    "notificationBrowserBridge": {
+      "state": "ACTIVE",
+      "revision": "notificationbrowserbridge-00002-quq",
+      "updateTime": "2026-11-24T10:39:59.309451485Z",
+      "edgeUrlConfigured": false,
+      "edgeSecretAttached": false,
+      "browserFcmConfigurationPresent": false
+    },
+    "dispatchFirebaseNotification": {
+      "state": "ACTIVE",
+      "revision": "dispatchfirebasenotification-00002-ces",
+      "updateTime": "2026-11-24T11:24:00.843688407Z",
+      "edgeUrlConfigured": false,
+      "edgeSecretAttached": false
+    },
+    "dispatchAndroidNotification": {
+      "state": "ACTIVE",
+      "revision": "dispatchandroidnotification-00001-feg",
+      "updateTime": "2026-11-24T08:15:30.780603719Z",
+      "edgeUrlConfigured": false,
+      "edgeSecretAttached": false
+    },
+    "ignoredLocalConfiguration": {
+      "approvedEdgeUrlConfigured": true,
+      "browserFcmConfigurationPresent": false
+    }
+  },
+  "browserVapid": {
+    "localConfigurationPresent": false,
+    "deployedConfigurationPresent": false,
+    "certificateExistenceInFirebaseConsole": "not verified",
+    "administrativeBrowserSession": "Google sign-in required",
+    "supportedCertificateReadApiEstablishedByAudit": false,
+    "documentedSetup": "Firebase Console Cloud Messaging > Web configuration > Web Push certificates displays the associated public key. Associate a generated or imported pair with the Firebase project before configuring the client.",
+    "documentation": "https://firebase.google.com/docs/cloud-messaging/web/get-started",
+    "existingLegacyWebPushKeyRotated": false
+  },
+  "remainingActions": [
+    "Restore scoped Supabase administrative authentication; do not repeat login attempts until the user reports connection restored.",
+    "Verify existing Supabase functions, Edge secret names and migration history after access is restored.",
+    "Configure the two existing prepared credential values privately from Google Secret Manager without rotation.",
+    "Deploy only fcm-push and verify unsigned rejection plus authenticated read-only health.",
+    "Obtain and verify the Firebase-associated public browser VAPID key and complete NOTIFICATION_FCM_WEB_CONFIG.",
+    "Deploy notificationBrowserBridge, dispatchFirebaseNotification, dispatchAndroidNotification and getNotificationEnrollmentStatus; the status callable needs the new device union for legacy clients.",
+    "Build and deploy the manager to the existing Vercel project after its backend supports configuration-fcm and enroll-fcm.",
+    "Read authoritative aggregate device counts and the original two campaign statuses after approved database access is available."
+  ],
+  "constraints": {
+    "deploymentsPerformed": 0,
+    "databaseWrites": 0,
+    "accountsCreated": 0,
+    "devicesCreated": 0,
+    "notificationSends": 0,
+    "gameBuilds": 0,
+    "gameUploads": 0,
+    "automatedTests": "not run",
+    "browserHarnesses": "not run",
+    "administrativeBrowserInspection": "read only",
+    "rawSecretsOrTokensOutput": false
+  },
+  "apiKeyRestrictionsAudit": {
+    "checkedAt": "2026-11-26T02:59:41.470Z",
+    "approvedProjectId": "riddle-quest-ec2b2",
+    "approvedWebAppId": "1:329028367192:web:37b64d1d3c78e8b8b7eb2d",
+    "firebaseSdkConfigurationRead": "successful",
+    "firebaseWebAppMetadataRead": "successful",
+    "supportedMetadataRoutes": [
+      "keys.lookupKey",
+      "projects.locations.keys.get"
+    ],
+    "metadataHttpStatus": 403,
+    "errorCode": "PERMISSION_DENIED",
+    "reason": "SERVICE_DISABLED",
+    "service": "apikeys.googleapis.com",
+    "managerOriginAdmitted": null,
+    "installationsApiAllowed": null,
+    "fcmRegistrationApiAllowed": null,
+    "interpretation": "API Keys metadata service is disabled; actual key restrictions remain unknown. This does not establish a delivery restriction or require this metadata API for FCM runtime.",
+    "nextDiagnostic": "Inspect the approved key restrictions through an authenticated Cloud Console, or enable the API Keys metadata service only within an authorized project configuration action and repeat the read.",
+    "apiKeyStringsOutput": false,
+    "restrictionsChanged": false,
+    "documentation": [
+      "https://cloud.google.com/api-keys/docs/reference/rest/v2/keys/lookupKey",
+      "https://cloud.google.com/api-keys/docs/reference/rest/v2/projects.locations.keys/get"
+    ]
+  }
+}
