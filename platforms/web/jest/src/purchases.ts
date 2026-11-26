@@ -26,13 +26,33 @@ export class JestPurchaseCoordinator {
   private readonly platform: JestPlatformPort;
   /** Stores backend. */
   private readonly backend: JestBackendPort;
+  /** Subscription syncs publish durable grants before returning catalog or checkout results. */
+  private readonly subscriptionBackend: Pick<JestBackendPort, "syncSubscriptions">;
   /** Holds the whole preflight, checkout, and entitlement verification sequence. */
   private subscriptionCheckoutPending = false;
 
   /** Creates a jest purchase coordinator instance. */
-  constructor(platform: JestPlatformPort, backend: JestBackendPort) {
+  constructor(platform: JestPlatformPort, backend: JestBackendPort, options: {
+    /** Captures the account before verification so a later grant cannot refresh a replacement session. */
+    captureSubscriptionGrantRefresh?: (playerId: string) => (() => Promise<unknown>) | undefined;
+  } = {}) {
     this.platform = platform;
     this.backend = backend;
+    this.subscriptionBackend = {
+      syncSubscriptions: async (signed, playerId) => {
+        const refreshProfile = options.captureSubscriptionGrantRefresh?.(playerId);
+        const verified = await backend.syncSubscriptions(signed, playerId);
+        if ((verified.premiumCoinsAwarded ?? 0) > 0 && refreshProfile) {
+          try {
+            await refreshProfile();
+          } catch (error) {
+            // The durable grant remains successful; normal recovery wakes retry the profile read.
+            captureBrowserException(error, {component: "jest_purchases", operation: "refresh_subscription_grant"});
+          }
+        }
+        return verified;
+      },
+    };
   }
 
   /** Gets products. */
@@ -47,7 +67,7 @@ export class JestPurchaseCoordinator {
   /** Keeps subscription-only verification and projection out of ordinary game startup. */
   async getSubscriptions(playerId: string, locale?: string): Promise<PlatformResult<ProductSummary[]>> {
     const {loadSubscriptionCatalog} = await import("./subscriptionCatalog");
-    return loadSubscriptionCatalog({platform: this.platform, backend: this.backend, playerId, locale});
+    return loadSubscriptionCatalog({platform: this.platform, backend: this.subscriptionBackend, playerId, locale});
   }
 
   /** Provides subscribe behavior. */
@@ -84,7 +104,7 @@ export class JestPurchaseCoordinator {
       const {checkoutSubscription} = await import("./subscriptionCheckout");
       return await checkoutSubscription({
         platform: this.platform,
-        backend: this.backend,
+        backend: this.subscriptionBackend,
         subscriptionSku,
         playerId,
         getSubscriptions: async () => {

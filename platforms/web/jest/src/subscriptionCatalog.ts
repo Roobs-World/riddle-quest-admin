@@ -9,7 +9,7 @@ const isCurrency = (value: string) => /^[A-Z]{3}$/.test(value);
 /** Subscription verification and presentation are needed only for the subscription catalog. */
 export async function loadSubscriptionCatalog({platform, backend, playerId, locale}: {
   platform: JestPlatformPort;
-  backend: JestBackendPort;
+  backend: Pick<JestBackendPort, "syncSubscriptions">;
   playerId: string;
   locale?: string;
 }): Promise<PlatformResult<ProductSummary[]>> {

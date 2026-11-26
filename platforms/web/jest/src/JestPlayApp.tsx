@@ -137,8 +137,6 @@ export function JestPlayApp() {
   );
   /** Provides backend behavior. */
   const backend = useMemo(() => createJestBackend({authHarness, mockRuntime}), [authHarness, mockRuntime]);
-  /** Provides purchases behavior. */
-  const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
   useLayoutEffect(() => {
@@ -200,6 +198,19 @@ export function JestPlayApp() {
   /** Provides session ref behavior. */
   const sessionRef = useRef<JestSession | null>(null);
   sessionRef.current = session;
+  /** Catalog reconciliation may award monthly coins even without a new checkout. */
+  const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend, {
+    captureSubscriptionGrantRefresh: playerId => {
+      const owner = sessionRef.current;
+      if (!owner || owner.player.playerId !== playerId || !notificationOperationGate.isOpen()) return undefined;
+      return async () => {
+        if (!notificationOperationGate.isOpen() || sessionRef.current?.player.playerId !== playerId ||
+          sessionRef.current.firebaseUid !== owner.firebaseUid) return;
+        // Subscription sync already holds the deletion gate; a nested lock could block cleanup.
+        await hostServices.loadProfile(owner.firebaseUid);
+      };
+    },
+  }), [backend, hostServices, notificationOperationGate, platform]);
   /** Provides {pending platform operations, with platform activity, with background platform activity} behavior. */
   const {pendingPlatformOperations, withPlatformActivity, withBackgroundPlatformActivity} =
     useJestPlatformActivity(notificationOperationGate);
