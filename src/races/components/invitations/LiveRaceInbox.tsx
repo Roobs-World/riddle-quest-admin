@@ -1,7 +1,6 @@
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useState} from "react";
 import {LiveRaceChallengeSchema, type LiveRaceCapability, type LiveRaceChallenge, type RaceLocale} from "../../contracts/index";
 import {LiveRaceInvitationCard} from "./LiveRaceInvitationCard";
-import {tr} from "../../../localization/browser/i18n";
 
 /** Authenticated inbox ownership is independent of profile renders and launch exclusions. */
 type LiveRaceInboxProps = {
@@ -13,7 +12,7 @@ type LiveRaceInboxProps = {
 
 /** Replacing the transport or its read callback retires every previous invitation immediately. */
 export function LiveRaceInbox(props: LiveRaceInboxProps) {
-  /** One provider visit owns its rows, read failures, retries, and notification observers. */
+  /** One provider visit owns its rows, background refreshes, and notification observers. */
   const [lifetime, setLifetime] = useState(() => ({transport: props.transport, inbox: props.transport.inbox, version: 0}));
   if (lifetime.transport !== props.transport || lifetime.inbox !== props.transport.inbox)
     setLifetime({transport: props.transport, inbox: props.transport.inbox, version: lifetime.version + 1});
@@ -24,10 +23,6 @@ export function LiveRaceInbox(props: LiveRaceInboxProps) {
 function LiveRaceInboxPanel({transport, excludeId, onAccept, locale}: LiveRaceInboxProps) {
   /** Validated current-provider invitations remain deduplicated before rendering. */
   const [challenges, setChallenges] = useState<LiveRaceChallenge[]>([]);
-  /** Current read failure exposes the existing localized retry action. */
-  const [failed, setFailed] = useState(false);
-  /** Manual retry shares the active observer's synchronous read exclusion. */
-  const retryRead = useRef<(() => void) | null>(null);
   useEffect(() => {
     /** Retirement rejects late responses; notification bursts retain one pending refresh. */
     let active = true, pending = false, refreshAgain = false;
@@ -48,8 +43,10 @@ function LiveRaceInboxPanel({transport, excludeId, onAccept, locale}: LiveRaceIn
         if (!active) return;
         /** Validated notices are deduplicated before rendering. */
         const parsed = LiveRaceChallengeSchema.array().max(10).parse(rows);
-        if (active) {setChallenges([...new Map(parsed.map(row => [row.challengeId, row])).values()]); setFailed(false);}
-      } catch {if (active) {setChallenges([]); setFailed(true);}}
+        if (active) setChallenges([...new Map(parsed.map(row => [row.challengeId, row])).values()]);
+      } catch {
+        // Optional invitation discovery retries in the background without failing the multiplayer menu.
+      }
       finally {
         clearTimeout(timer); retireRead = undefined; pending = false;
         if (active && refreshAgain) {refreshAgain = false; void refresh();}
@@ -57,18 +54,15 @@ function LiveRaceInboxPanel({transport, excludeId, onAccept, locale}: LiveRaceIn
     };
     /** A notification during a read gets one immediate follow-up after that read settles. */
     const requestRefresh = () => {if (!active) return; if (pending) refreshAgain = true; else void refresh();};
-    retryRead.current = () => {if (active && !pending) {setFailed(false); void refresh();}};
     void refresh();
     /** Bounded polling discovers invitations while the intro remains open. */
     const interval = setInterval(() => void refresh(), 15_000);
     window.addEventListener("focus", requestRefresh);
     window.addEventListener("riddle-quest:live-race-inbox-changed", requestRefresh);
-    return () => {active = false; retryRead.current = null; retireRead?.(); clearInterval(interval);
+    return () => {active = false; retireRead?.(); clearInterval(interval);
       window.removeEventListener("focus", requestRefresh);
       window.removeEventListener("riddle-quest:live-race-inbox-changed", requestRefresh);};
   }, [transport]);
   return <>{challenges.filter(row => row.challengeId !== excludeId && row.locale === locale).map(row =>
-    <LiveRaceInvitationCard key={row.challengeId} challengeId={row.challengeId} initialChallenge={row} locale={locale} transport={transport} onAccept={onAccept} />)}
-    {failed && <div className="race-panel race-error" role="alert"><p>{tr("RaceTo10.ERROR_GENERIC")}</p>
-      <button onClick={() => retryRead.current?.()}>{tr("RaceTo10.RETRY")}</button></div>}</>;
+    <LiveRaceInvitationCard key={row.challengeId} challengeId={row.challengeId} initialChallenge={row} locale={locale} transport={transport} onAccept={onAccept} />)}</>;
 }
