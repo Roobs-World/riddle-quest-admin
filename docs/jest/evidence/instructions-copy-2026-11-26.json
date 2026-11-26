@@ -1,0 +1,25 @@
+{
+  "date": "2026-11-26",
+  "sourceCommit": "121e34328e9136faef3a40fb78de8fd01be99cba",
+  "sourceDirty": false,
+  "changes": [
+    "Remove the redundant guessing-tips paragraph from onboarding and the instructions modal.",
+    "Remove the orphan tips heading and both unused keys from all 16 locales.",
+    "Remove the onboarding layout's unused grid row."
+  ],
+  "jest": {
+    "versionId": "01a219ab-03a7-751d-8f5c-bc5dfcb02ccd",
+    "buildVersion": "1.0.0-dev.20261126210158.121e34328e91.66f0ed61",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T21:02:54.766Z",
+    "confirmationSource": "Jest list_game_versions",
+    "archiveBytes": 2590061,
+    "archiveSha256": "4422cd2ccf3900d4e4ba0f93dcfc8b398268da8e9cc3277aacf7b387d1600e18"
+  },
+  "checksPassed": ["Locale audit", "Shared TypeScript", "pnpm release:jest production gate", "Immutable Jest artifact audit", "W3C validation with zero findings"],
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "viewportAcceptance": "not-run",
+  "publicationOrReviewSubmitted": false
+}
