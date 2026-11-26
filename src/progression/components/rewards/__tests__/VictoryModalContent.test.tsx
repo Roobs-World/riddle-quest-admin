@@ -19,40 +19,39 @@ function completedState(gameMode: GameSessionState["gameMode"] = "challenge"): G
         {letter: "A", status: "green"}, {letter: "N", status: "green"}, {letter: "O", status: "green"}]}]},
     lastOutcome: {id: "receipt-win", kind: "win", riddleId: "reward-question", sessionToken: "reward-session",
       gameMode, attempts: 1, isCorrect: true},
-    lastRewards: {coinsEarned: 115, totalCoins: 415, newlyUnlockedAchievementIds: [], rewardBreakdown: dailyBreakdown}};
+    lastRewards: {coinsEarned: 115, totalCoins: 415, newXp: 140, newWinStreak: 7,
+      newlyUnlockedAchievementIds: [], rewardBreakdown: dailyBreakdown}};
 }
 
 /** Server rendering observes the actual translated modal and its available action. */
 const renderVictory = (state: GameSessionState) => renderToStaticMarkup(<VictoryModalContent state={state}
   onAdvance={() => undefined} onBalancePreview={() => undefined} />);
 
-describe("VictoryModalContent receipt explanation", () => {
-  it("explains the larger Daily grant while keeping the latest wallet and Next action visible", () => {
+describe("VictoryModalContent", () => {
+  it("keeps the Daily award, latest wallet and Next action without the extra heading or stats", () => {
     /** A newer wallet refresh must outrank the balance captured by this historical receipt. */
     const html = renderVictory(completedState());
     expect(html).toContain("+115 Coins");
     expect(html).toMatch(/900\s+coins/u);
     expect(html).not.toMatch(/415\s+coins/u);
-    expect(html).toContain('<dt>Daily puzzle</dt><dd><bdi dir="ltr">+75</bdi></dd>');
-    expect(html).toContain('<dt>Streak bonus</dt><dd><bdi dir="ltr">+10</bdi></dd>');
-    expect(html).toContain('<dt>Level-up bonus</dt><dd><bdi dir="ltr">+10</bdi></dd>');
-    expect(html).toContain('<dt>Achievement bonus</dt><dd><bdi dir="ltr">+20</bdi></dd>');
-    expect(html).not.toContain("Referral bonus");
+    expect(html).not.toContain("YOU WON!");
+    expect(html).not.toContain("<dl");
+    expect(html).not.toContain("140 XP");
+    expect(html).not.toContain("🔥");
     expect(html).toContain('class="play-primary reward-continue">Next</button>');
   });
 
-  it("explains an ordinary Classic grant without displaying zero-value bonuses", () => {
+  it("keeps the Classic award and Next Level action without reward rows", () => {
     /** Only the authoritative base grant contributes to this ordinary win. */
     const state = completedState("classic");
     state.lastRewards = {coinsEarned: 25, newlyUnlockedAchievementIds: [], rewardBreakdown: {
       baseWinCoins: 25, levelUpBonus: 0, dailyStreakBonus: 0, achievementBonus: 0, totalAwarded: 25, newBalance: 325,
     }};
-    /** The label follows the immutable completed mode. */
+    /** The total and action follow the completed Classic round. */
     const html = renderVictory(state);
-    expect(html).toContain('<dt>Classic puzzle</dt><dd><bdi dir="ltr">+25</bdi></dd>');
+    expect(html).toContain("+25 Coins");
     expect(html).toContain("Next Level");
-    expect(html).not.toContain("Daily puzzle");
-    expect(html).not.toContain("bonus</dt>");
+    expect(html).not.toContain("<dl");
   });
 
   it("keeps Classic Next enabled before duplicate completion acknowledgement while Daily still waits", () => {
@@ -90,15 +89,17 @@ describe("VictoryModalContent receipt explanation", () => {
     expect(renderVictory(state)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
   });
 
-  it("shows an explicitly awarded referral bonus and omits all receipt details before confirmation", () => {
-    /** The optional referral component is displayed only when the server includes an award. */
+  it("keeps a referral-inclusive total without rendering bonus rows", () => {
+    /** The modal uses the server's total even when it includes a referral award. */
     const state = completedState();
     state.lastRewards = {coinsEarned: 125, newlyUnlockedAchievementIds: [],
       rewardBreakdown: {...dailyBreakdown, referralBonus: 10, totalAwarded: 125}};
-    expect(renderVictory(state)).toContain('<dt>Referral bonus</dt><dd><bdi dir="ltr">+10</bdi></dd>');
-    /** An unacknowledged projected result cannot claim settled receipt components. */
+    const html = renderVictory(state);
+    expect(html).toContain("+125 Coins");
+    expect(html).not.toContain("<dl");
+    /** An unacknowledged Daily result still cannot advance. */
     const provisional = renderVictory({...state, completionAcknowledged: false});
     expect(provisional).toContain('class="play-primary reward-continue" disabled=""');
-    expect(provisional).not.toContain("victory-reward-breakdown");
+    expect(provisional).not.toContain("<dl");
   });
 });

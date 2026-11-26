@@ -61,65 +61,14 @@
 .modal-victory .reward-chest.collecting {
   animation: victory-chest-open 0.48s cubic-bezier(0.2, 1.45, 0.4, 1) both;
 }
-.modal-victory .fanfare-title,
 .modal-victory .coin-award > strong {
   font: 900 clamp(20px, 4.4dvh, 29px)/1.1 "Manrope", sans-serif;
-}
-.modal-victory .coin-award > strong {
   color: #7b467d;
   font-weight: 900;
 }
 .modal-victory .coin-award > span {
   color: #5c4169;
   font-size: clamp(13px, 2.4dvh, 16px);
-  font-weight: 800;
-}
-.modal-victory .fanfare-burst {
-  width: clamp(40px, 10dvh, 110px);
-  height: clamp(40px, 10dvh, 110px);
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff8bc 0 24%, #fec880 25% 49%, #8c5dbe 50% 60%, transparent 61%);
-  color: #401f40;
-  font-size: clamp(18px, 4.2dvh, 46px);
-}
-.modal-victory .reward-summary {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-}
-.modal-victory .victory-reward-breakdown {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 3px 12px;
-  width: 100%;
-  margin: 0;
-  color: #5c4169;
-  font-size: clamp(12px, 2.1dvh, 14px);
-  font-weight: 700;
-  line-height: 1.3;
-}
-.modal-victory .victory-reward-breakdown > div {
-  display: flex;
-  gap: 4px;
-  max-width: 100%;
-}
-.modal-victory .victory-reward-breakdown dt {
-  overflow-wrap: anywhere;
-}
-.modal-victory .victory-reward-breakdown dd {
-  flex-shrink: 0;
-  margin: 0;
-  font-weight: 900;
-}
-.modal-victory .reward-summary span {
-  padding: 8px 12px;
-  border-radius: 18px;
-  background: #fff1c9;
-  color: #401f40;
   font-weight: 800;
 }
 .modal-victory .fanfare-content > .reward-continue {
@@ -149,12 +98,6 @@
   72% { transform: scale(0.96) rotate(2deg); }
 }
 @media (max-height: 500px) {
-  .modal-victory .fanfare-content > .fanfare-burst {
-    display: none;
-  }
-  .modal-victory .reward-summary span {
-    padding: 4px 10px;
-  }
   .modal-victory .fanfare-content > .reward-continue {
     min-height: 56px;
     margin-top: 0;
@@ -162,10 +105,5 @@
     border-radius: 18px;
     font-size: 22px;
     box-shadow: 0 3px 0 #916812;
-  }
-  .modal-victory .fanfare-content > .play-secondary {
-    min-height: 32px;
-    padding: 4px 14px;
-    font-size: 14px;
   }
 }
