@@ -6,7 +6,8 @@ import {getSafeErrorMetadata} from "../../shared/errorMetadata";
 import {deleteAccountForUser} from "./deleteAccountData";
 import {onCallWithSentry} from "../../shared/sentryHandlers";
 import {isJestAccountDeletionBusyError} from "../../shared/accountDeletion";
-import {isJestFirebaseUid, jestFirebaseUid} from "../../../../platforms/web/jest/server/jestSecurity";
+import {isJestFirebaseUid, jestFirebaseUid, jestGenerationFromClaims} from "../../../../platforms/web/jest/server/jestSecurity";
+import {deleteJestAccountGeneration} from "../../../../platforms/web/jest/server/jestAccountLifecycle";
 import {isFacebookFirebaseUid} from "../../../../platforms/web/facebook/server/facebookSecurity";
 import {deleteFacebookAccountGeneration} from "../../../../platforms/web/facebook/server/facebookAccountDeletion";
 import {defineSecret} from "firebase-functions/params";
@@ -32,7 +33,7 @@ export const deleteAccount = onCallWithSentry(
     if (isJestFirebaseUid(request.auth.uid) && !jestPlayerId) {
       throw new HttpsError("failed-precondition", "Refresh the Jest session before deleting this account.");
     }
-    if (jestPlayerId && jestFirebaseUid(jestPlayerId) !== request.auth.uid) {
+    if (jestPlayerId && jestFirebaseUid(jestPlayerId, jestGenerationFromClaims(request.auth.token)) !== request.auth.uid) {
       throw new HttpsError("failed-precondition", "The authenticated Jest identity is inconsistent.");
     }
     /** Provides facebook generation behavior. */
@@ -52,6 +53,8 @@ export const deleteAccount = onCallWithSentry(
           {uid: request.auth.uid, accountGeneration: facebookGeneration},
           {uidSecret: facebookUidSecret.value()},
         );
+      } else if (jestPlayerId) {
+        await deleteJestAccountGeneration(jestPlayerId, request.auth.uid);
       } else {
         await deleteAccountForUser(request.auth.uid, jestPlayerId);
       }

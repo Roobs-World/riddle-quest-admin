@@ -125,6 +125,7 @@
     "verify:all-targets": "pnpm check:security && pnpm build:all-targets",
     "verify:functions:node22": "pnpm prepare:functions && node firebase-functions/scripts/runtime/run-with-functions-node.js firebase-functions/scripts/runtime/verify-node-runtime.js",
     "verify:production": "pnpm check:braces-security && pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm check:facebook-secrets && pnpm check:youtube-progress && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm check:facebook-copy && pnpm build && pnpm check:w3c && pnpm preflight:jest-upload",
+    "verify:production:jest": "pnpm check:braces-security && pnpm audit --prod --audit-level high && pnpm audit --audit-level high && pnpm check:monetization && pnpm check:functions-lock && pnpm check:facebook-secrets && pnpm check:youtube-progress && pnpm check:types && pnpm --dir firebase-functions lint && pnpm verify:functions:node22 && pnpm check:facebook-copy && pnpm prepare:functions && pnpm build:jest && pnpm --dir firebase-functions build && node scripts/web/validate-w3c.mjs platforms/web/jest/build/dist/index.html && pnpm preflight:jest-upload",
     "youtube:evidence": "pnpm evidence:youtube",
     "youtube:package": "pnpm package:youtube",
     "youtube:preflight": "pnpm release:youtube"
