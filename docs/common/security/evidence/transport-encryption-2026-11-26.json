@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-26",
+  "implementationCommit": "255318249996c74a27ae476a1136f5498a75b9f2",
+  "clientReleaseCommit": "af20085bce70fbe73aedebce68975a414d9dac20",
+  "scope": [
+    "HTTPS-only production browser and Android release connections",
+    "Encrypted app-owned browser API requests, responses, application errors and live-race stream chunks",
+    "Authenticated profile reads through getPlayerProfile",
+    "Redirect rejection for signed game requests and account-service requests"
+  ],
+  "backend": {
+    "project": "riddle-quest-ec2b2",
+    "deployment": "Current exports selected explicitly; older remote exports preserved.",
+    "coreCallableHash": "eb343c55769c23263c81c8a24e26b3c3aafa67e7",
+    "jestSignedHttpHash": "7c837d6510e7da0c90b78cc71eb234c6d7654360",
+    "confirmedCoreFunctions": [
+      "getCurrentClassicRiddle",
+      "getCurrentDailyChallenge",
+      "submitSinglePlayerGuess",
+      "completeGame",
+      "getHint",
+      "spendCoins",
+      "skipRiddle",
+      "updateLiveRace"
+    ],
+    "coreRegions": [
+      "europe-west1",
+      "us-central1"
+    ],
+    "state": "ACTIVE",
+    "getPlayerProfile": {
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "publicCloudRunInvocation": true,
+      "authenticationAndAppCheck": "Enforced by callable and handler."
+    },
+    "verification": "Google Cloud Functions metadata and Cloud Run IAM policy.",
+    "sourceNote": "Encryption source was committed before deployment. The deployment staging also captured an independently reviewed, equivalent Android notification-schema extraction from concurrent work. The callable and signed-HTTP cohorts above identify the actual deployed code."
+  },
+  "jest": {
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "versionId": "01a21614-d1d7-7132-9400-7126639803b7",
+    "buildVersion": "1.0.0-dev.20261126041904.af20085bce70.2fa4ede9",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T04:19:55.878Z",
+    "zipBytes": 2602796,
+    "zipSha256": "e7314cdd69559ce1f9b616387c1ea218eedfc0dd7da44f01ee9709ea4203932d",
+    "archiveDisposition": "The canonical release cleaned its temporary immutable archive. The checksum and four upload receipts are retained in the canonical Jest build receipt directory.",
+    "confirmation": "Official Jest list_game_versions result matched the exact accepted version ID.",
+    "uploads": 1,
+    "publicationOrReviewSubmitted": false
+  },
+  "verification": {
+    "productionGate": "passed",
+    "sourceAndInstalledDependencyAudits": "passed",
+    "typesAndFunctionsLint": "passed",
+    "functionsDeploymentArtifactAndCapacityAudits": "passed",
+    "htmlValidation": "Zero findings from pinned Nu 26.11.20.",
+    "browserArtifacts": "Jest, Facebook, Reddit, YouTube, Netflix, Yahoo and GameSnacks built and audited.",
+    "android": "Types and release APK build passed. Direct compiled manifest/resource inspection confirmed cleartext disabled for every release host.",
+    "androidApkSha256": "4b2a1f67cb426623a6003da65368d006fffea9d180c317973fc46c3404146df6",
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "testPolicy": "Repository instructions require explicit user authorization for tests."
+  },
+  "limits": [
+    "The AES decoding key is public client material. Envelopes deter casual Network-panel inspection and cannot hide decoded data from the browser owner.",
+    "Firebase Authentication, App Check, presence and provider SDK protocols remain provider-managed and inspectable in the browser.",
+    "URLs, headers, status, size and timing remain visible.",
+    "Older clients and Android retain their existing JSON protocols over HTTPS.",
+    "Other game targets were built; this task uploaded only Jest. Notification-manager deployment is separate."
+  ]
+}

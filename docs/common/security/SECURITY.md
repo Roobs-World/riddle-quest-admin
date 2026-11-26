@@ -57,6 +57,9 @@ platform SDK protocols retain their own HTTPS transport.
 
 ## Game API payload protection
 
+The [November 26 release evidence](evidence/transport-encryption-2026-11-26.json)
+records the deployed backend cohort, completed builds and confirmed Jest activation.
+
 Updated Jest, Facebook and Reddit browser clients encrypt their own game API
 request and response bodies with AES-256-GCM in addition to HTTPS. This includes
 signed identity and purchase exchanges, callable application errors, live-race
