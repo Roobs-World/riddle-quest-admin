@@ -1,6 +1,6 @@
 # Sandbox coin balance reconciliation — 26 November 2026
 
-The reported 18,295-coin balance came primarily from sandbox checkout grants. Read-only Jest transaction records, the matching Firebase account, eight completion receipts and retained solo sessions explained the balance. No duplicate gameplay award was found in the inspected records or settlement paths.
+The reported 18,295-coin balance came primarily from sandbox checkout grants. Read-only Jest transaction records, the matching Firebase account, eight completion receipts and retained solo sessions established the source of the spike. No duplicate gameplay award was found in the inspected records or settlement paths.
 
 ## Confirmed grants
 
@@ -15,7 +15,7 @@ The reported 18,295-coin balance came primarily from sandbox checkout grants. Re
 
 Jest identified all seven product transactions as sandbox purchases with zero charge. The six current pack grants are 250, 550, 900, 1,600, 3,400 and 7,000. The account's `premiumCoinsGrantedAt` records its initial 3,400-coin grant. Purchase testing exercises the ordinary authoritative grant path, so these credits persist in the sandbox player's saved game.
 
-The solo receipts total 520 coins across six Classic wins and two Daily wins. Their recorded balance increased from 4,560 after Classic 5 to 18,295 after Classic 6: exactly 13,700 in pack grants plus the final 35-coin completion. Retained sessions also show one 25-coin hint and two 50-coin continues. Starting coins and multiplayer/achievement rewards account for the remaining balance; 945 retains all existing achievement rewards, including purchase-related unlocks.
+The solo receipts total 520 coins across six Classic wins and two Daily wins. Their recorded balance increased from 4,560 after Classic 5 to 18,295 after Classic 6: exactly 13,700 in pack grants plus the final 35-coin completion. Retained sessions also show one 25-coin hint and two 50-coin continues. Starting coins (300), solo receipts (520) and spending (-125) explain 695 of the retained 945. The remaining 250 is consistent with the saved three multiplayer wins (150 under current rules), three race achievements (75) and first-purchase achievement (25); historical race receipts were not individually reconciled. The correction retains all existing achievement rewards, including purchase-related unlocks.
 
 The account was matched through Jest's player lookup and the deterministic server identity mapping. Player identifiers, purchase tokens and active session secrets are intentionally omitted from this repository evidence. The authoritative adjustment is retained on the affected account at `economyAdjustments.sandbox20261126`.
 
