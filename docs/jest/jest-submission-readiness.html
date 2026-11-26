@@ -14,8 +14,8 @@
   <p class="notice">D1-D7 reminders are implemented through Jest's SDK and portal assets. Hosted and physical-device acceptance remain pending. Source inspection and a successful build do not establish that every Fund requirement passes.</p>
   <p>The <a href="jest-growth-fund-readiness.md">current requirement matrix and acceptance plan</a> contains the full review. The earlier <a href="evidence/jest-growth-fund-audit-2026-11-26.json">audit snapshot</a> records live configuration and evidence limits; its missing-notification finding predates this client update.</p>
   <section class="panel"><h2>Release evidence</h2>
-    <p>Before this notification change, Jest confirmed build <code>1.0.0-dev.20261126143608.4ed687dbcd8a.3e83d0bb</code>, version <code>01a21849-8d19-778a-a400-0934df0bddc0</code>, ready and active. At that audit, the game remained an unpublished draft with no revision in review. <a href="evidence/jest-native-guest-login-2026-11-26.json">Prior release evidence</a>.</p>
-    <p>That artifact audit reports 3.99 MB total and 0.54 MB initial resources. Production checks passed for that release; no tests, browser harnesses or hosted gameplay acceptance ran for it. Record the notification release's exact version and activation separately before gathering acceptance evidence.</p>
+    <p>Jest confirmed notification build <code>1.0.0-dev.20261126155116.58c3d1899cb5.0bb76265</code>, version <code>01a2188e-58f4-7231-9cc7-994c3ea439e5</code>, ready and active at 15:51:59 UTC. <a href="evidence/jest-sdk-reminders-2026-11-26.json">Release evidence</a> records the source, archive and approved notification asset. No review submission or publication was made.</p>
+    <p>The artifact audit reports 3.99 MB total and 0.55 MB initial resources. The production gate, campaign content audit and W3C validation passed. Backend source/configuration are unchanged and no backend was deployed. Tests, browser harnesses, hosted gameplay, actual notification delivery and physical-device acceptance remain unverified.</p>
   </section>
   <section class="panel"><h2>Current findings</h2><table><thead><tr><th>Area</th><th>Finding</th></tr></thead><tbody>
     <tr><td>Registration and saved progress</td><td>Implemented. Native signup follows onboarding and every three completed riddles for guests. Hosted acceptance remains pending.</td></tr>
@@ -26,7 +26,7 @@
   </tbody></table></section>
   <section class="panel"><h2>Required before submission</h2>
     <ol>
-      <li>Confirm the notification build's exact processed, active version in Jest before gathering evidence.</li>
+      <li>Use the exact ready, active notification version recorded above when gathering acceptance evidence.</li>
       <li>With explicit test authorization, complete all applicable Simulator checks, live sandbox purchase/recovery and multiplayer flows, screenshot checks and physical-device performance/stability checks.</li>
       <li>Verify D1-D7 SDK schedules, guest and opt-out suppression, cancellation during pending work, recovery and Daily return routing. Record actual delivery separately from scheduling acceptance.</li>
       <li>Keep the server-to-server notification declaration off: this integration uses the client SDK.</li>
