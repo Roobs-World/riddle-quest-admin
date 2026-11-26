@@ -4,7 +4,6 @@ import {completionPresentationKey} from "../../../../src/gameplay/session/comple
 import {ProviderProfileContext} from "../../../../src/accounts/components/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../../../../src/commerce/browser/ShopSubscriptionContext";
 import {Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {
@@ -61,6 +60,10 @@ import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/
 import type {NotificationRegistrationCommands} from "../../../../src/notifications/contracts/notificationProvider";
 import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
+
+/** Gameplay presentation loads after the signed platform session is ready. */
+const PlayHostApp = lazy(() => import("../../../../src/app/components/PlayHostApp")
+  .then(module => ({default: module.PlayHostApp})));
 
 /** Account registration controls load after the playable session mounts. */
 const JestNotifications = lazy(() => import("./notifications/JestNotifications")
@@ -672,6 +675,7 @@ export function JestPlayApp() {
       >
         <ShopSubscriptionContext.Provider value={subscriptionActions}>
           <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <Suspense fallback={null}><JestProfileSubscriptions /></Suspense> : null}>
+          <Suspense fallback={<JestStartupProgress startup={startup} />}>
           <PlayHostApp
             session={createJestHostedPlaySession({
               hostServices,
@@ -706,6 +710,7 @@ export function JestPlayApp() {
             }}
             onAccountDeleted={clearPlayerState}
           />
+          </Suspense>
           </ProfileSubscriptionContext.Provider>
         </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>
