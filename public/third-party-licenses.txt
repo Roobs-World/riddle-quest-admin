@@ -83,13 +83,13 @@ Dependency inventory
 - @protobufjs/path@1.1.2 | BSD-3-Clause | https://github.com/dcodeIO/protobuf.js#readme
 - @protobufjs/pool@1.1.0 | BSD-3-Clause | https://github.com/dcodeIO/protobuf.js#readme
 - @protobufjs/utf8@1.1.2 | BSD-3-Clause | https://github.com/protobufjs/protobuf.js#readme
-- @sentry/browser-utils@11.16.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser-utils
-- @sentry/browser@11.16.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser
-- @sentry/conventions@0.34.0 | MIT | https://github.com/getsentry/sentry-conventions#readme
-- @sentry/core@11.16.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/core
-- @sentry/feedback@11.16.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/feedback
-- @sentry/replay-canvas@11.16.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
-- @sentry/replay@11.16.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
+- @sentry/browser-utils@11.17.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser-utils
+- @sentry/browser@11.17.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/browser
+- @sentry/conventions@0.35.0 | MIT | https://github.com/getsentry/sentry-conventions#readme
+- @sentry/core@11.17.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/core
+- @sentry/feedback@11.17.0 | MIT | https://github.com/getsentry/sentry-javascript/tree/master/packages/feedback
+- @sentry/replay-canvas@11.17.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
+- @sentry/replay@11.17.0 | MIT | https://docs.sentry.io/platforms/javascript/session-replay/
 - @types/node@26.6.6 | MIT | https://github.com/DefinitelyTyped/DefinitelyTyped/tree/master/types/node
 - ansi-regex@5.0.1 | MIT | https://github.com/chalk/ansi-regex#readme
 - ansi-styles@4.3.0 | MIT | https://github.com/chalk/ansi-styles#readme
@@ -108,7 +108,7 @@ Dependency inventory
 - html2canvas-pro@2.6.4 | MIT | https://yorickshan.github.io/html2canvas-pro/
 - http-parser-js@0.5.10 | MIT | https://github.com/creationix/http-parser-js#readme
 - idb@7.1.1 | ISC | https://github.com/jakearchibald/idb#readme
-- import-in-the-middle@3.6.0 | Apache-2.0 | https://github.com/nodejs/import-in-the-middle#readme
+- import-in-the-middle@3.7.0 | Apache-2.0 | https://github.com/nodejs/import-in-the-middle#readme
 - is-fullwidth-code-point@3.0.0 | MIT | https://github.com/sindresorhus/is-fullwidth-code-point#readme
 - lodash.camelcase@4.3.0 | MIT | https://lodash.com/
 - long@5.3.2 | Apache-2.0 | https://github.com/dcodeIO/long.js#readme
@@ -878,7 +878,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ===============================================================================
-Packages: @sentry/browser-utils@11.16.0
+Packages: @sentry/browser-utils@11.17.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -905,7 +905,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/browser@11.16.0, @sentry/core@11.16.0
+Packages: @sentry/browser@11.17.0, @sentry/core@11.17.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -932,7 +932,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/conventions@0.34.0
+Packages: @sentry/conventions@0.35.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -959,7 +959,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/feedback@11.16.0
+Packages: @sentry/feedback@11.17.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -986,7 +986,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/replay-canvas@11.16.0
+Packages: @sentry/replay-canvas@11.17.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1013,7 +1013,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ===============================================================================
-Packages: @sentry/replay@11.16.0
+Packages: @sentry/replay@11.17.0
 Declared license: MIT
 ===============================================================================
 --- LICENSE ---
@@ -1424,7 +1424,7 @@ Permission to use, copy, modify, and/or distribute this software for any purpose
 THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 ===============================================================================
-Packages: import-in-the-middle@3.6.0
+Packages: import-in-the-middle@3.7.0
 Declared license: Apache-2.0
 ===============================================================================
 --- LICENSE ---
