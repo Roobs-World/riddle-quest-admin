@@ -40,3 +40,8 @@ are not shipped by these game builds and do not count toward download savings.
 The current music is already mono Opus in WebM. A stream-copy remux saved only
 293 bytes, so it was retained unchanged. Lower bitrates require a separate audio
 quality decision. Its `preload="none"` also means music transfer begins on demand.
+
+The three affected production builds passed. Their emitted image checksums match
+the converted files, and the old chest PNG is absent from each artifact. The
+[Jest release evidence](../../jest/evidence/jest-ffmpeg-media-2026-11-26.json)
+records the exact uploaded version confirmed ready and active.

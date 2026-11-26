@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-26",
+  "implementationCommit": "1d50f49997dadb0e8e5526aad6f2ef9e4917e5ef",
+  "converter": "node scripts/web/optimize-media.mjs --write",
+  "ffmpegVersion": "8.0.1-3ubuntu2",
+  "images": [
+    {
+      "asset": "closed chest",
+      "before": {"format": "png", "bytes": 56647, "width": 512, "height": 512},
+      "after": {"format": "lossless webp", "bytes": 51020, "width": 512, "height": 512},
+      "sha256": "e709dcb78efe977cef13157f5b3150ac0d7d4d8c11838299cb02c244b33e9d1e",
+      "artifactFile": "assets/chest-closed-Cvqq0s62.webp"
+    },
+    {
+      "asset": "header mascot",
+      "source": "assets/images/icon.png",
+      "before": {"format": "webp", "bytes": 42316, "width": 1254, "height": 1254},
+      "after": {"format": "lossless webp", "bytes": 29816, "width": 256, "height": 256},
+      "sha256": "fd9c70d31b1970064e5043162c2c19fa8ac55848c4fad03dad91498fdf4df52b",
+      "artifactFile": "assets/riddlequest-r-IAZ1kyVm.webp"
+    }
+  ],
+  "comparison": {
+    "scope": "These two imported images in each affected web artifact; source masters excluded.",
+    "beforeBytes": 98963,
+    "afterBytes": 80836,
+    "savedBytes": 18127,
+    "savedPercent": 18.316946737669635,
+    "timingBenchmarkRun": false
+  },
+  "verification": {
+    "visiblePixelsAndAlpha": "Identical to the chest source and the 256px Lanczos-resized mascot source; fully transparent RGB may differ.",
+    "mediaDecode": "Both WebP candidates decoded successfully with FFmpeg -xerror.",
+    "artifactHashesMatched": ["jest", "facebook", "reddit"],
+    "oldChestPngAbsentFromArtifacts": true,
+    "productionGate": "passed",
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "audio": "Unchanged. Already mono Opus/WebM; lossless remux saved only 293 bytes."
+  },
+  "jest": {
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "versionId": "01a21624-3842-73e8-b6aa-fb8dfcc70b28",
+    "buildVersion": "1.0.0-dev.20261126043554.1d50f49997da.b8d9daaa",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T04:36:48.998Z",
+    "zipBytes": 2586041,
+    "zipSha256": "8ef301f599ae5acec92b30ba6faff627a1a72a64a1e64fc5ba73c46510aa05e8",
+    "uploads": 1,
+    "confirmation": "Official Jest list_game_versions matched the exact accepted version ID as ready and active.",
+    "publicationOrReviewSubmitted": false
+  }
+}
