@@ -1,0 +1,19 @@
+{
+  "sourceCommit": "8d66b1e67146a4a900d4dd8fee86a25a45729a47",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a215f8-6ed0-71ba-bdd2-54b6ecace166",
+  "buildVersion": "1.0.0-dev.20261126034741.8d66b1e67146.d489d941",
+  "releaseCommand": "pnpm release:jest",
+  "binaryUploadAttempts": 1,
+  "archiveSha256": "d1aa3ac256bbc06a8fb039942398aa9eba169d2ea6cdfb1b6fff08860004adc3",
+  "activationRequested": true,
+  "readback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26T03:49:04Z",
+    "status": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T03:48:56.975Z",
+    "processingError": null
+  },
+  "scope": "Game client release. Device delivery and account linking are verified separately."
+}
