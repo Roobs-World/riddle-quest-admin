@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-11-26T04:05:20Z",
+  "sourceCommit": "a4baf1354276a014cdc89cc5763cd960a4893417",
+  "sourceClean": true,
+  "target": "facebook",
+  "build": {
+    "filesInArtifactAudit": 418,
+    "archiveEntries": 419,
+    "archiveBytes": 2871530,
+    "archiveSha256": "5dc163567c62954f124050dec57e0f0ba984083f4afc45df4231bd4d75d9fc73",
+    "localArchive": "platforms/web/facebook/build/candidates/a4baf1354276/build-facebook.zip",
+    "artifactAuditPassed": true,
+    "serverSecretBoundaryPassed": true
+  },
+  "uploadCredentialInspection": {
+    "service": "Meta Graph debug_token",
+    "httpStatus": 200,
+    "isValid": false,
+    "errorCode": 190
+  },
+  "uploaded": false,
+  "activated": false,
+  "hostedFacebookReceiptOrTapVerified": false,
+  "verificationMessagesSent": 0
+}
