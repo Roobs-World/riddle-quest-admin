@@ -348,19 +348,25 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       let preferenceInitializations = 0;
       let enrollmentRequests = 0;
       let enrollmentStatusRequests = 0;
+      let facebookConsent = false;
       const notificationPreferences: boolean[] = [];
       await successPage.route("**/setNotificationPreference", async route => {
         const input = JSON.parse(route.request().postData() ?? "{}");
         if (input.data?.initialize === true) {
           preferenceInitializations++;
-          return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {enabled: true}})});
+          expect(input.data.facebookConsent).toBeUndefined();
+          return route.fulfill({status: 200, contentType: "application/json",
+            body: JSON.stringify({data: {enabled: true, facebookConsent}})});
         }
         expect(typeof input.data?.enabled).toBe("boolean");
         const headers = await route.request().allHeaders();
         expect(headers.authorization).toBe(`Bearer ${firebaseIdToken}`);
         expect(headers["x-firebase-appcheck"]).toBe(appCheckToken);
+        expect(input.data.facebookConsent).toBe(input.data.enabled ? "a2u-v1" : undefined);
+        facebookConsent = input.data.enabled;
         notificationPreferences.push(input.data.enabled);
-        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {enabled: input.data.enabled}})});
+        await route.fulfill({status: 200, contentType: "application/json",
+          body: JSON.stringify({data: {enabled: input.data.enabled, facebookConsent}})});
       });
       await successPage.route("**/getNotificationEnrollmentStatus", async route => {
         enrollmentStatusRequests += 1;
@@ -694,19 +700,16 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await settings.waitFor();
       const notificationToggle = settings.getByRole("button", {name: /^Notifications\b/});
       expect(await notificationToggle.count()).toBe(1);
-      await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
-      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
+      await notificationToggle.and(settings.locator('[aria-busy="false"][aria-pressed="false"]')).waitFor();
       expect(preferenceInitializations).toBe(1);
       expect(enrollmentRequests).toBe(0);
       await notificationToggle.click();
-      await settings.locator('button[aria-busy="false"][aria-pressed="false"]').waitFor();
-      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("false");
-      expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("false");
-      await notificationToggle.click();
-      await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
-      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
+      await notificationToggle.and(settings.locator('[aria-busy="false"][aria-pressed="true"]')).waitFor();
       expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("true");
-      expect(notificationPreferences).toEqual([false, true]);
+      await notificationToggle.click();
+      await notificationToggle.and(settings.locator('[aria-busy="false"][aria-pressed="false"]')).waitFor();
+      expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("false");
+      expect(notificationPreferences).toEqual([true, false]);
       expect(enrollmentRequests).toBe(0);
       expect(enrollmentStatusRequests).toBe(0);
       expect(await settings.locator('input[type="url"]').count()).toBe(0);
