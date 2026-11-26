@@ -78,13 +78,6 @@ export type HostMessageHandlers = {
       }
     >,
   ): void | Promise<void>;
-  /** Persists a local achievement projection while completion reconciles. */
-  recordAchievements(
-    message: Extract<GameToHostMessage, {
-      /** Stores type. */
-      type: "game:recordAchievements";
-    }>,
-  ): void | Promise<void>;
   /** Requests hint. */
   requestHint(
     message: Extract<
@@ -362,9 +355,6 @@ export const createHostMessageRouter = (handlers: HostMessageHandlers) => {
         break;
       case "game:completeGame":
         await handlers.completeGame(message);
-        break;
-      case "game:recordAchievements":
-        await handlers.recordAchievements(message);
         break;
       case "game:requestHint":
         await handlers.requestHint(message);

@@ -3,6 +3,7 @@ import type {GameSessionState} from "../../../gameplay/session/gameSession";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../../../settings/browser/playerPreferences";
 import {FanfareTabContent} from "./FanfareModalContent";
 import {createRewardFanfareSteps, createVictoryFanfareSteps, getActiveCoinAward, type FanfareStep} from "../../browser/fanfareSequence";
+import {AchievementFanfareSeen} from "../../browser/achievementFanfareSeen";
 import "../../styles/fanfare-tabs.css";
 
 /** Readable time after a tab has reached the front of the queue. */
@@ -18,9 +19,12 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
   /** Releases this presentation once its queue has drained. */ onComplete: () => void;
   /** Changes only the decorative counter, never the stored balance. */ onBalancePreview: (balance: number | null) => void;
 }) {
-  /** Confirmed milestone queue, optionally supplied by the win dialog. */
-  const steps = suppliedSteps ?? (state.modal === "victory"
-    ? createVictoryFanfareSteps(state.lastRewards) : createRewardFanfareSteps(state.auxiliaryFanfare));
+  /** Every receipt keeps its account owner and queue across unrelated profile refreshes. */
+  const [seenAchievements] = useState(() => new AchievementFanfareSeen(state.user));
+  /** A confirmed receipt's queue cannot restart or shrink when its visible tab is marked seen. */
+  const [steps] = useState(() => (suppliedSteps ?? (state.modal === "victory"
+    ? createVictoryFanfareSteps(state.lastRewards) : createRewardFanfareSteps(state.auxiliaryFanfare)))
+    .filter(step => step.kind !== "achievement" || !seenAchievements.hasSeen(step.achievementId)));
   /** Current position in the automatic milestone queue. */
   const [index, setIndex] = useState(0);
   /** Entry, readable hold, and exit state for the front tab. */
@@ -31,6 +35,8 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
   const [hidden, setHidden] = useState(() => typeof document !== "undefined" && document.hidden);
   /** Completion callback fires once for this presentation. */
   const completed = useRef(false);
+  /** The current presentation retains its own consumed tab until its animation finishes. */
+  const claimedIndex = useRef<number | null>(null);
   /** Browser animation completion owns entry, promotion and removal. */
   const tabs = useRef<HTMLDivElement>(null);
   /** Player preference removes sliding motion. */
@@ -60,6 +66,16 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
       window.cancelAnimationFrame(secondFrame);
     };
   }, []);
+
+  useLayoutEffect(() => {
+    if (!surfacePainted || paused || hidden || active?.kind !== "achievement" || claimedIndex.current === index) return;
+    if (seenAchievements.claim(active.achievementId)) claimedIndex.current = index;
+    else {
+      // Another receipt may have presented this achievement while it waited in the queue.
+      setIndex(index + 1);
+      setPhase("holding");
+    }
+  }, [active, index, surfacePainted, paused, hidden, seenAchievements]);
 
   useEffect(() => {
     /** Keeps the presentation suspended while its document is hidden. */
@@ -113,7 +129,8 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
   if (!surfacePainted || phase === "complete") return id ? <div id={id} hidden /> : null;
   return (
     <div id={id} ref={tabs} className="fanfare-tabs" data-phase={phase} data-reduced-motion={reducedMotion} data-paused={paused || hidden}>
-      {steps.slice(index, index + 2).map((step, offset) => {
+      {steps.slice(index).filter((step, offset) => offset === 0 || step.kind !== "achievement" ||
+        !seenAchievements.hasSeen(step.achievementId)).slice(0, 2).map((step, offset) => {
         /** Confirmed award associated with this rendered milestone. */
         const award = getActiveCoinAward(state, step, step);
         return <div key={step.kind === "achievement" ? `achievement-${step.achievementId}` : step.kind}

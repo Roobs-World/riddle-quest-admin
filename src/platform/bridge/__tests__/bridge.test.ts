@@ -129,14 +129,10 @@ describe("bridge protocol", () => {
     ).toBe(false);
   });
 
-  it("accepts bounded local achievement projections", () => {
+  it("rejects client-authored achievement unlocks", () => {
     expect(GameToHostMessageSchema.safeParse({
       type: "game:recordAchievements",
       payload: {achievementIds: ["first_win", "perfect_guess"]},
-    }).success).toBe(true);
-    expect(GameToHostMessageSchema.safeParse({
-      type: "game:recordAchievements",
-      payload: {achievementIds: Array.from({length: 51}, () => "first_win")},
     }).success).toBe(false);
   });
 

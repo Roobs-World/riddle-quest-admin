@@ -565,7 +565,7 @@ export function useProvisionalPlayRecovery({
   }, [queuedContinueSubmit, canSubmitReady, coinActionPending, currentAttempt, scope, state, stateRef, submitReadyGuess]);
   /** Restores the last confirmed checkpoint and removes every dependent provisional action. */
   const rollbackQueuedPlay = useCallback(
-    (first: QueuedGuess) => {
+    () => {
       /** The checkpoint used by the current operation. */
       const checkpoint = journalRef.current;
       /** Retires queued mutations and the unpaid hint preview before preserving the same-question user draft. */
@@ -603,8 +603,6 @@ export function useProvisionalPlayRecovery({
           },
         });
       } else dispatch({type: "guessFailed"});
-      if (first.isCorrect && first.gameOver)
-        postToHost({type: "game:recordAchievements", payload: {achievementIds: []}});
       dispatch({type: "setNotice", notice: "ErrorMessages.PLAY_RESTORED"});
     },
     [dispatch, postToHost, stateRef],
@@ -755,7 +753,7 @@ export function useProvisionalPlayRecovery({
         }
         if (retryTimerRef.current !== null) adapters.clock.clearTimeout(retryTimerRef.current);
         retryTimerRef.current = null;
-        rollbackQueuedPlay(first);
+        rollbackQueuedPlay();
         return true;
       }
       /** The data used by the current operation. */
@@ -777,7 +775,7 @@ export function useProvisionalPlayRecovery({
         Boolean(result.canContinue) !== first.canContinue ||
         JSON.stringify(feedback) !== JSON.stringify(first.feedback)
       ) {
-        rollbackQueuedPlay(first);
+        rollbackQueuedPlay();
         return true;
       }
       /** The scored used by the current operation. */

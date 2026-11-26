@@ -337,7 +337,7 @@ describe("game session reducer", () => {
     expect(state.completionAcknowledged).toBe(false);
   });
 
-  it("shows and records deterministic achievement unlocks before completion responds", () => {
+  it("records only achievement unlocks confirmed by the completion receipt", () => {
     /** Profile has one win remaining before its five-win milestone. */
     let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
       user: null, products: [], profile: {username: "Guest", coins: 0, level: 1, xp: 0,
@@ -347,16 +347,34 @@ describe("game session reducer", () => {
     for (const letter of "PIANO") state = reduce(state, {type: "typeLetter", letter});
     state = reduce(state, {type: "guessRequested"});
     expect(state.guessPending).toBe(true);
-    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([
-      "wins_5", "perfect_guess", "classic_perfect",
-    ]);
-    expect(state.profile?.achievements).toEqual(["first_win", "wins_5", "perfect_guess", "classic_perfect"]);
+    expect(state.lastRewards).toBeNull();
+    expect(state.optimisticAchievementIds).toEqual([]);
+    expect(state.profile?.achievements).toEqual(["first_win"]);
     state = reduce(state, {type: "completionReward", reward: {
-      coinsEarned: 100, newlyUnlockedAchievementIds: ["wins_5", "perfect_guess", "classic_perfect", "level_5"],
+      coinsEarned: 100, newlyUnlockedAchievementIds: ["wins_5", "level_5", "wins_5"],
     }});
-    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([
-      "wins_5", "perfect_guess", "classic_perfect", "level_5",
-    ]);
+    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual(["wins_5", "level_5"]);
+    expect(state.profile?.achievements).toEqual(["first_win", "wins_5", "level_5"]);
+  });
+
+  it("does not unlock a predicted milestone when the receipt confirms none", () => {
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user: null, products: [], profile: {username: "Guest", coins: 0, level: 1, xp: 0,
+        winStreak: 0, gamesPlayed: 4, wins: 4, achievements: ["first_win"], classicIndex: 1}});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    state = reduce(state, {type: "completionReward", reward: {coinsEarned: 25, newlyUnlockedAchievementIds: []}});
+    expect(state.profile?.achievements).toEqual(["first_win"]);
+    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([]);
+  });
+
+  it("discards unconfirmed achievement predictions in an older saved journal", () => {
+    const state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    const base: PendingGuessState = {...state, optimisticAchievementIds: ["wins_5"],
+      lastRewards: {coinsEarned: 0, newlyUnlockedAchievementIds: ["wins_5"]}};
+    const restored = reduce(state, {type: "restoreQueuedGuesses", base, guesses: [], draft: state.currentLetters});
+    expect(restored.optimisticAchievementIds).toEqual([]);
+    expect(restored.lastRewards).toBeNull();
   });
 
   it("reconciles a preview without duplicate rows and rolls back rejected guesses", () => {
@@ -852,7 +870,7 @@ describe("game session reducer", () => {
       newlyUnlockedAchievementIds: ["level_5", "coins_1000", "level_5"],
     }});
     expect(state.lastRewards).toEqual({coinsEarned: 100, newLevel: 5, leveledUp: true,
-      newlyUnlockedAchievementIds: ["wins_5", "perfect_guess", "classic_perfect", "level_5", "coins_1000"]});
+      newlyUnlockedAchievementIds: ["level_5", "coins_1000"]});
     expect(state.modal).toBe("victory");
   });
 

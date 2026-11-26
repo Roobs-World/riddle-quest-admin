@@ -4,7 +4,7 @@ import type {HostMessageHandlers} from "../bridgeRouter";
 /** All commands cross the same authority boundary after schema validation. */
 const hostHandlers = (handler: () => void): HostMessageHandlers => ({
   ready: handler, resize: handler, loadRiddle: handler, submitGuess: handler, completeGame: handler,
-  recordAchievements: handler, requestHint: handler, spendCoins: handler, skipRiddle: handler,
+  requestHint: handler, spendCoins: handler, skipRiddle: handler,
   requestPurchase: handler, loadLeaderboard: handler, updateUsername: handler, updateAvatar: handler,
   deleteAccount: handler, listRaceCategories: handler, readyRace: handler, startRace: handler,
   submitRaceGuess: handler, requestRaceHint: handler, skipRaceRiddle: handler, resumeRace: handler,

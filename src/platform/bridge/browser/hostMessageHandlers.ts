@@ -163,8 +163,6 @@ export type CreateHostMessageHandlersOptions = {
     /** Stores new coins. */
     newCoins?: number;
   }) => Promise<boolean | void>;
-  /** Writes an optimistic achievement projection only to target-owned local storage. */
-  persistAchievementProjection: (achievementIds: string[]) => void;
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Runs optional account-owned effects after an accepted single-player guess. */
@@ -205,7 +203,6 @@ export const createPlayHostMessageHandlers = ({
   withServerActivity,
   applyPurchaseBalance,
   syncRaceAchievementProgress,
-  persistAchievementProjection,
   onPlayable,
   onAuthoritativeGuess,
   onAuthoritativeCoinAction = createHostCoinActionEffects(() => true),
@@ -233,7 +230,6 @@ export const createPlayHostMessageHandlers = ({
     }
   },
   resize: () => undefined,
-  recordAchievements: (message) => persistAchievementProjection(message.payload.achievementIds),
   loadRiddle: async (message) => {
     await loadAndPostRiddle(message.payload, message.requestId);
   },

@@ -39,6 +39,7 @@ export const PLAYER_PREFERENCE_STORAGE_KEYS = {
 
 /** Local-storage prefixes containing app-owned tooltip state. */
 const GUIDANCE_STORAGE_PREFIXES = [
+  "riddleQuest:achievementFanfare:",
   "riddleQuest:tooltipSeen:",
   "riddleQuest:tooltipSequenceSeen:",
   "riddleQuest:notificationEnrollment:",

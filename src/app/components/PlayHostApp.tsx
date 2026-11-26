@@ -169,19 +169,6 @@ export function PlayHostApp({
   /** A new authentication visit cannot inherit another player's transient notice or dismiss timer. */
   const {notice, setNotice} = useHostNotice({owner: captureAccount, configurationWarning,
     ownsMessage: authSnapshot.user ? captureAccount(authSnapshot.user.uid) : undefined});
-  /** Caches immediate unlock presentation without mutating authoritative auth state. */
-  const persistAchievementProjection = useCallback(
-    (achievementIds: string[]) => {
-      if (!authSnapshot.profile) return;
-      onPlayerDataChange?.({
-        profile: {
-          ...authSnapshot.profile,
-          achievements: [...new Set([...authSnapshot.profile.achievements, ...achievementIds])],
-        },
-      });
-    },
-    [authSnapshot.profile, onPlayerDataChange],
-  );
   /** Latest init delivery, used by riddle recovery without a dependency cycle. */
   const sendInitRef = useRef<() => void>(() => undefined);
   /** Delivers the latest init state before an automatic riddle recovery. */
@@ -365,7 +352,6 @@ export function PlayHostApp({
         withServerActivity,
         applyPurchaseBalance,
         syncRaceAchievementProgress,
-        persistAchievementProjection,
         onPlayable,
         onAuthoritativeGuess: handleAuthoritativeGuess,
         onAuthoritativeCoinAction: deliverCoinActionEffects,
@@ -394,7 +380,6 @@ export function PlayHostApp({
       sendInit,
       authority,
       syncRaceAchievementProgress,
-      persistAchievementProjection,
       withServerActivity,
       setNotice,
     ],

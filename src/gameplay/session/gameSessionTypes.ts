@@ -100,7 +100,7 @@ export type GameSessionState = {
     /** Stores newly unlocked achievement ids. */
     newlyUnlockedAchievementIds: string[];
   } | null;
-  /** Unlocks shown and cached before authoritative completion reconciliation. */
+  /** Legacy journal field retained to discard unconfirmed unlock predictions on recovery. */
   optimisticAchievementIds: string[];
   /** Optional non-completion reward animation queued for display. */
   auxiliaryFanfare: {

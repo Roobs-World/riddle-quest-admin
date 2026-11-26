@@ -4,7 +4,6 @@ import {lowerCaseGraphemes, splitGraphemes} from "../input/graphemes";
 import {type Feedback, type ScoredGuess} from "../contracts/scoring";
 import type {BridgeRiddle, BridgeProfile} from "../../platform/bridge/messages";
 import type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
-import {predictCompletionAchievementIds} from "./completion/predictCompletionAchievements";
 import {getConfirmedRiddleOutcome} from "./completion/ConfirmedRiddleOutcome";
 import {isSingleAnswerCell} from "./answerCell";
 import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
@@ -211,11 +210,13 @@ const hasUsablePendingPresentation = (base: PendingGuessState, width: number, lo
 const restorePendingPresentation = (state: GameSessionState, base: PendingGuessState): GameSessionState => {
   /** Keyboard knowledge is derived from validated rows instead of trusting an independent persisted map. */
   const {currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
-    completionAcknowledged, lastRewards, optimisticAchievementIds} = base;
+    completionAcknowledged, lastRewards} = base;
   /** Rollback retains the accepted input's ordering when available. */
   const draftRevision = base.draftRevision ?? state.draftRevision;
   return {...state, draftRevision, currentLetters, activeSlotIndex, guesses, engineSnapshot, modal, lastOutcome,
-    completionAcknowledged, lastRewards, optimisticAchievementIds,
+    completionAcknowledged,
+    lastRewards: base.optimisticAchievementIds.length > 0 ? null : lastRewards,
+    optimisticAchievementIds: [],
     letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale)};
 };
 
@@ -574,24 +575,9 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         hasUsedContinue: state.engineSnapshot?.hasUsedContinue ?? false,
         gameOver: isTerminal,
       };
-      /** Unlocks that can be presented without waiting for the reward transaction. */
-      const optimisticAchievementIds = isTerminal
-        ? predictCompletionAchievementIds(state.profile, {
-            gameMode: state.riddle.gameMode,
-            isCorrect: action.isCorrect,
-            attempts: action.attempts,
-            gameOver: true,
-          })
-        : [];
-      /** Local profile projection used by achievements UI and provider cache. */
-      const profile = optimisticAchievementIds.length > 0 && state.profile
-        ? {...state.profile, achievements: [...new Set([...state.profile.achievements, ...optimisticAchievementIds])]}
-        : state.profile;
-
       return withConfirmedHintFeedback({
         ...state,
         canRestoreCheckpoint: false,
-        profile,
         currentLetters: draft?.currentLetters ?? nextLetters,
         activeSlotIndex: draft?.activeSlotIndex ?? firstEditableSlot(nextLetters, state.hintRevealedIndices),
         guesses,
@@ -612,10 +598,8 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
             }
           : state.lastOutcome,
         completionAcknowledged: isTerminal ? false : state.completionAcknowledged,
-        optimisticAchievementIds,
-        lastRewards: optimisticAchievementIds.length > 0
-          ? {coinsEarned: 0, newlyUnlockedAchievementIds: optimisticAchievementIds}
-          : state.lastRewards,
+        optimisticAchievementIds: [],
+        lastRewards: isTerminal ? null : state.lastRewards,
         letterStates: computeStates(guesses, state.riddle?.evaluation?.locale ?? state.locale),
       });
     }
@@ -791,10 +775,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         ...state,
         lastRewards: {
           ...action.reward,
-          newlyUnlockedAchievementIds: [...new Set([
-            ...state.optimisticAchievementIds,
-            ...action.reward.newlyUnlockedAchievementIds,
-          ])],
+          newlyUnlockedAchievementIds: [...new Set(action.reward.newlyUnlockedAchievementIds)],
         },
         profile: state.profile
           ? {...state.profile, achievements: [...new Set([

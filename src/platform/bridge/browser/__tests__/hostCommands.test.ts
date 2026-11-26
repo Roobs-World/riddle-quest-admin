@@ -29,7 +29,6 @@ describe("hosted-play command module", () => {
       withServerActivity: async (operation) => operation(),
       applyPurchaseBalance: () => undefined,
       syncRaceAchievementProgress: async () => undefined,
-      persistAchievementProjection: () => undefined,
     });
 
     /** Provides message behavior. */

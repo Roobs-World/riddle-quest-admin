@@ -11,6 +11,7 @@ import {SpinningWheel} from "../../components/feedback/SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
 import {FanfareTabs} from "../../../progression/components/rewards/FanfareTabs";
 import {createVictoryFanfareSteps} from "../../../progression/browser/fanfareSequence";
+import {getAchievementFanfareOwnerKey} from "../../../progression/browser/achievementFanfareSeen";
 import {VictoryModalContent} from "../../../progression/components/rewards/VictoryModalContent";
 /** A nested confirmation owns focus ahead of its containing modal. */
 const getModalFocusScope = (modal: HTMLElement | null): HTMLElement | null =>
@@ -219,7 +220,7 @@ export function GameModalView({
   }
   if (state.modal === "reward") {
     return <FanfareTabs
-      key={state.auxiliaryFanfare?.id ?? "reward"}
+      key={`${getAchievementFanfareOwnerKey(state.user)}-${state.auxiliaryFanfare?.id ?? "reward"}`}
       state={state}
       paused={interactionBlocked || state.paused}
       onBalancePreview={onCoinBalancePreview}
@@ -254,7 +255,7 @@ export function GameModalView({
     <div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
       {state.modal !== "profile" && state.modal !== "continue" ? <SpinningWheel /> : null}
       {state.modal === "victory" && state.completionAcknowledged ? <FanfareTabs
-        key={`milestones-${outcomeKey}`} id={milestoneId} state={state}
+        key={`${getAchievementFanfareOwnerKey(state.user)}-milestones-${outcomeKey}`} id={milestoneId} state={state}
         steps={createVictoryFanfareSteps(state.lastRewards).filter(step => step.kind !== "victory")}
         paused={interactionBlocked || state.paused} onBalancePreview={onCoinBalancePreview}
         onComplete={() => setCompletedMilestonesKey(outcomeKey)} /> : null}

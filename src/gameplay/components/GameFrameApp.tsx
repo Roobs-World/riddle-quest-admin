@@ -310,21 +310,6 @@ export function GameFrameApp({
     postToHost,
   });
 
-  /** Achievement previews are recorded locally before the backend reward transaction returns. */
-  const recordedAchievementOutcomeRef = useRef<string | null>(null);
-  useEffect(() => {
-    if (
-      !state.lastOutcome ||
-      state.optimisticAchievementIds.length === 0 ||
-      recordedAchievementOutcomeRef.current === state.lastOutcome.id
-    ) return;
-    recordedAchievementOutcomeRef.current = state.lastOutcome.id;
-    postToHost({
-      type: "game:recordAchievements",
-      payload: {achievementIds: state.optimisticAchievementIds},
-    });
-  }, [postToHost, state.lastOutcome, state.optimisticAchievementIds]);
-
   /** Provides router behavior. */
   const router = useGameMessageRouter({
     dispatch,

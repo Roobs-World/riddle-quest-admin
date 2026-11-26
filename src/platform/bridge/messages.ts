@@ -261,16 +261,6 @@ export const GameCompleteGameMessageSchema = envelope(
     .strict(),
 );
 
-/** Validates achievements projected locally while authoritative completion runs. */
-export const GameRecordAchievementsMessageSchema = envelope(
-  "game:recordAchievements",
-  z
-    .object({
-      achievementIds: z.array(z.string().min(1).max(64)).max(50),
-    })
-    .strict(),
-);
-
 /** Validates an authoritative guess bound to a session and replay-safe `requestId`. */
 export const GameSubmitGuessMessageSchema = envelope(
   "game:submitGuess",
@@ -437,7 +427,6 @@ export const GameToHostMessageSchema = z.discriminatedUnion("type", [
   GameLoadRiddleMessageSchema,
   GameSubmitGuessMessageSchema,
   GameCompleteGameMessageSchema,
-  GameRecordAchievementsMessageSchema,
   GameRequestHintMessageSchema,
   GameSpendCoinsMessageSchema,
   GameSkipRiddleMessageSchema,
