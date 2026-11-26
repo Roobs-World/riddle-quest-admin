@@ -83,18 +83,3 @@ it("fails deletion closed without a cross-context lock in a secure runtime", asy
     "account-deletion-cross-context-lock-unavailable",
   );
 });
-
-it("keeps stale tabs closed after deletion clears the epoch and a new account starts", async () => {
-  let epoch: string | null = null;
-  const options = {requireCrossContextLock: false, readEpoch: () => epoch, writeEpoch: (value: string) => {epoch = value;}};
-  const owner = new LocalAccountDeletionGate(options);
-  const sibling = new LocalAccountDeletionGate(options);
-  expect(epoch).not.toBeNull();
-  owner.close();
-  epoch = null;
-  expect(sibling.isOpen()).toBe(false);
-  const fresh = new LocalAccountDeletionGate(options);
-  expect(fresh.isOpen()).toBe(true);
-  expect(sibling.isOpen()).toBe(false);
-  await expect(sibling.run(async () => undefined)).rejects.toThrow("account-deletion-requested");
-});

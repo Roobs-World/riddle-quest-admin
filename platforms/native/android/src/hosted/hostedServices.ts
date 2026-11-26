@@ -22,12 +22,10 @@ export const createAndroidHostAuth = (client: HostedFirebaseClient): HostAuth =>
  * locale is read lazily because the services are created before the device
  * language has been resolved.
  */
-export const createAndroidHostServices = (client: HostedFirebaseClient, resolveLocale: () => YouTubeLocale = () => "en"): HostServices => {
-  const services = createFirebaseHostServices({
+export const createAndroidHostServices = (client: HostedFirebaseClient, resolveLocale: () => YouTubeLocale = () => "en"): HostServices =>
+  createFirebaseHostServices({
     auth: createAndroidHostAuth(client),
     functions: client.functions,
     loadUserDocument: (userId) => client.loadUserDocument(userId),
     translate: (key) => translateHostCopy(resolveLocale(), key),
   });
-  return client.deleteAccount ? {...services, deleteAccount: client.deleteAccount} : services;
-};

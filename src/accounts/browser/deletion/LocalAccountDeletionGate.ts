@@ -9,26 +9,34 @@ type CrossContextLock = {
   runExclusive(operation: () => Promise<void>): Promise<void>;
 };
 
-/** Provider-owned locks keep unrelated game targets independent. */
-type ProviderScope = "facebook" | "reddit";
-/** Durable lifetime marker shared by tabs of one target. */
-const epochKey = (scope: ProviderScope) => `riddleQuest:${scope}AccountDeletionEpoch:v1`;
-/** Every lifetime remains distinguishable after storage is erased. */
-const createEpoch = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`;
+/** Defines the facebook operation lock value. */
+const FACEBOOK_OPERATION_LOCK = "riddleQuest:facebookPlayerOperations:v1";
+/** Defines the facebook deletion epoch value. */
+const FACEBOOK_DELETION_EPOCH = "riddleQuest:facebookAccountDeletionEpoch:v1";
+
+/** Reads browser epoch. */
+const readBrowserEpoch = (): string | null => {
+  return readBrowserStorage("local", FACEBOOK_DELETION_EPOCH);
+};
+
+/** Provides write browser epoch behavior. */
+const writeBrowserEpoch = (epoch: string): void => {
+  writeBrowserStorage("local", FACEBOOK_DELETION_EPOCH, epoch);
+};
 
 /** Creates browser lock. */
-const createBrowserLock = (scope: ProviderScope): CrossContextLock | null => {
+const createBrowserLock = (): CrossContextLock | null => {
   /** Provides locks behavior. */
   const locks = globalThis.navigator?.locks;
   if (!locks) return null;
   return {
-    runShared: (operation) => locks.request(`riddleQuest:${scope}PlayerOperations:v1`, {mode: "shared"}, operation),
-    runExclusive: (operation) => locks.request(`riddleQuest:${scope}PlayerOperations:v1`, {mode: "exclusive"}, operation),
+    runShared: (operation) => locks.request(FACEBOOK_OPERATION_LOCK, {mode: "shared"}, operation),
+    runExclusive: (operation) => locks.request(FACEBOOK_OPERATION_LOCK, {mode: "exclusive"}, operation),
   };
 };
 
 /**
- * Serializes provider player work and permanently closes every same-origin tab
+ * Serializes Facebook player work and permanently closes every same-origin tab
  * through a durable epoch. A secure runtime must expose Web Locks before the
  * destructive operation can run, so an undrainable tab cannot rewrite cloud data.
  */
@@ -50,14 +58,11 @@ export class LocalAccountDeletionGate implements AccountDeletionServiceGate {
 
   /** Creates a local account deletion gate instance. */
   constructor({
-    scope = "facebook",
-    crossContextLock = createBrowserLock(scope),
+    crossContextLock = createBrowserLock(),
     requireCrossContextLock = typeof window !== "undefined" && globalThis.isSecureContext === true,
-    readEpoch = () => readBrowserStorage("local", epochKey(scope)),
-    writeEpoch = value => {writeBrowserStorage("local", epochKey(scope), value);},
+    readEpoch = readBrowserEpoch,
+    writeEpoch = writeBrowserEpoch,
   }: {
-    /** Isolates each provider's operation lock and deletion lifetime. */
-    scope?: ProviderScope;
     /** Stores cross context lock. */
     crossContextLock?: CrossContextLock | null;
     /** Stores require cross context lock. */
@@ -71,9 +76,6 @@ export class LocalAccountDeletionGate implements AccountDeletionServiceGate {
     this.requireCrossContextLock = requireCrossContextLock;
     this.readEpoch = readEpoch;
     this.writeEpoch = writeEpoch;
-    const existingEpoch = readEpoch();
-    if (existingEpoch === null) writeEpoch(createEpoch());
-    // Every live tab observes a nonempty epoch, so clearing storage cannot revive an older tab.
     this.initialEpoch = readEpoch();
   }
 
@@ -86,7 +88,7 @@ export class LocalAccountDeletionGate implements AccountDeletionServiceGate {
   close(): void {
     if (!this.accepting) return;
     this.accepting = false;
-    this.writeEpoch(createEpoch());
+    this.writeEpoch(globalThis.crypto?.randomUUID?.() ?? `${Date.now()}-${Math.random()}`);
   }
 
   /** Provides run behavior. */

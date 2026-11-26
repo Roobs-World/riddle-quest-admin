@@ -1,4 +1,4 @@
-import {createAndroidPlayerStorage} from "./androidPlayerStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {LiveRaceController, type LiveRaceControllerOptions} from "../../../../../src/races/live/LiveRaceController";
 import {useEffect, useState, useSyncExternalStore} from "react";
 import {AppState} from "react-native";
@@ -6,7 +6,7 @@ import {AppState} from "react-native";
 /** Native lifecycle and private persistence adapters for the shared live race controller. */
 export function useHostedRace(options: Omit<LiveRaceControllerOptions, "storage">) {
   /** One shared race controller survives harmless native rerenders. */
-  const [controller] = useState(() => new LiveRaceController({...options, storage: createAndroidPlayerStorage(), clockPresentationIntervalMs: 1000}));
+  const [controller] = useState(() => new LiveRaceController({...options, storage: AsyncStorage, clockPresentationIntervalMs: 1000}));
   /** Immutable presentation subscribed through React's external-store contract. */
   const state = useSyncExternalStore(controller.subscribe, controller.getSnapshot, controller.getSnapshot);
   useEffect(() => {

@@ -11,13 +11,12 @@ import type {ProductSummary} from "../../../../src/platform/contracts/hostServic
 import {resolveRedditGoldProduct} from "./shared/redditCatalog";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {detectDeviceLanguage, tr, useLocale} from "../../../../src/localization/browser/i18n";
-import {applyPlayerPreferences, clearBrowserPlayerState, installBrowserPlayerStateMutationGuard, subscribeToPlayerPreferenceChanges} from "../../../../src/settings/browser/playerPreferences";
+import {applyPlayerPreferences, subscribeToPlayerPreferenceChanges} from "../../../../src/settings/browser/playerPreferences";
 import {RedditPlatformBootstrap} from "./RedditPlatformBootstrap";
 import {createRedditHostServices} from "./RedditHostServices";
 import {createRedditGuestHostServices} from "./RedditGuestHostServices";
 import {RedditPollingPresence} from "./RedditPollingPresence";
 import {readBrowserStorage} from "../../../../src/platform/browser/storage/browserStorage";
-import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletion/LocalAccountDeletionGate";
 import {PlayerProjectionPersistence} from "../../../../src/accounts/browser/playerState/PlayerProjectionPersistence";
 import {usePlayerProjectionRecovery} from "../../../../src/accounts/hooks/usePlayerProjectionRecovery";
 import {PlayerSaveRecoveryLayout} from "../../../../src/accounts/components/recovery/PlayerSaveRecoveryLayout";
@@ -58,12 +57,10 @@ export function RedditPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides player persistence ref behavior. */
   const playerPersistenceRef = useRef<PlayerProjectionPersistence | null>(null);
-  const [deletionGate] = useState(() => new LocalAccountDeletionGate({scope: "reddit"}));
-  useEffect(() => installBrowserPlayerStateMutationGuard(() => deletionGate.isOpen()), []);
   /** Inline posts retain progress but recovery runs only in the expanded target-owned view. */
   const saveRecovery = usePlayerProjectionRecovery(startup.state === "ready" ? playerPersistenceRef.current : null, {
     lifecycle: startup.state === "ready" ? startup.session.capabilities.lifecycle : undefined,
-    canRecover: () => deletionGate.isOpen() && getWebViewMode() === "expanded",
+    canRecover: () => getWebViewMode() === "expanded",
   });
   /** Provides preferences ref behavior. */
   const preferencesRef = useRef<PlatformPreferences>({});
@@ -152,7 +149,7 @@ export function RedditPlatformEntry() {
     /** Provides presence behavior. */
     const presence = new RedditPollingPresence(startup.session.capabilities.presence, {
       /** A visible inline post is not an active expanded game session. */
-      visibility: () => deletionGate.isOpen() && document.visibilityState === "visible" && getWebViewMode() === "expanded" ? "visible" : "hidden",
+      visibility: () => document.visibilityState === "visible" && getWebViewMode() === "expanded" ? "visible" : "hidden",
     });
     presenceRef.current = presence;
     /** Provides enabled behavior. */
@@ -173,7 +170,7 @@ export function RedditPlatformEntry() {
 
   /** Provides toggle presence behavior. */
   const togglePresence = useCallback(() => {
-    if (startup.state !== "ready" || !startup.session.capabilities.presence || !deletionGate.isOpen()) return;
+    if (startup.state !== "ready" || !startup.session.capabilities.presence) return;
     /** Provides next behavior. */
     const next = !presenceEnabled;
     void playerPersistenceRef.current
@@ -206,7 +203,6 @@ export function RedditPlatformEntry() {
           result.value.storage,
           playerData,
           result.value.initialPreferences,
-          deletionGate,
         );
         if (active) setStartup({state: "ready", session: result.value, playerData});
       })
@@ -230,21 +226,6 @@ export function RedditPlatformEntry() {
     },
     [startup],
   );
-
-  const requestAccountDeletion = useCallback(async () => {
-    deletionGate.close();
-    await presenceRef.current?.stop();
-    await playerPersistenceRef.current?.closeAndFlush();
-  }, []);
-
-  const completeAccountDeletion = useCallback(() => {
-    // The server deletion already removes provider storage; no retired account request may recreate it.
-    playerPersistenceRef.current = null;
-    clearBrowserPlayerState();
-    preferencesRef.current = {};
-    setPresenceEnabled(false);
-    window.location.reload();
-  }, []);
 
   if (startup.state === "loading")
     return (
@@ -270,7 +251,6 @@ export function RedditPlatformEntry() {
             raceSurface={RedditRaceEntry}
             session={createHostedPlaySession({
               hostServices,
-              accountDeletionServiceGate: deletionGate,
               platformProducts: commerceProducts,
               platformPurchase:
               startup.session.capabilities.commerce
@@ -302,8 +282,7 @@ export function RedditPlatformEntry() {
               onTogglePresence: startup.session.capabilities.presence ? togglePresence : undefined,
               onPresenceStateChange: (state) => void presenceRef.current?.setState(state).catch(() => undefined),
             })}
-            onAccountDeletionRequested={requestAccountDeletion}
-            onAccountDeleted={completeAccountDeletion}
+            onAccountDeletionRequested={() => playerPersistenceRef.current?.closeAndFlush()}
           />
         </PlayerSaveRecoveryLayout>
       );

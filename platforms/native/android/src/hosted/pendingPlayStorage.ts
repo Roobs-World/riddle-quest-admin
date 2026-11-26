@@ -1,4 +1,4 @@
-import {createAndroidPlayerStorage} from "./androidPlayerStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type {PendingPlayStorage} from "../../../../../src/gameplay/session/journal/pendingPlayAdapters";
 /** Device key-value persistence; AsyncStorage satisfies it. */
 export type PendingPlayDeviceStore = Readonly<{
@@ -25,7 +25,7 @@ export type AndroidPendingPlayStorage = PendingPlayStorage &
  *
  * @param store - Device persistence; defaults to AsyncStorage.
  */
-export const createAndroidPendingPlayStorage = (store: PendingPlayDeviceStore = createAndroidPlayerStorage()): AndroidPendingPlayStorage => {
+export const createAndroidPendingPlayStorage = (store: PendingPlayDeviceStore = AsyncStorage): AndroidPendingPlayStorage => {
   /** Current values by key. */
   const cache = new Map<string, string>();
   /** Scopes already loaded from the device. */
