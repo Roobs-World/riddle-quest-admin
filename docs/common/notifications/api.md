@@ -2,18 +2,9 @@
 
 All routes run on Vercel. JSON bodies are bounded and validated. Responses never include raw database errors, provider errors or subscription credentials.
 
-## Browser enrollment
+## Retired browser routes
 
-The game configures an explicit HTTPS service origin and uses CORS without cookies. `NOTIFICATION_ALLOWED_ORIGINS` admits exact platform-to-origin pairs. Each installation persists a private 64-character hexadecimal bearer credential; the server stores its hash. Platform IDs are lowercase slugs up to 64 characters, allowing custom targets.
-
-| Route | Request | Result |
-| --- | --- | --- |
-| `GET /api/notifications/config?target=<id>` | Admitted Origin | `{version:1,target,publicKey}` |
-| `POST /api/notifications/subscribe` | Bearer; `{target,revision,locale,subscription}` | `{installationId,revision}` |
-| `POST /api/notifications/unsubscribe` | Bearer; `{target,revision}` | `{installationId,revision}` |
-| `POST /api/notifications/activity` | Bearer; `{target,locale}` | `{ok:true}` |
-
-Subscription contains the browser endpoint and `keys.p256dh`/`keys.auth`. Endpoints are restricted to approved HTTPS push vendors. Monotonic revisions make retries idempotent and prevent stale writes from reversing newer opt-outs. An endpoint cannot belong to two installations. Rate limits cover installations and client addresses.
+Browser configuration, enrollment, renewal and activity routes return HTTP 410. A previously enrolled browser can still revoke its own registration through the authenticated cleanup endpoint.
 
 ## Management
 
@@ -33,10 +24,10 @@ Title accepts up to 200 characters, body up to 2,000 and HTTPS image URLs up to 
 
 ## Push payload
 
-The same management request and campaign queue cover both default device transports. The React Native Android client registers through its existing authenticated game callable. Only that trusted server may call `POST /api/devices/android/registration` with the bridge credential and `{version:1,tokenHash,revision,enabled,locale,expiresAtMs}`. The reserved `android` target cannot be registered through the public browser endpoints.
+The management API and campaign queue deliver to eligible native installations. The React Native Android client registers through its existing authenticated game callable. Only that trusted server may call `POST /api/devices/android/registration` with the bridge credential and `{version:1,tokenHash,revision,enabled,locale,expiresAtMs}`. The reserved `android` target cannot be registered through the public browser endpoints.
 
 The manager's Android adapter forwards `{version:1,tokenHash,revision,notificationId,title,body,imageUrl,expiresAtMs}` to the configured authenticated native dispatch function. It returns `{outcome:"accepted"|"failed"|"uncertain"|"skipped"}`. Token resolution and account authority remain outside the management database.
 
-The browser worker accepts only version 1 messages of kind `notification`, with `notificationId`, `target`, `installationId`, `title`, `body`, required nullable `imageUrl` and `expiresAtMs`. The server copies authored content from the campaign. All transports expire a campaign six hours after its scheduled send time. The game supplies no alternate copy or artwork. Browser clicks use the client's fixed same-origin launch path; native campaign taps open the app. Campaigns cannot choose arbitrary navigation URLs.
+The native receiver displays manager-authored campaign content and opens the launcher activity on tap. A campaign expires six hours after its scheduled send time.
 
 `GET` or `POST /api/cron/notifications` requires the separate scheduler bearer credential and dispatches bounded due work.

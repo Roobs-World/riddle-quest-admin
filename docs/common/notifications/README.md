@@ -1,40 +1,18 @@
 # Notifications
 
-Games register verified accounts, device routing and notification consent. The existing notification manager owns notification content, scheduling and sending. The receiving device owns system display and notification responses, including taps and dismissal. Gameplay has no push-received callback, notification-response handler, delivery acknowledgement or response-based reward.
+Registered Jest players get an account-level Notifications switch in Settings. New registrations default to On. An explicit Off survives future sign-ins. Guests see the switch disabled. Signup and the startup menu do not open a notification dialog or issue a device setup link.
 
-The device may launch the configured game URL or native app after a tap. The game then follows its ordinary startup path. Device enrollment completes in the manager's page, which displays its own confirmation. New games register no completion listener and do not poll device status. The manager's legacy confirmation remains compatible with older uploaded clients until they migrate.
+Firebase stores the account preference on `users/{uid}`. The Android app obtains the device's FCM token and registers it with its authenticated Firebase UID. It can register an existing permission automatically. Android controls the initial permission grant and users can revoke it in system settings.
 
-| Responsibility | Owner |
+The notification manager authors campaigns, selects eligible native installations and schedules delivery. Firebase checks account ownership and consent and calls the Supabase Edge Function. FCM delivers to the Android app's native receiver, which displays the system notification. Tapping a campaign opens the app.
+
+| Platform | Responsibility |
 | --- | --- |
-| Account, device routing and On/Off consent registration | Authenticated platform adapter and backend |
-| Campaign content, audience, schedule and sending | Notification manager |
-| Browser notification display and taps | Manager service worker on the device |
-| Android notification display and taps | Native FCM receiver and Android notification APIs |
+| Jest and eligible Facebook accounts | Save the account preference. Browser games do not subscribe to push. |
+| Native Android | Register the device with Firebase, receive FCM messages, display notifications and handle taps. |
+| iOS and native desktop | No native app or registered transport in this repository. |
+| Other web games | No browser push delivery. |
 
-The browser implementation is `notification-manager/public/push/worker.js`. Android uses `RiddleQuestMessagingService` and `AndroidNotifications` under `platforms/native/android`. Both operate outside gameplay. A user ID alone is not a device push route; a registered browser subscription or FCM token and device permission are still required.
+Facebook and Jest identify browser players using game-scoped IDs. Android links Google to its existing Firebase UID. An installed device belongs to the UID that registered its token. [Registration and device ownership](registration-boundary.md)
 
-The game has one global Notifications preference in Settings, using the same On/Off control as the other preferences. It defaults to On. Profile and multiplayer have no notification controls. Default On records a preference; device permission still requires a player gesture.
-
-Eligible players receive the registration request in its own modal after closing the startup menu and finishing any instructions, registration or guidance. The game issues a private, copyable manager handoff. The manager's page owns device permission and enrollment. Issuing the link does not claim that a device is connected or able to receive push.
-
-`src/notifications/contracts/notificationProvider.ts` separates manager registration from device adapters. Manager providers expose consent, lifecycle and `register`; their snapshots contain registration state. Device providers expose permission and activity operations; their snapshots contain actual delivery state. The types prevent game registration adapters from using device-response APIs. Settings narrows the capability once. Closing the game retires local registration work without revoking device push delivery. See the [registration boundary design](registration-boundary.md).
-
-`createNotificationProvider` selects our hosted implementation by default. A platform with a mandatory SDK supplies its own implementation. A platform that prohibits notifications returns no provider. A platform failure never silently changes delivery channels.
-
-| Platform | Delivery boundary |
-| --- | --- |
-| Android browsers, iOS Home Screen apps and desktop browsers | Hosted Web Push through the Vercel service |
-| Jest | Shared Firebase-linked enrollment page outside the embedded game |
-| Facebook | The same Firebase-linked enrollment page; no optional Meta delivery integration |
-| Android React Native app | Native permission and FCM adapter behind the same hosted campaign service |
-| Reddit, YouTube, Netflix and GameSnacks | No notification provider in the current target |
-
-The manager is the sole author of notification titles, messages and images. The hosted client contains no content fallback, generated artwork or timer-based message delivery. Legacy app-authored engagement and race alerts are retired. Device adapters share one campaign model, queue and management API. Platform integrations are exceptions only when a documented requirement calls for them. See [platform delivery](platform-delivery.md).
-
-The hosted provider registers a browser PushSubscription and a private installation credential. Turning Off closes the local worker consent gate immediately and independently attempts server revocation and browser unsubscription. Failed revocations remain pending for retry. Worker messages must match the installation, platform, expiry and consent gate before display or click handling.
-
-`VITE_NOTIFICATION_SERVICE_URL` explicitly selects the hosted service. With no URL, the preference reports unconfigured delivery and makes no backend requests. Browser transport is replaceable, and new platforms can supply a provider without importing another platform's SDK.
-
-Read the [service and setup guide](service.md), [Supabase FCM delivery guide](supabase-fcm.md), [API contract](api.md), and [Yahoo client guide](../../yahoo/notifications.md). Source builds do not deploy the service, apply database changes or upload games.
-
-For authenticated players, [Firebase enrollment](firebase-enrollment.md) describes the shared signup action, device ownership, platform adapters and coordinated release. Firebase is the account and device authority; its device count is distinct from configured delivery platforms.
+See [Firebase enrollment](firebase-enrollment.md), [manager API](api.md), [manager operations](service.md) and [Supabase FCM](supabase-fcm.md).

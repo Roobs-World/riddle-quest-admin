@@ -1,18 +1,14 @@
 # Notification management service
 
-The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager backend calls private Firebase bridges without importing Firebase Admin. Firebase retains authenticated account and device ownership for both browser enrollment and native FCM. The browser enrollment page uses the Firebase app and messaging SDKs to obtain an FCM token. See [Firebase enrollment](firebase-enrollment.md) and the [Supabase FCM rollout](supabase-fcm.md).
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager backend calls private Firebase bridges without importing Firebase Admin. Firebase owns the account preference and native device credentials. Supabase stores opaque installation references and the manager sends campaigns only to admitted native Android devices. [Firebase enrollment](firebase-enrollment.md) and [Supabase FCM delivery](supabase-fcm.md).
 
 Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
 
 Calendar times use the operator's displayed browser timezone. The frontend converts them to an absolute UTC instant and rejects nonexistent daylight-saving times or past times. The server independently rejects a new schedule in the past. There is no arbitrary one-year limit.
 
-Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. The summary cards count all queued or sending campaigns and all accepted delivery receipts completed during the operator's local day, independently of loaded pages. Local day boundaries preserve daylight-saving changes. Totals refresh after creating or cancelling a campaign and during polling. Saved drafts remain in the browser and do not change delivery totals. Registered browser devices come from Firebase enrollment. The panel does not display the bridge's unrelated `accounts` field, which counts all Firestore `users` profile documents rather than connected accounts or push recipients.
+Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. The summary cards count all queued or sending campaigns and all accepted delivery receipts completed during the operator's local day, independently of loaded pages. Local day boundaries preserve daylight-saving changes. Totals refresh after creating or cancelling a campaign and during polling. Saved drafts remain in the browser and do not change delivery totals. The legacy browser registration card counts historical Firebase enrollment. Active native installations are recorded separately in Supabase’s `notification_installations` table.
 
-Read-only checks on November 26 confirmed that production deployment `dpl_9f5w34qdEX3VRRkpSZuRhkVhPAMk` retained the corrected dashboard labels. The [FCM live audit](evidence/supabase-fcm-live-audit-2026-11-26.json) records the transport rollout before Supabase authentication was restored. At that audit, the new transport source had not been deployed, and the existing scheduler and earlier Web Push implementation remained in place.
-
-The production manager uses Supabase Edge Function `fcm-push` for registered Android devices and FCM browser registrations. Both Firebase dispatchers serve all traffic on revisions configured with the authenticated Edge URL. The browser enrollment endpoint returns the approved Firebase app and VAPID public key alongside the existing Web Push public key. Devices handle display and taps. [Production activation evidence](evidence/supabase-fcm-activation-2026-11-26.json)
-
-Jest version `01a211e5-afe7-7735-a223-04c1e3f67488`, from source `89eb0c737e39327fe7fc369e2c743aa934d914f6`, was freshly confirmed ready and active on November 26. It retains the disabled guest toggle and uses registration-only gameplay, with display and response handling outside the game. See the [Jest release evidence](../../jest/evidence/jest-manager-registration-only-2026-11-25.json). The [Facebook update attempt](../../facebook/evidence/facebook-registration-only-upload-2026-11-26.json) prepared the matching registration-only client but was rejected at upload-session creation with HTTP 401 and OAuth code 190. No new archive or activation was sent. A valid authorized upload credential is required before the newly authorized activation can proceed.
+The November 26 production release restricts campaign delivery to Android package `com.roobsworld.riddlequest`. Firebase validates the installation and forwards the message to the Supabase sender. The Jest client release enables the account preference on signup and preserves an explicit opt-out. [Native backend verification](evidence/native-notification-backend-2026-11-26.json) · [Jest activation](../../jest/evidence/jest-native-notification-preference-2026-11-26.json)
 
 ## Local commands
 
@@ -34,11 +30,7 @@ The [panel check record](evidence/panel-check-2026-11-24.json) records the draft
 
 The [instant and one-hour check record](evidence/notification-checks-2026-11-24.json) records two additional campaigns created on November 24 at 11:15 UTC through the existing campaign RPC. The instant check completed through the production scheduler at 11:16 with zero recipients. The new scheduled check was due at 12:14:38 Europe/London, one hour after preparation, and completed at 12:15:01. Both campaigns completed with zero delivery attempts. Verification at 23:15 found one upcoming campaign, the earlier November 25 check, zero accepted deliveries today and zero active installations. These counts describe persisted records and dispatcher results, not device display.
 
-The authorized production deployment `dpl_3JeNGBgnqiQZycGzLcbpWLCzQYLA` released source `43d772ef75b14862bd764562524a8ee882832c4a`. Live JavaScript matches the production build, includes the global summary labels and browser registration subtitle, and no longer displays the misleading Firebase account count. Enrollment assets returned HTTP 200, unsigned management routes returned HTTP 401, and the scheduler continued returning HTTP 200 after release. Actual notification display still requires a real device to grant browser permission and enroll.
-
-The Firebase dispatcher revision `dispatchfirebasenotification-00002-ces` adds the trusted Facebook game launch URL while preserving the Jest URL. Notification taps can now return to the corresponding game. The live renewal functions already matched the current compiled source, so they did not need redeployment. The public push configuration request returned HTTP 200 through the Vercel-to-Firebase bridge; unsigned bridge and enrollment requests remained rejected.
-
-The [accepted Facebook version 7](../../facebook/evidence/facebook-user-token-upload-2026-11-24.json) included the notification enrollment flow and management origin prepared on November 24. Its 416 runtime files matched that release's prepared client. Later registration-only gameplay changes require a new Facebook upload. The app remains in Development mode. A role-account device must still enroll before visible notification delivery can be verified.
+The November 24 release used a browser enrollment page and a service worker. Those historical checks describe the retired delivery path. [Browser rollout](evidence/connected-release-2026-11-24.json) · [November 26 Facebook upload result](../../facebook/evidence/facebook-registration-only-upload-2026-11-26.json)
 
 ## Supabase setup
 
@@ -110,15 +102,9 @@ Use `notification-manager/.env.example` for the environment settings:
 | `VITE_NOTIFICATION_SUPABASE_URL` | Optional public frontend URL override |
 | `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY` | Optional public frontend key override; set with its URL |
 | `SUPABASE_SECRET_KEY` | API-only secret key |
-| `HOSTED_PUSH_VAPID_PUBLIC_KEY` | Stable Web Push application public key |
-| `HOSTED_PUSH_VAPID_PRIVATE_KEY` | API-only matching private key |
-| `HOSTED_PUSH_VAPID_SUBJECT` | Real operator contact as `mailto:` or HTTPS URL |
-| `NOTIFICATION_ALLOWED_ORIGINS` | JSON map of platform IDs to exact HTTPS game origins |
 | `CRON_SECRET` | Dedicated random scheduler credential, 32 to 256 URL-safe characters |
 | `NOTIFICATION_MANAGER_BRIDGE_SECRET` | Matching server-only Android bridge credential, 32 to 256 URL-safe characters |
 | `ANDROID_NOTIFICATION_BRIDGE_URL` | HTTPS Firebase `dispatchAndroidNotification` function URL |
-
-Generate one stable P-256 VAPID pair using the installed `web-push` package or an approved credential workflow. Store the private value only in secret configuration. Rotating it requires browser re-enrollment; do not generate a new pair on each build. Never prefix server secrets with `VITE_`, log them or commit them.
 
 The default Content Security Policy admits Supabase connections under `*.supabase.co`. Update its `connect-src` directive if using an approved custom Supabase domain.
 
@@ -130,7 +116,7 @@ Configure the matching `NOTIFICATION_MANAGER_BRIDGE_SECRET` in Firebase Secret M
 
 For each native delivery, the manager sends immutable campaign content to the authenticated Firebase adapter. Firebase rechecks current account ownership, consent, device revision and deletion state before claiming one FCM attempt. A stable device intent counter prevents delayed registration from reversing newer choices across account changes and token rotation. Background renewal cannot lift an explicit master Off. Account deletion removes native tokens, device bindings and delivery receipts. The native receiver independently checks account, consent, permission and expiry before display. It shows the authored text immediately; WorkManager fetches an optional image with bounded size and time limits. Separate campaigns have separate notification identities.
 
-This path needs an authorized Functions release, current Supabase schema and an updated native Android build. Legacy clients without campaign capability are excluded. Existing Google Services/FCM setup remains required; these edits do not deploy a service or upload an APK.
+The production Functions and Supabase schema support native campaigns. An installed build must include the native receiver, register its FCM token and have Android notification permission. [Backend release](evidence/native-notification-backend-2026-11-26.json)
 
 ## Scheduled delivery
 
@@ -145,7 +131,7 @@ Postgres persists scheduled work. The service does not rely on a browser tab or 
 
 Each campaign has a durable lease and one receipt per installation. The dispatcher checks current consent, subscription revision and cancellation immediately before contacting the push vendor. Uncertain sends are recorded without blind retries. Raw subscriptions expire after 30 days without renewal; minimal opt-out revision records persist. Push payloads expire after six hours. Cleanup removes expired subscription material, quotas and terminal delivery records.
 
-The database, environment values and scheduler must be configured before live delivery works. Source builds validate types and packaging. Live sign-in, RLS, uploads and after-close push delivery still need acceptance against an authorized configured deployment.
+Use a known registered test installation to verify that Android displays the authored message and that tapping it opens the app. A provider acceptance alone does not establish either result.
 
 ### Protected Vercel addresses
 

@@ -2,7 +2,7 @@
 
 When notification permission is blocked, the Notifications screen opens Android's app settings so the player can change the OS permission. The default-On game preference and the operating-system permission remain separate.
 
-Android uses the same hosted notification manager as browser targets. The manager authors campaign titles, bodies and images, and schedules server-side dispatch. Native FCM is the Android device transport. There is no native iOS application in this integration; Safari and Home Screen web apps use the browser transport.
+The notification manager authors and schedules campaigns. The Supabase sender delivers them through FCM to the native Android receiver. Browser delivery is retired. [Manager delivery](../common/notifications/platform-delivery.md)
 
 The app has one Notifications preference, controlled on its notification Settings screen. A missing preference defaults to On. Explicit saved Off remains Off, including legacy records whose invitation and Daily flags are both false. A malformed saved record fails closed. Android permission is separate from this preference and only prompts after a Settings action. Startup and foreground restoration never prompt.
 
@@ -26,6 +26,7 @@ Configure these values through the authorized deployment process:
 | Firebase Functions environment | `NOTIFICATION_MANAGER_URL` | Exact HTTPS origin of the hosted manager, with no path or trailing slash |
 | Vercel server environment | `NOTIFICATION_MANAGER_BRIDGE_SECRET` | Matching bridge secret |
 | Vercel server environment | `ANDROID_NOTIFICATION_BRIDGE_URL` | Exact HTTPS URL of `dispatchAndroidNotification` in `europe-west1` |
+| Firebase Functions environment | `ANDROID_FIREBASE_APP_ID` | Registered Firebase application ID for the production Android package |
 
 Use URL-safe random secret material compatible with the manager's configuration validation. Never bundle it into the app. The manager does not receive an FCM service-account key. Firebase continues using its existing server credentials and project registration.
 
