@@ -72,6 +72,7 @@ describeBrowser("profile walkthrough", () => {
   it.each([
     {width: 459, height: 591},
     {width: 320, height: 568},
+    {width: 424, height: 452},
   ])(
     "advances every step with one tap and keeps profile open at %j",
     async (viewport) => {
@@ -89,6 +90,15 @@ describeBrowser("profile walkthrough", () => {
           const card = await page.locator(".tooltip-card").boundingBox();
           expect(card!.y).toBeGreaterThanOrEqual(0);
           expect(card!.y + card!.height).toBeLessThanOrEqual(viewport.height);
+          const action = page.locator(".tooltip-card button");
+          for (const content of [page.locator(".tooltip-card h2"), page.locator(".tooltip-card p"), action]) {
+            await expect(content).toBeVisible();
+            await expect(content).toBeInViewport({ratio: 1});
+            const bounds = await content.boundingBox();
+            expect(bounds!.y).toBeGreaterThanOrEqual(card!.y);
+            expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(card!.y + card!.height);
+          }
+          await expect(action).toBeEnabled();
           if (
             [
               "profileProgression",
@@ -103,8 +113,11 @@ describeBrowser("profile walkthrough", () => {
             const spotlight = await page.locator(".tooltip-spotlight").boundingBox();
             expect(spotlight!.y).toBeGreaterThanOrEqual(0);
             expect(spotlight!.y + spotlight!.height).toBeLessThanOrEqual(viewport.height);
-            if (id !== "profileProgression") {
-              /** Provides separated behavior. */
+            // The spotlight extends six pixels beyond the target; keep the remaining gap and viewport margin.
+            const roomAbove = spotlight!.y - 12 - 14;
+            const roomBelow = viewport.height - spotlight!.y - spotlight!.height - 12 - 14;
+            const fullCardFitsBesideTarget = card!.height <= Math.max(roomAbove, roomBelow);
+            if (id !== "profileProgression" && fullCardFitsBesideTarget) {
               const separated = card!.y + card!.height < spotlight!.y || card!.y > spotlight!.y + spotlight!.height;
               expect(separated).toBe(true);
             }
@@ -112,7 +125,7 @@ describeBrowser("profile walkthrough", () => {
           if (id === "profileStats" && viewport.width === 459) {
             await page.screenshot({path: "/tmp/profile-tour-stats.png"});
           }
-          await page.locator(".tooltip-card button").tap({timeout: 2000});
+          await action.tap({timeout: 2000});
           await expect(page.locator(".modal-profile")).toBeVisible();
         }
         await expect(page.locator(".tooltip-card")).toHaveCount(0);

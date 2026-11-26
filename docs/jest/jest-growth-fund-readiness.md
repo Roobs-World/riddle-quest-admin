@@ -1,6 +1,14 @@
 # Jest Fund readiness
 
-Updated 26 November 2026 for the Jest client SDK notification campaign. **Fund acceptance remains unverified.** The D1-D7 implementation gap is addressed; the exact released artifact still needs hosted and physical-device acceptance.
+Updated 26 November 2026 after hosted desktop sandbox checks and local regression tests. **Fund acceptance remains unverified.** The authenticated Simulator checklist, completed sandbox checkouts and physical-device acceptance remain pending.
+
+## Hosted checks on 26 November
+
+The [hosted observations](evidence/fund-hosted-2026-11-26/observations.json) record the exact tested build and limits. A Firefox sandbox session completed onboarding, three Classic wins with correct rewards, working Next Level transitions, active-Premium offer suppression, checkout cancellation without a balance change, and a race through results. Reload retained the 4,560-coin balance and next Classic riddle. Jest's screenshot provider captured gameplay, shop and Profile guidance. Desktop play remained usable for more than ten minutes; this is not a physical-phone soak or a measured mobile loading result.
+
+The final Profile tutorial step exposed an undersized scrolling card in the 424×452 game frame. The source fix removes its side-space height cap while preserving normal above/below positioning. Exact uploaded-build retesting is pending. Local checks passed 291 tests across 13 suites, including notification consent/retries and subscription coin refresh. Two stale test fixtures were corrected; the stronger Profile browser assertions were added but the local browser harness was not executed.
+
+Developer Console access requires Google sign-in in a connected browser. Completed sandbox purchases also await approval for the checkout's displayed Terms of Service. The game is still an unpublished draft; no checklist passes, agreement acceptance, review submission, publication or Fund approval are inferred from these observations. The [self-review draft](jest-fund-self-review-draft.md) separates factual results from proposed commercial experiments and remaining work.
 
 Jest confirmed current build `1.0.0-dev.20261126162520.f0a4ecbb034f.0e9adbba`, version `01a218ad-89d6-73c9-b0b9-44aaedbd5ef4`, ready and active at 16:26:00 UTC. Its [release evidence](evidence/jest-subscription-coin-refresh-2026-11-26.json) records the subscription balance refresh and passing production gate. It includes the [D1-D7 notification integration](evidence/jest-sdk-reminders-2026-11-26.json). At the earlier audit, the app remained an unpublished draft with no revision in review; these releases made no publication or review submission. Activation does not establish review approval. Collect acceptance evidence against this exact current version.
 
@@ -56,13 +64,13 @@ Keep the Simulator's server-to-server notification declaration off for this clie
 
 ## Acceptance work and commercial plan
 
-Run these against the same released version when test authorization is provided:
+Testing was explicitly authorized. Complete these against the same released version once portal access and any required checkout confirmation are available:
 
 - Simulator: all applicable Basic Launch and Fund checks, registration and dismissal, catalogs, purchases/recovery, subscriptions, reminders, screenshots and referrals. Preserve the SDK log and exact version.
 - Live sandbox: all six coin packs, subscription lifecycle, cancellation and retry, stable identity and saved progress, multiplayer/bot fallback, friend invitation and two-user referral conversion. Sandbox identity must be confirmed before transactions.
 - Devices: real iPhone Safari and Android Chrome, documented load conditions, tall/wide/small viewports, installed mode, screenshot inspection and at least ten minutes of play with background/resume.
 
-Repository instructions require explicit authorization before tests or browser harnesses. None ran for this audit. Review submission, publication, live sends and ad spending remain separate actions.
+Local regression tests and the hosted desktop sandbox checks above ran under the user's explicit authorization. The authenticated Simulator and physical-device matrix remain incomplete. Review submission, publication, live sends and ad spending remain separate actions.
 
 The API returned zero all-time product/subscription transactions, thirty empty retention cohorts and no ad campaigns. These observations establish no positive or negative ROAS. They are not a performance claim and do not by themselves rule out an Explore application.
 
@@ -76,4 +84,4 @@ The named notification image is approved and processed. Current logo and hero re
 
 Before submission, verify the team's signed Developer Agreement and Acceptable Use Policy in Team settings. The team-details API did not expose acceptance records, so this audit does not certify them. The existing support email, logo and hero are configured. Content moderation and the Fund's editorial/strategic-fit decision remain Jest's review responsibilities. [Review prerequisites](https://docs.jest.com/content-review-and-moderation)
 
-The notification release passed the production gate, including dependency/security audits, type checks, campaign content validation, build/artifact checks and W3C validation with zero findings. Jest confirmed the exact uploaded version ready and active; [release evidence](evidence/jest-sdk-reminders-2026-11-26.json) records the source and archive. Backend source/configuration are unchanged and no backend was deployed. No test execution, hosted acceptance, actual notification delivery, Fund approval, review submission, publication, acceptance of terms or ad campaigns are claimed by this update.
+The notification release passed the production gate, including dependency/security audits, type checks, campaign content validation, build/artifact checks and W3C validation with zero findings. Jest confirmed its exact uploaded version ready and active; [release evidence](evidence/jest-sdk-reminders-2026-11-26.json) records the source and archive. Backend source/configuration remain unchanged and no backend was deployed. The limited hosted and local results above do not establish complete acceptance, actual notification delivery, Fund approval, review submission, publication, acceptance of terms or ad campaigns.

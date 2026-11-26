@@ -25,11 +25,6 @@ export type TooltipId =
 /** Ordered tooltips introducing available controls after their progression gates. */
 export const GAME_TOUR: readonly TooltipId[] = ["gameCoins", "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer"];
 
-/** Profile steps whose card must never overlap the control it explains. */
-const SEPARATED_PROFILE_TOOLTIPS = new Set<TooltipId>([
-  "profileAchievements", "profileRanks", "profileStatistics", "profileLeaderboard", "profileTreasure",
-]);
-
 /** Tooltips positioned above their highlighted target. */
 export const ABOVE_TARGET_TOOLTIPS = new Set<TooltipId>([
   "gameHint", "submitAnswer", "gameSkip", "gameMultiplayer",
@@ -219,18 +214,6 @@ export function getTooltipPanelStyle(
   const fitsBelow = belowTop + panelHeight <= viewportHeight - 14;
   /** Provides prefer below behavior. */
   const preferBelow = !ABOVE_TARGET_TOOLTIPS.has(activeTooltip) && targetRect.bottom < viewportHeight * 0.58;
-  if (aboveTop < 14 && !fitsBelow && SEPARATED_PROFILE_TOOLTIPS.has(activeTooltip) &&
-    targetRect.top >= 0 && targetRect.bottom <= viewportHeight) {
-    // Neither side fits on a short phone: never cover the highlighted control.
-    // Use the roomier side and let the card scroll within it instead.
-    /** Space between the top margin and the target. */
-    const roomAbove = Math.floor(targetRect.top - 18 - 14);
-    /** Space between the target and the bottom margin. */
-    const roomBelow = Math.floor(viewportHeight - 14 - belowTop);
-    return roomBelow >= roomAbove
-      ? {top: belowTop, maxHeight: roomBelow, overflowY: "auto"}
-      : {top: 14, maxHeight: roomAbove, overflowY: "auto"};
-  }
   /** Profile scrolling can leave an above-target step without enough room; use the clear side when available. */
   const preferredTop = preferBelow || (activeTooltip.startsWith("profile") && aboveTop < 14 && fitsBelow)
     ? belowTop : aboveTop;

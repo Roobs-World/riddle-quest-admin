@@ -12,7 +12,7 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 
 | Platform | Documentation |
 | --- | --- |
-| Jest frontend | [Jest documentation](jest/README.md), [frontend source boundary](jest/jest-only-frontend.md), [Fund readiness](jest/jest-growth-fund-readiness.md) |
+| Jest frontend | [Jest documentation](jest/README.md), [frontend source boundary](jest/jest-only-frontend.md), [Fund readiness](jest/jest-growth-fund-readiness.md), [Fund self-review draft](jest/jest-fund-self-review-draft.md) |
 | Retained Android backend | [Android backend operations and historical app documentation](android/README.md) |
 | Facebook server integration | [Retained backend and historical Facebook documentation](facebook/README.md) |
 | Retained Reddit backend | [Backend operations and historical game documentation](reddit/README.md) |

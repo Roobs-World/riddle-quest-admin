@@ -114,7 +114,8 @@ it("durably grants before completing a purchase", async () => {
   const coordinator = new JestPurchaseCoordinator(platform, backend as never);
   expect(await coordinator.purchase("coins", "p1")).toEqual({
     status: "success",
-    value: {coinsAwarded: 250, newCoins: 550},
+    value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: undefined,
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
   expect(order).toEqual(["grant", "complete"]);
 });
@@ -414,7 +415,8 @@ it("verifies a subscription before applying the active entitlement and never com
   };
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: ["premium-yearly"], premiumCoinsAwarded: 0},
+    value: {activeSku: "premium", blockedSkus: ["premium-yearly"], premiumCoinsAwarded: 0, newCoins: undefined,
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
   expect(backend.syncSubscriptions).toHaveBeenCalledWith("subscription.signed", "p1");
   expect(platform.completePurchase).not.toHaveBeenCalled();
@@ -451,7 +453,8 @@ it("reports the Premium coins granted when a new subscription is verified", asyn
   };
   expect(await new JestPurchaseCoordinator(platform, backend as never).subscribe("premium", "p1")).toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700,
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
 });
 
@@ -693,7 +696,8 @@ it("preserves checkout cancellation and confirmed grants after completion failur
     new JestPurchaseCoordinator(platform, {grantPurchase} as never).purchase("coins", "p1"),
   ).resolves.toEqual({
     status: "success",
-    value: {coinsAwarded: 250, newCoins: 500, newlyUnlockedAchievementIds: ["first_purchase"]},
+    value: {coinsAwarded: 250, newCoins: 500, newlyUnlockedAchievementIds: ["first_purchase"],
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
 
   platform.completePurchase = async () => ({status: "success", value: undefined});
@@ -705,6 +709,7 @@ it("preserves checkout cancellation and confirmed grants after completion failur
       coinsAwarded: 250,
       newCoins: 500,
       newlyUnlockedAchievementIds: ["first_purchase"],
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/),
     },
   });
   await expect(
@@ -813,7 +818,8 @@ it.each(["returned", "thrown", "cancelled"])("presents a durable grant and recon
   configureBrowserErrorReporter((error, context) => {reported.push({message: error instanceof Error ? error.message : String(error), operation: context?.operation});});
   try {
     await expect(new JestPurchaseCoordinator(platform, backend).purchase("coins", "p1")).resolves.toEqual({status: "success",
-      value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: ["first_purchase"]}});
+      value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: ["first_purchase"],
+        analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)}});
     expect(balance).toBe(550);
     expect([...pending]).toEqual(["recoverable-token"]);
     expect(calls).toEqual(["begin", "grant", "complete"]);
@@ -931,7 +937,8 @@ it("normalizes verifier errors and omitted blocked subscription lists", async ()
     } as never).subscribe("premium", "p1"),
   ).resolves.toEqual({
     status: "success",
-    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0},
+    value: {activeSku: "premium", blockedSkus: [], premiumCoinsAwarded: 0, newCoins: undefined,
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
   await expect(
     new JestPurchaseCoordinator(platform, {
@@ -997,8 +1004,101 @@ it("preserves the provider sandbox marker alongside an authoritative consumable 
     granted: true, purchaseToken: "sandbox-receipt", coinsAwarded: 250, newCoins: 550,
   });
   await expect(new JestPurchaseCoordinator(platform, backend).purchase("coins", "p1")).resolves.toEqual({
-    status: "success", value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: undefined, sandbox: true},
+    status: "success", value: {coinsAwarded: 250, newCoins: 550, newlyUnlockedAchievementIds: undefined, sandbox: true,
+      analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)},
   });
   expect(grant).toHaveBeenCalledWith("sandbox.signed", "p1", "sandbox-receipt");
   expect(complete).toHaveBeenCalledWith("sandbox-receipt");
+});
+
+
+it.each(["catalog", "preflight", "checkout", "restored"] as const)(
+  "refreshes the authoritative balance after a subscription grant during %s", async route => {
+    const sku = "com.roobsworld.riddlequest.premium.monthly";
+    const platform = new MockJestPlatform(true);
+    const backend = new JestBackendClient("https://example.invalid");
+    const catalog = inactiveSubscriptionCatalog(sku);
+    const catalogAlreadyActive = route === "catalog" || route === "preflight";
+    const getSubscriptions = jest.spyOn(platform, "getSubscriptions").mockResolvedValue({
+      status: "success", value: {...catalog.value,
+        subscriptions: catalog.value.subscriptions.map(subscription => ({...subscription,
+          trialEligible: false, status: catalogAlreadyActive ? "active" : "inactive"})),
+      },
+    });
+    if (route === "restored") getSubscriptions.mockResolvedValueOnce(catalog).mockResolvedValue({
+      status: "success", value: {...catalog.value, subscriptionsSigned: "restored.signed"},
+    });
+    const begin = jest.spyOn(platform, "beginSubscription");
+    if (route === "restored") begin.mockResolvedValue({status: "unavailable", message: "already_subscribed"});
+    let authoritativeBalance = 300;
+    let displayedBalance = 300;
+    jest.spyOn(backend, "syncSubscriptions").mockImplementation(async signed => {
+      const active = catalogAlreadyActive || signed !== "catalog.inactive";
+      const award = active ? 3400 : 0;
+      authoritativeBalance += award;
+      return {verified: true, activeSkus: active ? [sku] : [], premiumCoinsAwarded: award,
+        newCoins: authoritativeBalance};
+    });
+    const capturedPlayers: string[] = [];
+    const coordinator = new JestPurchaseCoordinator(platform, backend, {
+      captureSubscriptionGrantRefresh: playerId => {
+        capturedPlayers.push(playerId);
+        return async () => {displayedBalance = authoritativeBalance;};
+      },
+    });
+    const result = route === "catalog"
+      ? await coordinator.getSubscriptions("p1")
+      : await coordinator.subscribe(sku, "p1");
+    expect(displayedBalance).toBe(3700);
+    expect(authoritativeBalance).toBe(3700);
+    expect(capturedPlayers).toEqual(catalogAlreadyActive ? ["p1"] : ["p1", "p1"]);
+    if (route === "catalog") {
+      expect(result).toEqual({status: "success", value: [expect.objectContaining({productId: sku,
+        subscriptionStatus: "active"})]});
+    } else if (route === "preflight") {
+      expect(result).toEqual({status: "cancelled"});
+      expect(begin).not.toHaveBeenCalled();
+    } else {
+      expect(result).toEqual({status: "success", value: {
+        activeSku: sku, blockedSkus: [], premiumCoinsAwarded: 3400, newCoins: 3700,
+        ...(route === "restored" ? {recoveredExistingSubscription: true} :
+          {analyticsTransactionId: expect.stringMatching(/^jest-[a-f0-9]{64}$/)}),
+      }});
+    }
+  },
+);
+
+it("retains the catalog without refreshing the balance when no subscription coins are due", async () => {
+  const platform = new MockJestPlatform(true);
+  const backend = new JestBackendClient("https://example.invalid");
+  const sku = "com.roobsworld.riddlequest.premium.monthly";
+  jest.spyOn(backend, "syncSubscriptions").mockResolvedValue({verified: true, activeSkus: [sku],
+    premiumCoinsAwarded: 0, newCoins: 300});
+  const refresh = jest.fn(async () => 300);
+  const coordinator = new JestPurchaseCoordinator(platform, backend, {
+    captureSubscriptionGrantRefresh: () => refresh,
+  });
+  await expect(coordinator.getSubscriptions("p1")).resolves.toEqual({status: "success",
+    value: [expect.objectContaining({productId: sku, subscriptionStatus: "active"})]});
+  expect(refresh).not.toHaveBeenCalled();
+});
+
+it("keeps a verified subscription grant successful when its balance refresh fails", async () => {
+  const platform = new MockJestPlatform(true);
+  const backend = new JestBackendClient("https://example.invalid");
+  const sku = "com.roobsworld.riddlequest.premium.monthly";
+  jest.spyOn(backend, "syncSubscriptions").mockResolvedValue({verified: true, activeSkus: [sku],
+    premiumCoinsAwarded: 3400, newCoins: 3700});
+  const reported: Array<{message: string; operation: unknown}> = [];
+  configureBrowserErrorReporter((error, context) => reported.push({
+    message: error instanceof Error ? error.message : String(error), operation: context?.operation,
+  }));
+  try {
+    const coordinator = new JestPurchaseCoordinator(platform, backend, {
+      captureSubscriptionGrantRefresh: () => async () => {throw new Error("profile temporarily unavailable");},
+    });
+    await expect(coordinator.getSubscriptions("p1")).resolves.toEqual({status: "success",
+      value: [expect.objectContaining({productId: sku, subscriptionStatus: "active"})]});
+    expect(reported).toEqual([{message: "profile temporarily unavailable", operation: "refresh_subscription_grant"}]);
+  } finally {resetBrowserErrorReporterForTests();}
 });
