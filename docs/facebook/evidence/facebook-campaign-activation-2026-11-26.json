@@ -1,0 +1,44 @@
+{
+  "appId": "1748953042991569",
+  "sourceCommit": "af20085bce70fbe73aedebce68975a414d9dac20",
+  "cleanSource": true,
+  "archive": {
+    "bytes": 2871530,
+    "entries": 419,
+    "sha256": "11b614b7c7d483041b689c5ba9750468da37a3a6a5824b7e85f4369eca99dcca"
+  },
+  "runtimeFilesByteIdenticalToPreparedCandidate": 418,
+  "candidateSourceCommit": "a4baf1354276a014cdc89cc5763cd960a4893417",
+  "upload": {
+    "submittedAt": "2026-11-26T04:17:35.431Z",
+    "namespace": "gg_graph_api",
+    "archiveTransmissions": 1,
+    "stages": [
+      {
+        "stage": "session",
+        "httpStatus": 200
+      },
+      {
+        "stage": "archive",
+        "httpStatus": 200
+      }
+    ]
+  },
+  "assignment": {
+    "target": "production",
+    "appMode": "development",
+    "bundleInstanceId": "29168977262783270",
+    "version": 9,
+    "acknowledgedAt": "2026-11-26T04:18:11.171Z",
+    "httpStatus": 200,
+    "providerSuccess": true,
+    "completeInventoryCheckedAt": "2026-11-26T04:18:19.628Z",
+    "priorHighestVersion": 8,
+    "localHandoffState": "accepted"
+  },
+  "facebookNotifications": {
+    "eligibleRecipientsAtVerification": 0,
+    "liveTestMessagesSent": 0,
+    "hostedDisplayAndTapVerified": false
+  }
+}

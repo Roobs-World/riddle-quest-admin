@@ -12,7 +12,7 @@ The November 26 native release restricts FCM delivery to Android package `com.ro
 
 The subsequent November 26 manager deployment `dpl_G3Yoi1kmsDxEDpdmRTa1YRMqYHyg` released source `255318249996c74a27ae476a1136f5498a75b9f2` from the current checkout's production build. The production alias is Ready, the page and every emitted browser asset match that build, and unsigned management configuration requests return HTTP 401. Live headers include HSTS and the updated HTTPS-only content policy. [Deployment record](evidence/manager-deployment-2026-11-26.json)
 
-The subsequent Facebook manager release adds a separate Facebook audience to the same composer, scheduler and receipt history. Players can enroll using the Facebook build with A2U opt-in in Settings. [Facebook manager rollout](evidence/facebook-manager-rollout-2026-11-26.json) · [Facebook client availability](../../facebook/evidence/facebook-campaign-opt-in-build-2026-11-26.json)
+The subsequent Facebook manager release adds a separate Facebook audience to the same composer, scheduler and receipt history. Players can enroll using the Facebook build with A2U opt-in in Settings. [Facebook manager rollout](evidence/facebook-manager-rollout-2026-11-26.json) · [Facebook client availability](../../facebook/evidence/facebook-campaign-activation-2026-11-26.json)
 
 ## Local commands
 
