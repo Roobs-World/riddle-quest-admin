@@ -168,7 +168,7 @@ export function GameFrameApp({
   /** Provides [solar ready, set solar ready] behavior. */
   const [solarReady, setSolarReady] = useState(false);
   /** Accessibility choices update the optional scene without waiting for another gameplay event. */
-  const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => true);
+  const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => false);
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */

@@ -114,11 +114,6 @@ const readStoredBoolean = (key: string): boolean | undefined => {
   return undefined;
 };
 
-/** Returns whether the browser or OS asks for the given accessibility media feature. */
-const matchesMedia = (query: string): boolean => {
-  return typeof window !== "undefined" && typeof window.matchMedia === "function" && window.matchMedia(query).matches;
-};
-
 /** Applies the motion preference before the game surface mounts. */
 const applyReducedMotionPreference = (reducedMotion: boolean): void => {
   /** Provides root behavior. */
@@ -151,7 +146,7 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   const reducedMotion =
     preferences.reducedMotion ??
     readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ??
-    matchesMedia("(prefers-reduced-motion: reduce)");
+    false;
   /** Provides onboarding complete behavior. */
   const onboardingComplete = preferences.onboardingComplete ?? false;
   const notificationsEnabled = preferences.notificationsEnabled ?? true;
@@ -232,9 +227,7 @@ export function isPlayerReducedMotionEnabled(): boolean {
     const applied = root.dataset.riddleQuestReducedMotion;
     if (applied === "true" || applied === "false") return applied === "true";
   }
-  return (
-    readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ?? matchesMedia("(prefers-reduced-motion: reduce)")
-  );
+  return readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.reducedMotion) ?? false;
 }
 
 /** Returns onboarding completion from the authoritative platform preference only. */
@@ -259,15 +252,8 @@ export function subscribeToPlayerPreferenceChanges(subscriber: (change: PlayerPr
 /** Observes SDK-applied and player-selected motion changes independently of persistence listeners. */
 export function subscribeToPlayerReducedMotion(subscriber: () => void): () => void {
   motionSubscribers.add(subscriber);
-  /** OS changes affect the snapshot only when no applied or stored player choice overrides them. */
-  const media = typeof window !== "undefined" && typeof window.matchMedia === "function"
-    ? window.matchMedia("(prefers-reduced-motion: reduce)") : undefined;
-  if (media?.addEventListener) media.addEventListener("change", subscriber);
-  else media?.addListener?.(subscriber);
   return () => {
     motionSubscribers.delete(subscriber);
-    if (media?.removeEventListener) media.removeEventListener("change", subscriber);
-    else media?.removeListener?.(subscriber);
   };
 }
 
