@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "477c67c674f34ef1837473b0c36e0ae595ce0098",
+  "behavior": {
+    "achievementHoldMsBefore": 1000,
+    "achievementHoldMsAfter": 3000,
+    "achievementHoldIncreaseMs": 2000,
+    "otherRewardHoldMs": 1000,
+    "slideAnimationDurationsChanged": false
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126114013.477c67c674f3.a061e6ed",
+    "versionId": "01a217a8-b677-7498-95d8-18b251a63b84",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a217a8-b677-7498-95d8-18b251a63b84",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2587720,
+    "archiveSha256": "a69c0e250d516528d354913c18466522a8fce6ccaa04ef43fc08f92d3b1f2357",
+    "activationRequested": true
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 11:41:17 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T11:41:10.328Z"
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "sharedTypeCheckPassed": true,
+    "sourceReviewCompleted": true,
+    "testsAndBrowserHarnessesRun": false,
+    "hostedGameplayAcceptanceRun": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
