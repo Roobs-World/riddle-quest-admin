@@ -41,12 +41,12 @@ function postToHost(message){window.commands.push(message);
 const adapter={record:async()=>{window.writes++;if(window.writes===1)throw new Error('offline');
  await new Promise(resolve=>window.finishWrite=resolve);return {};},
  list:()=>new Promise(resolve=>window.reads.push(resolve))};
-window.finishRead=(index,rank)=>window.reads[index]({tournamentId:'daily',locale:'en',
+window.finishRead=(index,rank)=>window.reads[index]({tournamentId:'daily',contextId:'room',locale:'en',
  startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,
  standings:[{rank,adjustedTimeMs:60000,isCurrentPlayer:true}]});
 createRoot(document.getElementById('root')).render(<ReferralSharingProvider capability={{rewardCoins:25,shareResult:()=>{},shareInvite:()=>{},shareRace:async()=> 'cancelled'}}>
  <RaceTo10Game locale="en" coins={100} ownerId="owner-1" postToHost={postToHost} onClose={()=>{}}
- tournaments={adapter}/></ReferralSharingProvider>);
+ tournaments={stage==='tournaments'?adapter:undefined} contextBoard={stage==='inbox'?adapter:undefined}/></ReferralSharingProvider>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
 await writeFile(path.join(scratch, "tsconfig.json"), JSON.stringify({compilerOptions: {jsx: "react-jsx"}}));
@@ -68,7 +68,7 @@ try {
   });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   browser = await chromium.launch({headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? {executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH} : {})});
-  for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) for (const stage of ["tournaments"]) {
+  for (const viewport of [{width:1280,height:900}, {width:390,height:844}]) for (const stage of ["tournaments","inbox"]) {
     const context = await browser.newContext({viewport});
     const page = await context.newPage();
     const errors = []; page.on("pageerror", error => errors.push(error.message));

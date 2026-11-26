@@ -1,0 +1,21 @@
+{
+  "target": "famobi",
+  "title": "Famobi pitch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:famobi",
+  "summary": "Create a neutral HTML5 archive for Famobi contract and studio review.",
+  "externalEffect": "None; contract screening, studio approval, source handling, SDK integration, QA and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "famobi"
+    ]
+  },
+  "handoff": "Pitch the hosted demo and retain platforms/web/famobi/build/build-famobi-pitch.zip until compatible non-exclusive terms are offered.",
+  "runbook": "docs/common/releases/research/further-html5-release-targets-2026-09-21.md",
+  "displayName": "Famobi",
+  "delivery": "neutral-html5",
+  "artifact": "build-famobi-pitch.zip",
+  "releaseGate": "Famobi contract screening, studio approval, source handling, SDK integration, QA and publication remain manual."
+}

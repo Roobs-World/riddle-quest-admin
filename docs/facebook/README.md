@@ -1,9 +1,5 @@
 # Facebook Instant Games
 
-The `jest` branch retains Facebook's server integration and notification delivery, but has no Facebook browser frontend, SDK adapter, build target or upload command. Authoritative provider code remains in `platforms/web/facebook/server`. Its backend-used commerce catalog keeps the original `src/commerce/facebookCatalog.ts` path and staging contract; this does not restore a browser frontend.
-
-The client setup, build and upload instructions below are historical references for the removed frontend. They do not describe commands available on this branch.
-
 - [Get Riddle Quest working on Facebook](facebook-setup-guide.md)
 - [Assets](assets/)
 - [Evidence](evidence/)

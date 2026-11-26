@@ -1,9 +1,14 @@
 import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/tooling/jestArtifactPlugins.ts";
+import {redditArtifactPlugin} from "../../../platforms/web/reddit/tooling/redditArtifactPlugin.ts";
+import {facebookArtifactPlugin} from "../../../platforms/web/facebook/tooling/facebookArtifactPlugin.ts";
 import {webBuildFacts} from "../../release/release-registry.mjs";
+import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
 import react, {reactCompilerPreset} from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
+import {createHash} from "node:crypto";
+import {readFileSync} from "node:fs";
 import path from "node:path";
 import {fileURLToPath, URL} from "node:url";
 import type {ConfigEnv, Plugin, PluginOption, UserConfig} from "vite";
@@ -27,10 +32,41 @@ const gameRuleSources = new Set([
 ].map((file) => path.join(portalPackageDirectory, file)));
 /** Provides shared shop modal page behavior. */
 const sharedShopModalPage = fileURLToPath(new URL("../../../src/commerce/components/ShopModalPage.tsx", import.meta.url));
+/** Provides reddit shop modal page behavior. */
+const redditShopModalPage = fileURLToPath(new URL("../../../platforms/web/reddit/src/RedditShopModalPage.tsx", import.meta.url));
 /** Provides jest html entry behavior. */
 const jestHtmlEntry = fileURLToPath(new URL("../../../platforms/web/jest/index.html", import.meta.url));
-/** The compile-time Web Targets shipped by the portal package. */
-export type WebTarget = "jest";
+/** Provides facebook html entry behavior. */
+const facebookHtmlEntry = fileURLToPath(new URL("../../../platforms/web/facebook/index.html", import.meta.url));
+/** Provides reddit html entry behavior. */
+const redditHtmlEntry = fileURLToPath(new URL("../../../platforms/web/reddit/index.html", import.meta.url));
+/** Provides reddit inline html entry behavior. */
+const redditInlineHtmlEntry = fileURLToPath(new URL("../../../platforms/web/reddit/reddit-inline.html", import.meta.url));
+/** Provides youtube html entry behavior. */
+const youtubeHtmlEntry = fileURLToPath(new URL("../../../platforms/web/youtube/index.html", import.meta.url));
+/** Provides netflix html entry behavior. */
+const netflixHtmlEntry = fileURLToPath(new URL("../../../platforms/web/netflix/index.html", import.meta.url));
+/** Provides yahoo html entry behavior. */
+const yahooHtmlEntry = fileURLToPath(new URL("../../../platforms/web/yahoo/index.html", import.meta.url));
+/** Provides GameSnacks html entry behavior. */
+const gameSnacksHtmlEntry = fileURLToPath(new URL("../../../platforms/web/gamesnacks/index.html", import.meta.url));
+/** Provides youtube release content behavior. */
+const youtubeReleaseContent = fileURLToPath(
+  new URL("../../../src/content/generated/youtube-content-v1.json", import.meta.url),
+);
+/** Provides youtube fixture content behavior. */
+const youtubeFixtureContent = fileURLToPath(
+  new URL("../../../firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json", import.meta.url),
+);
+/** Provides youtube forbidden shop entry behavior. */
+const youtubeForbiddenShopEntry = "virtual:youtube-forbidden-shop-entry";
+/** Provides youtube locales behavior. */
+const youtubeLocales = [
+  "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
+] as const;
+
+/** The four compile-time Web Targets shipped by the portal package. */
+export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
 
 /** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories = Object.freeze(Object.fromEntries(
@@ -45,6 +81,58 @@ export type WebTargetViteConfigRequest = Readonly<{
   mode: string;
   /** Stores environment. */
   environment: Readonly<Record<string, string | undefined>>;
+}>;
+
+/** Describes you tube content document. */
+type YouTubeContentDocument = {
+  /** Stores schema version. */
+  schemaVersion?: unknown;
+  /** Stores content version. */
+  contentVersion?: unknown;
+  /** Stores release ready. */
+  releaseReady?: unknown;
+  /** Stores fixture. */
+  fixture?: unknown;
+  /** Stores locales. */
+  locales?: unknown;
+  /** Stores classic order. */
+  classicOrder?: unknown;
+  /** Stores daily schedule. */
+  dailySchedule?: {/** Stores segments. */
+  /** Stores segments. */
+  segments?: unknown};
+};
+
+/** Describes validated you tube content document. */
+type ValidatedYouTubeContentDocument = YouTubeContentDocument & {
+  /** Stores schema version. */
+  schemaVersion: 1;
+  /** Stores content version. */
+  contentVersion: string;
+  /** Stores release ready. */
+  releaseReady: boolean;
+  /** Stores fixture. */
+  fixture: boolean;
+  /** Stores locales. */
+  locales: string[];
+  /** Stores classic order. */
+  classicOrder: string[];
+  /** Stores daily schedule. */
+  dailySchedule: {/** Stores segments. */
+  /** Stores segments. */
+  segments: Array<{/** Stores starts on. */
+  /** Stores starts on. */
+  startsOn: string; /** Stores canonical ids. */
+  /** Stores canonical ids. */
+  canonicalIds: string[]}>};
+};
+
+/** Describes web target plugin context. */
+type WebTargetPluginContext = Readonly<{
+  /** Stores allow you tube fixture. */
+  allowYouTubeFixture: boolean;
+  /** Stores youtube content. */
+  youtubeContent: string;
 }>;
 
 /** Describes web target profile. */
@@ -70,8 +158,119 @@ type WebTargetProfile = Readonly<{
   /** Stores disable module preload polyfill. */
   disableModulePreloadPolyfill?: boolean;
   /** Creates artifact plugins. */
-  createArtifactPlugins(): readonly PluginOption[];
+  createArtifactPlugins(context: WebTargetPluginContext): readonly PluginOption[];
 }>;
+
+/** Reads you tube content document. */
+function readYouTubeContentDocument(contentPath: string, allowFixture: boolean) {
+  /** Provides source behavior. */
+  let source: string;
+  try {
+    source = readFileSync(contentPath, "utf8");
+  } catch (error) {
+    throw new Error(
+      allowFixture
+        ? "YouTube engineering content fixture is missing; regenerate the committed fixture"
+        : "YouTube release content is missing; generate and audit all 17 locale packs before building",
+      {cause: error},
+    );
+  }
+  /** Provides document behavior. */
+  let document: YouTubeContentDocument;
+  try {
+    document = JSON.parse(source) as YouTubeContentDocument;
+  } catch (error) {
+    throw new Error("YouTube content is not valid JSON", {cause: error});
+  }
+  if (
+    document.schemaVersion !== 1 ||
+    typeof document.contentVersion !== "string" ||
+    document.contentVersion.length < 1 ||
+    !Array.isArray(document.locales) ||
+    !document.locales.every((value) => typeof value === "string") ||
+    !Array.isArray(document.classicOrder) ||
+    !document.classicOrder.every((value) => typeof value === "string") ||
+    document.dailySchedule === null ||
+    typeof document.dailySchedule !== "object" ||
+    !Array.isArray(document.dailySchedule.segments) ||
+    document.dailySchedule.segments.length < 1 ||
+    !document.dailySchedule.segments.every((segment) =>
+      segment !== null && typeof segment === "object" &&
+      typeof (segment as {/** Stores starts on. */
+      /** Stores starts on. */
+      startsOn?: unknown}).startsOn === "string" &&
+      Array.isArray((segment as {/** Stores canonical ids. */
+      /** Stores canonical ids. */
+      canonicalIds?: unknown}).canonicalIds) &&
+      (segment as {/** Stores canonical ids. */
+      /** Stores canonical ids. */
+      canonicalIds: unknown[]}).canonicalIds.every((value) => typeof value === "string")
+    )
+  ) {
+    throw new Error("YouTube content does not match the v1 runtime contract");
+  }
+  /** Provides locales behavior. */
+  const locales = [...document.locales].sort();
+  if (allowFixture) {
+    if (document.releaseReady !== false || document.fixture !== true || locales.join(",") !== "en") {
+      throw new Error("YouTube engineering builds require the explicit non-release English fixture");
+    }
+  } else if (
+    document.releaseReady !== true ||
+    document.fixture === true ||
+    locales.join(",") !== [...youtubeLocales].sort().join(",")
+  ) {
+    throw new Error("YouTube release builds require an audited releaseReady pack for all 17 locales");
+  }
+  return {document: document as ValidatedYouTubeContentDocument, source};
+}
+
+/** Provides youtube artifact plugin behavior. */
+function youtubeArtifactPlugin(contentPath: string, allowFixture: boolean, target = "youtube-playables"): Plugin {
+  /** Provides content manifest behavior. */
+  let contentManifest: string;
+  return {
+    name: "riddle-quest-youtube-artifact",
+    /** Resolves id. */
+    resolveId(source) {
+      if (source === youtubeForbiddenShopEntry) return `\0${source}`;
+      return null;
+    },
+    /** Provides load behavior. */
+    load(id) {
+      if (id === `\0${youtubeForbiddenShopEntry}`) {
+        throw new Error("YouTube entry imported an unsupported shared commerce module");
+      }
+      return null;
+    },
+    /** Builds start. */
+    buildStart() {
+      /** Provides {document, source} behavior. */
+      const {document, source} = readYouTubeContentDocument(contentPath, allowFixture);
+      contentManifest = `${JSON.stringify({
+        schemaVersion: 1,
+        target,
+        contentVersion: document.contentVersion,
+        contentSha256: createHash("sha256").update(source).digest("hex"),
+        releaseReady: document.releaseReady,
+        fixture: document.fixture === true,
+        locales: document.locales,
+        classicRiddleCount: document.classicOrder.length,
+        dailyScheduleEntries: document.dailySchedule.segments.reduce(
+          (count, segment) => count + segment.canonicalIds.length,
+          0,
+        ),
+      }, null, 2)}\n`;
+    },
+    generateBundle: {
+      order: "post",
+      /** Provides handler behavior. */
+      handler() {
+        this.emitFile({type: "asset", fileName: "youtube-content-manifest.json", source: contentManifest});
+      },
+    },
+  };
+}
 
 /** Normalizes output path. */
 function normalizeOutputPath(value: string): string {
@@ -132,7 +331,69 @@ const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.fre
     htmlOutputs: Object.freeze([{source: jestHtmlEntry, fileName: "index.html"}] as const),
     createArtifactPlugins: () => [],
   }),
-
+  facebook: Object.freeze({
+    id: "facebook",
+    shopEntry: sharedShopModalPage,
+    publicDirectory: "public",
+    input: facebookHtmlEntry,
+    htmlOutputs: Object.freeze([{source: facebookHtmlEntry, fileName: "index.html"}] as const),
+    createArtifactPlugins: () => [facebookArtifactPlugin()],
+  }),
+  reddit: Object.freeze({
+    id: "reddit",
+    shopEntry: redditShopModalPage,
+    publicDirectory: "public",
+    input: Object.freeze({game: redditHtmlEntry, splash: redditInlineHtmlEntry}),
+    htmlOutputs: Object.freeze([
+      {source: redditHtmlEntry, fileName: "index.html"},
+      {source: redditInlineHtmlEntry, fileName: "reddit-inline.html"},
+    ] as const),
+    createArtifactPlugins: () => [redditArtifactPlugin()],
+  }),
+  youtube: Object.freeze({
+    id: "youtube",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: youtubeHtmlEntry,
+    htmlOutputs: Object.freeze([{source: youtubeHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture),
+    ],
+  }),
+  netflix: Object.freeze({
+    id: "netflix",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: netflixHtmlEntry,
+    htmlOutputs: Object.freeze([{source: netflixHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "netflix-candidate"),
+    ],
+  }),
+  yahoo: Object.freeze({
+    id: "yahoo",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: yahooHtmlEntry,
+    htmlOutputs: Object.freeze([{source: yahooHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "yahoo-candidate"),
+    ],
+  }),
+  gamesnacks: Object.freeze({
+    id: "gamesnacks",
+    shopEntry: youtubeForbiddenShopEntry,
+    publicDirectory: false,
+    input: gameSnacksHtmlEntry,
+    htmlOutputs: Object.freeze([{source: gameSnacksHtmlEntry, fileName: "index.html"}] as const),
+    disableModulePreloadPolyfill: true,
+    createArtifactPlugins: ({allowYouTubeFixture, youtubeContent}: WebTargetPluginContext) => [
+      youtubeArtifactPlugin(youtubeContent, allowYouTubeFixture, "gamesnacks"),
+    ],
+  }),
 });
 
 /** Indicates whether is web target. */
@@ -143,7 +404,7 @@ function isWebTarget(mode: string): mode is WebTarget {
 /** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
-  throw new Error(`Unknown Web Target mode: ${mode}; expected jest`);
+  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
 }
 
 /** Provides contains path behavior. */
@@ -218,14 +479,30 @@ export function createWebTargetViteConfig({
   const profile = resolveWebTarget(mode);
   /** Platform-owned HTML, environment and dependency resolution root. */
   const targetRoot = fileURLToPath(new URL(`../../../platforms/web/${profile.id}/`, import.meta.url));
+  /** Provides allow you tube fixture behavior. */
+  const allowYouTubeFixture = environment.YOUTUBE_ALLOW_INCOMPLETE_CONTENT_FIXTURE === "1";
+  if (allowYouTubeFixture && !["youtube", "netflix"].includes(profile.id)) {
+    throw new Error("The bundled engineering content fixture can only be used with a self-contained Web Target");
+  }
+  /** Provides youtube content behavior. */
+  const youtubeContent = allowYouTubeFixture ? youtubeFixtureContent : youtubeReleaseContent;
   /** Provides upload sentry source maps behavior. */
   const uploadSentrySourceMaps = environment.SENTRY_UPLOAD_SOURCEMAPS === "1";
+  if (["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) && uploadSentrySourceMaps) {
+    throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
+  }
 
   /** Provides jest build out dir behavior. */
   const jestBuildOutDir = environment.JEST_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.jest;
   /** Builds output directories. */
   const buildOutputDirectories: Readonly<Record<WebTarget, string>> = {
     jest: jestBuildOutDir,
+    facebook: environment.FACEBOOK_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.facebook,
+    reddit: environment.REDDIT_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.reddit,
+    youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
+    netflix: environment.NETFLIX_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.netflix,
+    yahoo: environment.YAHOO_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.yahoo,
+    gamesnacks: environment.GAMESNACKS_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.gamesnacks,
   };
   /** Provides selected build out dir behavior. */
   const selectedBuildOutDir = path.resolve(portalPackageDirectory, buildOutputDirectories[profile.id]);
@@ -251,10 +528,11 @@ export function createWebTargetViteConfig({
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile, targetRoot),
     webTargetDependencyPlugin(profile.id),
-    jestShaderIndentationPlugin(),
-    jestFirebaseScriptPolicyPlugin(),
+    ...(profile.id === "jest" ? [jestShaderIndentationPlugin(), jestFirebaseScriptPolicyPlugin()] : []),
     react(),
     babel({presets: [reactCompilerPreset()]}),
+    ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),
+    ...(["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? [playableContentPlugin(youtubeContent)] : []),
   ];
   if (uploadSentrySourceMaps) {
     plugins.push(sentryVitePlugin({
@@ -291,8 +569,7 @@ export function createWebTargetViteConfig({
     define: {
       "import.meta.env.VITE_PLATFORM_TARGET": JSON.stringify(profile.id),
       // Error-only targets do not ship tracing or SDK debug instrumentation.
-      __SENTRY_DEBUG__: "false",
-      __SENTRY_TRACING__: "false",
+      ...(["jest", "facebook"].includes(profile.id) ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
     },
     envDir: targetRoot,
     envPrefix: "VITE_",
@@ -309,7 +586,9 @@ export function createWebTargetViteConfig({
       dedupe: ["react", "react-dom"],
       tsconfigPaths: true,
       alias: {
+        ...(profile.id === "jest" ? {"./localeModules": fileURLToPath(new URL("../../../platforms/web/jest/src/localeModules.ts", import.meta.url))} : {}),
         "#shop-modal-page": profile.shopEntry,
+        "#youtube-content": ["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? playableContentModule : youtubeContent,
       },
     },
     build: {
@@ -322,6 +601,11 @@ export function createWebTargetViteConfig({
         input: profile.input,
         output: {
           strictExecutionOrder: true,
+          ...(profile.id === "gamesnacks" ? {
+            entryFileNames: "assets/[name].js",
+            chunkFileNames: "assets/[name].js",
+            assetFileNames: "assets/[name][extname]",
+          } : {}),
           codeSplitting: {
             groups: [
               {

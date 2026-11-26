@@ -1,5 +1,6 @@
 {
   "LossModal": {
+    "VIDEO_EXTRA_GO_BUTTON": "Mira un vídeo para tener un intento extra",
     "COIN_EXTRA_GO_BUTTON": "{coins} monedas para un intento extra",
     "OPEN_SHOP_BUTTON": "Abrir tienda",
     "OUT_OF_ATTEMPTS": "Sin intentos.",

@@ -3,7 +3,7 @@ import {PlatformPresenceSession, aggregatePresence, type PresenceTransport} from
 /** Provides connection behavior. */
 const connection = (sessionId: string, state: "online" | "playing" | "racing") => ({
   sessionId,
-  platform: "jest" as const,
+  platform: "facebook" as const,
   state,
   updatedAtMs: 1,
 });
@@ -43,7 +43,7 @@ describe("platform presence session", () => {
     /** Provides session behavior. */
     const session = new PlatformPresenceSession(
       transport.port,
-      {sessionId: "session-1", platform: "jest"},
+      {sessionId: "session-1", platform: "facebook"},
       () => ++now,
     );
     await session.start(true);
@@ -52,7 +52,7 @@ describe("platform presence session", () => {
     await transport.reconnect?.();
     expect(transport.port.register).toHaveBeenLastCalledWith({
       sessionId: "session-1",
-      platform: "jest",
+      platform: "facebook",
       state: "racing",
       updatedAtMs: 13,
     });
@@ -78,7 +78,7 @@ describe("platform presence session", () => {
     /** Provides session behavior. */
     const session = new PlatformPresenceSession(
       transport.port,
-      {sessionId: "session-1", platform: "jest"},
+      {sessionId: "session-1", platform: "facebook"},
       () => 10,
     );
 
@@ -102,7 +102,7 @@ describe("platform presence session", () => {
     /** Provides session behavior. */
     const session = new PlatformPresenceSession(
       transport.port,
-      {sessionId: "session-1", platform: "jest"},
+      {sessionId: "session-1", platform: "facebook"},
       () => 10,
     );
 
@@ -125,7 +125,7 @@ describe("platform presence session", () => {
     /** Provides session behavior. */
     const session = new PlatformPresenceSession(
       transport.port,
-      {sessionId: "session-1", platform: "jest"},
+      {sessionId: "session-1", platform: "facebook"},
       () => 10,
     );
 

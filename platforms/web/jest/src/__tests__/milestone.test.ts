@@ -15,21 +15,21 @@ const session = (overrides: Partial<JestSession> = {}): JestSession => ({
 });
 
 describe("authoritative first milestone", () => {
-  test("offers registration after guest wins 3, 6, and 9", () => {
+  test("offers registration after Classic wins 3, 6, and 9 and every Daily win", () => {
     /** Provides returning guest behavior. */
     const returningGuest = session({preferences: {jestGuestCompletedRiddles: 2}});
-    expect(Array.from({length: 9}, (_, index) => shouldPromptGuestRegistration(returningGuest, index + 1)))
+    expect(Array.from({length: 9}, (_, index) => shouldPromptGuestRegistration(returningGuest, "classic", index + 1)))
       .toEqual([false, false, true, false, false, true, false, false, true]);
-    expect(shouldPromptGuestRegistration(session(), 0)).toBe(false);
-    expect(shouldPromptGuestRegistration(session())).toBe(false);
-    expect(shouldPromptGuestRegistration(returningGuest)).toBe(true);
-    expect(shouldPromptGuestRegistration(session({player: {playerId: "stable-player", registered: true}}), 3))
-      .toBe(false);
+    expect(shouldPromptGuestRegistration(session(), "classic", 0)).toBe(false);
+    expect(shouldPromptGuestRegistration(session(), "classic")).toBe(false);
+    expect(shouldPromptGuestRegistration(returningGuest, "classic")).toBe(true);
+    expect(shouldPromptGuestRegistration(returningGuest, "challenge", 1)).toBe(true);
+    for (const gameMode of ["classic", "challenge"] satisfies Array<"classic" | "challenge">) {
+      expect(shouldPromptGuestRegistration(session({player: {playerId: "stable-player", registered: true}}), gameMode, 3))
+        .toBe(false);
+    }
   });
-  test.each([
-    {completedRiddles: 2, shouldPrompt: true},
-    {completedRiddles: 3, shouldPrompt: false},
-  ])("counts a Daily win after $completedRiddles prior guest wins", async ({completedRiddles, shouldPrompt}) => {
+  test("offers registration after a Daily win without advancing the Classic guest prompt cadence", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides mark behavior. */
@@ -37,15 +37,15 @@ describe("authoritative first milestone", () => {
     /** Provides result behavior. */
     const result = await recordAuthoritativeCompletion(
       platform,
-      session({preferences: {firstMilestoneMarked: true, jestGuestCompletedRiddles: completedRiddles}}),
+      session({preferences: {firstMilestoneMarked: true, jestGuestCompletedRiddles: 3}}),
       {gameMode: "challenge", isCorrect: true},
     );
     expect(mark).toHaveBeenCalledTimes(1);
     expect(result).toEqual(expect.objectContaining({
       status: "success",
-      value: expect.objectContaining({shouldPromptRegistration: shouldPrompt}),
+      value: expect.objectContaining({shouldPromptRegistration: true}),
     }));
-    if (result.status === "success") expect(result.value.preferences.jestGuestCompletedRiddles).toBe(completedRiddles + 1);
+    if (result.status === "success") expect(result.value.preferences.jestGuestCompletedRiddles).toBe(3);
   });
   test("marks the first authoritative Classic win without opening registration", async () => {
     /** Provides platform behavior. */
@@ -103,7 +103,7 @@ describe("authoritative first milestone", () => {
     expect(mark).toHaveBeenCalledTimes(1);
   });
 
-  test("prompts on mixed Daily and Classic guest wins 3, 6, and 9 across saved preferences", async () => {
+  test("prompts on guest wins 3, 6, and 9 across saved preferences", async () => {
     /** Provides platform behavior. */
     const platform = new MockJestPlatform();
     /** Provides preferences behavior. */
@@ -113,7 +113,7 @@ describe("authoritative first milestone", () => {
     for (let win = 1; win <= 9; win += 1) {
       /** Provides result behavior. */
       const result = await recordAuthoritativeCompletion(platform, session({preferences}), {
-        gameMode: win % 2 === 0 ? "classic" : "challenge", isCorrect: true,
+        gameMode: "classic", isCorrect: true,
       });
       expect(result.status).toBe("success");
       if (result.status !== "success") continue;

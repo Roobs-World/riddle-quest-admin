@@ -22,7 +22,7 @@ import {
   verifyGuestStartupIdentity,
   openProfileAfterGuidance,
 } from "./authentication.jest-playwright.support.ts";
-import {ENGAGEMENT_REMINDER_IDS, LEGACY_REMINDER_IDS, PLAYER_NOTIFICATION_IDS, RACE_REMINDER_IDS} from "../notifications/engagement";
+import {PLAYER_NOTIFICATION_IDS} from "../notifications/engagement";
 /** Provides describe browser behavior. */
 const describeBrowser = process.env.PORTAL_BROWSER_TESTS === "1" ? describe : describe.skip;
 /** Provides base url behavior. */
@@ -666,12 +666,7 @@ describeBrowser("Jest authentication integration", () => {
     ]);
     expect(state.firebaseTokens).toEqual(["mock", "mock"]);
     expect(state.profileReads).toBe(1);
-    await page.waitForFunction(() => Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__").notificationSchedules.length === 7);
-    expect((await getHarnessState(page)).notificationSchedules).toEqual(expect.arrayContaining(
-      ENGAGEMENT_REMINDER_IDS.map((identifier, index) => expect.objectContaining({
-        identifier, scheduledInDays: index + 1, assetReference: "riddle-q-notification",
-      })),
-    ));
+    expect((await getHarnessState(page)).notificationSchedules).toEqual([]);
     expect((await getHarnessState(page)).calls).toContain("sdk.payments.getSubscriptions");
     await page.evaluate(() =>
       window.dispatchEvent(
@@ -935,31 +930,24 @@ describeBrowser("Jest authentication integration", () => {
     await context.close();
   });
 
-  it("schedules the Jest D1-D7 campaign and retires obsolete reminders", async () => {
+  it("retires legacy notifications without scheduling app-authored content", async () => {
     const {context, page} = await openHarness(browser, {registered: true});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await page.waitForFunction(() => {
       const state = Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__") as AuthHarnessState;
-      return state.notificationRemovals.includes("race_to_10_results_v1") && state.notificationSchedules.length === 7;
+      return state.notificationRemovals.includes("race_to_10_results_v1");
     });
     await page.evaluate(() => window.dispatchEvent(new CustomEvent("riddle-quest:race-challenge-published", {detail: {challengeId: "legacy-race"}})));
     const state = await getHarnessState(page);
-    expect(state.notificationRemovals).toEqual(expect.arrayContaining([...LEGACY_REMINDER_IDS, ...RACE_REMINDER_IDS]));
-    expect(state.notificationSchedules).toHaveLength(7);
-    expect(state.notificationSchedules).toEqual(expect.arrayContaining(
-      ENGAGEMENT_REMINDER_IDS.map((identifier, index) => expect.objectContaining({
-        identifier, scheduledInDays: index + 1, assetReference: "riddle-q-notification",
-        entryPayload: expect.objectContaining({gameMode: "challenge"}),
-      })),
-    ));
+    expect(state.notificationRemovals).toEqual(expect.arrayContaining([...PLAYER_NOTIFICATION_IDS]));
+    expect(state.notificationSchedules).toEqual([]);
     await context.close();
   });
 
-  it("shares a race challenge without adding a reminder beyond the Daily campaign", async () => {
+  it("shares a race challenge without scheduling an app-authored reminder", async () => {
     /** Provides {context, page} behavior. */
     const {context, page} = await openHarness(browser, {registered: true});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
-    await page.waitForFunction(() => Reflect.get(window, "__RIDDLE_QUEST_JEST_AUTH_TEST__").notificationSchedules.length === 7);
     await page.evaluate(() => {
       /** Provides publication behavior. */
       const publication = {
@@ -987,7 +975,7 @@ describeBrowser("Jest authentication integration", () => {
     });
     /** Provides state behavior. */
     let state = await getHarnessState(page);
-    expect(state.notificationSchedules).toHaveLength(7);
+    expect(state.notificationSchedules).toEqual([]);
     expect(state.referralShares).toContainEqual(
       expect.objectContaining({
         reference: expect.stringMatching(/^rq_r10_v1_[0-9a-f]{16}$/),

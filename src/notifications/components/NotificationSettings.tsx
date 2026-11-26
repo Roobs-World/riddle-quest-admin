@@ -1,5 +1,6 @@
-import {useTranslator} from "../../localization/browser/i18n";
+import {getCurrentLocale, useTranslator} from "../../localization/browser/i18n";
 import {useNotificationSettings} from "./NotificationSettingsContext";
+import {getHostedNotificationCopy} from "../copy/hostedNotificationCopy";
 
 /** Edits the registered account's preference for notifications on native devices. */
 export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
@@ -20,6 +21,6 @@ export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
       <span>{tr("Settings.NOTIFICATIONS")}</span>
       <strong>{tr(!locked && enabled ? "Settings.TOGGLE_ON" : "Settings.TOGGLE_OFF")}</strong>
     </button>
-    {!locked && saveFailed && <p role="status">{tr("Settings.NOTIFICATION_SAVE_FAILED")}</p>}
+    {!locked && saveFailed && <p role="status">{getHostedNotificationCopy(getCurrentLocale()).saveFailed}</p>}
   </>;
 }

@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "الاعتمادات",
     "DATA_EXPORT_BUTTON": "تصدير بياناتي",
     "HELP_BUTTON": "يساعد",
+    "LANGUAGE_LABEL": "لغة",
     "LANGUAGE_SELECTED": "مختارة",
     "LICENSES_BUTTON": "التراخيص",
     "LOGOUT_BUTTON": "تسجيل الخروج",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "شروط الاستخدام",
     "TITLE": "الإعدادات",
     "TOGGLE_OFF": "إيقاف",
-    "TOGGLE_ON": "تشغيل",
-    "REDUCED_MOTION": "تقليل الحركة",
-    "NOTIFICATION_SAVE_FAILED": "تعذر حفظ إعدادات الإشعارات. يُرجى المحاولة مرة أخرى."
+    "TOGGLE_ON": "تشغيل"
   }
 }

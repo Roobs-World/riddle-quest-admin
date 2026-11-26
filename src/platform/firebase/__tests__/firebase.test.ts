@@ -178,7 +178,17 @@ describe("Firebase environment variants", () => {
     expect(mockGetAuth).not.toHaveBeenCalled();
   });
 
-  it.each(["jest"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
+  it("retains the existing authentication initialization for other target assemblies", async () => {
+    mockInitializeAuth.mockClear();
+    mockGetAuth.mockClear();
+    /** Loaded browser Firebase module exercises session persistence configuration. */
+    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "facebook"});
+    expect(module.auth).toEqual({name: "auth"});
+    expect(mockGetAuth).toHaveBeenCalledWith(module.firebaseApp);
+    expect(mockInitializeAuth).not.toHaveBeenCalled();
+  });
+
+  it.each(["jest", "facebook"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
     mockGetFunctions.mockClear();
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget});
@@ -220,7 +230,7 @@ describe("Firebase environment variants", () => {
     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
   });
 
-  it.each(["jest"])("can roll %s solo back to the existing US endpoints without moving multiplayer", async platformTarget => {
+  it.each(["jest", "facebook"])("can roll %s solo back to the existing US endpoints without moving multiplayer", async platformTarget => {
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "us-central1"});
     /** A rollback must cover every session action together. */
@@ -233,7 +243,7 @@ describe("Firebase environment variants", () => {
     }
   });
 
-  it.each(["jest"])("applies the optional solo region to gameplay only (%s)", async platformTarget => {
+  it.each(["jest", "facebook"])("applies the optional solo region to gameplay only (%s)", async platformTarget => {
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "europe-west1"});
     /** Every session action must use one selected region; other capabilities keep their own endpoints. */

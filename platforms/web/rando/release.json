@@ -1,0 +1,21 @@
+{
+  "target": "rando",
+  "title": "Rando.gg review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:rando",
+  "summary": "Create an ad-free, commerce-disabled HTML5 handoff for Rando.gg iframe review.",
+  "externalEffect": "None; hosted-URL submission and listing review remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "rando"
+    ]
+  },
+  "handoff": "Submit the canonical HTTPS playable after cross-origin iframe verification.",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-12-2026-09-21.md",
+  "displayName": "Rando.gg",
+  "delivery": "neutral-html5",
+  "artifact": "build-rando-review.zip",
+  "releaseGate": "Rando.gg hosted-URL submission and listing review remain manual; ads and commerce stay disabled."
+}

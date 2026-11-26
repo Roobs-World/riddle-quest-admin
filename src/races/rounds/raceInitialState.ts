@@ -16,12 +16,12 @@ export const updateRaceSessionState = (state: RaceSessionState, patch: Partial<R
 
 /** Builds a complete fresh player journey without dispatching commands or hydrating authority. */
 export const initialRaceSessionState = (entry: RaceSessionEntry, now: number): RaceSessionState => {
-    return {stage: entry.openInbox ? "inbox" : entry.challengeId ? "challenge" : "categories",
-      activeChallengeId: entry.openInbox ? undefined : entry.challengeId,
+    return {stage: entry.tournamentLocale ? "tournaments" : entry.openInbox ? "inbox" : entry.challengeId ? "challenge" : "categories",
+      activeChallengeId: entry.tournamentLocale || entry.openInbox ? undefined : entry.challengeId,
       entryStatus: null, challenge: null, categories: entry.initialCategories ?? [], inboxItems: [], run: null, outcome: null,
       receivedAtMs: now, adjustedNow: 0, currentLetters: [], activeSlotIndex: 0, raceGuesses: [],
       feedback: null, penaltyFlash: null,
-      error: null,
+      error: entry.tournamentLocale && entry.tournamentLocale !== entry.locale ? "RaceTo10.ERROR_LOCALE_MISMATCH" : null,
       safetyNotice: null, safetyTargetUserId: null,
       pending: null, raceGuessLoading: false, allowTypingWhilePending: false, requiresRunRefresh: false,
       countdown: 3, loadingProgress: 0, countdownReady: false, closeAfterStart: false,

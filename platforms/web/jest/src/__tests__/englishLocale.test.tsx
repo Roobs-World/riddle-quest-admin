@@ -1,7 +1,7 @@
 import {afterAll, beforeEach, expect, it, jest} from "@jest/globals";
 import {renderToString} from "react-dom/server";
 
-jest.mock("../../platform/webTargetEnvironment", () => ({isJestWebTarget: true}));
+jest.mock("../../platform/webTargetEnvironment", () => ({isFacebookWebTarget: false, isJestWebTarget: true}));
 
 import {detectDeviceLanguage, getCurrentLocale, setLocaleAndWait} from "../../../../../src/localization/browser/i18n";
 import {applyPlayerPreferences, PLAYER_PREFERENCE_STORAGE_KEYS, setPlayerLocale, subscribeToPlayerPreferenceChanges} from "../../../../../src/settings/browser/playerPreferences";

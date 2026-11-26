@@ -1,14 +1,28 @@
-# Jest release quickstart
+# Platform release quickstart
 
-This branch ships the Jest frontend only. Review the local plan, then use the canonical command:
+Run the shared build and audit preparation before a platform handoff:
 
 ```sh
-pnpm release:plan
-pnpm release:jest
+pnpm preflight:all-platforms
 ```
 
-The command builds and audits one immutable Jest artifact and requests activation after processing. Confirm that exact version is ready and active. It does not publish the game or submit it for review.
+It runs the security audit, builds and audits the core isolated artifacts, validates the Reddit package, and prints the exact release boundary and runbook for each platform. It does not run local tests, start a local game, upload, publish or promote anything. Complete manual acceptance through each provider's private hosted version separately.
 
-Use `pnpm build:jest` for a game build, followed by the standing release instruction unless the user requested build-only or dry-run behavior. Backend and notification-manager operations remain separate and unchanged.
+After the preflight succeeds, run only the intended target command:
 
-See [release operations](release-operations.md), the [Jest runbook](../../jest/jest-html5-operations.md) and the [Jest-only frontend boundary](../../jest/jest-only-frontend.md).
+```sh
+pnpm release:jest
+pnpm release:facebook
+pnpm release:youtube
+pnpm release:reddit
+```
+
+The commands deliberately remain separate because their external effects differ. Jest uploads and activates the processed build. Game publication, review submission and listing visibility changes remain held. Firebase Functions deployment is allowed. Facebook, YouTube, and Reddit create local, immutable handoffs for their documented manual processes. Run `pnpm release:plan` at any time to review those effects without building or changing external state.
+
+The existing `release:all` command crosses different provider boundaries, including automatic Jest activation. Use target-specific commands when preparing candidates or reconciling an existing upload.
+
+Build and release only named HTML5 platform targets. Standalone web hosting and
+PWA builds are excluded. `build:web` aggregates Jest, Facebook and Reddit;
+`prepare:html5-handoffs` prepares a shared audited input for named distributors
+such as itch.io. It does not publish a standalone game. Historical PWA dashboard
+receipts remain visible with an excluded status.

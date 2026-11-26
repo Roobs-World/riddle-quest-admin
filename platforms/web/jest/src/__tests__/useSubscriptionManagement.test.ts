@@ -4,14 +4,11 @@ import type {ContextType} from "react";
 
 /** Controlled subscription effects expose refresh and cancellation calls. */
 const mockEffects: Array<() => (() => void) | void> = [];
-const mockLayoutEffects: Array<() => (() => void) | void> = [];
 /** Controlled provider subscriptions supply deterministic renewal state. */
 let mockSubscriptions: ContextType<typeof ShopSubscriptionContext>;
 jest.mock("react", () => ({
   ...jest.requireActual<typeof import("react")>("react"),
   useContext: () => mockSubscriptions,
-  useMemo: (factory: () => unknown) => factory(),
-  useLayoutEffect: (effect: () => (() => void) | void) => mockLayoutEffects.push(effect),
   useEffect: (effect: () => (() => void) | void) => mockEffects.push(effect),
   useRef: (current: unknown) => ({current}),
   useState: (initial: unknown) => [initial, jest.fn()],
@@ -28,11 +25,6 @@ let focus: (() => void) | undefined;
 let visibility = "visible";
 /** Registered cleanup disposes the current subscription observation. */
 let cleanup: (() => void) | void;
-let lifetimeCleanup: (() => void) | void;
-const mount = () => {
-  lifetimeCleanup = mockLayoutEffects[0]();
-  cleanup = mockEffects[0]();
-};
 /** Controlled refresh result determines the current provider entitlement. */
 const refresh = jest.fn<() => Promise<void>>();
 /** Controlled cancellation result cannot revoke access before confirmation. */
@@ -41,7 +33,6 @@ beforeEach(() => {
   jest.useFakeTimers();
   jest.clearAllMocks();
   mockEffects.length = 0;
-  mockLayoutEffects.length = 0;
   focus = undefined;
   visibility = "visible";
   refresh.mockResolvedValue(undefined);
@@ -59,8 +50,6 @@ beforeEach(() => {
 afterEach(() => {
   cleanup?.();
   cleanup = undefined;
-  lifetimeCleanup?.();
-  lifetimeCleanup = undefined;
   jest.useRealTimers();
   if (originalWindow) Object.defineProperty(globalThis, "window", originalWindow);
   else Reflect.deleteProperty(globalThis, "window");
@@ -70,7 +59,7 @@ afterEach(() => {
 
 it("keeps a visible modal comfortably below the backend’s 30 requests per minute", async () => {
   useSubscriptionManagement();
-  mount();
+  cleanup = mockEffects[0]();
   await jest.advanceTimersByTimeAsync(60_000);
   expect(refresh.mock.calls.length).toBeGreaterThan(1);
   expect(refresh.mock.calls.length).toBeLessThanOrEqual(12);
@@ -83,7 +72,7 @@ it("keeps a visible modal comfortably below the backend’s 30 requests per minu
 
 it("does not poll a hidden or closed modal", async () => {
   useSubscriptionManagement();
-  mount();
+  cleanup = mockEffects[0]();
   await Promise.resolve();
   visibility = "hidden";
   await jest.advanceTimersByTimeAsync(60_000);
@@ -101,7 +90,7 @@ it("avoids competing refreshes while a cancellation is awaiting the provider", a
   cancel.mockImplementation(() => new Promise(resolve => { finish = resolve; }));
   /** Authoritative or observed state used to verify the current transition. */
   const state = useSubscriptionManagement();
-  mount();
+  cleanup = mockEffects[0]();
   await Promise.resolve();
   /** In-flight operation remains observable until its controlled settlement. */
   const pending = state.cancel("premium");

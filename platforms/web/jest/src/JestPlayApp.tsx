@@ -61,7 +61,10 @@ import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/
 import type {NotificationRegistrationCommands} from "../../../../src/notifications/contracts/notificationProvider";
 import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
-import {JestNotifications} from "./notifications/JestNotifications";
+
+/** Account registration controls load after the playable session mounts. */
+const JestNotifications = lazy(() => import("./notifications/JestNotifications")
+  .then(module => ({default: module.JestNotifications})));
 
 /** Account-management controls load when Profile or Settings first renders them. */
 const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
@@ -95,10 +98,8 @@ function warmJestFirebaseStartup(): void {
 
 /** Provides jest play app behavior. */
 export function JestPlayApp() {
-  /** Continues the saved guest win count across Daily and Classic riddles. */
-  const guestCompletedRiddlesRef = useRef<number | null>(null);
-  /** Keeps completion counting and deduplication scoped to the active account. */
-  const guestCompletionOwnerRef = useRef<string | null>(null);
+  /** Continues the saved guest Classic count while completion rewards are still syncing. */
+  const guestCompletedClassicRiddlesRef = useRef<number | null>(null);
   /** Prevents retried answers from counting the same win twice. */
   const countedGuestWinIdsRef = useRef(new Set<string>());
   /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
@@ -137,16 +138,14 @@ export function JestPlayApp() {
   );
   /** Provides backend behavior. */
   const backend = useMemo(() => createJestBackend({authHarness, mockRuntime}), [authHarness, mockRuntime]);
+  /** Provides purchases behavior. */
+  const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend), [backend, platform]);
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
   useLayoutEffect(() => {
-    if (!session) return;
-    const owner = JSON.stringify([session.player.playerId, session.firebaseUid]);
-    if (guestCompletionOwnerRef.current === owner) return;
-    guestCompletionOwnerRef.current = owner;
-    guestCompletedRiddlesRef.current = session.playerData?.profile?.totalWins ??
-      session.playerData?.profile?.wins ?? session.preferences.jestGuestCompletedRiddles ?? 0;
-    countedGuestWinIdsRef.current.clear();
+    if (session && guestCompletedClassicRiddlesRef.current === null) {
+      guestCompletedClassicRiddlesRef.current = session.preferences.jestGuestCompletedRiddles ?? 0;
+    }
   }, [session]);
   /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
   const syncedAvatarRef = useRef<string | null>(null);
@@ -198,19 +197,6 @@ export function JestPlayApp() {
   /** Provides session ref behavior. */
   const sessionRef = useRef<JestSession | null>(null);
   sessionRef.current = session;
-  /** Catalog reconciliation may award monthly coins even without a new checkout. */
-  const purchases = useMemo(() => new JestPurchaseCoordinator(platform, backend, {
-    captureSubscriptionGrantRefresh: playerId => {
-      const owner = sessionRef.current;
-      if (!owner || owner.player.playerId !== playerId || !notificationOperationGate.isOpen()) return undefined;
-      return async () => {
-        if (!notificationOperationGate.isOpen() || sessionRef.current?.player.playerId !== playerId ||
-          sessionRef.current.firebaseUid !== owner.firebaseUid) return;
-        // Subscription sync already holds the deletion gate; a nested lock could block cleanup.
-        await hostServices.loadProfile(owner.firebaseUid);
-      };
-    },
-  }), [backend, hostServices, notificationOperationGate, platform]);
   /** Provides {pending platform operations, with platform activity, with background platform activity} behavior. */
   const {pendingPlatformOperations, withPlatformActivity, withBackgroundPlatformActivity} =
     useJestPlatformActivity(notificationOperationGate);
@@ -565,8 +551,11 @@ export function JestPlayApp() {
       )
         return;
       countedGuestWinIdsRef.current.add(`${input.gameMode}:${input.riddleId}`);
-      guestCompletedRiddlesRef.current = (guestCompletedRiddlesRef.current ?? 0) + 1;
-      if (shouldPromptGuestRegistration(activeSession, guestCompletedRiddlesRef.current)) {
+      if (input.gameMode === "classic") {
+        guestCompletedClassicRiddlesRef.current =
+          (guestCompletedClassicRiddlesRef.current ?? 0) + 1;
+      }
+      if (shouldPromptGuestRegistration(activeSession, input.gameMode, guestCompletedClassicRiddlesRef.current ?? 0)) {
         openRegistrationPrompt("authoritative_win", true, completionPresentationKey(input));
       }
     },
@@ -644,9 +633,9 @@ export function JestPlayApp() {
   }
   return (
     <>
-      <JestNotifications mockRuntime={mockRuntime} authHarness={authHarness}
+      <Suspense fallback={null}><JestNotifications mockRuntime={mockRuntime} authHarness={authHarness}
         session={session} sessionRef={sessionRef} platform={platform}
-        gate={notificationOperationGate} install={notificationsDelegate.install} />
+        gate={notificationOperationGate} install={notificationsDelegate.install} /></Suspense>
       {registrationFailure ? (
         <div
           className="play-alert game-shell-alert"
@@ -693,7 +682,7 @@ export function JestPlayApp() {
               platformPurchase: purchaseProduct,
               raceAvailable: true,
               platformCapabilities,
-              externalInteractionBlocked: pendingPlatformOperations > 0 || registrationPending || (!session.player.registered && showRegistration),
+              externalInteractionBlocked: pendingPlatformOperations > 0 || (!session.player.registered && showRegistration),
               initialPlayerData: session.playerData,
               onPlayerDataChange: playerStateWrites.savePlayerData,
               accountDeletionServiceGate: notificationOperationGate,

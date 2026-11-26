@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Twórcy",
     "DATA_EXPORT_BUTTON": "Eksportuj moje dane",
     "HELP_BUTTON": "Pomoc",
+    "LANGUAGE_LABEL": "Język",
     "LANGUAGE_SELECTED": "Wybrane",
     "LICENSES_BUTTON": "Licencje",
     "LOGOUT_BUTTON": "Wyloguj",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Warunki korzystania",
     "TITLE": "Ustawienia",
     "TOGGLE_OFF": "Wył.",
-    "TOGGLE_ON": "Wł",
-    "REDUCED_MOTION": "Ograniczenie ruchu",
-    "NOTIFICATION_SAVE_FAILED": "Nie udało się zapisać ustawień powiadomień. Spróbuj ponownie."
+    "TOGGLE_ON": "Wł"
   }
 }

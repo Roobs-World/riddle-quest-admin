@@ -24,7 +24,7 @@ const disposeBrowserSentryStartup = (): void => {
 export function initializeBrowserSentryFromEnvironment(loadAdapter: () => Promise<SentryAdapter> = () => import("./sentry")): Promise<boolean> {
   /** Provides runtime behavior. */
   const runtime = firebaseEnvironment.platformTarget;
-  if (runtime !== "jest" || !isBrowserTelemetryRuntimeAllowed() ||
+  if ((runtime !== "jest" && runtime !== "facebook") || !isBrowserTelemetryRuntimeAllowed() ||
     !firebaseEnvironment.production || !firebaseEnvironment.sentryDsn?.trim()) {
     disposeBrowserSentryStartup();
     return Promise.resolve(false);

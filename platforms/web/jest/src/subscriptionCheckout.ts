@@ -9,7 +9,7 @@ type SubscriptionCheckoutOptions = {
   /** Jest SDK adapter owning checkout and wallet reads. */
   platform: JestPlatformPort;
   /** Verifies signed provider holdings and purchase results. */
-  backend: Pick<JestBackendPort, "syncSubscriptions">;
+  backend: JestBackendPort;
   /** Requested subscription from the current provider catalog. */
   subscriptionSku: string;
   /** Provider identity used to scope cross-tab exclusion. */

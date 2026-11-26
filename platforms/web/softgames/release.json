@@ -1,0 +1,21 @@
+{
+  "target": "softgames",
+  "title": "SOFTGAMES pitch",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:softgames",
+  "summary": "Create a neutral HTML5 archive for a non-exclusive SOFTGAMES publishing enquiry.",
+  "externalEffect": "None; outreach, contract review, SDK integration and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "softgames"
+    ]
+  },
+  "handoff": "Request a written non-exclusive revenue-share offer before providing source or integrating an SDK.",
+  "runbook": "docs/common/releases/research/further-html5-release-targets-2026-09-21.md",
+  "displayName": "SOFTGAMES",
+  "delivery": "neutral-html5",
+  "artifact": "build-softgames-pitch.zip",
+  "releaseGate": "SOFTGAMES outreach, non-exclusive contract review, SDK integration and publication remain manual."
+}

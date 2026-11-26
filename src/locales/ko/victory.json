@@ -15,6 +15,7 @@
     "SHARE_CLASSIC_MODE_LABEL": "클래식 모드",
     "SHARE_DAILY_CHALLENGE_LABEL": "일일 도전",
     "SHARE_MESSAGE_TEMPLATE": "오늘의 Riddle Quest {gameType}을(를) {attempts}번의 {attemptLabel} 만에 해결했습니다!\n\n{emojiGrid}\n\n내 점수를 이길 수 있나요?\n\n#Riddle Quest #WordPuzzle #BrainGame",
-    "SHARE_RESULT_TITLE": "내 Riddle Quest 결과를 확인하세요!"
+    "SHARE_RESULT_TITLE": "내 Riddle Quest 결과를 확인하세요!",
+    "INVITE_FRIEND": "친구 초대"
   }
 }

@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- The debug network config permits Metro and Firebase emulators on local hosts only. -->
+    <application android:usesCleartextTraffic="true" tools:replace="android:usesCleartextTraffic" tools:targetApi="28" tools:ignore="GoogleAppIndexingWarning" />
+</manifest>

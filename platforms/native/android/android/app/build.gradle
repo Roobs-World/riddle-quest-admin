@@ -1,0 +1,188 @@
+apply plugin: "com.android.application"
+apply plugin: "org.jetbrains.kotlin.android"
+apply plugin: "com.facebook.react"
+
+/**
+ * This is the configuration block to customize your React Native Android app.
+ * By default you don't need to apply any configuration, just uncomment the lines you need.
+ */
+react {
+    /* Folders */
+    //   The root of your project, i.e. where "package.json" lives. Default is '../..'
+    // root = file("../../")
+    //   The folder where the react-native NPM package is. Default is ../../node_modules/react-native
+    // reactNativeDir = file("../../node_modules/react-native")
+    //   The folder where the react-native Codegen package is. Default is ../../node_modules/@react-native/codegen
+    // codegenDir = file("../../node_modules/@react-native/codegen")
+    //   The cli.js file which is the React Native CLI entrypoint. Default is ../../node_modules/react-native/cli.js
+    // cliFile = file("../../node_modules/react-native/cli.js")
+
+    /* Variants */
+    //   The list of variants to that are debuggable. For those we're going to
+    //   skip the bundling of the JS bundle and the assets. Default is "debug", "debugOptimized".
+    //   If you add flavors like lite, prod, etc. you'll have to list your debuggableVariants.
+    // debuggableVariants = ["liteDebug", "liteDebugOptimized", "prodDebug", "prodDebugOptimized"]
+
+    /* Bundling */
+    //   A list containing the node command and its flags. Default is just 'node'.
+    // nodeExecutableAndArgs = ["node"]
+    //
+    //   The command to run when bundling. By default is 'bundle'
+    // bundleCommand = "ram-bundle"
+    //
+    //   The path to the CLI configuration file. Default is empty.
+    // bundleConfig = file(../rn-cli.config.js)
+    //
+    //   The name of the generated asset file containing your JS bundle
+    // bundleAssetName = "MyApplication.android.bundle"
+    //
+    //   The entry file for bundle generation. Default is 'index.android.js' or 'index.js'
+    // entryFile = file("../js/MyApplication.android.js")
+    //
+    //   A list of extra flags to pass to the 'bundle' commands.
+    //   See https://github.com/react-native-community/cli/blob/main/docs/commands.md#bundle
+    // extraPackagerArgs = []
+
+    /* Hermes Commands */
+    //   The hermes compiler command to run. By default it is 'hermesc'
+    // hermesCommand = "$rootDir/my-custom-hermesc/bin/hermesc"
+    //
+    //   The list of flags to pass to the Hermes compiler. By default is "-O", "-output-source-map"
+    // hermesFlags = ["-O", "-output-source-map"]
+
+    /* Autolinking */
+    autolinkLibrariesWithApp()
+}
+
+/**
+ * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
+ */
+def enableProguardInReleaseBuilds = false
+
+/**
+ * The preferred build flavor of JavaScriptCore (JSC)
+ *
+ * For example, to use the international variant, you can use:
+ * `def jscFlavor = io.github.react-native-community:jsc-android-intl:2026004.+`
+ *
+ * The international variant includes ICU i18n library and necessary data
+ * allowing to use e.g. `Date.toLocaleString` and `String.localeCompare` that
+ * give correct results when using with locales other than en-US. Note that
+ * this variant is about 6MiB larger per architecture than default.
+ */
+/**
+ * Upload signing is read from an ignored `keystore.properties` beside this file:
+ * storeFile, storePassword, keyAlias, keyPassword. The keystore itself is never committed.
+ */
+def uploadKeystoreProperties = new Properties()
+def uploadKeystorePropertiesFile = file("keystore.properties")
+if (uploadKeystorePropertiesFile.exists()) {
+    uploadKeystorePropertiesFile.withInputStream { stream -> uploadKeystoreProperties.load(stream) }
+}
+def uploadKeystore = uploadKeystoreProperties['storeFile'] ? file(uploadKeystoreProperties['storeFile']) : file("missing.keystore")
+
+// The native analytics SDK can initialize before JavaScript. Emulator builds must stay deactivated.
+def hostedConfigFile = file("../../hosted.config.json")
+if (!hostedConfigFile.exists()) hostedConfigFile = file("../../hosted.config.example.json")
+def hostedBuildConfig = new groovy.json.JsonSlurper().parse(hostedConfigFile)
+def firebaseBuildConfig = hostedBuildConfig.firebase
+def nativeFirebaseAppId = firebaseBuildConfig.androidAppId
+if (nativeFirebaseAppId != null && !(nativeFirebaseAppId ==~ /1:[0-9]+:android:[a-f0-9]+/)) {
+    throw new GradleException("hosted.config requires a registered Firebase Android app ID")
+}
+def analyticsDeactivated = hostedBuildConfig.emulators != null || nativeFirebaseAppId == null
+
+def validateHostedReleaseConfig = tasks.register("validateHostedReleaseConfig") {
+    doLast {
+        if (hostedBuildConfig.emulators != null) {
+            throw new GradleException("Release builds require encrypted production Firebase connections; use a debug build for local emulators")
+        }
+    }
+}
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    dependsOn(validateHostedReleaseConfig)
+}
+
+// Metro imports shared game source and JSON config outside the bundle task's default source inputs.
+tasks.withType(com.facebook.react.tasks.BundleHermesCTask).configureEach {
+    inputs.dir(file("../../../../../src")).withPropertyName("sharedGameSources").withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(hostedConfigFile).withPropertyName("hostedRuntimeConfig").withPathSensitivity(PathSensitivity.RELATIVE)
+}
+
+def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
+
+android {
+    ndkVersion rootProject.ext.ndkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdk rootProject.ext.compileSdkVersion
+
+    namespace "com.roobsworld.riddlequest"
+    defaultConfig {
+        applicationId "com.roobsworld.riddlequest"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0.0"
+        manifestPlaceholders = [analyticsDeactivated: analyticsDeactivated]
+        if (nativeFirebaseAppId != null) {
+            // Analytics resolves google_app_id from Android resources, independently of FirebaseOptions.
+            resValue "string", "google_app_id", nativeFirebaseAppId
+            resValue "string", "google_api_key", firebaseBuildConfig.androidApiKey ?: firebaseBuildConfig.apiKey
+            resValue "string", "gcm_defaultSenderId", firebaseBuildConfig.messagingSenderId
+            resValue "string", "project_id", firebaseBuildConfig.projectId
+        }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+        release {
+            if (uploadKeystore.exists()) {
+                storeFile uploadKeystore
+                storePassword uploadKeystoreProperties['storePassword']
+                keyAlias uploadKeystoreProperties['keyAlias']
+                keyPassword uploadKeystoreProperties['keyPassword']
+            } else {
+                // Local verification only. Google Play uploads require the owner's upload key.
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            }
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+            manifestPlaceholders.analyticsDeactivated = true
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+}
+
+dependencies {
+    // The version of react-native is set by the React Native Gradle Plugin
+    implementation("com.facebook.react:react-android")
+    implementation("com.android.billingclient:billing:9.1.0")
+    implementation("com.google.android.play:integrity:1.6.0")
+    implementation("com.android.installreferrer:installreferrer:2.2")
+    implementation("com.google.firebase:firebase-messaging:26.0.2")
+    implementation("androidx.work:work-runtime:2.12.0")
+    implementation("com.google.firebase:firebase-analytics:23.2.0")
+    implementation("androidx.credentials:credentials:1.6.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.2.0")
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android")
+    } else {
+        implementation jscFlavor
+    }
+}

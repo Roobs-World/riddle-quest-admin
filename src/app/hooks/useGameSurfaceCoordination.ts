@@ -1,3 +1,4 @@
+import type {RaceLocale} from "../../races/contracts/index";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {trackEvent, trackScreen} from "../../observability/analytics/events";
 import {resolveActivityPresence} from "../../presence/activityPresence";
@@ -16,12 +17,16 @@ type GameSurfaceCoordinationOptions = Readonly<{
   session: SurfaceSession;
   /** Whether multiplayer is enabled by the host build. */
   raceFeatureEnabled: boolean;
+  /** Locale eligibility policy supplied by the active target. */
+  raceLocalePolicy: "english-only" | "all";
   /** Challenge deep link that opens multiplayer immediately when eligible. */
   initialRaceChallengeId?: string;
   /** Whether the multiplayer inbox should open immediately when eligible. */
   initialRaceInbox: boolean;
   /** Whether an invitation should open the multiplayer lobby. */
   initialRaceLobby?: boolean;
+  /** Incoming tournament destination, filtered by the target capability. */
+  initialRaceTournamentLocale?: RaceLocale;
   /** Receives target-neutral presence derived from the active surface. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
 }>;
@@ -38,6 +43,8 @@ export type GameSurfaceCoordination = Readonly<{
   raceChallengeId?: string;
   /** Whether the undismissed incoming destination opens multiplayer Activity. */
   raceInbox: boolean;
+  /** Locale of the undismissed incoming target tournament destination. */
+  raceTournamentLocale?: RaceLocale;
   /** Opens or closes the multiplayer surface. */
   setRaceOpen: (open: boolean) => void;
   /** Whether onboarding guidance currently owns interaction. */
@@ -50,9 +57,11 @@ export type GameSurfaceCoordination = Readonly<{
 export function useGameSurfaceCoordination({
   session,
   raceFeatureEnabled,
+  raceLocalePolicy,
   initialRaceChallengeId,
   initialRaceInbox,
   initialRaceLobby,
+  initialRaceTournamentLocale,
   onPresenceStateChange,
 }: GameSurfaceCoordinationOptions): GameSurfaceCoordination {
   /** Supported multiplayer locale derived from host initialization. */
@@ -60,12 +69,12 @@ export function useGameSurfaceCoordination({
   /** Whether the current build, locale, and optional harness permit multiplayer. */
   const raceEnabled =
     raceLocale !== undefined &&
-    raceLocale === "en" &&
+    (raceLocalePolicy === "all" || raceLocale === "en") &&
     (raceFeatureEnabled || isRaceHarness(typeof window === "undefined" ? "" : window.location.search));
   /** Whether multiplayer currently owns the primary game surface. */
-  const [raceOpen, setRaceOpenState] = useState(Boolean((initialRaceChallengeId || initialRaceInbox || initialRaceLobby) && raceEnabled));
+  const [raceOpen, setRaceOpenState] = useState(Boolean((initialRaceChallengeId || initialRaceInbox || initialRaceLobby || initialRaceTournamentLocale) && raceEnabled));
   /** Consume the incoming destination when its journey is dismissed. */
-  const entryKey = JSON.stringify([initialRaceChallengeId ?? null, initialRaceInbox, initialRaceLobby ?? false]);
+  const entryKey = JSON.stringify([initialRaceChallengeId ?? null, initialRaceInbox, initialRaceLobby ?? false, initialRaceTournamentLocale ?? null]);
   /** Remembers the exact incoming destination dismissed during this mounted visit. */
   const [dismissedEntry, setDismissedEntry] = useState<string | null>(null);
   /** Whether the incoming entry differs from the player's dismissed destination. */
@@ -118,10 +127,10 @@ export function useGameSurfaceCoordination({
 
   useEffect(() => {
     if (!raceEnabled) setRaceOpenState(false);
-    else if (entryAvailable && (initialRaceChallengeId || initialRaceInbox || initialRaceLobby)) setRaceOpenState(true);
-  }, [initialRaceChallengeId, initialRaceInbox, initialRaceLobby, raceEnabled, entryAvailable]);
+    else if (entryAvailable && (initialRaceChallengeId || initialRaceInbox || initialRaceLobby || initialRaceTournamentLocale)) setRaceOpenState(true);
+  }, [initialRaceChallengeId, initialRaceInbox, initialRaceLobby, initialRaceTournamentLocale, raceEnabled, entryAvailable]);
 
   return {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId: entryAvailable ? initialRaceChallengeId : undefined,
-    raceInbox: entryAvailable && initialRaceInbox,
+    raceInbox: entryAvailable && initialRaceInbox, raceTournamentLocale: entryAvailable ? initialRaceTournamentLocale : undefined,
     guidanceActive, setGuidanceActive};
 }

@@ -12,7 +12,9 @@ const discoveryPattern = source => {
 const coveragePattern = source => source.endsWith("/**")
   ? source.slice(0, -3) + "/**/*.{ts,tsx}"
   : /\.tsx?$/.test(source) ? source : null;
-const platformRoots = ["platforms/web/jest/src"];
+const platformRoots = fs.readdirSync(path.join(__dirname, "platforms/web"))
+  .map(target => "platforms/web/" + target + "/src")
+  .filter(directory => fs.existsSync(absolute(directory)));
 const selectionIndex = process.argv.indexOf("--selectProjects");
 const selectionArgument = process.argv.find(argument => argument.startsWith("--selectProjects="));
 const selectedGroup = process.env.RIDDLE_QUEST_JEST_GROUP ||
@@ -30,7 +32,7 @@ const config = {
   testEnvironmentOptions: {globalsCleanup: "on"},
   roots: ["<rootDir>/src", ...platformRoots.map(root => "<rootDir>/" + root)],
   testRegex: sourcePatterns.map(discoveryPattern).filter(Boolean),
-  testPathIgnorePatterns: ["/node_modules/", ...excludedTests],
+  testPathIgnorePatterns: ["/node_modules/", "/platforms/web/reddit/src/server/", ...excludedTests],
   transform: {"^.+\\.tsx?$": ["ts-jest", {tsconfig: "<rootDir>/tsconfig.json"}]},
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json"],
   collectCoverageFrom: sourcePatterns.concat(group.coverageExtras || []).map(coveragePattern).filter(Boolean)

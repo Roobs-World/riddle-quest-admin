@@ -43,6 +43,99 @@
   --feedback-absent: #f54160;
 }
 
+/*
+ * The bundled display/body subsets are intentionally small. Select a complete
+ * native system face before them for scripts those subsets do not cover, so a
+ * word is shaped by one font instead of falling back one missing glyph at a
+ * time. These stacks add no bytes to either platform artifact.
+ */
+:root:lang(ar) {
+  --rq-font-body: "Noto Sans Arabic", "Geeza Pro", Tahoma, Arial, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(hi) {
+  --rq-font-body: "Noto Sans Devanagari", "Kohinoor Devanagari", Mangal, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ja) {
+  --rq-font-body: "Hiragino Sans", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ko) {
+  --rq-font-body: "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+:root:lang(ru) {
+  --rq-font-body: "Noto Sans", system-ui, Arial, sans-serif;
+  --rq-font-display: var(--rq-font-body);
+}
+
+.reddit-guest-layout {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Guest dialogs belong to the game viewport below the independently available login banner. */
+.reddit-guest-layout .game-modal-backdrop {
+  position: absolute;
+}
+
+.reddit-guest-banner {
+  position: relative;
+  z-index: 90;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.65rem;
+  margin: max(0.35rem, env(safe-area-inset-top)) auto 0.35rem;
+  width: min(52rem, calc(100% - 1rem));
+  padding: 0.55rem 0.75rem;
+  border: 1px solid rgb(255 255 255 / 24%);
+  border-radius: 0.75rem;
+  background: rgb(21 19 15 / 94%);
+  color: #fff;
+  text-align: start;
+}
+
+.reddit-guest-banner details {
+  flex: 1;
+  min-width: 0;
+}
+.reddit-guest-banner summary {
+  min-height: 44px;
+  padding-block: 0.65rem;
+  cursor: pointer;
+}
+.reddit-guest-details p {
+  margin: 0.35rem 0 0;
+  overflow-wrap: anywhere;
+}
+.reddit-guest-banner button {
+  flex: 0 1 auto;
+  max-width: 65%;
+  min-height: 44px;
+}
+
+@media (max-width: 540px) and (max-height: 650px) {
+  /* Two recovery rows share a short viewport; keep their copy readable and game keys usable. */
+  .reddit-guest-banner {
+    padding: 0.35rem 0.6rem;
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .reddit-guest-banner button {
+    min-height: 44px;
+  }
+}
+
 :where(button, a, input, select, textarea, [role="button"], [tabindex]):focus-visible {
   outline: 3px solid #ffd45c;
   outline-offset: 3px;

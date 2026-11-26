@@ -1,0 +1,21 @@
+{
+  "target": "ozogames",
+  "title": "OzoGames review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:ozogames",
+  "summary": "Create an ad-free neutral HTML5 archive for OzoGames editorial and contract review.",
+  "externalEffect": "None; email submission, agreement review, monetization decision and publication remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "ozogames"
+    ]
+  },
+  "handoff": "Send the demo and request written advertising, revenue-share and commerce terms before integration.",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-9-2026-09-21.md",
+  "displayName": "OzoGames",
+  "delivery": "neutral-html5",
+  "artifact": "build-ozogames-review.zip",
+  "releaseGate": "OzoGames email submission, publisher agreement, monetization review and publication remain manual."
+}

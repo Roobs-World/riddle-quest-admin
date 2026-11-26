@@ -15,21 +15,41 @@ const collect = (directory, output = []) => {
   return output;
 };
 
-/** Ensures the retained backend never reads or persists Meta profile identity. */
-export function auditFacebookProfileBoundary({sources}) {
+/** Ensures Meta profile identity can reach the client only through provider-owned overlay calls. */
+export function auditFacebookProfileBoundary({sources, adapterSource}) {
   const failures = sources
     .filter(({source}) => PROFILE_READ_PATTERN.test(source) || PROFILE_FIELD_PATTERN.test(source))
     .map(({name}) => `Meta profile data read/field found outside overlay boundary: ${name}`);
+  for (const api of [
+    "createProfilePictureOverlayViewAsync",
+    "createProfileNameOverlayViewAsync",
+  ]) {
+    if (!adapterSource.includes(api)) failures.push(`Missing provider overlay API: ${api}`);
+  }
+  if (PROFILE_READ_PATTERN.test(adapterSource)) {
+    failures.push("Overlay adapter must not read Meta name/photo values.");
+  }
   return failures;
 }
 
 const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1];
 if (isMain) {
   const root = fileURLToPath(new URL("../../../../", import.meta.url));
-  const paths = collect(`${root}/platforms/web/facebook/server`);
+  const adapterPath = `${root}/platforms/web/facebook/src/FacebookOverlayCapability.ts`;
+  const excluded = new Set([
+    adapterPath,
+    `${root}/platforms/web/facebook/src/fbinstant.ts`,
+    `${root}/platforms/web/facebook/src/__tests__/FacebookOverlayCapability.test.ts`,
+    `${root}/platforms/web/facebook/src/__tests__/facebookBrowser.jest-playwright.test.ts`,
+  ]);
+  const paths = [
+    ...collect(`${root}/platforms/web/facebook/src`),
+    ...collect(`${root}/platforms/web/facebook/server`),
+  ].filter((path) => !excluded.has(path));
   const failures = auditFacebookProfileBoundary({
     sources: paths.map((path) => ({name: path.slice(root.length), source: readFileSync(path, "utf8")})),
+    adapterSource: readFileSync(adapterPath, "utf8"),
   });
   if (failures.length > 0) throw new Error(`Facebook profile-boundary audit failed:\n- ${failures.join("\n- ")}`);
-  console.log("Facebook profile-boundary audit passed: server code never reads or stores Meta names/photos.");
+  console.log("Facebook profile-boundary audit passed: names/photos remain inside provider overlays.");
 }

@@ -2,7 +2,7 @@ import {lazy, Suspense, useState, type ReactNode} from "react";
 import {AnalyticsConsentContext, type AnalyticsConsent} from "./AnalyticsConsentContext";
 
 export type GoogleAnalyticsConsentProps = Readonly<{
-  platform: "jest";
+  platform: "jest" | "facebook";
   measurementId: string | undefined;
   available: boolean;
   isCurrent(): boolean;

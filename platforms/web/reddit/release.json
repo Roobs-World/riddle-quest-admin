@@ -1,0 +1,20 @@
+{
+  "target": "reddit",
+  "title": "Reddit",
+  "boundary": "local-immutable-handoff",
+  "publicCommand": "pnpm release:reddit",
+  "summary": "Validate release contracts and create the commit-bound immutable Reddit candidate handoff.",
+  "externalEffect": "None; Devvit ingestion and promotion remain blocked pending exact-byte proof.",
+  "command": {
+    "executable": "pnpm",
+    "args": [
+      "--filter",
+      "@riddle-quest/reddit-app",
+      "release:candidate"
+    ]
+  },
+  "handoff": "Remote ingestion remains blocked until an exact-byte Devvit adapter or equivalent proof is available.",
+  "runbook": "docs/reddit/reddit-games-operations.md",
+  "displayName": "Reddit",
+  "delivery": "web-target"
+}

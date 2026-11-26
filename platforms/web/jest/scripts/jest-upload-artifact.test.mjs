@@ -491,7 +491,7 @@ test("release credentials honor XDG_CONFIG_HOME without exposing it to child pro
 
 test("dependency fingerprints detect tooling changes but ignore known build caches", async (context) => {
   const directory = await mkdtemp(path.join(tmpdir(), "riddle-quest-release-dependencies-"));
-  const platformPackageDirectories = ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
+  const platformPackageDirectories = ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
     .map((target) => path.join("platforms", "web", target));
   context.after(async () => {
     const {rm} = await import("node:fs/promises");
@@ -607,7 +607,7 @@ test("immutable release sources resolve root and platform dependencies", async (
   });
   const repositoryDirectory = path.join(directory, "repository");
   const immutableSourceDirectory = path.join(directory, "snapshot");
-  const platformDirectories = ["jest", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
+  const platformDirectories = ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]
     .map(target => path.join("platforms", "web", target));
   for (const relativeDirectory of ["", ...platformDirectories]) {
     await mkdir(path.join(repositoryDirectory, relativeDirectory, "node_modules"), {recursive: true});

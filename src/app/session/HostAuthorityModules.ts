@@ -47,14 +47,24 @@ export type HostAuthorityModules = Readonly<{
 export function createHostAuthorityModules(
   services: HostServices,
   capabilities: PlatformCapabilities | undefined,
-  commerceAvailable = false,
+  commerceAvailable = capabilities?.commerce !== undefined,
   economyAvailable = true,
-  raceAvailable = Boolean(capabilities?.matchmaking),
+  raceAvailable = Boolean(capabilities?.matchmaking || capabilities?.tournaments || capabilities?.contextBoard),
 ): HostAuthorityModules {
   /** Provides authenticated behavior. */
   const authenticated = capabilities?.accountUpgrade?.state === "complete";
-  /** Registered Jest sessions alone expose destructive account operations. */
-  const account = authenticated ? services : undefined;
+  /** Target-owned account permissions independent of guest registration. */
+  const permissions = capabilities?.accountManagement;
+  /** Only expose operations approved for this target or registered Jest session. */
+  const account = authenticated
+    ? services
+    : permissions
+      ? {
+          ...(permissions.username ? {updateUsername: services.updateUsername} : {}),
+          ...(permissions.avatar ? {updateAvatar: services.updateAvatar} : {}),
+          ...(permissions.deletion ? {deleteAccount: services.deleteAccount} : {}),
+        }
+      : undefined;
   return {
     identity: services,
     gameplay: services,

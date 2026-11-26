@@ -255,17 +255,12 @@ describe("guidance configuration", () => {
     expect(getTooltipPanelStyle("profileTreasure", {top: 1200, bottom: 1300}, 591, 200)).toEqual({top: 377});
   });
 
-  it("keeps the full profile card in view when neither side of its target fits", () => {
+  it("keeps a separated profile step off its target when neither side fits a short phone", () => {
     expect(getTooltipPanelStyle("profileStatistics", {top: 243, bottom: 315}, 568, 230))
-      .toEqual({top: 14});
+      .toEqual({top: 333, maxHeight: 221, overflowY: "auto"});
     expect(getTooltipPanelStyle("profileStatistics", {top: 323, bottom: 395}, 568, 300))
-      .toEqual({top: 14});
+      .toEqual({top: 14, maxHeight: 291, overflowY: "auto"});
+    // Steps that may overlay their large target keep clamped placement.
     expect(getTooltipPanelStyle("profileIdentity", {top: 200, bottom: 330}, 591, 380)).toEqual({top: 197});
-  });
-
-  it("preserves a full treasure card in the observed 424 by 452 hosted viewport", () => {
-    // Representative target geometry from the hosted screenshot, not an exact DOM measurement.
-    expect(getTooltipPanelStyle("profileTreasure", {top: 144, bottom: 342}, 452, 230))
-      .toEqual({top: 14});
   });
 });

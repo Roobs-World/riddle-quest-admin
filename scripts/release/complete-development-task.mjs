@@ -3,8 +3,7 @@ import {execFile, execFileSync} from 'node:child_process';
 import {readFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {promisify} from 'node:util';
-import {fileURLToPath} from 'node:url';
-const releaseRepository = fileURLToPath(new URL('../..', import.meta.url));
+import {releaseRepository} from './html5-handoff-preparation.mjs';
 import {recordDevelopmentCompletion} from './development-progress.mjs';
 import {developmentSourceDigest} from './development-source-digest.mjs';
 import {executeDevelopmentCheck} from './development-check-output.mjs';
@@ -19,7 +18,7 @@ if (process.argv[2] === '--ci') {
   const requiredChecks = ['workspace-node24', 'functions-node22', 'browser-and-rules'];
   if (requiredChecks.some(id => jobs[id]?.result !== 'success')) throw new Error('CI verification is incomplete');
   const runUrl = `${process.env.GITHUB_SERVER_URL}/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.GITHUB_RUN_ID}`;
-  completion = {taskId: `ci-production-readiness:${revision}`, revision, targets: JSON.parse(process.env.DEVELOPMENT_TARGETS ?? '["jest"]'),
+  completion = {taskId: `ci-production-readiness:${revision}`, revision, targets: JSON.parse(process.env.DEVELOPMENT_TARGETS ?? '["jest","facebook","reddit","youtube","netflix","yahoo","itch"]'),
     work: git(['log', '-1', '--format=%s']), completedAt: new Date().toISOString(), trigger: 'accepted-revision CI', requiredChecks,
     checks: requiredChecks.map(id => ({id, status: 'passed', evidence: `${runUrl} (${id})`})),
     remainingGates: ['Provider submission, review, approval and publication require separate receipts.'],

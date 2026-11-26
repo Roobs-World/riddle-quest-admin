@@ -140,3 +140,30 @@ export async function runPlatformRelease(
   log(`Release handoff ready for ${plan.title}. ${plan.handoff}`);
   return {target, status: "handoff-ready", boundary: plan.boundary};
 }
+
+/** Verifies once, then executes every target-specific release adapter in a deterministic order. */
+export async function runAllPlatformReleases({
+  dryRun = false,
+  commandRunner = runReleaseCommand,
+  environment = process.env,
+  log = console.log,
+} = {}) {
+  if (dryRun) {
+    log("All-target release plan (no build, upload, package, or publish action will be performed).\n");
+    for (const plan of releasePlans) log(`${formatPlatformReleasePlan(clonePlan(plan))}\n`);
+    return releasePlans.map(({target, boundary}) => ({target, status: "planned", boundary}));
+  }
+  log("Running the shared target verification gate before any release adapter.");
+  await commandRunner({executable: "pnpm", args: ["verify:all-targets"], cwd: repositoryDirectory, environment});
+  const results = [];
+  let sourcePrepared = false;
+  for (const {target, delivery} of releasePlans) {
+    if (delivery.startsWith("neutral-") && !sourcePrepared) {
+      await commandRunner({executable: "pnpm", args: ["prepare:html5-handoffs"], cwd: repositoryDirectory, environment});
+      sourcePrepared = true;
+    }
+    const releaseEnvironment = sourcePrepared ? {...environment, HTML5_SOURCE_PREPARED: "1"} : environment;
+    results.push(await runPlatformRelease(target, {commandRunner, environment: releaseEnvironment, log}));
+  }
+  return results;
+}

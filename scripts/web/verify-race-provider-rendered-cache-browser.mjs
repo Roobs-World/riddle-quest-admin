@@ -32,10 +32,10 @@ function postToHost(message){window.commands.push(message);
 }
 const adapter=name=>({record:runId=>{window.recordings.push({name,runId});return new Promise(()=>{});},list:()=>new Promise((resolve,reject)=>window.reads.push({name,resolve,reject}))});
 const first=adapter('first'),second=adapter('second');
-window.finishRead=(index,rank)=>window.reads[index].resolve({tournamentId:'daily',locale:'en',startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,standings:[{rank,adjustedTimeMs:60000,isCurrentPlayer:true}]});
+window.finishRead=(index,rank)=>window.reads[index].resolve({tournamentId:'daily',contextId:'room',locale:'en',startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,standings:[{rank,adjustedTimeMs:60000,isCurrentPlayer:true}]});
 function App(){const [provider,setProvider]=React.useState(first);window.replaceProvider=()=>{window.oldSession=globalThis.testRaceSession;window.frames=[];window.capture=true;setProvider(second);};
  React.useLayoutEffect(()=>{if(window.capture)window.frames.push({rank:document.querySelector('li[aria-current="true"] strong')?.textContent??null,sameSession:window.oldSession===globalThis.testRaceSession});});
- return <RaceTo10Game ownerId="owner-1" locale="en" coins={100} tournaments={provider} postToHost={postToHost} onClose={()=>{}}/>;}
+ return <RaceTo10Game ownerId="owner-1" locale="en" coins={100} tournaments={provider} contextBoard={provider} postToHost={postToHost} onClose={()=>{}}/>;}
 const app=<App/>;createRoot(document.getElementById('root')).render(new URLSearchParams(location.search).get('strict')==='true'?<React.StrictMode>{app}</React.StrictMode>:app);
 `);
 let browser,server;const failures=[];
@@ -51,7 +51,7 @@ try{
  }catch{response.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{})});
- for(const strict of [false,true])for(const width of [1280,390])for(const stage of ['tournaments'])for(const ending of ['cached','pending-success','pending-failure']){
+ for(const strict of [false,true])for(const width of [1280,390])for(const stage of ['tournaments','inbox'])for(const ending of ['cached','pending-success','pending-failure']){
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage(),errors=[];
   page.on('pageerror',error=>errors.push(error.message));
   try{

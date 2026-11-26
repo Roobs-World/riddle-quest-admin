@@ -15,6 +15,7 @@
     "SHARE_CLASSIC_MODE_LABEL": "Modalità classica",
     "SHARE_DAILY_CHALLENGE_LABEL": "Sfida quotidiana",
     "SHARE_MESSAGE_TEMPLATE": "Ho risolto Riddle Quest di oggi ({gameType}) in {attempts} {attemptLabel}!\n\n{emojiGrid}\n\nPuoi battere il mio punteggio?\n\n#Riddle Quest #WordPuzzle #BrainGame",
-    "SHARE_RESULT_TITLE": "Dai un'occhiata al mio risultato Riddle Quest!"
+    "SHARE_RESULT_TITLE": "Dai un'occhiata al mio risultato Riddle Quest!",
+    "INVITE_FRIEND": "Invita un amico"
   }
 }

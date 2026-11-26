@@ -5,7 +5,7 @@ import {installLiveHistoryJourney} from "./liveHistory.jest-playwright.support.t
 import {installLiveRematchJourney} from "./liveRematch.jest-playwright.support.ts";
 
 /** Exercises the shipped platform adapter and live intro instead of the retired recorded hub. */
-export async function installLiveMultiplayerJourney(page: Page, target: "Reddit") {
+export async function installLiveMultiplayerJourney(page: Page, target: "Facebook" | "Reddit") {
   /** Captured authoritative join intents distinguish recovery from a new search. */
   const joins: JoinLiveRace[] = [];
   /** Seat commands verify polling and explicit retirement at the platform boundary. */
@@ -53,7 +53,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Reddit"
   await page.route(target === "Reddit" ? "**/api/game/race.live.retire" : "**/retireLiveRaceJoin", route => {
     /** Actual shipped adapters may select only their original join and verified account precondition. */
     const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
-    expect(input).toEqual({requestId: joins.at(-1)?.requestId, expectedOwnerId: "reddit-account"});
+    expect(input).toEqual({requestId: joins.at(-1)?.requestId, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account"});
     retirements.push(input);
     requestUrls.push(route.request().url()); return reply(route, {status: "retired"});
   });
@@ -90,7 +90,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Reddit"
       const raw = request.postDataJSON();
       /** Only this account's original join may confirm the observed retirement. */
       const input = target === "Reddit" ? raw : raw.data;
-      return input.requestId === expectedRequestId && input.expectedOwnerId === ("reddit-account");
+      return input.requestId === expectedRequestId && input.expectedOwnerId === (target === "Facebook" ? "jest-guest" : "reddit-account");
     });
   };
   return async (locale: string) => {

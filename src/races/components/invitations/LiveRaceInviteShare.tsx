@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {useReferralSharing, type ReferralSharingCapability} from "../../../sharing/components/ReferralSharingCapability";
+import {useReferralSharing} from "../../../sharing/components/ReferralSharingCapability";
 import {tr} from "../../../localization/browser/i18n";
 import {type LiveRaceCapability} from "../../contracts/index";
 import {LiveRaceDirectInvite} from "./LiveRaceDirectInvite";
@@ -8,7 +8,7 @@ import {LiveRaceDirectInvite} from "./LiveRaceDirectInvite";
 type NativeInviteOwner = {
   /** Immutable server invitation selected for this visit. */ challengeId: string;
   /** Authenticated multiplayer provider identity. */ transport?: LiveRaceCapability;
-  /** Exact native dialog callback selected from the current target. */ shareChallenge?: ReferralSharingCapability["shareLiveRace"];
+  /** Exact native dialog callback selected from the current target. */ shareChallenge?: LiveRaceCapability["shareChallenge"];
 };
 
 /** Opens only the active platform's native invitation dialog for a reserved live lobby. */
@@ -21,7 +21,7 @@ export function LiveRaceInviteShare({challengeId, transport, autoOpen = false, s
   /** Optional platform behavior supplied by the authenticated target adapter. */
   const sharing = useReferralSharing();
   /** The target multiplayer adapter can invite friends without referral rewards. */
-  const shareChallenge = sharing?.shareLiveRace;
+  const shareChallenge = transport?.shareChallenge ?? sharing?.shareLiveRace;
   /** Each rendered lobby/provider visit has its own stable feedback identity. */
   const selectedOwner = useMemo<NativeInviteOwner>(() => ({challengeId, transport, shareChallenge}),
     [challengeId, transport, shareChallenge]);

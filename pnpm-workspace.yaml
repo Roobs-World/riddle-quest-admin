@@ -1,6 +1,6 @@
 packages:
-  - "platforms/web/jest"
-  - "platforms/web/reddit"
+  - "platforms/native/*"
+  - "platforms/web/*"
   - "firebase-functions"
   - "notification-manager"
 

@@ -9,6 +9,7 @@ describe("hosted-play session assembly", () => {
 
     expect(session.initialGameMode).toBe("classic");
     expect(session.externalInteractionBlocked).toBe(false);
+    expect(session.raceLocalePolicy).toBe("english-only");
     expect(session.authority.gameplay).toBeDefined();
     expect(session.authority.leaderboard).toBeDefined();
     expect(session.authority.commerce).toBeUndefined();

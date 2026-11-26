@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {initializeAuth, inMemoryPersistence} from "firebase/auth";
+import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
 import {getFunctions} from "firebase/functions";
 import {z} from "zod";
 import {createGameFunctionsClient} from "./gameFunctions";
@@ -41,7 +41,9 @@ export const firebaseApp = initializeApp(firebaseConfig);
 /** Provides auth behavior. */
 // Jest signs each SDK player into Firebase on every launch. Keep that identity
 // inside its frame so another tab cannot replace its authority or saved profile.
-export const auth = initializeAuth(firebaseApp, {persistence: inMemoryPersistence});
+export const auth = firebaseEnvironment.platformTarget === "jest"
+  ? initializeAuth(firebaseApp, {persistence: inMemoryPersistence})
+  : getAuth(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, functionsRegion);
 const getPlayerProfile = encryptedHttpsCallable<Record<string, never>, unknown>(functions, "getPlayerProfile");
@@ -56,6 +58,10 @@ export const firebaseFunctions = functions;
 /** Typed callable surface shared with every Firebase-backed host, bound to this target's regions. */
 export const gameFunctions = createGameFunctionsClient({account: functions, gameplay: gameplayFunctions, race: raceFunctions});
 
+/** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
+export const createYahooStripeCheckout = gameFunctions.createYahooStripeCheckout;
+/** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
+export const confirmYahooStripeCheckout = gameFunctions.confirmYahooStripeCheckout;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
 export const getCurrentDailyChallenge = gameFunctions.getCurrentDailyChallenge;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */

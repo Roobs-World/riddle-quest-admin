@@ -1,0 +1,21 @@
+{
+  "target": "minipay",
+  "title": "MiniPay Mini Apps review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:minipay",
+  "summary": "Create a neutral hosted-web archive for MiniPay listing and commerce review.",
+  "externalEffect": "None; terms review, commerce decision, listing form and approval remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "minipay"
+    ]
+  },
+  "handoff": "Confirm UK organization eligibility and start free-only unless wallet commerce is separately approved.",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-6-2026-09-21.md",
+  "displayName": "MiniPay Mini Apps",
+  "delivery": "neutral-html5",
+  "artifact": "build-minipay-mini-app-review.zip",
+  "releaseGate": "MiniPay terms review, commerce decision, hosted integration, listing submission and approval remain manual."
+}

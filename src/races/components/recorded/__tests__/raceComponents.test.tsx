@@ -10,6 +10,7 @@ import {
   RaceCategoriesPanel,
   RaceChallengePanel,
   RaceInboxPanel,
+  RaceTournamentPanel,
 } from "../../lobby/RaceLobbyPanels";
 import {RaceQuitDialog} from "../../gameplay/RaceQuitDialog";
 import {RaceResultPanel} from "../../gameplay/RaceResultPanel";
@@ -58,7 +59,7 @@ function findElement(
 }
 
 describe("race presentation components", () => {
-  it("supports keyboard wraparound and endpoint navigation", () => {
+  it.each([false, true])("supports keyboard wraparound and endpoint navigation with tournament capability %s", tournaments => {
     /** Player navigation effects are observable independently of rendering. */
     const selected: string[] = [];
     /** Focus adapters represent the mounted accessible buttons. */
@@ -70,7 +71,7 @@ describe("race presentation components", () => {
     try {
       /** Optional tournament capability changes the set of reachable tabs. */
       const rendered = RaceHubTabs({active: "play", onPlay: () => selected.push("play"), onActivity: () => selected.push("activity"),
-});
+        ...(tournaments ? {onTournaments: () => selected.push("tournaments")} : {})});
       /** First accessible tab receives arrow/home/end events. */
       const play = findElement(rendered, props => props.role === "tab")!;
       for (const key of ["ArrowLeft", "ArrowRight", "Home", "End"]) {
@@ -79,15 +80,22 @@ describe("race presentation components", () => {
         play.props.onKeyDown!({key, preventDefault});
         expect(preventDefault).toHaveBeenCalledTimes(1);
       }
-      expect(selected).toEqual(["activity", "activity", "play", "activity"]);
+      expect(selected).toEqual([tournaments ? "tournaments" : "activity", "activity", "play", tournaments ? "tournaments" : "activity"]);
       expect(focus[0]).toHaveBeenCalledTimes(1);
-      expect(focus[1]).toHaveBeenCalledTimes(3);
+      expect(focus[tournaments ? 2 : 1]).toHaveBeenCalledTimes(tournaments ? 2 : 3);
       /** Non-navigation keys retain browser behavior and do not switch tabs. */
       const unchanged = jest.fn();
       play.props.onKeyDown!({key: "Enter", preventDefault: unchanged});
       expect(unchanged).not.toHaveBeenCalled();
       expect(selected).toHaveLength(4);
     } finally {ref.mockRestore();}
+  });
+  it("retains a keyboard entry point when the selected tournament capability disappears", () => {
+    /** A provider update can remove the tab before its parent navigation effect runs. */
+    const html = renderToString(<RaceHubTabs active="tournaments" onPlay={noop} onActivity={noop} />);
+    expect(html.match(/tabindex="0"/g)).toHaveLength(1);
+    expect(html).toMatch(/aria-selected="true"[^>]*>Play</);
+    expect(html).not.toContain("Tournaments");
   });
   it("renders capability-appropriate accessible hub tabs", () => {
     /** Provides jest html behavior. */
@@ -108,6 +116,109 @@ describe("race presentation components", () => {
     expect(redditHtml).not.toContain("Find opponent");
     expect(redditHtml).not.toContain("Play with friends");
 
+    /** Provides reddit match html behavior. */
+    const redditMatchHtml = renderToString(
+      <RaceHubTabs active="play" onPlay={noop} onActivity={noop} onMatchPlayer={noop} />,
+    );
+    expect(redditMatchHtml).toContain("Find opponent");
+    expect(redditMatchHtml).not.toContain("Play with friends");
+
+    /** Provides facebook html behavior. */
+    const facebookHtml = renderToString(
+      <RaceHubTabs
+        active="tournaments"
+        onPlay={noop}
+        onActivity={noop}
+        onTournaments={noop}
+        onChooseContext={noop}
+        onMatchPlayer={noop}
+      />,
+    );
+    expect(facebookHtml).toContain("Tournaments");
+    expect(facebookHtml).toContain("Find opponent");
+    expect(facebookHtml).toContain("Play with friends");
+    /** Only the native social action currently awaiting its provider is announced busy. */
+    const socialPendingHtml = renderToString(
+      <RaceHubTabs
+        active="play"
+        onPlay={noop}
+        onActivity={noop}
+        onChooseContext={noop}
+        onMatchPlayer={noop}
+        socialPending="match"
+      />,
+    );
+    expect(socialPendingHtml.match(/aria-busy="true"/g)).toHaveLength(1);
+  });
+
+  it("renders identity-free, economy-free tournament standings", () => {
+    /** Provides html behavior. */
+    const html = renderToString(
+      <RaceTournamentPanel
+        loading={false}
+        tournament={{
+          tournamentId: "facebook-race10-en-2026-08-19",
+          locale: "en",
+          startsAtMs: 1,
+          endsAtMs: 2,
+          sortOrder: "LOWER_IS_BETTER",
+          rewardsEnabled: false,
+          standings: [{rank: 1, adjustedTimeMs: 45_000, isCurrentPlayer: true}],
+          currentPlayer: {rank: 1, adjustedTimeMs: 45_000, isCurrentPlayer: true},
+        }}
+      />,
+    );
+    expect(html).toContain("Tournaments");
+    expect(html).toContain('data-rewards-enabled="false"');
+    expect(html).toContain('aria-current="true"');
+    expect(html.replaceAll("<!-- -->", "")).toContain("#1");
+    expect(html).toContain('dir="ltr"');
+    expect(html).toContain("0:45.0");
+    expect(html).not.toContain("facebook_");
+    expect(html).not.toContain("Share tournament");
+  });
+
+  it("exposes the native tournament share control only for a current-player score and target capability", () => {
+    /** An identity-free score is required before offering native publication. */
+    const currentPlayer = {rank: 1, adjustedTimeMs: 45000, isCurrentPlayer: true};
+    /** A target without share support continues to render the same standings. */
+    const tournament = {tournamentId: "facebook-race10-en-2026-08-19", locale: "en" as const, startsAtMs: 1, endsAtMs: 2,
+      sortOrder: "LOWER_IS_BETTER" as const, rewardsEnabled: false as const, standings: [currentPlayer], currentPlayer};
+    /** Native-dialog occupancy is visible as a disabled, accessible button. */
+    const html = renderToString(<RaceTournamentPanel loading={false} tournament={tournament} sharing={true} onShare={noop} />);
+    expect(html).toContain("Share tournament");
+    expect(html).toContain('disabled=""');
+    expect(renderToString(<RaceTournamentPanel loading={false} tournament={{...tournament, standings: [], currentPlayer: undefined}} onShare={noop} />))
+      .not.toContain("Share tournament");
+  });
+
+  it("renders an identity-free context board inside Activity", () => {
+    /** Provides html behavior. */
+    const html = renderToString(
+      <RaceInboxPanel
+        items={[]}
+        loading={false}
+        safetyPending={null}
+        contextBoardLoading={false}
+        contextBoard={{
+          locale: "en",
+          startsAtMs: 1,
+          endsAtMs: 2,
+          sortOrder: "LOWER_IS_BETTER",
+          rewardsEnabled: false,
+          standings: [{rank: 2, adjustedTimeMs: 31_000, isCurrentPlayer: true}],
+          currentPlayer: {rank: 2, adjustedTimeMs: 31_000, isCurrentPlayer: true},
+        }}
+        onRematch={noop}
+        onBlock={noop}
+        onReport={noop}
+        onChooseCategory={noop}
+      />,
+    );
+    expect(html).toContain("race-context-board");
+    expect(html).toContain('data-rewards-enabled="false"');
+    expect(html).toContain("0:31.0");
+    expect(html).not.toContain("facebook_");
   });
 
   it("disables category starts while discovery owns the session and restores them afterward", async () => {
@@ -143,7 +254,7 @@ describe("race presentation components", () => {
           {
             itemId: "result-1",
             challengeId: "challenge-1",
-            opponentUserId: "reddit_1111111111111111111111111111111111111111",
+            opponentUserId: "facebook_1111111111111111111111111111111111111111",
             opponentDisplayName: "Nova",
             categoryId: "history",
             result: "win",
@@ -171,7 +282,7 @@ describe("race presentation components", () => {
           {
             itemId: "result-1",
             challengeId: "challenge-1",
-            opponentUserId: "reddit_1111111111111111111111111111111111111111",
+            opponentUserId: "facebook_1111111111111111111111111111111111111111",
             opponentDisplayName: "Nova",
             categoryId: "history",
             result: "win",
@@ -183,7 +294,7 @@ describe("race presentation components", () => {
         loading={false}
         safetyPending={{
           operation: "raceBlock",
-          targetUserId: "reddit_1111111111111111111111111111111111111111",
+          targetUserId: "facebook_1111111111111111111111111111111111111111",
         }}
         onRematch={noop}
         onBlock={noop}
@@ -567,7 +678,7 @@ describe("race presentation components", () => {
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
     /** Shared intro inputs isolate navigation from historical challenge state. */
     const commonProps = {locale: "en" as const, coins: 10, postToHost: noop, onClose: noop, initialCategories: categories};
-    for (const entry of [{}, {openInbox: true}, {challengeId: "retired-challenge"}]) {
+    for (const entry of [{}, {openInbox: true}, {tournamentLocale: "en" as const}, {challengeId: "retired-challenge"}]) {
       /** Retired entry renders the same live multiplayer intro. */
       const html = renderToString(<RaceTo10Game {...commonProps} {...entry} />);
       expect(html).toContain("race-category-grid");
