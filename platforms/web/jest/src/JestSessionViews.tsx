@@ -40,15 +40,3 @@ export function JestStartupProgress({
     </main>
   );
 }
-
-/** Shows a terminal state after authoritative account deletion and local cleanup succeed. */
-export function JestAccountDeleted() {
-  return (
-    <main className="route-missing">
-      <div role="status">
-        <h1>{tr("Profile.DELETE_ACCOUNT_SUCCESS_TITLE")}</h1>
-        <p>{tr("Profile.DELETE_ACCOUNT_SUCCESS_MESSAGE")}</p>
-      </div>
-    </main>
-  );
-}

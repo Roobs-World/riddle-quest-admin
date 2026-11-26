@@ -41,6 +41,10 @@ export type AndroidAppProps = Readonly<{
   journal?: AndroidPendingPlayStorage;
   /** Google Play Billing, or `null` when the device has none. */
   billing?: PlayBillingPort | null;
+  /** Recreates native controllers after their account's device state has been removed. */
+  onAccountDeleted?: () => void;
+  /** A fresh session after deletion must not replay the previous launch's invitation. */
+  recoverLaunchEntries?: boolean;
 }>;
 /** Screens reachable while the Global Game Account is confirmed. */
 type HostedRoute =
@@ -68,7 +72,7 @@ type HostedRoute =
  * Global Game Account on launch and plays server-issued riddles. The
  * self-contained game remains available as the offline surface.
  */
-export function AndroidApp({sdk, contentSource, client, services, onLocaleResolved, journal, billing = null}: AndroidAppProps) {
+export function AndroidApp({sdk, contentSource, client, services, onLocaleResolved, journal, billing = null, onAccountDeleted, recoverLaunchEntries = true}: AndroidAppProps) {
   /** Device locale, once the host port has reported it. */
   const [locale, setLocale] = useState<YouTubeLocale | null>(null);
   /** Which surface the player is on. */
@@ -88,6 +92,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
   const [incomingRoute, setIncomingRoute] = useState<HostedRoute | null>(null);
   /** Native reads are optional and never hold up authentication or the hosted home. */
   const {pending, acknowledge} = useAndroidEntries({
+    recoverLaunchEntries,
     ignoreEntry: entry => {
       /** Current native route checked before a duplicate invitation can replace queued work. */
       const active = routeRef.current;
@@ -206,6 +211,7 @@ export function AndroidApp({sdk, contentSource, client, services, onLocaleResolv
         accountUid={account.state.account.uid}
         onBack={() => setRoute("home")}
         onDeleted={() => {
+          if (onAccountDeleted) {onAccountDeleted(); return;}
           // The shared services signed the deleted account out; provision a fresh anonymous one.
           setRoute("home");
           account.connect();

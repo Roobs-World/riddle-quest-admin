@@ -57,8 +57,6 @@ const mockBatchCommit = jest.fn();
 const mockDeleteFiles = jest.fn();
 /** Firebase Authentication deletion mock. */
 const mockDeleteUser = jest.fn();
-/** Disabled Auth sentinel retained for a deleted deterministic Jest UID. */
-const mockPreserveDeletedJestAuthUser = jest.fn();
 /** Provider-aware Facebook generation deletion mock. */
 const mockDeleteFacebookAccountGeneration = jest.fn();
 /** Number of query pages requested for each owned collection. */
@@ -156,7 +154,12 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 jest.mock("firebase-functions/v2", () => ({logger: {error: mockLoggerError}}));
 jest.mock("../shared/callableSecurity", () => ({browserCallableSecurityOptions: {enforceAppCheck: true}}));
-jest.mock("../../../platforms/web/jest/server/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
+jest.mock("../../../platforms/web/jest/server/jestAccountLifecycle", () => ({
+  deleteJestAccountGeneration: async (playerId: string, uid: string) => {
+    await jest.requireActual("../profile/accountDeletion/deleteAccountData").deleteAccountForUser(uid, playerId);
+    return uid;
+  },
+}));
 jest.mock("../../../platforms/web/facebook/server/facebookAccountDeletion", () => ({
   deleteFacebookAccountGeneration: mockDeleteFacebookAccountGeneration,
 }));
@@ -373,7 +376,6 @@ describe("deleteAccount", () => {
     mockJestDeletionSet.mockResolvedValue(undefined);
     mockDeleteFiles.mockResolvedValue([]);
     mockDeleteUser.mockResolvedValue(undefined);
-    mockPreserveDeletedJestAuthUser.mockResolvedValue(undefined);
     mockDeleteFacebookAccountGeneration.mockResolvedValue(2);
     mockReservationOwner = "user-1";
   });
@@ -401,7 +403,6 @@ describe("deleteAccount", () => {
       {merge: true},
     );
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
-    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
     expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
   });
 
@@ -548,8 +549,7 @@ describe("deleteAccount", () => {
     expect(mockDeleteFiles).toHaveBeenCalledWith({prefix: "exports/user-1/"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "leaderboard/noncanonical-subject-copy"});
     expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
-    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
-    expect(mockJestDeletionSet).toHaveBeenCalledTimes(1);
+    expect(mockJestDeletionSet).toHaveBeenCalledTimes(2);
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
     expect(mockDeleteUser).not.toHaveBeenCalledWith("attacker-selected-user");
   });
@@ -595,6 +595,28 @@ describe("deleteAccount", () => {
       provider: "android", replayProtection: true, productId: "coinpack1", coins: 250, grantedAt: "timestamp",
     });
     expect(mockAndroidCommerceDelete).toHaveBeenCalledWith("user-1");
+  });
+
+  it("waits for every cleanup write to settle before reporting a failure", async () => {
+    const failure = new Error("deletion failed");
+    let release: () => void = () => undefined;
+    let entered: () => void = () => undefined;
+    const started = new Promise<void>((resolve) => { entered = resolve; });
+    const pending = new Promise<void>((resolve) => { release = resolve; });
+    mockDirectDocumentDelete.mockRejectedValueOnce(failure);
+    mockAndroidCommerceDelete.mockImplementationOnce(() => { entered(); return pending; });
+    let settled = false;
+    const outcome = deleteAccountForUser("user-1").then(
+      () => { settled = true; return undefined; },
+      error => { settled = true; return error; },
+    );
+    await started;
+    await Promise.resolve();
+    expect(settled).toBe(false);
+    release();
+    expect(await outcome).toBe(failure);
+    expect(mockDeleteUser).not.toHaveBeenCalled();
+    expect(mockJestDeletionSet).not.toHaveBeenCalledWith({cleanupComplete: true}, {merge: true});
   });
 
   it("removes Jest referral identity while preserving anonymized anti-replay receipts", async () => {
@@ -673,8 +695,8 @@ describe("deleteAccount", () => {
       {path: "jestReferralRewards/reward-as-friend"},
       expect.not.objectContaining({playerId: expect.anything(), referredPlayerId: expect.anything()}),
     );
-    expect(mockDeleteUser).not.toHaveBeenCalledWith(userId);
-    expect(mockPreserveDeletedJestAuthUser).toHaveBeenCalledWith(userId);
+    expect(mockDeleteUser).toHaveBeenCalledWith(userId);
+    expect(mockJestDeletionSet).toHaveBeenCalledWith({cleanupComplete: true}, {merge: true});
     expect(mockJestDeletionSet).toHaveBeenCalledWith(
       {
         schemaVersion: 1,
@@ -707,7 +729,6 @@ describe("deleteAccount", () => {
     ).rejects.toMatchObject({code: "failed-precondition"});
 
     expect(mockJestDeletionSet).not.toHaveBeenCalled();
-    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
     expect(mockDeleteUser).not.toHaveBeenCalled();
   });
 
@@ -720,7 +741,6 @@ describe("deleteAccount", () => {
     ).rejects.toMatchObject({code: "failed-precondition"});
 
     expect(mockJestDeletionSet).not.toHaveBeenCalled();
-    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
     expect(mockDeleteUser).not.toHaveBeenCalled();
   });
 

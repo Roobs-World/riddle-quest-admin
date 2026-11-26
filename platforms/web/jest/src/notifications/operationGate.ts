@@ -1,4 +1,4 @@
-import {getAccountDeletionEpoch, isAccountDeletionCleanupPending} from "../accountDeletionCleanup";
+import {getAccountDeletionEpoch, initializeAccountDeletionEpoch, isAccountDeletionCleanupPending} from "../accountDeletionCleanup";
 
 /** Cross-context lock used to order app-owned player operations and deletion cleanup. */
 export type NotificationCrossContextLock = {
@@ -53,6 +53,7 @@ export function createNotificationOperationGate({
   requireCrossContextLock?: boolean;
 } = {}): NotificationOperationGate {
   /** Provides initial deletion epoch behavior. */
+  if (deletionEpoch === getAccountDeletionEpoch) initializeAccountDeletionEpoch();
   const initialDeletionEpoch = deletionEpoch();
   /** Provides open behavior. */
   let open = !deletionPending();

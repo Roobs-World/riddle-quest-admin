@@ -3,6 +3,7 @@ import type {GoogleAccountChange} from "../auth/androidGoogleIdentity";
 import type {AndroidGoogleIdentity} from "../auth/androidGoogleIdentity";
 import {createFirebaseGoogleIdentity} from "../auth/firebaseGoogleIdentity";
 import {clearGoogleCredentialState} from "../auth/googleCredentials";
+import {createAndroidAccountDeletion} from "./androidAccountDeletion";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {initializeApp, type FirebaseApp} from "firebase/app";
 import {
@@ -49,6 +50,10 @@ export type HostedFirebaseClient = Readonly<{
   signInAnonymously(): Promise<User>;
   /** Signs the device out. */
   signOut(): Promise<void>;
+  /** Removes the account and all device state before a fresh session may start. */
+  deleteAccount?(): Promise<void>;
+  /** Completes interrupted client cleanup before any game controller mounts. */
+  recoverAccountDeletion?(): Promise<boolean>;
   /** Reads the authoritative account document, or `null` when absent. */
   loadUserDocument(userId: string): Promise<Record<string, unknown> | null>;
   /** Creates or confirms the Global Game Account for the signed-in user. */
@@ -128,6 +133,20 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
   };
   /** Public sign-out retains its existing void contract while retiring only the original owner. */
   const signOut = async (): Promise<void> => {await signOutOwned(auth.currentUser?.uid, () => true);};
+  const accountDeletion = createAndroidAccountDeletion({
+    currentUid: () => auth.currentUser?.uid ?? null,
+    deleteRemote: () => gameFunctions.deleteAccount({}),
+    async signOut() {
+      const uid = auth.currentUser?.uid;
+      if (!uid) return;
+      await clearAndroidNotificationAccount(uid);
+      await clearGoogleCredentialState();
+      if (auth.currentUser?.uid !== uid) throw new Error("account-deletion-owner-changed");
+      await firebaseSignOut(auth);
+    },
+    ready: () => auth.authStateReady(),
+    storage,
+  });
 
   return {
     projectId: config.firebase.projectId,
@@ -153,6 +172,8 @@ export function createHostedFirebaseClient(config: HostedConfig, storage = Async
     },
     /** Signs out through the SDK; the next launch provisions a fresh anonymous account. */
     signOut,
+    deleteAccount: accountDeletion.deleteAccount,
+    recoverAccountDeletion: accountDeletion.recover,
     googleIdentity: createFirebaseGoogleIdentity(auth, config.firebase.googleWebClientId, provision, signOutOwned),
     /** Reads the account document the backend maintains. */
     async loadUserDocument(userId) {

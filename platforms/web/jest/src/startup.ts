@@ -2,6 +2,9 @@ import type {JestBackendPort} from "./backend";
 import type {JestPurchaseCoordinator} from "./purchases";
 import type {JestPlatformPort, JestSession, PlatformResult} from "./types";
 import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
+import {clearBrowserPlayerState, safeBrowserStorageGet, safeBrowserStorageSet} from "../../../../src/settings/browser/playerPreferences";
+import {ACCOUNT_DELETION_CLEANUP_PENDING_KEY, ACCOUNT_DELETION_PENDING_PLAYER_KEY,
+  ACCOUNT_DELETION_PENDING_UID_KEY, ACCOUNT_DELETION_EPOCH_KEY} from "./accountDeletionCleanup";
 
 /** Provides phase progress behavior. */
 const phaseProgress = [5, 15, 28, 42, 58, 72, 88] as const;
@@ -106,7 +109,10 @@ export async function startJestSession(
     /** Stores on authenticated. */
     onAuthenticated?: () => boolean | void | Promise<boolean | void>;
     /** Stores on identity deleted. */
-    onIdentityDeleted?: (playerSigned: string) => void | Promise<void>;
+    onIdentityDeleted?: (playerSigned: string, deletedUid?: string) => void | Promise<void>;
+    freshStart?: boolean;
+    deletedUid?: string;
+    isCurrent?: () => boolean;
     /** Stores deletion recovery. */
     deletionRecovery?: boolean | (() => boolean);
     /** Stores recover account deletion. */
@@ -154,7 +160,7 @@ export async function startJestSession(
     const player = platform.getPlayer();
     // Async wrappers keep every independent read observed if an adapter throws synchronously.
     /** Reads identity, local launch state and the recovery queue without a serial SDK round trip. */
-    const [signed, {entryIntent, preferences, playerData}, initialIncompletePurchases] = await Promise.all([
+    const [signed, storedState] = await Promise.all([
       (async () => platform.getPlayerSigned())(),
       (async () => {
         /** Stores the parsed launch intent. */
@@ -165,23 +171,8 @@ export async function startJestSession(
         const playerData = await platform.readPlayerData();
         return {entryIntent, preferences, playerData};
       })(),
-      (async () => platform.getIncompletePurchases())(),
     ]);
-    if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
-    // A non-empty signed recovery envelope lets the backend verify ownership,
-    // grant idempotently, and enforce the canonical account-deletion guard.
-    // Complete pending work before optional startup work so a later identity or
-    // profile failure cannot strand a purchase this launch already discovered.
-    /** Provides urgent recovery behavior. */
-    const urgentRecovery =
-      initialIncompletePurchases.value.purchases.length > 0 || initialIncompletePurchases.value.hasMore;
-    /** Provides reconcile behavior. */
-    const reconcile = () => purchases.reconcile(player.playerId, initialIncompletePurchases.value);
-    if (urgentRecovery) {
-      /** Provides recovered behavior. */
-      const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
-      if (recovered.status !== "success") return recovered;
-    }
+    let {entryIntent, preferences, playerData} = storedState;
     /** Optional social lookup overlaps the authoritative identity exchange below. */
     const profilePromise: Promise<JestSession["profile"]> = player.registered
       ? (async () => {
@@ -203,6 +194,7 @@ export async function startJestSession(
       typeof options.deletionRecovery === "function" ? options.deletionRecovery() : Boolean(options.deletionRecovery);
     /** Provides identity tombstoned behavior. */
     let identityTombstoned = false;
+    let deletedUid: string | undefined;
     /** Provides firebase uid behavior. */
     let firebaseUid: string | undefined;
     /** Provides authenticate identity behavior. */
@@ -213,12 +205,37 @@ export async function startJestSession(
         return true;
       }
       /** Provides identity behavior. */
-      const identity = await backend.exchangeIdentity(signed.playerSigned);
+      const identity = await backend.exchangeIdentity(signed.playerSigned, options.freshStart, options.deletedUid);
       if (identity.status === "account-deleted") {
         identityTombstoned = true;
+        deletedUid = identity.deletedUid;
         return true;
       }
+      if (options.isCurrent && !options.isCurrent()) return true;
       firebaseUid = identity.uid;
+      const browserAccountKey = "riddleQuest:jestFirebaseUid";
+      const browserUid = safeBrowserStorageGet("local", browserAccountKey);
+      if (identity.freshAccount || (browserUid !== null && browserUid !== identity.uid) ||
+          ((identity.accountGeneration ?? 1) > 1 && browserUid !== identity.uid)) {
+        clearBrowserPlayerState([ACCOUNT_DELETION_EPOCH_KEY, ACCOUNT_DELETION_CLEANUP_PENDING_KEY,
+          ACCOUNT_DELETION_PENDING_PLAYER_KEY, ACCOUNT_DELETION_PENDING_UID_KEY]);
+      }
+      safeBrowserStorageSet("local", browserAccountKey, identity.uid);
+      const replacedAccount = identity.freshAccount ||
+        (preferences.firebaseAccountUid !== undefined && preferences.firebaseAccountUid !== identity.uid) ||
+        ((identity.accountGeneration ?? 1) > 1 && preferences.firebaseAccountUid !== identity.uid);
+      if (replacedAccount) {
+        await platform.clearPlayerState();
+        preferences = {};
+        playerData = null;
+        entryIntent = {};
+      }
+      if (preferences.firebaseAccountUid !== identity.uid) {
+        await platform.writePreferences({firebaseAccountUid: identity.uid});
+        preferences = {...preferences, firebaseAccountUid: identity.uid};
+      }
+      if (options.freshStart) entryIntent = {};
+      if (options.isCurrent && !options.isCurrent()) return true;
       await authenticateFirebase(identity.customToken);
       return Boolean(await options.onAuthenticated?.());
     };
@@ -228,16 +245,18 @@ export async function startJestSession(
       options.withIdentityOperation ? options.withIdentityOperation(authenticateIdentity) : authenticateIdentity(),
     ]);
     if (identityDeleted) {
-      if (identityTombstoned) await options.onIdentityDeleted?.(signed.playerSigned);
+      if (identityTombstoned) await options.onIdentityDeleted?.(signed.playerSigned, deletedUid);
       return {status: "account-deleted"};
     }
     reportJestLoadingProgress(platform, phaseProgress[4]);
 
-    if (!urgentRecovery) {
-      /** Provides recovered behavior. */
-      const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
-      if (recovered.status !== "success") return recovered;
-    }
+    const reconcile = async () => {
+      const incomplete = await platform.getIncompletePurchases();
+      if (incomplete.status !== "success") return incomplete;
+      return purchases.reconcile(player.playerId, incomplete.value);
+    };
+    const recovered = options.withAccountOperation ? await options.withAccountOperation(reconcile) : await reconcile();
+    if (recovered.status !== "success") return recovered;
 
     reportJestLoadingProgress(platform, phaseProgress[5]);
     if (!firebaseUid) throw new Error("jest-firebase-uid-missing");

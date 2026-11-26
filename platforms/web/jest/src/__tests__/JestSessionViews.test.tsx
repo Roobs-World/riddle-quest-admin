@@ -1,23 +1,10 @@
 import {describe, expect, it} from "@jest/globals";
 import {renderToString} from "react-dom/server";
-import {JestAccountDeleted} from "../JestSessionViews";
 import {JestRegistrationAlert} from "../JestRegistrationAlert";
 import type {JestSession} from "../types";
 
 /** Ignores button callbacks in static markup assertions. */
 const noop = () => undefined;
-
-describe("JestAccountDeleted", () => {
-  it("renders a localized terminal state without offering a reload loop", () => {
-    /** Provides html behavior. */
-    const html = renderToString(<JestAccountDeleted />);
-
-    expect(html).toContain('role="status"');
-    expect(html).toContain("Account deleted");
-    expect(html).toContain("Your account has been deleted.");
-    expect(html).not.toContain("<button");
-  });
-});
 
 describe("JestRegistrationAlert", () => {
   it("offers one combined Register / Login choice beside Play as guest", () => {

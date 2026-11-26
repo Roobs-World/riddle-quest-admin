@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {createAndroidPlayerStorage} from "./hosted/androidPlayerStorage";
 import {type YouTubeSdkPort} from "../../../../src/gameplay/local/types";
 import {AppState, I18nManager, type AppStateStatus, type NativeEventSubscription} from "react-native";
 /** Storage key holding the single local save document. */
@@ -48,7 +48,7 @@ export function resolveDeviceLanguageTag(): string {
  */
 export function createAndroidSdkPort(options: AndroidSdkPortOptions = {}): YouTubeSdkPort {
   /** Save persistence. */
-  const store = options.store ?? AsyncStorage;
+  const store = options.store ?? createAndroidPlayerStorage();
   /** Foreground lifecycle. */
   const lifecycle: AndroidLifecycle = options.lifecycle ?? AppState;
   /** Language resolved once per port. */

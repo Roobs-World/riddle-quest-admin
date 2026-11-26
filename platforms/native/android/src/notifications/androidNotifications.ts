@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {createAndroidPlayerStorage} from "../hosted/androidPlayerStorage";
 import {AppState, DeviceEventEmitter, NativeModules, PermissionsAndroid, Platform} from "react-native";
 import {useEffect, useMemo, useRef} from "react";
 import {
@@ -129,7 +129,7 @@ export function useAndroidNotifications(uid: string | null, locale: string, back
     /** Native notification capability, separate from game economy authority. */
     const device = createAndroidNotificationDevice();
     return uid && backend && device && hostedConfig.firebase.androidAppId
-      ? createAndroidNotificationController({uid, locale, backend, device, storage: AsyncStorage})
+      ? createAndroidNotificationController({uid, locale, backend, device, storage: createAndroidPlayerStorage()})
       : null;
   }, [uid, locale, backend]);
   /** Last authenticated native owner; StrictMode cleanup alone never clears its consent. */

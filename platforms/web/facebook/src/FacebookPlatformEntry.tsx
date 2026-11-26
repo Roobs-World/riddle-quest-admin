@@ -26,6 +26,7 @@ import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletio
 import {
   applyPlayerPreferences,
   clearBrowserPlayerState,
+  installBrowserPlayerStateMutationGuard,
   subscribeToPlayerPreferenceChanges,
 } from "../../../../src/settings/browser/playerPreferences";
 import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFacebookPause";
@@ -123,13 +124,14 @@ export function FacebookPlatformEntry() {
   /** Provides presence ref behavior. */
   const presenceRef = useRef<import("../../../../src/presence/PlatformPresenceSession").PlatformPresenceSession | null>(null);
   /** Provides deletion gate ref behavior. */
-  const deletionGateRef = useRef(new LocalAccountDeletionGate());
+  const [deletionGate] = useState(() => new LocalAccountDeletionGate());
   const analyticsLifetimeRef = useRef(new AbortController());
-  const isAnalyticsSessionCurrent = useCallback(() => deletionGateRef.current.isOpen(), []);
+  useEffect(() => installBrowserPlayerStateMutationGuard(() => deletionGate.isOpen()), []);
+  const isAnalyticsSessionCurrent = useCallback(() => deletionGate.isOpen(), []);
   /** Recovery follows the initialized owner and rechecks the Facebook deletion epoch. */
   const saveRecovery = usePlayerProjectionRecovery(startup.status === "ready" ? playerPersistenceRef.current : null, {
     lifecycle: startup.status === "ready" ? startup.session.capabilities.lifecycle : undefined,
-    canRecover: () => deletionGateRef.current.isOpen(),
+    canRecover: () => deletionGate.isOpen(),
   });
 
   useEffect(() => {
@@ -223,12 +225,12 @@ export function FacebookPlatformEntry() {
             const commerce = new FacebookCommerceSession({
               sdk,
               payments: sdk.payments,
-              isActive: () => active && deletionGateRef.current.isOpen(),
-              runBackground: operation => deletionGateRef.current.run(operation),
+              isActive: () => active && deletionGate.isOpen(),
+              runBackground: operation => deletionGate.run(operation),
               grant: async input => (await grantFacebookPurchase(input)).data,
               readConfiguration: async () => (await getFacebookClientConfiguration()).data,
               onProducts: products => {
-                if (active && deletionGateRef.current.isOpen()) {
+                if (active && deletionGate.isOpen()) {
                   setCommercePresentation({products, purchase: commerce.requestPurchase});
                 }
               },
@@ -243,7 +245,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && clientConfiguration.notificationsEnabled) {
             try {
               const {createFacebookCampaignNotifications} = await import("./FacebookCampaignNotifications");
-              const notifications = await createFacebookCampaignNotifications(userId, deletionGateRef.current, () => active);
+              const notifications = await createFacebookCampaignNotifications(userId, deletionGate, () => active);
               notificationProvider = createNotificationProvider({platform: "facebook", hosted: () => notifications}) ?? undefined;
               sessionNotifications = notificationProvider;
             } catch (error) {
@@ -263,7 +265,7 @@ export function FacebookPlatformEntry() {
           ) {
             ads = createFacebookAdsCapability({
               sdk,
-              isActive: () => active && deletionGateRef.current.isOpen(),
+              isActive: () => active && deletionGate.isOpen(),
               placementId: clientConfiguration.interstitialsEnabled
                 ? import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || ""
                 : "",
@@ -272,14 +274,14 @@ export function FacebookPlatformEntry() {
               adFree: () => removeInterstitialAds !== false,
             });
             attemptRecovery = createFacebookRewardedContinue({ads,
-              isActive: () => active && deletionGateRef.current.isOpen(),
-              claim: input => deletionGateRef.current.run(async () => (await grantFacebookRewardedContinue(input)).data),
+              isActive: () => active && deletionGate.isOpen(),
+              claim: input => deletionGate.run(async () => (await grantFacebookRewardedContinue(input)).data),
             });
           }
           if (ageCategory === "13_plus" && clientConfiguration.tournamentsEnabled) {
             /** Native standings remain an optional presentation of the official server board. */
             const presentation = createFacebookTournamentPresentation({sdk, enabled: true, ageCategory,
-              isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+              isActive: () => active && deletionGate.isOpen(), getLocale: getCurrentLocale,
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
@@ -314,7 +316,7 @@ export function FacebookPlatformEntry() {
         /** Outbound referrals use Meta's native dialog and the canonical Facebook token issuer. */
         const referralSharing = createFacebookReferralSharing({
           sdk, enabled: referralsEnabled, ageCategory,
-          isActive: () => active && deletionGateRef.current.isOpen(),
+          isActive: () => active && deletionGate.isOpen(),
           reportFailure: (error) => captureBrowserException(error, {component: "facebook_referral", operation: "native_share"}),
         });
         /** Untrusted entry data can select a destination but cannot supply race results. */
@@ -335,14 +337,14 @@ export function FacebookPlatformEntry() {
         const preferences = {...restoredPreferences, ...applyPlayerPreferences(restoredPreferences)};
         preferencesRef.current = preferences;
         unsubscribePreferences = subscribeToPlayerPreferenceChanges((change) => {
-          if (!deletionGateRef.current.isOpen()) return;
+          if (!deletionGate.isOpen()) return;
           void playerPersistenceRef.current?.updatePreferences(change)
             .then(next => {
               if (!next) return;
               preferencesRef.current = next;
             })
             .catch((error) => {
-              if (deletionGateRef.current.isOpen()) {
+              if (deletionGate.isOpen()) {
                 captureBrowserException(error, {component: "facebook_preferences", operation: "persist"});
               }
             });
@@ -353,7 +355,7 @@ export function FacebookPlatformEntry() {
             ? new FacebookContextCoordinator(session.capabilities.nativeSocial, getCurrentLocale)
             : undefined;
         if (contextCoordinator) {
-          unsubscribeContext = contextCoordinator.startObserving(() => active && deletionGateRef.current.isOpen());
+          unsubscribeContext = contextCoordinator.startObserving(() => active && deletionGate.isOpen());
           /** Provides context result behavior. */
           const contextResult = await contextCoordinator.synchronizeCurrent();
           if (contextResult.status === "retryable-failure") {
@@ -379,7 +381,7 @@ export function FacebookPlatformEntry() {
           baseCapabilities.matchmaking = createFacebookContextMatchmaking(baseCapabilities.matchmaking, contextCoordinator, getCurrentLocale);
         /** Native friend invitations remain independent of referral reward configuration. */
         const shareChallenge = createFacebookLiveRaceSharing({sdk, enabled: matchmakingEnabled, ageCategory,
-          isActive: () => active && deletionGateRef.current.isOpen(),
+          isActive: () => active && deletionGate.isOpen(),
           reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "native_invite"})});
         if (baseCapabilities.matchmaking?.live && shareChallenge) {
           baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
@@ -390,7 +392,7 @@ export function FacebookPlatformEntry() {
           const chooseChallenge = createFacebookContextChallenges({sdk, coordinator: contextCoordinator,
             live: baseCapabilities.matchmaking.live, join: originalLiveJoin,
             template: import.meta.env.VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE, enabled: matchmakingEnabled, ageCategory,
-            isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+            isActive: () => active && deletionGate.isOpen(), getLocale: getCurrentLocale,
             reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "context_invite"})});
           if (chooseChallenge) baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
             live: {...baseCapabilities.matchmaking.live, chooseChallenge}};
@@ -465,7 +467,7 @@ export function FacebookPlatformEntry() {
           session.storage,
           playerData,
           preferencesRef.current,
-          deletionGateRef.current,
+          deletionGate,
         );
         playerPersistenceRef.current = playerPersistence;
         unsubscribePause = session.capabilities.lifecycle?.onPause(() =>
@@ -481,7 +483,7 @@ export function FacebookPlatformEntry() {
         );
         if (active) {
           if (ageCategory === "13_plus" && configurationLoaded) {
-            stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
+            stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGate.isOpen());
           }
           setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
@@ -508,12 +510,12 @@ export function FacebookPlatformEntry() {
   /** Provides write player data behavior. */
   const writePlayerData = useCallback(
     async (update: PlayerDataUpdate) => {
-      if (startup.status !== "ready" || !deletionGateRef.current.isOpen()) return;
+      if (startup.status !== "ready" || !deletionGate.isOpen()) return;
       /** Accepts checkpoints synchronously; target ownership is checked when the merged batch executes. */
       try {
         await playerPersistenceRef.current?.update(update);
       } catch (error) {
-        if (deletionGateRef.current.isOpen()) captureBrowserException(error, {component: "facebook_progress", operation: "persist"});
+        if (deletionGate.isOpen()) captureBrowserException(error, {component: "facebook_progress", operation: "persist"});
       }
     },
     [startup],
@@ -521,7 +523,7 @@ export function FacebookPlatformEntry() {
 
   /** Provides toggle presence behavior. */
   const togglePresence = useCallback(() => {
-    if (startup.status !== "ready" || !presenceRef.current || !deletionGateRef.current.isOpen()) return;
+    if (startup.status !== "ready" || !presenceRef.current || !deletionGate.isOpen()) return;
     /** Provides next behavior. */
     const next = !presenceEnabled;
     trackEvent("presence_preference_requested", {enabled: next});
@@ -529,7 +531,7 @@ export function FacebookPlatformEntry() {
       .then(async preferences => {
         if (!preferences) return;
         preferencesRef.current = preferences;
-        await deletionGateRef.current.run(async () => {
+        await deletionGate.run(async () => {
           /** Provides presence behavior. */
           const presence = presenceRef.current;
           await reconcilePresenceOptIn({
@@ -552,7 +554,7 @@ export function FacebookPlatformEntry() {
         });
       })
       .catch((error) => {
-        if (deletionGateRef.current.isOpen()) {
+        if (deletionGate.isOpen()) {
           trackEvent("presence_preference_failed", {enabled: next});
           captureBrowserException(error, {component: "facebook_presence", operation: "toggle"});
         }
@@ -563,7 +565,7 @@ export function FacebookPlatformEntry() {
   const requestAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
     analyticsLifetimeRef.current.abort();
-    deletionGateRef.current.close();
+    deletionGate.close();
     await startup.notificationProvider?.setEnabled(false);
     startup.notificationProvider?.retire();
     await presenceRef.current?.stop();
@@ -580,6 +582,7 @@ export function FacebookPlatformEntry() {
     preferencesRef.current = {};
     setPresenceEnabled(false);
     setPresenceAvailable(false);
+    window.location.reload();
   }, [startup]);
 
   /** Sets presence state. */
@@ -642,7 +645,7 @@ export function FacebookPlatformEntry() {
           referralSharing: startup.referralSharing,
           notificationProvider: startup.notificationProvider,
           onPlayerDataChange: (update) => void writePlayerData(update),
-          accountDeletionServiceGate: deletionGateRef.current,
+          accountDeletionServiceGate: deletionGate,
           presenceEnabled,
           onTogglePresence: presenceAvailable ? togglePresence : undefined,
           raceLocalePolicy: "all",

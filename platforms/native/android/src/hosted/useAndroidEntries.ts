@@ -1,18 +1,20 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {createAndroidPlayerStorage} from "./androidPlayerStorage";
 import {AndroidEntryInbox, parseAndroidInviteEntry, type AndroidInviteEntry} from "../entries/androidEntryInbox";
 import {useEffect, useRef, useState, useSyncExternalStore} from "react";
 import {Linking} from "react-native";
 import {readPlayInstallReferrer} from "./playInstallReferrer";
 
 /** Adapts native URLs and the optional Play receipt to the persistent shared inbox. */
-export function useAndroidEntries({ignoreEntry, onDaily}: {
+export function useAndroidEntries({ignoreEntry, onDaily, recoverLaunchEntries = true}: {
   /** An already displayed race must not replace another queued invitation. */
   ignoreEntry(entry: AndroidInviteEntry): boolean;
   /** Daily navigation has no invitation receipt or acceptance semantics. */
   onDaily(): void;
+  /** Account reset skips one-time native inputs that belong to the previous launch. */
+  recoverLaunchEntries?: boolean;
 }) {
   /** One inbox serializes all storage changes throughout the root lifetime. */
-  const [inbox] = useState(() => new AndroidEntryInbox(AsyncStorage));
+  const [inbox] = useState(() => new AndroidEntryInbox(createAndroidPlayerStorage()));
   /** Current callbacks are read without restarting native initial-URL queries. */
   const callbacks = useRef({ignoreEntry, onDaily});
   callbacks.current = {ignoreEntry, onDaily};
@@ -34,11 +36,11 @@ export function useAndroidEntries({ignoreEntry, onDaily}: {
       else void inbox.receiveDirect(url);
     };
     void inbox.load();
-    void Linking.getInitialURL().then(url => receive(url, 0), () => undefined);
+    if (recoverLaunchEntries) void Linking.getInitialURL().then(url => receive(url, 0), () => undefined);
     /** Foreground URL subscription removed when the native adapter retires. */
     const listener = Linking.addEventListener("url", event => {foregroundRevision++; receive(event.url);});
-    void readPlayInstallReferrer().then(referrer => {if (current) void inbox.receiveInstallReferrer(referrer);}, () => undefined);
+    if (recoverLaunchEntries) void readPlayInstallReferrer().then(referrer => {if (current) void inbox.receiveInstallReferrer(referrer);}, () => undefined);
     return () => {current = false; listener.remove();};
-  }, [inbox]);
+  }, [inbox, recoverLaunchEntries]);
   return {pending, acknowledge: (id: string) => inbox.acknowledge(id)};
 }

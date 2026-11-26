@@ -7,7 +7,7 @@ import {
   createJestReferralVerificationId,
   type JestReferralConversion,
 } from "./jestReferralReceipts";
-import {jestFirebaseUid} from "./jestSecurity";
+import {jestIdentityRef, readJestIdentity, readActiveJestIdentity} from "./jestIdentity";
 import {createReservedJestUser} from "./jestUser";
 
 /** Transaction result for one bounded, tombstone-aware referral grant. */
@@ -24,11 +24,8 @@ export async function grantJestReferralRewards(
   playerId: string,
   uniqueConversions: readonly JestReferralConversion[],
   ungrantedCandidates: readonly JestReferralConversion[],
+  accountUid?: string,
 ): Promise<JestReferralGrantResult> {
-  /** Provides uid behavior. */
-  const uid = jestFirebaseUid(playerId);
-  /** Provides r ref. */
-  const userRef = firestore.collection("users").doc(uid);
   /** Provides verification ref behavior. */
   const verificationRef = firestore
     .collection("jestReferralVerifications")
@@ -39,6 +36,8 @@ export async function grantJestReferralRewards(
   /** Provides result behavior. */
   let result: JestReferralGrantResult = {rewardsGranted: 0, newCoins: 0};
   await firestore.runTransaction(async (transaction) => {
+    const {uid} = await readActiveJestIdentity(firestore, transaction, playerId, accountUid);
+    const userRef = firestore.collection("users").doc(uid);
     /** Provides candidate reward refs behavior. */
     const candidateRewardRefs = ungrantedCandidates.map(rewardRefFor);
     /** Provides [user snapshot, deletion snapshot, reward snapshots] behavior. */
@@ -50,22 +49,22 @@ export async function grantJestReferralRewards(
     assertJestAccountActive(deletionSnapshot);
     /** Provides ungranted behavior. */
     const ungranted = ungrantedCandidates.filter((_conversion, index) => !rewardSnapshots[index].exists);
-    /** Provides referred user refs behavior. */
-    const referredUserRefs = ungranted.map((conversion) =>
-      firestore.collection("users").doc(jestFirebaseUid(conversion.playerId)),
-    );
+    const referredIdentities = await Promise.all(ungranted.map(async (conversion) =>
+      readJestIdentity(await transaction.get(jestIdentityRef(firestore, conversion.playerId)), conversion.playerId),
+    ));
+    const referredUserRefs = referredIdentities.map(({uid: referredUid}) => firestore.collection("users").doc(referredUid));
     /** Provides [referred user snapshots, referred deletion snapshots] behavior. */
     const [referredUserSnapshots, referredDeletionSnapshots] = await Promise.all([
       Promise.all(referredUserRefs.map((referredUserRef) => transaction.get(referredUserRef))),
       Promise.all(
-        ungranted.map((conversion) =>
-          transaction.get(getJestAccountDeletionRef(firestore, jestFirebaseUid(conversion.playerId))),
+        referredIdentities.map((identity) =>
+          transaction.get(getJestAccountDeletionRef(firestore, identity.uid)),
         ),
       ),
     ]);
     /** Provides eligible behavior. */
     const eligible = ungranted.flatMap((conversion, index) =>
-      referredDeletionSnapshots[index].exists
+      referredDeletionSnapshots[index].exists || referredIdentities[index].status !== "active"
         ? []
         : [
             {
@@ -91,7 +90,7 @@ export async function grantJestReferralRewards(
       else transaction.create(userRef, {...user, coins: result.newCoins});
       eligible.forEach(({conversion, referredSnapshot, referredUserRef, rewardRef}) => {
         /** Provides referred uid behavior. */
-        const referredUid = jestFirebaseUid(conversion.playerId);
+        const referredUid = referredUserRef.id;
         /** Provides referred user behavior. */
         const referredUser = referredSnapshot.exists
           ? referredSnapshot.data()!
