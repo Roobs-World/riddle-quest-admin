@@ -10,6 +10,8 @@ Queue and history counts distinguish push-service acceptance, failure, uncertain
 
 The November 26 production release restricts campaign delivery to Android package `com.roobsworld.riddlequest`. Firebase validates the installation and forwards the message to the Supabase sender. The Jest client release enables the account preference on signup and preserves an explicit opt-out. [Native backend verification](evidence/native-notification-backend-2026-11-26.json) · [Jest activation](../../jest/evidence/jest-native-notification-preference-2026-11-26.json)
 
+The subsequent November 26 manager deployment `dpl_G3Yoi1kmsDxEDpdmRTa1YRMqYHyg` released source `255318249996c74a27ae476a1136f5498a75b9f2` from the current checkout's production build. The production alias is Ready, the page and every emitted browser asset match that build, and unsigned management configuration requests return HTTP 401. Live headers include HSTS and the updated HTTPS-only content policy. [Deployment record](evidence/manager-deployment-2026-11-26.json)
+
 ## Local commands
 
 Run from the repository root:

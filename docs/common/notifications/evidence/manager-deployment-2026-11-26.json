@@ -1,0 +1,82 @@
+{
+  "checkedAt": "2026-11-26T04:01:10.497958Z",
+  "sourceCommit": "255318249996c74a27ae476a1136f5498a75b9f2",
+  "vercel": {
+    "project": "riddle-quest-admin",
+    "projectId": "prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz",
+    "deploymentId": "dpl_G3Yoi1kmsDxEDpdmRTa1YRMqYHyg",
+    "url": "https://riddle-quest-admin-lw6ulel1q.vercel.app",
+    "productionAlias": "https://riddle-quest-admin.vercel.app",
+    "target": "production",
+    "state": "READY",
+    "method": "current-checkout-prebuilt"
+  },
+  "verification": [
+    {
+      "path": "/",
+      "httpStatus": 200,
+      "sha256": "eff9e1531f014b4943e1c637501152fda1e689435d648a35205c0a23fc351985",
+      "matchesProductionBuild": true,
+      "headers": {
+        "strict-transport-security": "max-age=31536000; includeSubDomains",
+        "content-security-policy": "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https: blob: data:; connect-src 'self' https://*.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'; block-all-mixed-content; upgrade-insecure-requests",
+        "x-content-type-options": "nosniff",
+        "x-frame-options": "DENY",
+        "cache-control": "no-store"
+      }
+    },
+    {
+      "path": "/assets/App-BfPqgcwb.js",
+      "httpStatus": 200,
+      "sha256": "74cc7025ddc586969114ee362071eee26bbc9b4ac4ecbfa9c246123a09d84b40",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/assets/Icons-CfykwObd.js",
+      "httpStatus": 200,
+      "sha256": "eaf7e9edc4298088874aa745d05d029ed143e49c5d2a598a5c4ef5c5495f118f",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/assets/PushEnrollment-C0RGbpzy.css",
+      "httpStatus": 200,
+      "sha256": "4faeb7117f64235b122b71f319779e71670e1820f6f6f300316dea50d699ad31",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/assets/PushEnrollment-DKs55ny5.js",
+      "httpStatus": 200,
+      "sha256": "512befb34f05af7a6e616125ff91297019472293b07dcd9217f00693e05db2f7",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/assets/index-CA5MvAsb.js",
+      "httpStatus": 200,
+      "sha256": "2e1632bec4be4478decc0ac4a2f6af0c4b78a67c36430df3ad1c87c417c60989",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/assets/index-xHRgJcdf.css",
+      "httpStatus": 200,
+      "sha256": "1c4fc4e0a5a5c2aaea7849b1723d6f106fb78a5c555bacb867050b3ffa518430",
+      "matchesProductionBuild": true
+    },
+    {
+      "path": "/api/management/config",
+      "httpStatus": 401,
+      "authenticated": false
+    }
+  ],
+  "commandsPassed": [
+    "pnpm check:types",
+    "pnpm check:functions-layout",
+    "node scripts/audit-security-config.mjs",
+    "vercel build --prod --yes",
+    "vercel deploy --prebuilt --prod --yes"
+  ],
+  "testsRun": false,
+  "buildWarnings": [
+    "Vercel CLI could not parse pnpm-lock.yaml for package-manager detection; the pinned pnpm frozen-lockfile installation and full production build succeeded."
+  ],
+  "notificationSendRequestsMade": 0
+}
