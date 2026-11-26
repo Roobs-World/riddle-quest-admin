@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-26",
+  "sourceCommit": "294ba56ff8b931d20d48307d1c03707539ec401a",
+  "platform": "jest",
+  "problem": "Profile preferred the separate Jest SDK username even when the authenticated Riddle Quest profile had the current game username.",
+  "change": "Profile and the local multiplayer display prefer the current game username, then the Jest username, then the localized guest fallback. Existing provider avatar and registration controls are retained.",
+  "accountWrites": false,
+  "verification": {
+    "sharedTypeCheck": "passed",
+    "jestProductionBuild": "passed",
+    "jestArtifactAudit": "passed",
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "hostedUsernameDisplayVerified": false
+  },
+  "release": {
+    "versionId": "01a2164a-8489-7497-bb35-bc5af56ba9d9",
+    "version": "1.0.0-dev.20261126051742.294ba56ff8b9.97e1f2f7",
+    "sourceCommit": "294ba56ff8b931d20d48307d1c03707539ec401a",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T05:18:39.436Z",
+    "fileSizeBytes": 4221486,
+    "verificationSource": "Official Jest list_game_versions tool",
+    "reusedConcurrentCanonicalRelease": true,
+    "duplicateUploadPerformed": false
+  }
+}
