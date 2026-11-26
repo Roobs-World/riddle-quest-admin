@@ -5,7 +5,7 @@ import type {FirebasePushRegistration} from "../../../src/notifications/contract
 export const notificationBridgeSecret = defineSecret("NOTIFICATION_MANAGER_BRIDGE_SECRET");
 export const pushDigest = (value: string): string => createHash("sha256").update(value).digest("hex");
 
-function managerOrigin(): string {
+export function managerOrigin(): string {
   const value = process.env.NOTIFICATION_MANAGER_URL ?? "";
   const url = new URL(value);
   if (url.protocol !== "https:" || url.origin !== value || url.username || url.password) throw new Error("notification-manager-unconfigured");

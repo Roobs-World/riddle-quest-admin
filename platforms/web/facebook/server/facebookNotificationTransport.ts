@@ -1,5 +1,6 @@
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {createHash} from "node:crypto";
+import {ManagerDispatch} from "../../../../src/notifications/contracts/managerBridge";
 
 /** Provider request routes documented by the Zero Permissions notification API. */
 export type FacebookNotificationOperation = "send" | "cancel";
@@ -18,6 +19,8 @@ export type FacebookNotificationContent = Readonly<{
   title: string;
   /** Notification body. */
   body: string;
+  /** Optional media attached to Meta surfaces that support it. */
+  media_url?: string;
 }>;
 /** Exact immutable scope available to server authorization and the provider decoder. */
 export type FacebookNotificationAttemptScope = Readonly<{
@@ -180,12 +183,14 @@ export function createFacebookNotificationTransport(options: FacebookNotificatio
     send: async (request: FacebookNotificationSend): Promise<FacebookNotificationAttempt> => {
       if (
         !printable(request.message?.title) || !printable(request.message?.body) ||
+        (request.message.media_url !== undefined && !ManagerDispatch.shape.imageUrl.safeParse(request.message.media_url).success) ||
         (request.payload !== undefined && typeof request.payload !== "string") ||
         (request.scheduleInterval !== undefined &&
           (!Number.isSafeInteger(request.scheduleInterval) || request.scheduleInterval < 300 || request.scheduleInterval > 2_592_000))
       ) return {outcome: "not-sent", reason: "invalid-request"};
       return attempt("send", request.playerId, request.label, {
-        player_id: request.playerId, message: {title: request.message.title, body: request.message.body},
+        player_id: request.playerId, message: {title: request.message.title, body: request.message.body,
+          ...(request.message.media_url === undefined ? {} : {media_url: request.message.media_url})},
         label: request.label,
         ...(request.payload === undefined ? {} : {payload: request.payload}),
         ...(request.scheduleInterval === undefined ? {} : {schedule_interval: request.scheduleInterval}),

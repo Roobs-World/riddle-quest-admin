@@ -4,11 +4,13 @@ import {admin} from "../shared/firebaseAdmin";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
 import {validateCallableRequest} from "../validation/callableValidation";
-import {assertJestAccountActive, getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "../race/access/raceProviderScope";
 import {isFacebookFeatureEnabled} from "../../../platforms/web/facebook/server/facebookFeatureFlags";
+import {writeFacebookConsent} from "../../../platforms/web/facebook/server/notifications/managerRegistration";
 
-const Preference = z.union([z.object({enabled: z.boolean()}).strict(), z.object({initialize: z.literal(true)}).strict()]);
+const Preference = z.union([z.object({enabled: z.boolean()}).strict(), z.object({initialize: z.literal(true)}).strict(),
+  z.object({enabled: z.literal(true), facebookConsent: z.literal("a2u-v1")}).strict()]);
 
 /** Saves the authenticated player's master preference without granting provider permission. */
 export const setNotificationPreference = onCallWithSentry("setNotificationPreference", {
@@ -21,22 +23,21 @@ export const setNotificationPreference = onCallWithSentry("setNotificationPrefer
       (scope === "facebook" && request.auth?.token.provider === "facebook"))) {
     throw new HttpsError("permission-denied", "Registered game account required.");
   }
+  if ("facebookConsent" in input && scope !== "facebook") throw new HttpsError("invalid-argument", "Facebook account required.");
   if (scope === "facebook" && ("initialize" in input || input.enabled) && !isFacebookFeatureEnabled("notifications")) {
     throw new HttpsError("failed-precondition", "Notifications are unavailable.");
   }
-  const enabled = await runWithJestAccountOperationLease(uid, 30, async () => {
-    const db = admin.firestore();
-    return db.runTransaction(async tx => {
-      const userRef = db.doc(`users/${uid}`);
-      const [user, deleted] = await Promise.all([tx.get(userRef), tx.get(getJestAccountDeletionRef(db, uid))]);
-      assertJestAccountActive(deleted);
-      if (!user.exists) throw new HttpsError("not-found", "Account unavailable.");
-      const saved = user.get("notificationsEnabled");
-      if ("initialize" in input && saved !== undefined) return saved === true;
-      const desired = "enabled" in input ? input.enabled : true;
-      if (saved !== desired) tx.update(userRef, {notificationsEnabled: desired});
-      return desired;
-    });
+  const db = admin.firestore();
+  return db.runTransaction(async tx => {
+    const userRef = db.doc(`users/${uid}`);
+    const [user, deleted] = await Promise.all([tx.get(userRef), tx.get(getJestAccountDeletionRef(db, uid))]);
+    assertJestAccountActive(deleted);
+    if (!user.exists) throw new HttpsError("not-found", "Account unavailable.");
+    const saved = user.get("notificationsEnabled");
+    const enabled = "enabled" in input ? input.enabled : saved === undefined || saved === true;
+    const facebookConsent = scope === "facebook" ? await writeFacebookConsent(db, tx, uid, request.auth?.token.accountGeneration,
+      user.data()!, enabled, "facebookConsent" in input) : undefined;
+    if (saved !== enabled) tx.update(userRef, {notificationsEnabled: enabled});
+    return {enabled, ...(facebookConsent !== undefined ? {facebookConsent} : {})};
   });
-  return {enabled};
 });
