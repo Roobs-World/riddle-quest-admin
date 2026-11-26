@@ -14,6 +14,12 @@ Recorded unlocks remain complete when a coin balance or performance statistic su
 
 `achievementRewards.ts` counts each eligible ID once within a reward batch. Hint badges never award coins. Existing transactional receipts and durable unlock records remain responsible for preventing rewards across repeated operations.
 
+## Browser completion presentation
+
+After a win, the victory dialog waits for the matching authoritative completion receipt, then presents the level-up and every earned achievement in order. Next becomes available after the milestone queue finishes, including an empty queue. Hidden or paused games retain their unread milestones. Profile refreshes do not remove unlocks from the matching receipt just because the refreshed profile already contains them.
+
+Auxiliary rewards arriving during victory wait until that presentation closes and survive loading the next riddle. The [November 26 Jest release evidence](../../jest/evidence/jest-completion-milestones-2026-11-26.json) records the production checks and exact active build. Updated reducer and component coverage was not run because tests and browser checks require an explicit request.
+
 ## Validation of the November 24, 2026 changes
 
 - Shared, Android, Functions, Reddit and notification-manager type checks passed.

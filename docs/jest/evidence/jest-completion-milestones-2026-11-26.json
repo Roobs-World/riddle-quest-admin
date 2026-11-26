@@ -1,0 +1,45 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "implementationCommit": "d90a87838",
+  "sourceCommit": "9f9d06ace274543f207a36e5f6d92dc0097e7a7e",
+  "behavior": {
+    "victoryMilestonesWaitForCompletionReceipt": true,
+    "nextWaitsForAllMilestones": true,
+    "emptyMilestoneQueuesComplete": true,
+    "receiptUnlocksSurviveEarlierProfileRefresh": true,
+    "milestoneCardsStackAboveVictory": true,
+    "auxiliaryRewardsWaitUntilVictoryCloses": true,
+    "auxiliaryRewardsSurviveNextRiddleLoad": true
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126052435.9f9d06ace274.693c0285",
+    "versionId": "01a21650-d6d1-7746-9031-031b0da256cb",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a21650-d6d1-7746-9031-031b0da256cb",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2586688,
+    "archiveSha256": "df0764afca2a196bb4b3504aecb68d626b175660a54288a407f01a4e54b032ff",
+    "activationRequested": true,
+    "preUploadRetry": "The initial outer-sandbox invocation was stopped during the package-index snapshot before any build or upload. The successful invocation retained the release command's own Bubblewrap isolation."
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 05:25:41 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T05:25:34.667Z"
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "sharedTypeCheckPassed": true,
+    "cleanMainCheckoutUsed": true,
+    "sourceReviewCompleted": true,
+    "testsAndBrowserHarnessesRun": false,
+    "hostedGameplayAcceptanceRun": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
