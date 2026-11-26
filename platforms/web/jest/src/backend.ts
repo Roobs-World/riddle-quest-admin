@@ -1,19 +1,5 @@
 import {assertSecureBrowserOrigin, resolveSecureHttpUrl} from "../../../../src/platform/browser/secureTransport";
-import {createPayloadRequestId, protectPayload, readProtectedPayload} from "../../../../src/platform/transport/payloadProtection";
-import {z} from "zod";
-
-const identityResponse = z.union([
-  z.object({customToken: z.string().min(1), uid: z.string().min(1)}),
-  z.object({status: z.literal("account-deleted")}),
-]);
-const deletedResponse = z.object({accountDeleted: z.literal(true)});
-const purchaseResponse = z.object({granted: z.boolean(), purchaseToken: z.string(), coinsAwarded: z.number(), newCoins: z.number(),
-  newlyUnlockedAchievementIds: z.array(z.string()).optional()});
-const referralResponse = z.object({verified: z.boolean(), references: z.array(z.string()).optional(), conversionCount: z.number().optional(),
-  rewardsGranted: z.number().optional(), referredRewardsGranted: z.number().optional(), coinsPerPlayer: z.number().optional(), newCoins: z.number().optional()});
-const subscriptionResponse = z.object({verified: z.boolean(), activeSkus: z.array(z.string()), blockedSkus: z.array(z.string()).optional(),
-  premiumCoinsAwarded: z.number().optional(), newCoins: z.number().optional()});
-const deletedErrorResponse = z.object({error: z.literal("account-deleted")});
+import type {z} from "zod";
 
 /** Operations exposed by the authoritative Jest backend to the browser client. */
 export interface JestBackendPort {
@@ -143,7 +129,7 @@ export class JestBackendClient implements JestBackendPort {
   private async post<T>(
     path: string,
     body: unknown,
-    schema: z.ZodType<T>,
+    schemaPromise: Promise<z.ZodType<T>>,
     mapHttpError?: (response: Response, body: unknown) => Promise<
       | {
           /** Stores handled. */
@@ -172,6 +158,10 @@ export class JestBackendClient implements JestBackendPort {
       assertSecureBrowserOrigin(transportOptions);
       const url = new URL(resolveSecureHttpUrl(`${this.baseUrl.replace(/\/$/, "")}/${path}`, transportOptions),
         globalThis.location.origin).href;
+      const [{createPayloadRequestId, protectPayload, readProtectedPayload}, schema] = await Promise.all([
+        import("../../../../src/platform/transport/payloadProtection"),
+        schemaPromise,
+      ]);
       const context = {operation: path, requestId: createPayloadRequestId()};
       const envelope = await protectPayload(body, {...context, direction: "request"});
       /** Serialize before the transport catch so programming failures are never retried. */
@@ -227,8 +217,9 @@ export class JestBackendClient implements JestBackendPort {
           /** Stores status. */
           status: "account-deleted";
         }
-    >("exchangeJestIdentity", {playerSigned}, identityResponse, async (response, errorBody) => {
+    >("exchangeJestIdentity", {playerSigned}, import("./backendResponses").then(module => module.identityResponse), async (response, errorBody) => {
       if (response.status !== 409) return {handled: false};
+      const {deletedErrorResponse} = await import("./backendResponses");
       if (deletedErrorResponse.safeParse(errorBody).success)
         return {handled: true, value: {status: "account-deleted"}};
       return {handled: false};
@@ -243,7 +234,7 @@ export class JestBackendClient implements JestBackendPort {
     return this.post<{
       /** Stores account deleted. */
       accountDeleted: true;
-    }>("retryJestAccountDeletion", {playerSigned}, deletedResponse);
+    }>("retryJestAccountDeletion", {playerSigned}, import("./backendResponses").then(module => module.deletedResponse));
   }
   /** Provides grant purchase behavior. */
   grantPurchase(purchaseSigned: string, playerId: string, purchaseToken: string) {
@@ -258,11 +249,12 @@ export class JestBackendClient implements JestBackendPort {
       newCoins: number;
       /** Stores newly unlocked achievement ids. */
       newlyUnlockedAchievementIds?: string[];
-    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken}, purchaseResponse);
+    }>("grantJestPurchase", {purchaseSigned, playerId, purchaseToken}, import("./backendResponses").then(module => module.purchaseResponse));
   }
   /** Provides verify referrals behavior. */
   verifyReferrals(referralsSigned: string, playerId: string) {
-    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId}, referralResponse);
+    return this.post<JestReferralVerificationResult>("verifyJestReferrals", {referralsSigned, playerId},
+      import("./backendResponses").then(module => module.referralResponse));
   }
   /** Provides sync subscriptions behavior. */
   syncSubscriptions(subscriptionsSigned: string, playerId: string) {
@@ -277,6 +269,6 @@ export class JestBackendClient implements JestBackendPort {
       premiumCoinsAwarded?: number;
       /** Coin balance after this sync. */
       newCoins?: number;
-    }>("syncJestSubscriptions", {subscriptionsSigned, playerId}, subscriptionResponse);
+    }>("syncJestSubscriptions", {subscriptionsSigned, playerId}, import("./backendResponses").then(module => module.subscriptionResponse));
   }
 }
