@@ -30,7 +30,8 @@
   "receiptRetention": {
     "field": "facebookManagerDeliveries.expiresAt",
     "retentionDays": 31,
-    "ttlRequested": true,
+    "ttlState": "ACTIVE",
+    "verifiedAt": "2026-11-26T04:11:13Z",
     "singleFieldIndexes": []
   }
 }
