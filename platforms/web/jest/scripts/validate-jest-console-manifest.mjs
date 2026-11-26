@@ -8,7 +8,7 @@ const defaultManifestPath = path.join(defaultRepositoryDirectory, "docs/jest/jes
 const expectedGameId = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const expectedSlug = "riddle-q";
 const expectedSupportEmail = "grindheadgames@gmail.com";
-const expectedPublisherDisplayName = "Jest";
+const expectedPublisherDisplayName = "RoobsWorld";
 const expectedPrivacyPolicyUrl = "https://roobsworld.com/privacy";
 const expectedConsumableSkus = Array.from(
   {length: 6},
@@ -17,7 +17,7 @@ const expectedConsumableSkus = Array.from(
 const expectedSubscriptionSkus = ["com.roobsworld.riddlequest.premium.monthly"];
 // onboardingSlug routes through a separate Jest game; none is configured for these referrals.
 const expectedOnboardingSlugs = [];
-const expectedKeywords = ["riddles"];
+const expectedKeywords = ["riddles", "word", "multiplayer"];
 const topLevelKeys = [
   "assets",
   "consumableSkus",
@@ -30,10 +30,10 @@ const topLevelKeys = [
   "onboardingSlugs",
   "ownerApprovedValues",
   "publicUrl",
-  "sandboxOnlySubscriptionSkus",
   "schemaVersion",
   "shortDescription",
   "slug",
+  "subscriptionSkus",
   "supportEmail",
   "supportedOrientation",
 ];
@@ -153,7 +153,7 @@ const validateAssetRecord = (asset, label) => {
 
 export const validateJestConsoleManifestRecord = (manifest, {releaseReady = false} = {}) => {
   assertExactKeys(manifest, topLevelKeys, "Jest Developer Console manifest");
-  if (manifest.schemaVersion !== 1) throw new Error("Unsupported Jest Developer Console manifest schema");
+  if (manifest.schemaVersion !== 2) throw new Error("Unsupported Jest Developer Console manifest schema");
   if (manifest.gameId !== expectedGameId) throw new Error(`gameId must be ${expectedGameId}`);
   if (manifest.slug !== expectedSlug) throw new Error(`slug must be ${expectedSlug}`);
   if (manifest.displayName !== "Riddle-Q") throw new Error("displayName must be Riddle-Q");
@@ -173,7 +173,7 @@ export const validateJestConsoleManifestRecord = (manifest, {releaseReady = fals
   }
   if (manifest.loadingScreenMode !== "manual") throw new Error("loadingScreenMode must be manual");
   assertExactList(manifest.keywords, expectedKeywords, "keywords");
-  if (manifest.supportedOrientation !== "both") throw new Error("supportedOrientation must be both");
+  if (manifest.supportedOrientation !== "portrait") throw new Error("supportedOrientation must be portrait");
   if (manifest.desiredVisibility !== "public") throw new Error("desiredVisibility must be public");
   if (manifest.desiredReviewStatus !== "approved") throw new Error("desiredReviewStatus must be approved");
 
@@ -217,9 +217,9 @@ export const validateJestConsoleManifestRecord = (manifest, {releaseReady = fals
   }
   assertExactList(manifest.consumableSkus, expectedConsumableSkus, "consumableSkus");
   assertExactList(
-    manifest.sandboxOnlySubscriptionSkus,
+    manifest.subscriptionSkus,
     expectedSubscriptionSkus,
-    "sandboxOnlySubscriptionSkus",
+    "subscriptionSkus",
   );
   assertExactList(manifest.onboardingSlugs, expectedOnboardingSlugs, "onboardingSlugs");
   return {unresolvedOwnerFields};
@@ -283,7 +283,7 @@ export const validateJestConsoleManifest = async ({
   );
   assertExactList(
     readEnvList(functionsEnvironment, "JEST_SUBSCRIPTION_SKUS"),
-    parsed.sandboxOnlySubscriptionSkus,
+    parsed.subscriptionSkus,
     "firebase-functions JEST_SUBSCRIPTION_SKUS",
   );
   const configuredGameId = readEnvList(functionsEnvironment, "JEST_GAME_ID");

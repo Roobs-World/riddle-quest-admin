@@ -114,11 +114,11 @@ test("known public identity and bounded listing copy cannot drift", async () => 
   );
   assert.throws(
     () => validateJestConsoleManifestRecord({...manifest, keywords: []}),
-    /keywords must be exactly: riddles/,
+    /keywords must be exactly: riddles, word, multiplayer/,
   );
   assert.throws(
     () => validateJestConsoleManifestRecord({...manifest, keywords: ["puzzles"]}),
-    /keywords must be exactly: riddles/,
+    /keywords must be exactly: riddles, word, multiplayer/,
   );
   const insecurePrivacyManifest = structuredClone(manifest);
   insecurePrivacyManifest.ownerApprovedValues.privacyPolicyUrl = "http://example.com/privacy";
@@ -144,7 +144,7 @@ test("known public identity and bounded listing copy cannot drift", async () => 
   changedPublisherManifest.ownerApprovedValues.publisherDisplayName = "Another Publisher";
   assert.throws(
     () => validateJestConsoleManifestRecord(changedPublisherManifest),
-    /publisherDisplayName must be Jest/,
+    /publisherDisplayName must be RoobsWorld/,
   );
   const changedPrivacyManifest = structuredClone(manifest);
   changedPrivacyManifest.ownerApprovedValues.privacyPolicyUrl = "https://example.com/riddle-quest/privacy";

@@ -1,18 +1,18 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
   "slug": "riddle-q",
   "displayName": "Riddle-Q",
   "publicUrl": "https://jest.com/g/riddle-q",
   "supportEmail": "grindheadgames@gmail.com",
-  "shortDescription": "Solve multilingual riddles with Wordle-style color clues in Riddle Quest, an HTML5 word puzzle on Jest.",
-  "keywords": ["riddles"],
+  "shortDescription": "Solve riddles with color clues in Riddle Quest. Challenge yourself and friends in this word game.",
+  "keywords": ["riddles", "word", "multiplayer"],
   "loadingScreenMode": "manual",
-  "supportedOrientation": "both",
+  "supportedOrientation": "portrait",
   "desiredVisibility": "public",
   "desiredReviewStatus": "approved",
   "ownerApprovedValues": {
-    "publisherDisplayName": "Jest",
+    "publisherDisplayName": "RoobsWorld",
     "privacyPolicyUrl": "https://roobsworld.com/privacy"
   },
   "assets": {
@@ -37,7 +37,7 @@
     "com.roobsworld.riddlequest.coinpack5",
     "com.roobsworld.riddlequest.coinpack6"
   ],
-  "sandboxOnlySubscriptionSkus": [
+  "subscriptionSkus": [
     "com.roobsworld.riddlequest.premium.monthly"
   ],
   "onboardingSlugs": []
