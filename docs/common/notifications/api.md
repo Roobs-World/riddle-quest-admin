@@ -12,7 +12,7 @@ Every management route requires the operator's Supabase access token. The API re
 
 | Route | Result or operation |
 | --- | --- |
-| `GET /api/management/config` | `{platforms:[{id,origin}],pushOnly:true}`; native Android has `origin:null` |
+| `GET /api/management/config` | `{platforms:[{id,origin}],pushOnly:true}`; Android and Facebook use `origin:null` |
 | `GET /api/management/campaigns?view=active\|history&limit=100&cursor=<opaque>` | `{campaigns,nextCursor}` |
 | `POST /api/management/campaigns` | Save an idempotent campaign and begin due work |
 | `GET /api/management/campaigns/<id>` | `{campaign}` |
@@ -24,9 +24,11 @@ Title accepts up to 200 characters, body up to 2,000 and HTTPS image URLs up to 
 
 ## Push payload
 
-The management API and campaign queue deliver to eligible native installations. The React Native Android client registers through its existing authenticated game callable. Only that trusted server may call `POST /api/devices/android/registration` with the bridge credential and `{version:1,tokenHash,revision,enabled,locale,expiresAtMs}`. The reserved `android` target cannot be registered through the public browser endpoints.
+The queue selects eligible recipients according to their registered transport. The React Native Android client registers through its existing authenticated game callable. Only that trusted server may call `POST /api/devices/android/registration` with the bridge credential and `{version:1,tokenHash,revision,enabled,locale,expiresAtMs}`. The reserved `android` target cannot be registered through the public browser endpoints.
 
 The manager's Android adapter forwards `{version:1,tokenHash,revision,notificationId,title,body,imageUrl,expiresAtMs}` to the configured authenticated native dispatch function. It returns `{outcome:"accepted"|"failed"|"uncertain"|"skipped"}`. Token resolution and account authority remain outside the management database.
+
+Facebook registration uses `POST /api/devices/facebook/registration` with the same bridge credential, version and revision fields, and `recipientHash` in place of `tokenHash`. The registration and dispatch routes require server credentials. The manager sends campaign content to `dispatchFacebookManagerNotification`. Firebase checks current signed identity, consent, revision, account state and expiry before submitting one immediate A2U message. Meta can choose a web or app surface. An accepted receipt requires Meta’s successful creation acknowledgement and notification ID. A connection failure after sending remains uncertain.
 
 The native receiver displays manager-authored campaign content and opens the launcher activity on tap. A campaign expires six hours after its scheduled send time.
 

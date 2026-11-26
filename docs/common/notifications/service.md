@@ -1,6 +1,6 @@
 # Notification management service
 
-The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager backend calls private Firebase bridges without importing Firebase Admin. Firebase owns the account preference and native device credentials. Supabase stores opaque installation references and the manager sends campaigns only to admitted native Android devices. [Firebase enrollment](firebase-enrollment.md) and [Supabase FCM delivery](supabase-fcm.md).
+The management website lives in the top-level `notification-manager/` workspace. Vercel hosts the React frontend and `/api` Functions. Supabase provides Postgres, Google sign-in and public notification image storage. The manager backend calls private Firebase bridges without importing Firebase Admin. Firebase owns the account preference and native device credentials. Supabase stores opaque recipient references. The manager selects native Android installations and opted-in Facebook players through separate authenticated bridges. [Firebase enrollment](firebase-enrollment.md) and [Supabase FCM delivery](supabase-fcm.md).
 
 Operators write a title and message, upload an image or supply a public HTTPS image URL, select an admitted platform audience and send now or choose a date and time on the calendar. Placeholder preview content never enters a campaign. Images are optional and their display depends on the device.
 
@@ -8,9 +8,11 @@ Calendar times use the operator's displayed browser timezone. The frontend conve
 
 Queue and history counts distinguish push-service acceptance, failure, uncertainty and skips. Acceptance does not prove that a device displayed the message. Cancelling stops unsent work but cannot recall a push a provider already accepted. Active campaigns and history have separate paginated lists with explicit Load more controls. The summary cards count all queued or sending campaigns and all accepted delivery receipts completed during the operator's local day, independently of loaded pages. Local day boundaries preserve daylight-saving changes. Totals refresh after creating or cancelling a campaign and during polling. Saved drafts remain in the browser and do not change delivery totals. The legacy browser registration card counts historical Firebase enrollment. Active native installations are recorded separately in Supabase’s `notification_installations` table.
 
-The November 26 production release restricts campaign delivery to Android package `com.roobsworld.riddlequest`. Firebase validates the installation and forwards the message to the Supabase sender. The Jest client release enables the account preference on signup and preserves an explicit opt-out. [Native backend verification](evidence/native-notification-backend-2026-11-26.json) · [Jest activation](../../jest/evidence/jest-native-notification-preference-2026-11-26.json)
+The November 26 native release restricts FCM delivery to Android package `com.roobsworld.riddlequest`. Firebase validates the installation and forwards the message to the Supabase sender. The Jest client release enables the account preference on signup and preserves an explicit opt-out. [Native backend verification](evidence/native-notification-backend-2026-11-26.json) · [Jest activation](../../jest/evidence/jest-native-notification-preference-2026-11-26.json)
 
 The subsequent November 26 manager deployment `dpl_G3Yoi1kmsDxEDpdmRTa1YRMqYHyg` released source `255318249996c74a27ae476a1136f5498a75b9f2` from the current checkout's production build. The production alias is Ready, the page and every emitted browser asset match that build, and unsigned management configuration requests return HTTP 401. Live headers include HSTS and the updated HTTPS-only content policy. [Deployment record](evidence/manager-deployment-2026-11-26.json)
+
+The subsequent Facebook manager release adds a separate Facebook audience to the same composer, scheduler and receipt history. Players can enroll using the Facebook build with A2U opt-in in Settings. [Facebook manager rollout](evidence/facebook-manager-rollout-2026-11-26.json) · [Facebook client availability](../../facebook/evidence/facebook-campaign-opt-in-build-2026-11-26.json)
 
 ## Local commands
 
@@ -105,8 +107,9 @@ Use `notification-manager/.env.example` for the environment settings:
 | `VITE_NOTIFICATION_SUPABASE_PUBLISHABLE_KEY` | Optional public frontend key override; set with its URL |
 | `SUPABASE_SECRET_KEY` | API-only secret key |
 | `CRON_SECRET` | Dedicated random scheduler credential, 32 to 256 URL-safe characters |
-| `NOTIFICATION_MANAGER_BRIDGE_SECRET` | Matching server-only Android bridge credential, 32 to 256 URL-safe characters |
+| `NOTIFICATION_MANAGER_BRIDGE_SECRET` | Matching server-only Firebase-to-manager bridge credential, 32 to 256 URL-safe characters |
 | `ANDROID_NOTIFICATION_BRIDGE_URL` | HTTPS Firebase `dispatchAndroidNotification` function URL |
+| `FACEBOOK_NOTIFICATION_BRIDGE_URL` | Approved HTTPS Firebase `dispatchFacebookManagerNotification` endpoint in `europe-west1` |
 
 The default Content Security Policy admits Supabase connections under `*.supabase.co`. Update its `connect-src` directive if using an approved custom Supabase domain.
 

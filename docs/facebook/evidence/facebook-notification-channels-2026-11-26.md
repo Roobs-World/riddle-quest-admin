@@ -1,6 +1,6 @@
 # Facebook notification delivery channels, 26 November 2026
 
-The notification manager requires a native installation as its delivery destination. A Facebook game session can save the signed-in player's notification preference. It cannot supply a native installation token or constrain Meta's notification API to a native app.
+The initial channel review evaluated whether Meta could restrict delivery to native installations. A Facebook game session can save the signed-in player's notification preference. It cannot supply a native installation token or constrain Meta's notification API to a native app.
 
 ## Provider contract
 
@@ -14,4 +14,4 @@ A read-only Meta app review lookup for Riddle Quest (`1748953042991569`) returne
 
 Facebook sign-in verifies a game-scoped player ID and derives a Firebase UID from that ID and the account generation. Its profile uses an internal `@players.facebook.invalid` placeholder. Android links Google to the installation's Firebase account. The two sign-in flows supply no shared, verified email or account link for routing a Facebook player's notifications to their Android installation. [Facebook identity](../../../platforms/web/facebook/server/facebookSecurity.ts) · [Facebook profile](../../../platforms/web/facebook/server/facebookUser.ts) · [Android identity](../../../platforms/native/android/src/auth/firebaseGoogleIdentity.ts)
 
-The manager therefore keeps native delivery limited to registered installations. The Facebook game retains its account preference integration. The deployed legacy race-trigger implementation retires queued work without invoking Meta. This check sent no notifications and changed no Meta settings. [Facebook game entry](../../../platforms/web/facebook/src/FacebookPlatformEntry.tsx) · [Legacy trigger](../../../firebase-functions/src/race/notifications/raceLivePushJobs.ts)
+The initial native-only policy excluded Meta delivery. The owner subsequently approved delivery through the channel Meta chooses for each opted-in player. The updated Facebook game collects an explicit A2U opt-in in Settings. Android delivery uses its own installation token. The deployed legacy race-trigger implementation retires queued work without invoking Meta. This check sent no notifications and changed no Meta settings. [Facebook game entry](../../../platforms/web/facebook/src/FacebookPlatformEntry.tsx) · [Legacy trigger](../../../firebase-functions/src/race/notifications/raceLivePushJobs.ts)

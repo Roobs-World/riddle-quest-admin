@@ -4,7 +4,7 @@ Firebase stores the master notification preference on `users/{uid}.notifications
 
 Android registers the native FCM token in `androidPushTokens` with its owning Firebase UID, consent, registration revision and expiry. `androidNotificationDevices` tracks installation ownership and rejects stale device operations. The authenticated Firebase bridge sends only an opaque registration reference to the manager. The Android client renews an authorized route on restore and handles OS permission separately.
 
-The browser enrollment callables are retained for compatibility with old clients. New browser enrollment and sending are closed. Historical browser credentials can be disabled. The manager's campaign audience consists of admitted native installations.
+The browser enrollment callables are retained for compatibility with old clients. New browser enrollment and sending are closed. Historical browser credentials can be disabled. Eligible Facebook players opt in explicitly from Settings. Firebase mirrors the generation-bound choice to the manager using a private hash of the Meta recipient identity. Native Android registrations and Facebook recipients use separate transport records.
 
 An Android native token belongs to one installation and authenticated account. The browser cannot obtain that token from the operating system. Playing in the browser can change the preference for an already associated account. Linking a separate browser identity requires verified ownership. [Identity and device ownership](registration-boundary.md)
 

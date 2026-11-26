@@ -4,11 +4,12 @@ Registered Jest players get an account-level Notifications switch in Settings. N
 
 Firebase stores the account preference on `users/{uid}`. The Android app obtains the device's FCM token and registers it with its authenticated Firebase UID. It can register an existing permission automatically. Android controls the initial permission grant and users can revoke it in system settings.
 
-The notification manager authors campaigns, selects eligible native installations and schedules delivery. Firebase checks account ownership and consent and calls the Supabase Edge Function. FCM delivers to the Android app's native receiver, which displays the system notification. Tapping a campaign opens the app.
+The notification manager authors and schedules campaigns. Operators select Android, Facebook or all configured platforms. Firebase checks account ownership and consent and calls the Supabase Edge Function. FCM delivers to Android’s native receiver. A tap on its system notification opens the game. Facebook’s separate dispatcher sends opted-in player IDs to Meta’s App-to-User API, which chooses the delivery channel.
 
 | Platform | Responsibility |
 | --- | --- |
-| Jest and eligible Facebook accounts | Save the account preference. Browser games do not subscribe to push. |
+| Jest | Save the registered account’s preference. |
+| Facebook | Eligible players opt in from Settings. Meta selects the Facebook or Messenger surface and handles the response. |
 | Native Android | Register the device with Firebase, receive FCM messages, display notifications and handle taps. |
 | iOS and native desktop | No native app or registered transport in this repository. |
 | Other web games | No browser push delivery. |

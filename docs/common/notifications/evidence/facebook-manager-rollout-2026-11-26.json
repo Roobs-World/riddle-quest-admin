@@ -1,0 +1,34 @@
+{
+  "verifiedAt": "2026-11-26T04:06:44Z",
+  "managerSourceCommit": "fb2c4d4b33726104131b0af5c6190666ac4f08fc",
+  "vercel": {
+    "project": "riddle-quest-admin",
+    "productionAlias": "https://riddle-quest-admin.vercel.app",
+    "deploymentId": "dpl_3qHyJKgy1ca9rxwyC8TkA1BZjFHG",
+    "status": "READY",
+    "facebookBridgeConfigured": true,
+    "unsignedFacebookRegistration": 401,
+    "unsignedAndroidRegistration": 401,
+    "unsignedOperatorConfiguration": 401,
+    "browserFcmEnrollment": 410
+  },
+  "supabase": {
+    "project": "vqyjgcqyudqonfhgymoy",
+    "migration": "20261126040334_facebook_managed_campaigns",
+    "serviceRoleCanRegister": true,
+    "authenticatedUsersCanRegisterDirectly": false,
+    "pendingCampaignsBeforeRollout": 0,
+    "activeRecipientsBeforeRollout": 0
+  },
+  "isolatedDatabaseVerification": [
+    "All migrations replayed in local Postgres (PGlite)",
+    "Facebook and Android each select their own transport",
+    "All audience includes both and excludes legacy Facebook browser FCM",
+    "Opt-out prevents delivery even after a claim",
+    "An older opt-in cannot undo a later opt-out"
+  ],
+  "facebookNotificationsSentByVerification": 0,
+  "hostedFacebookDeliveryAndTapObserved": false,
+  "facebookBuildEvidence": "../../../facebook/evidence/facebook-campaign-opt-in-build-2026-11-26.json",
+  "androidDeliveryEvidence": "../../../android/evidence/native-notification-tap-2026-11-26.md"
+}

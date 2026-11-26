@@ -1,6 +1,6 @@
 # Registration and device ownership
 
-Jest writes the initial Notifications preference during the signed transition to a registered account. The existing value wins on repeat sign-ins. Facebook initializes the preference after its age and platform eligibility checks. A browser game only reads and edits the account preference. The signup and Settings flows do not issue pairing codes or request browser notification permission.
+Jest writes the initial Notifications preference during the signed transition to a registered account. The existing value wins on repeat sign-ins. Facebook initializes the preference after its age and platform eligibility checks. Eligible Facebook players opt in to Facebook delivery using Settings. Firebase records the choice and account generation against the signed Facebook identity. Returning players retain their choice. A pre-existing master preference of On requires a separate affirmative Facebook choice before enrollment. The signup and Settings flows do not issue pairing codes or request browser notification permission.
 
 Android identifies the installation using its native FCM registration. Firebase requires an authenticated Android account and a production App Check token for the approved Android app to register an enabled token. The manager holds an opaque device reference. The native receiver validates consent, account, revision and expiry before posting a notification.
 
