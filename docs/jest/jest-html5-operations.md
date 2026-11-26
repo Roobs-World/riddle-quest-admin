@@ -31,6 +31,8 @@ This runs the retained dependency, security, type, backend lint/runtime, product
 
 Facebook source-secret, build and artifact checks remain part of this gate. Its separate ZIP and handoff preparation runs only through the explicit Facebook preflight, so a pending Facebook upload does not prevent verification of the independent Jest archive.
 
+The [November 26 victory chest release](evidence/jest-victory-chest-stability-2026-11-26.json) records version `01a21644-c073-77b5-9177-ec2dadc43fe2`, built from `9637a79c7cde`. Jest confirmed it ready and active at 05:12 UTC. The victory modal displays its chest immediately and reserves the reward text space while confirmation is pending.
+
 The [November 26 transport encryption release](../common/security/evidence/transport-encryption-2026-11-26.json) records version `01a21614-d1d7-7132-9400-7126639803b7`, built from `af20085bce70`. Jest reports it ready, with activation at 04:19:55 UTC. The game encrypts its own API bodies, including application errors and live-race streams, and reads profiles through the authenticated encrypted callable. HTTPS remains required, and the browser owner can still inspect decoded runtime data.
 
 The [November 25 manager registration release](evidence/jest-manager-registration-only-2026-11-25.json) records the completed upload and activation of version `01a211e5-afe7-7735-a223-04c1e3f67488`, built from `89eb0c737`. Jest confirmed processing complete and active status at 08:50 UTC. Games expose registration and consent only, with no device-status polling, popup tracking or enrollment response listener. The manager and device own push delivery and notification responses.
@@ -76,6 +78,8 @@ After creating a new HTTP/callable Function, verify that its Cloud Run service h
 `roles/run.invoker`; a missing binding appears as a Google HTML 403 rather than a structured Firebase error.
 
 ### Username reservation rollout
+
+Profile and the local multiplayer player display the current Riddle Quest username from the authenticated game profile. The Jest SDK username is a fallback only when that game profile is unavailable, so a different or older platform name cannot override a saved game username. Jest still supplies its display avatar and registration controls. This display choice does not rename either account or write profile data.
 
 Username changes fail closed until the versioned `usernameReservationMigrations/v1` document is complete. Deploy the
 Functions that create deterministic reservations first, wait for traffic to move off the previous revision, and then

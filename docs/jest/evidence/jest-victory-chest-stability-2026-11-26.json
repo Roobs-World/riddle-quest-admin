@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "9637a79c7cde93ca770e8c4f303cec1a10b26eec",
+  "behavior": {
+    "chestVisibleFromFirstVictoryRender": true,
+    "rewardTextSpaceReservedWhilePending": true,
+    "coinAnimationRequiresConfirmedPositiveReward": true,
+    "completionAdvancePolicyChanged": false
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126051124.9637a79c7cde.fc45b748",
+    "versionId": "01a21644-c073-77b5-9177-ec2dadc43fe2",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a21644-c073-77b5-9177-ec2dadc43fe2",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2586054,
+    "archiveSha256": "4228d2b106977395b86b61b1729aeb8ce0107337bf0b3b6b28e3f38c96055604",
+    "activationRequested": true
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 05:13:00 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T05:12:20.904Z"
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "cleanMainCheckoutUsed": true,
+    "sourceReviewCompleted": true,
+    "testsAndBrowserHarnessesRun": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
