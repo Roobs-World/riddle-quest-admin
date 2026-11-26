@@ -21,6 +21,8 @@ A local build or artifact audit does not establish hosted gameplay, payment, not
 
 ## Build and artifact verification
 
+The [November 26 achievement popup release](evidence/jest-achievement-popups-2026-11-26.json) uses only confirmed unlock receipts and records shown achievements per account in browser storage. Reloads and replayed receipts skip achievements already presented in that browser. Jest confirmed version `01a2179e-0a01-73bc-b5e2-db8e4a7afdf1` ready and active at 11:29:36 UTC. Production builds and audits passed; tests, browser harnesses and hosted gameplay acceptance were not run.
+
 The [November 26 idle multiplayer inbox release](evidence/jest-idle-multiplayer-inbox-2026-11-26.json) prevents an optional background invitation lookup failure from displaying a race error on the multiplayer menu. Invitation discovery retries automatically and preserves validated invitations during temporary failures. Jest confirmed version `01a21788-be4e-7078-b4e3-921ea25c0ca3` ready and active at 11:06:23 UTC. Production builds and audits passed; tests, browser harnesses and hosted gameplay acceptance were not run.
 
 The [November 26 multiplayer waiting alignment release](evidence/jest-multiplayer-waiting-alignment-2026-11-26.json) centers the opponent waiting message across the gameplay grid, including short landscape layouts. Jest confirmed version `01a2164a-8489-7497-bb35-bc5af56ba9d9` ready and active at 05:18:39 UTC.

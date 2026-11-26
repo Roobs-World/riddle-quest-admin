@@ -1,0 +1,46 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "f8353d7df68d1998cd567b6f6229dc0018768a58",
+  "behavior": {
+    "unlockSource": "Authoritative completion, hint, purchase and race receipts only",
+    "predictedUnlocksPresentedOrCached": false,
+    "legacyJournalPredictionsDiscarded": true,
+    "shownMarkers": "Per achievement, account uid and account generation in browser local storage",
+    "markedWhen": "The front achievement tab becomes visible while the game is foregrounded and unpaused",
+    "queuedAchievementsMarkedEarly": false,
+    "storageFailureFallback": "In-page memory shared across presentation remounts",
+    "crossDeviceOrAtomicCrossTabGuarantee": false
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126112833.f8353d7df68d.26f9ffb5",
+    "versionId": "01a2179e-0a01-73bc-b5e2-db8e4a7afdf1",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a2179e-0a01-73bc-b5e2-db8e4a7afdf1",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2586780,
+    "archiveSha256": "94ffc9fa00853de724c7858ba02f37065de3315a55fa01d7c84d9c6f8a3602f1",
+    "activationRequested": true
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 11:29:36 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T11:29:26.210Z"
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "sharedTypeCheckPassed": true,
+    "sourceReviewCompleted": true,
+    "cleanMainCheckoutUsed": true,
+    "selfContainedArtifactBuildsPassed": ["youtube", "netflix", "yahoo"],
+    "testsAndBrowserHarnessesRun": false,
+    "hostedGameplayAcceptanceRun": false,
+    "backendDeploymentPerformed": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
