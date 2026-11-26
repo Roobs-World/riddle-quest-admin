@@ -72,6 +72,10 @@
 .race-gameplay-viewport > .race-gameplay {
   transform-origin: top center;
 }
+.race-outcome-loading {
+  grid-column: 1 / -1;
+  text-align: center;
+}
 .race-scoreboard {
   grid-area: scoreboard;
   position: sticky;
