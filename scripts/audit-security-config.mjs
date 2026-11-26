@@ -138,7 +138,10 @@ const requirements = [
   [contentSecurityPolicy.includes("https://www.googletagmanager.com") &&
     contentSecurityPolicy.includes("https://*.google-analytics.com"),
     "The production CSP must authorize the consent-controlled Google tag and encrypted Analytics ingestion."],
-  [analyticsConsent.includes('=== "granted"') && analyticsConsent.includes("decision.current") &&
+  [/useState\(\(\) => readBrowserStorage\("local", storageKey\) !== "denied"\)/u.test(analyticsConsent) &&
+    /const next = readBrowserStorage\("local", storageKey\) !== "denied";/u.test(analyticsConsent) &&
+    analyticsConsent.includes('writeBrowserStorage("local", storageKey, next ? "granted" : "denied")') &&
+    analyticsConsent.includes("initialization.current?.abort()") && analyticsConsent.includes("decision.current") &&
     analyticsConsent.includes("!configured || !enabled") && analyticsConsent.includes("stop.current()") &&
     analyticsRuntime.includes("let collectionEnabled = false") &&
     googleAnalytics.includes('analytics_storage: "denied"') && googleAnalytics.includes('ad_storage: "denied"') &&
@@ -146,7 +149,7 @@ const requirements = [
     googleAnalytics.includes("!isCurrent()") && googleAnalytics.includes("isBrowserTelemetryRuntimeAllowed()") &&
     !portalTargetSourceEntries.includes("initializeGoogleAnalytics") &&
     portalTargetHtmlPaths.every(path => !/(?:google-analytics|googletagmanager)\.com/u.test(readFileSync(path, "utf8"))),
-    "Google Analytics requires affirmative persisted consent, immediate revocation, production/session guards and disabled advertising; entry documents must never load it eagerly."],
+    "Google Analytics must default to enabled unless a saved opt-out denies collection, persist preference changes, stop immediately on opt-out, retain production/session guards and disable advertising; entry documents must never load it eagerly."],
   [/tracesSampleRate:\s*0/u.test(browserSentry) && /tracesSampleRate:\s*0/u.test(functionSentry) &&
     !/captureConsoleIntegration/u.test(browserSentry),
   "Sentry must remain essential errors-only without performance tracing or console-event capture."],
