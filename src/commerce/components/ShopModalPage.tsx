@@ -46,17 +46,33 @@ export const SUBSCRIPTION_BENEFIT_KEYS = [
   "CoinShop.SUBSCRIPTION_BENEFIT_RENEWAL",
 ] as const;
 
+/** Subscription information is available before provider pricing and ownership resolve. */
+function SubscriptionBenefits() {
+  const tr = useTranslator();
+  return (
+    <div className="shop-subscription-benefits">
+      <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>
+      <ul>
+        {SUBSCRIPTION_BENEFIT_KEYS.map((key) => (
+          <li key={key}>{tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()})}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /** Renders products supplied by the current platform purchase catalog. */
 export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
   /** Provider refresh state controls the shop's loading presentation. */
-  const {loading, catalogError, retryCatalog} = useSubscriptionManagement();
+  const {loading, catalogError, retryCatalog, subscriptionsEnabled} = useSubscriptionManagement();
   /** Whether current catalog entitlements already include an active subscription. */
   const hasActiveSubscription = products.some((product) => product.productType === "subscription" && product.subscriptionStatus === "active");
-  /** Offers eligible for display while preserving the currently active subscription. */
+  /** Keep subscription details visible while fresh ownership controls checkout separately. */
   const visibleProducts = products.filter((product) => product.productType !== "subscription" ||
-    product.subscriptionStatus === "active" || (!loading && !catalogError && !hasActiveSubscription));
+    product.subscriptionStatus === "active" || !hasActiveSubscription);
+  const showSubscriptionOverview = subscriptionsEnabled && !products.some((product) => product.productType === "subscription");
   return (
     <div>
       <div className="shop-balance">
@@ -72,7 +88,13 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
           </button>
         </div>
       ) : null}
-      <div className="game-shop-grid" aria-busy={loading}>
+      <div className="game-shop-grid" aria-busy={loading && !showSubscriptionOverview && visibleProducts.length === 0}>
+        {showSubscriptionOverview ? (
+          <article className="shop-subscription-card">
+            <span className="shop-subscription-icon" aria-hidden="true">★</span>
+            <SubscriptionBenefits />
+          </article>
+        ) : null}
         {loading && products.length === 0 ? <p role="status">{tr("Accessibility.LOADING")}</p> : null}
         {!loading && !catalogError && products.length === 0 ? <p>{tr("CoinShop.NO_PACKS_AVAILABLE")}</p> : null}
         {visibleProducts.map((product) => {
@@ -108,16 +130,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
             {(product.productType === "subscription" || product.productType === "durable") && product.description ? (
               <small className="shop-product-description">{product.description}</small>
             ) : null}
-            {product.productType === "subscription" ? (
-              <div className="shop-subscription-benefits">
-                <strong>{tr("CoinShop.SUBSCRIPTION_BENEFITS_TITLE")}</strong>
-                <ul>
-                  {SUBSCRIPTION_BENEFIT_KEYS.map((key) => (
-                    <li key={key}>{tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()})}</li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
+            {product.productType === "subscription" ? <SubscriptionBenefits /> : null}
             {product.productType !== "subscription" && product.coins > 0 ? (
               <small className="shop-product-description">
                 {tr("CoinShop.PACK_BUYING_POWER", {
@@ -126,10 +139,11 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
                 })}
               </small>
             ) : null}
-            {product.subscriptionStatus !== "active" ? (
+            {product.subscriptionStatus !== "active" &&
+              (product.productType !== "subscription" || (!loading && !catalogError)) ? (
             <button
               className="play-primary compact"
-              disabled={catalogError || (product.productType === "subscription" && loading)}
+              disabled={catalogError}
               onClick={() => onPurchase(product.productId)}
             >
               {product.productType === "subscription" ? (

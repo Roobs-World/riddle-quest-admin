@@ -276,6 +276,7 @@ export function JestPlayApp() {
   const subscriptionActions = useMemo(
     () => ({
       products: jestProducts,
+      subscriptionsEnabled,
       catalogLoading: catalogState.loading,
       catalogError: catalogState.error,
       refresh: refreshProducts,
@@ -287,7 +288,7 @@ export function JestPlayApp() {
         return result.status === "success" || result.status === "cancelled" ? result.status : "error";
       },
     }),
-    [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState],
+    [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState, subscriptionsEnabled],
   );
   useJestPurchaseRecovery({
     purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, refreshBackgroundProducts, hostServices,
