@@ -23,6 +23,8 @@ A local build or artifact audit does not establish hosted gameplay, payment, not
 
 ## Build and artifact verification
 
+The [November 26 returning guest registration release](evidence/returning-guest-registration-2026-11-26.json) prompts guests when persisted guidance skips welcome and instructions, checks live SDK registration, and repeats signed startup after a host-side logout. Automatic dismissal does not re-prompt on each input. Gameplay presentation loads after identity setup, bringing initial resources to 0.39 MiB within the unchanged 0.55 MiB limit. Jest confirmed version `01a219c2-33c8-7139-928a-db76b271ee36` ready and active at 21:28:14 UTC. Production checks passed; tests and Simulator acceptance were not run. Refresh the whole Simulator page, select this version, log out in Config, and let the app prompt before manually changing registration state.
+
 The [November 26 shorter instructions release](evidence/instructions-copy-2026-11-26.json) removes the guessing-tips paragraph, its unused heading and locale keys, and the extra onboarding grid row. Jest confirmed version `01a219ab-03a7-751d-8f5c-bc5dfcb02ccd` ready and active at 21:02:54 UTC. Production checks passed; tests and browser viewport checks were not run.
 
 The [November 26 subscription details release](evidence/subscription-details-2026-11-26.json) displays Premium benefits immediately and keeps known plan details visible during ownership refresh or failure. Checkout actions remain unavailable until verification succeeds. Jest confirmed version `01a2199a-2cdd-7453-9169-81a028de8c9f` ready and active at 20:44:32 UTC. The production gate and artifact checks passed; tests and browser checks were not run.
