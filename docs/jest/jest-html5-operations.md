@@ -23,6 +23,8 @@ A local build or artifact audit does not establish hosted gameplay, payment, not
 
 ## Build and artifact verification
 
+The [November 26 profile avatar release](evidence/jest-profile-avatar-2026-11-26.json) makes the profile image open avatar selection and displays the saved game avatar in Profile and multiplayer. Guests are prompted to register. Jest confirmed version `01a2193e-f9a4-734e-a149-a50ae15385a9` ready and active at 19:04:55 UTC. Production builds and audits passed; tests, browser harnesses and hosted avatar upload acceptance were not run.
+
 The [November 26 completion first-paint release](evidence/jest-completion-first-paint-2026-11-26.json) opens victory with its confirmed award and first milestone already visible. The solved board remains visible while confirmation is pending. The matching `submitSinglePlayerGuess` update accepts the receipt opt-in and returns the already-committed completion, avoiding a separate completion request. Both configured Functions regions were deployed and their exact source archives verified. Jest confirmed version `01a217b0-3062-716a-b0ed-6c02155db364` ready and active at 11:50:23 UTC. Production builds and audits passed; tests, browser harnesses and hosted gameplay acceptance were not run.
 
 The [November 26 achievement popup timing release](evidence/jest-achievement-popup-timing-2026-11-26.json) increases the achievement hold from one second to three seconds before its exit animation. Jest confirmed version `01a217a8-b677-7498-95d8-18b251a63b84` ready and active at 11:41:17 UTC. Production builds and audits passed; tests, browser harnesses and hosted gameplay acceptance were not run.
@@ -93,7 +95,7 @@ After creating a new HTTP/callable Function, verify that its Cloud Run service h
 
 ### Username reservation rollout
 
-Profile and the local multiplayer player display the current Riddle Quest username from the authenticated game profile. The Jest SDK username is a fallback only when that game profile is unavailable, so a different or older platform name cannot override a saved game username. Jest still supplies its display avatar and registration controls. This display choice does not rename either account or write profile data.
+Profile and the local multiplayer player display the current Riddle Quest username and saved avatar from the authenticated game profile, with the Jest SDK profile as a fallback. Pressing the profile image opens the existing photo picker for registered players or registration for guests. Avatar uploads use the authenticated game profile service, and the saved image takes precedence over the Jest photo. This does not rename either account or change the platform-owned Jest profile.
 
 Username changes fail closed until the versioned `usernameReservationMigrations/v1` document is complete. Deploy the
 Functions that create deterministic reservations first, wait for traffic to move off the previous revision, and then
