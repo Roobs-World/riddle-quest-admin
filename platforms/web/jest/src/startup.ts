@@ -152,11 +152,10 @@ export async function startJestSession(
     // records getPlayer() independently from the signed backend envelope.
     /** Provides player behavior. */
     const player = platform.getPlayer();
-    // Convert synchronous local-read failures into rejections so Promise.all
-    // always observes the signed request, even when another startup read fails.
-    /** Stores the signed identity and local launch state read concurrently. */
-    const [signed, {entryIntent, preferences, playerData}] = await Promise.all([
-      platform.getPlayerSigned(),
+    // Async wrappers keep every independent read observed if an adapter throws synchronously.
+    /** Reads identity, local launch state and the recovery queue without a serial SDK round trip. */
+    const [signed, {entryIntent, preferences, playerData}, initialIncompletePurchases] = await Promise.all([
+      (async () => platform.getPlayerSigned())(),
       (async () => {
         /** Stores the parsed launch intent. */
         const entryIntent = platform.getEntryIntent();
@@ -166,9 +165,8 @@ export async function startJestSession(
         const playerData = await platform.readPlayerData();
         return {entryIntent, preferences, playerData};
       })(),
+      (async () => platform.getIncompletePurchases())(),
     ]);
-    /** Stores the first recovery page read before optional startup work. */
-    const initialIncompletePurchases = await platform.getIncompletePurchases();
     if (initialIncompletePurchases.status !== "success") return initialIncompletePurchases;
     // A non-empty signed recovery envelope lets the backend verify ownership,
     // grant idempotently, and enforce the canonical account-deletion guard.

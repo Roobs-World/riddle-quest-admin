@@ -38,32 +38,29 @@ export function getMobileCapabilities(): MobileCapabilities {
       effectiveType?: string;
     };
   };
-  /** Provides web gl available behavior. */
-  let webGlAvailable = false;
-  if (typeof WebGLRenderingContext !== "undefined") {
-    if (typeof document === "undefined") {
-      webGlAvailable = true;
-    } else {
-      try {
-        /** Provides canvas behavior. */
-        const canvas = document.createElement("canvas");
-        /** The capability probe must not retain a second context beside the real scene. */
-        const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
-        webGlAvailable = Boolean(context);
-        try { context?.getExtension("WEBGL_lose_context")?.loseContext(); } catch {
-          /* Availability is already known; optional probe cleanup does not change it. */
-        }
-      } catch {
-        webGlAvailable = false;
-      }
-    }
-  }
-  return {
+  /** Hardware and preferences can reject decoration without allocating a graphics context. */
+  const capabilities: MobileCapabilities = {
     deviceMemory: runtimeNavigator.deviceMemory,
     hardwareConcurrency: runtimeNavigator.hardwareConcurrency,
     saveData: runtimeNavigator.connection?.saveData,
     effectiveType: runtimeNavigator.connection?.effectiveType,
     reducedMotion: isPlayerReducedMotionEnabled(),
-    webGlAvailable,
+    webGlAvailable: false,
   };
+  if (typeof WebGLRenderingContext === "undefined") return capabilities;
+  if (typeof document === "undefined") return {...capabilities, webGlAvailable: true};
+  if (!shouldLoadDecorativeWebGl({...capabilities, webGlAvailable: true})) return capabilities;
+  try {
+    /** Provides canvas behavior. */
+    const canvas = document.createElement("canvas");
+    /** The capability probe must not retain a second context beside the real scene. */
+    const context = canvas.getContext("webgl2") || canvas.getContext("webgl");
+    capabilities.webGlAvailable = Boolean(context);
+    try { context?.getExtension("WEBGL_lose_context")?.loseContext(); } catch {
+      /* Availability is already known; optional probe cleanup does not change it. */
+    }
+  } catch {
+    capabilities.webGlAvailable = false;
+  }
+  return capabilities;
 }

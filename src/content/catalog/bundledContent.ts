@@ -93,13 +93,16 @@ const parseRiddle = (id: string, value: unknown, locale: YouTubeLocale): YouTube
     typeof value.answer !== "string" ||
     value.answer !== value.answer.normalize("NFC") ||
     !ANSWER_PATTERN.test(value.answer) ||
-    splitGraphemes(value.answer, locale).length < 1 ||
-    splitGraphemes(value.answer, locale).length > YOUTUBE_ANSWER_MAX_GRAPHEMES ||
     !isId(value.categoryId, 80) ||
     (value.difficultyBand !== "easy" && value.difficultyBand !== "medium" && value.difficultyBand !== "hard") ||
     typeof value.contentFingerprint !== "string" ||
     !FINGERPRINT_PATTERN.test(value.contentFingerprint)
   ) {
+    throw new Error(`youtube-content-riddle-invalid:${locale}:${id}`);
+  }
+  /** Each bundled answer needs only one segmentation pass during pack validation. */
+  const answerLength = splitGraphemes(value.answer, locale).length;
+  if (answerLength < 1 || answerLength > YOUTUBE_ANSWER_MAX_GRAPHEMES) {
     throw new Error(`youtube-content-riddle-invalid:${locale}:${id}`);
   }
   return {
