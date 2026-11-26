@@ -66,6 +66,8 @@ export function useJestRegistration({
   const [registrationFailure, setRegistrationFailure] = useState<string | null>(null);
   /** Provides overlay ref behavior. */
   const overlayRef = useRef<JestRegistrationOverlayHandle | null>(null);
+  const promptOpenRef = useRef(false);
+  const loginPendingRef = useRef(false);
   /** Provides completing ref behavior. */
   const completingRef = useRef(false);
   /** Provides source ref behavior. */
@@ -79,7 +81,7 @@ export function useJestRegistration({
   }, []);
   /** Provides complete behavior. */
   const complete = useCallback(() => {
-    if (completingRef.current) return;
+    if (!active.current || !isCurrent() || !sessionRef.current || completingRef.current) return;
     completingRef.current = true;
     /** Deletes d player signed. */
     let deletedPlayerSigned: string | null = null;
@@ -138,6 +140,7 @@ export function useJestRegistration({
           /** Provides preferences behavior. */
           const preferences = {...previousSession.preferences, registrationPromptDismissedAt: Date.now()};
           await platform.writePreferences(preferences);
+          if (!ownsSession()) return;
           setSession((current) => (current ? {...current, preferences} : current));
           trackFunnel("registration_prompt_dismissed", {source: sourceRef.current});
           completionSucceeded = true;
@@ -150,6 +153,8 @@ export function useJestRegistration({
         setError(tr("ErrorMessages.GENERIC_UNEXPECTED_ERROR"));
       } finally {
         overlayRef.current = null;
+        promptOpenRef.current = false;
+        loginPendingRef.current = false;
         completingRef.current = false;
         setRegistrationPending(false);
         setShowRegistration(false);
@@ -183,13 +188,28 @@ export function useJestRegistration({
   /** Shows registration after the current completion sequence has ended. */
   const showPrompt = useCallback(
     (source: RegistrationSource, showGamePrompt: boolean) => {
+      if (!active.current || !isCurrent() || promptOpenRef.current || completingRef.current) return;
       /** Provides session behavior. */
       const session = sessionRef.current;
-      if (!session || session.player.registered) {
+      if (!session) return;
+      if (session.player.registered) {
         window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-closed", {detail: {registered: true}}));
         return;
       }
       sourceRef.current = source;
+      setRegistrationFailure(null);
+      try {
+        if (platform.getPlayer().registered) {
+          complete();
+          return;
+        }
+      } catch (error) {
+        captureBrowserException(error, {component: "jest_registration", operation: "check_guest_before_prompt"});
+        setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
+        trackFunnel("registration_prompt_failed", {source});
+        return;
+      }
+      promptOpenRef.current = true;
       if (!overlayRef.current) {
         /** Provides overlay behavior. */
         const overlay = platform.showRegistrationOverlay({
@@ -204,7 +224,7 @@ export function useJestRegistration({
       setShowRegistration(showGamePrompt);
       trackFunnel("registration_prompt_shown", {after: source});
     },
-    [complete, platform, sessionRef, trackFunnel],
+    [complete, isCurrent, platform, sessionRef, trackFunnel],
   );
   /** Queues win prompts behind the victory and achievement popups. */
   const open = useCallback(
@@ -231,13 +251,27 @@ export function useJestRegistration({
   }, [complete]);
   /** Provides register behavior. */
   const register = useCallback(() => {
+    if (!active.current || !isCurrent() || !sessionRef.current || completingRef.current || loginPendingRef.current) return;
     setRegistrationFailure(null);
+    try {
+      if (platform.getPlayer().registered) {
+        if (overlayRef.current) overlayRef.current.closeButtonAction();
+        complete();
+        return;
+      }
+    } catch (error) {
+      captureBrowserException(error, {component: "jest_registration", operation: "check_guest_before_login"});
+      setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
+      return;
+    }
+    loginPendingRef.current = true;
     setRegistrationPending(true);
     if (overlayRef.current) {
       try {
         overlayRef.current.loginButtonAction();
       } catch (error) {
         console.warn("[riddle-quest] Jest registration login action failed", error);
+        loginPendingRef.current = false;
         setRegistrationPending(false);
         setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
         trackFunnel("registration_login_failed", {source: sourceRef.current, status: "failure"});
@@ -248,18 +282,27 @@ export function useJestRegistration({
       platform.login(createRegistrationEntryPayload(sourceRef.current, sessionRef.current?.entryIntent ?? {})),
     ).then((result) => {
       if (result.status !== "success") {
+        loginPendingRef.current = false;
         setRegistrationPending(false);
         setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
         trackFunnel("registration_login_failed", {source: sourceRef.current, status: result.status});
         return;
       }
       complete();
+    }).catch((error) => {
+      loginPendingRef.current = false;
+      setRegistrationPending(false);
+      captureBrowserException(error, {component: "jest_registration", operation: "login_fallback"});
+      if (!active.current || !isCurrent()) return;
+      setRegistrationFailure(tr("ErrorMessages.CHECK_INTERNET_AND_TRY_AGAIN"));
+      trackFunnel("registration_login_failed", {source: sourceRef.current, status: "failure"});
     });
-  }, [complete, platform, sessionRef, trackFunnel, withPlatformActivity]);
+  }, [complete, isCurrent, platform, sessionRef, trackFunnel, withPlatformActivity]);
 
   useEffect(() => {
     /** Opens signup after a voluntary profile action. */
     const openFromProfile = () => open("profile", true);
+    const openAfterInstructions = () => open("post_instructions", true);
     const openForReturningPlayer = () => {
       if (sessionRef.current?.player.registered === false) open("returning_player", true);
     };
@@ -277,12 +320,14 @@ export function useJestRegistration({
     };
     window.addEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
     window.addEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
+    window.addEventListener("riddle-quest:onboarding-completed", openAfterInstructions);
     window.addEventListener("riddle-quest:returning-player-play", openForReturningPlayer);
     window.addEventListener("riddle-quest:register-player", register);
     window.addEventListener("riddle-quest:dismiss-registration", dismiss);
     return () => {
       window.removeEventListener("riddle-quest:completion-popups-dismissed", onCompletionPopupsDismissed);
       window.removeEventListener("riddle-quest:registration-prompt-opened", openFromProfile);
+      window.removeEventListener("riddle-quest:onboarding-completed", openAfterInstructions);
       window.removeEventListener("riddle-quest:returning-player-play", openForReturningPlayer);
       window.removeEventListener("riddle-quest:register-player", register);
       window.removeEventListener("riddle-quest:dismiss-registration", dismiss);

@@ -16,14 +16,16 @@ export type JestPurchaseOptions = {
   setProducts: Dispatch<SetStateAction<ProductSummary[]>>;
   /** Enables the Jest subscription catalog and checkout. */
   subscriptionsEnabled?: boolean;
+  /** Opens registration before a guest can start a subscription checkout. */
+  requestRegistration?: () => void;
   /** Stores track funnel. */
   trackFunnel: TrackFunnel;
 };
 
 /** Keeps the host callback stable while deferring checkout code until it is used. */
-export function useJestPurchase({products, purchases, session, setProducts, subscriptionsEnabled = false, trackFunnel}: JestPurchaseOptions) {
+export function useJestPurchase({products, purchases, session, setProducts, subscriptionsEnabled = false, requestRegistration, trackFunnel}: JestPurchaseOptions) {
   return useCallback(async (productId: string): Promise<PurchaseResult> => {
     const {runJestPurchase} = await import("./runJestPurchase");
-    return runJestPurchase({productId, products, purchases, session, setProducts, subscriptionsEnabled, trackFunnel});
-  }, [products, purchases, session, setProducts, subscriptionsEnabled, trackFunnel]);
+    return runJestPurchase({productId, products, purchases, session, setProducts, subscriptionsEnabled, requestRegistration, trackFunnel});
+  }, [products, purchases, session, setProducts, subscriptionsEnabled, requestRegistration, trackFunnel]);
 }

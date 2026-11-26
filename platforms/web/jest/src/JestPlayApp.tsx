@@ -289,15 +289,6 @@ export function JestPlayApp() {
     }),
     [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState],
   );
-  /** Provides purchase product behavior. */
-  const purchaseProduct = useJestPurchase({
-    products: jestProducts,
-    purchases,
-    session,
-    setProducts: setJestProducts,
-    subscriptionsEnabled,
-    trackFunnel,
-  });
   useJestPurchaseRecovery({
     purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, refreshBackgroundProducts, hostServices,
   });
@@ -530,6 +521,18 @@ export function JestPlayApp() {
     isCurrent: notificationOperationGate.isOpen,
     completeDeletedPlayerCleanup: completeTombstonedPlayerCleanup,
     withPlatformActivity,
+    trackFunnel,
+  });
+  const requestSubscriptionRegistration = useCallback(() => {
+    openRegistrationPrompt("subscription", true);
+  }, [openRegistrationPrompt]);
+  const purchaseProduct = useJestPurchase({
+    products: jestProducts,
+    purchases,
+    session,
+    setProducts: setJestProducts,
+    subscriptionsEnabled,
+    requestRegistration: requestSubscriptionRegistration,
     trackFunnel,
   });
   /** Queues the guest prompt as soon as the correct answer is confirmed. */

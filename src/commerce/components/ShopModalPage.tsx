@@ -55,7 +55,8 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
   /** Whether current catalog entitlements already include an active subscription. */
   const hasActiveSubscription = products.some((product) => product.productType === "subscription" && product.subscriptionStatus === "active");
   /** Offers eligible for display while preserving the currently active subscription. */
-  const visibleProducts = products.filter((product) => product.productType !== "subscription" || !hasActiveSubscription || product.subscriptionStatus === "active");
+  const visibleProducts = products.filter((product) => product.productType !== "subscription" ||
+    product.subscriptionStatus === "active" || (!loading && !catalogError && !hasActiveSubscription));
   return (
     <div>
       <div className="shop-balance">
@@ -128,7 +129,7 @@ export function ShopModalPage({balance, products, onPurchase}: ShopModalPageProp
             {product.subscriptionStatus !== "active" ? (
             <button
               className="play-primary compact"
-              disabled={catalogError}
+              disabled={catalogError || (product.productType === "subscription" && loading)}
               onClick={() => onPurchase(product.productId)}
             >
               {product.productType === "subscription" ? (

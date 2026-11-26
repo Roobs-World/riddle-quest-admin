@@ -180,6 +180,7 @@ export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./ridd
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/api/raceLiveCallables";
 export {deliverLiveRaceChallengePush} from "./race/notifications/raceLivePushJobs";
 export {setNotificationPreference} from "./notifications/notificationPreferences";
+export {getJestNotificationPlan} from "../../platforms/web/jest/server/notifications/managerPlan";
 export {dispatchFacebookManagerNotification} from "../../platforms/web/facebook/server/notifications/managerDispatch";
 export {syncFacebookManagerRegistration} from "../../platforms/web/facebook/server/notifications/managerRegistrationSync";
 

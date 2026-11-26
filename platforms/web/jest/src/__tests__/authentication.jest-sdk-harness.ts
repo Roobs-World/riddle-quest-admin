@@ -37,6 +37,9 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
       registered:
         params.get("registered") === "1" || localStorage.getItem("riddleQuest:jestAuthHarness:registered") === "1",
     };
+    window.addEventListener("test:registration-state", (event) => {
+      player.registered = Boolean((event as CustomEvent<boolean>).detail);
+    });
     /** Provides preferences behavior. */
     const preferences: Record<string, unknown> =
       selectedScenario === "returning-milestone"
@@ -135,6 +138,7 @@ export const installJestSdkHarness = async (page: Page, scenario = "success") =>
       }) => {
         state.calls.push("sdk.showRegistrationOverlay");
         state.overlayOptions.push({
+          registeredAtOpen: player.registered,
           theme: options.theme,
           message: options.message,
           source: options.entryPayload?.source,

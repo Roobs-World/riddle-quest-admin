@@ -17,6 +17,7 @@ export type AuthHarnessState = {
   loginPayloads: Array<Record<string, string>>;
   /** Stores overlay options. */
   overlayOptions: Array<{
+    registeredAtOpen: boolean;
     /** Stores theme. */
     theme?: string;
     /** Stores registration message. */
@@ -118,6 +119,11 @@ export const enterRegisteredGame = async (page: Page, expectedRiddle = /what has
   await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
   await page.getByRole("button", {name: /let's play/i}).click();
   await page.getByRole("button", {name: /got it/i}).click();
+  if ((await getHarnessState(page)).backendExchanges.at(-1)?.endsWith(":false")) {
+    const prompt = page.locator(".jest-registration-dialog");
+    await prompt.getByRole("button", {name: /play as guest/i}).click();
+    await prompt.waitFor({state: "detached"});
+  }
   await page.getByText(expectedRiddle).waitFor({timeout: 15_000});
   await page.waitForTimeout(500);
   for (let step = 0; step < 5; step += 1) {

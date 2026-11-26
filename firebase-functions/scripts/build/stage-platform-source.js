@@ -16,6 +16,7 @@ const sharedSourceRoots = [
   "platforms/web/facebook/src/commerce/facebookCatalog.ts",
   "platforms/web/reddit/src/shared/redditCatalog.ts",
   "platforms/web/jest/src/referrals/referralCampaigns.ts",
+  "platforms/web/jest/src/notifications/managerProtocol.ts",
 ];
 
 /** Recreates the repository-relative source graph inside the Functions archive boundary. */

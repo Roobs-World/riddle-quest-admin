@@ -441,6 +441,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
           completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
           trackEvent("tutorial_complete");
           setOnboardingStep(null);
+          window.dispatchEvent(new CustomEvent("riddle-quest:onboarding-completed"));
         }}
       />
     );

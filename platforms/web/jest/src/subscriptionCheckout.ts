@@ -26,6 +26,7 @@ async function subscribeWithPreflight({
   playerId,
   getSubscriptions,
 }: SubscriptionCheckoutOptions): ReturnType<JestPurchaseCoordinator["subscribe"]> {
+  if (!platform.getPlayer().registered) return {status: "unavailable", message: "guest_not_allowed"};
   /** Verified holdings refreshed inside the cross-tab checkout lock. */
   const catalog = await getSubscriptions();
   if (catalog.status !== "success") return catalog;

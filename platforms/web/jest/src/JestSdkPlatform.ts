@@ -468,6 +468,7 @@ export class JestSdkPlatform implements JestPlatformPort {
    */
   async beginSubscription(subscriptionSku: string) {
     try {
+      if (!this.getPlayer().registered) return {status: "unavailable", message: "guest_not_allowed"} as const;
       /** Provides result behavior. */
       const result = await this.getSdkModule("payments").beginSubscription({subscriptionSku});
       if (result?.result === "cancel") return {status: "cancelled"} as const;

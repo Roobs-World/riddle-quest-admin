@@ -1,17 +1,19 @@
 # Jest notification verification
 
-Run tests only when explicitly requested. The existing focused command is:
+Run tests and browser harnesses only when explicitly requested. Build and artifact checks do not establish Simulator acceptance or messaging delivery.
 
-```sh
-pnpm test:jest-notifications
-```
+After switching to a corrected build, refresh the whole Simulator page or leave and reopen it before replaying the checklist. Reload app retains the session's recorded SDK errors and first-notification timing failures. See [Simulator checks](https://docs.jest.com/testing/simulator).
 
-The checks cover legacy schedule cancellation, guest suppression, session retirement while waiting for platform access, individual cancellation failures, asset validation and the notification operation gate. They send no messages. The browser authentication checks also assert that registration and race sharing do not schedule app-authored reminders.
+The manager owns the seven-day plan, including distinct English bodies of at most 100 characters, CTAs, day offsets and the approved `riddle-q-notification` asset reference. Firebase verifies the registered account and canonical consent before obtaining the plan. The Jest adapter schedules the validated plan through the current-player SDK and cancels current and legacy identifiers on opt-out or account deletion. See [platform delivery](../common/notifications/platform-delivery.md#jest).
 
-The retired D1–D7 and race templates, locale-copy parser, Firestore configuration writer, canvas card generator and generated Fund report have been removed. Previous reports do not verify the current delivery path.
+For authorized hosted acceptance on the exact uploaded version:
 
-Notification titles, bodies and images must originate in the notification manager. There is currently no manager-to-Jest content handoff, so the application cancels legacy schedules and creates no new ones. The SDK schedule/remove adapter remains available for that integration. See [platform delivery](../common/notifications/platform-delivery.md#jest).
+1. As a new guest, complete instructions and confirm the dismissible registration overlay opens. Choose Play as guest and confirm gameplay continues. Registered players must never see this prompt.
+2. Complete registration or launch an opted-in registered account. Confirm seven SDK schedules with `scheduledInDays` 1 through 7, distinct bodies no longer than 100 characters, and `assetReference: "riddle-q-notification"`.
+3. Confirm that image is present, approved, fully processed and unarchived in the Jest Image Library. The reference was verified on November 26, 2026; later changes require rechecking it.
+4. Return to the game and confirm the same seven identifiers replace previous schedules. Turn Notifications Off and confirm every current and legacy identifier is removed; reload and confirm Off is retained.
+5. Check manager failures and retries, guest-to-registered session changes, account switching, and deletion while scheduling is pending. No stale operation may schedule after opt-out or deletion.
 
-Once that integration exists, use registered Jest sandbox users to verify manager-authored title, body, CTA and image, stable replacement/cancellation identifiers, eligibility timing and return payloads. Check moderation and provider errors in the Console. Scheduling acceptance does not establish approval or delivery, and the application cannot schedule an immediate message to another player through the current-player SDK.
+Scheduling acceptance does not establish delivery. Jest selects the delivery surface and messaging eligibility. No gameplay code receives notification payloads, acknowledges delivery, handles taps or grants response rewards. The adapter never schedules an immediate message to another player.
 
-Follow the [standing Jest upload and activation authorization](jest-html5-operations.md#build-and-upload). Live notification sends still require explicit authorization.
+Follow the [standing Jest upload and activation authorization](jest-html5-operations.md#build-and-upload). Test notification sends require explicit authorization.

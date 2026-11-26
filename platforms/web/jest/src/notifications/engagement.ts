@@ -9,8 +9,12 @@ export const LEGACY_RACE_REMINDER_ID = "race_to_10_return_v1";
 /** Race reminder identifiers retained for cleanup across identifier migrations. */
 export const RACE_REMINDER_IDS = [LEGACY_RACE_REMINDER_ID, RACE_RESULTS_REMINDER_ID] as const;
 /** Every app-owned notification identifier that account deletion must unschedule. */
-export const PLAYER_NOTIFICATION_IDS = [
+export const RETIRED_NOTIFICATION_IDS = [
   ...LEGACY_REMINDER_IDS,
   ...ENGAGEMENT_REMINDER_IDS,
   ...RACE_REMINDER_IDS,
 ] as const;
+/** Manager-owned daily schedules use stable identifiers so refreshes replace them. */
+export const MANAGED_NOTIFICATION_IDS = Array.from({length: 7}, (_, index) => `riddle-quest-d${index + 1}-v4`);
+/** Account deletion and consent revocation remove current and retired schedules. */
+export const PLAYER_NOTIFICATION_IDS = [...RETIRED_NOTIFICATION_IDS, ...MANAGED_NOTIFICATION_IDS] as const;

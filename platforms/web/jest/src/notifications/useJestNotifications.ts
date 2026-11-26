@@ -1,11 +1,11 @@
-import {useCallback, useEffect, useLayoutEffect, useMemo, useRef} from "react";
+import {useCallback, useLayoutEffect, useMemo, useRef} from "react";
 import type {JestPlatformPort, JestSession} from "../types";
-import {PLAYER_NOTIFICATION_IDS} from "./engagement";
-import {captureBrowserException} from "../../../../../src/observability/browserErrorReporter";
+import {PLAYER_NOTIFICATION_IDS, RETIRED_NOTIFICATION_IDS} from "./engagement";
+import type {JestManagedNotification} from "./managerProtocol";
 
 type WithPlatformActivity = <Result>(operation: () => Promise<Result>) => Promise<Result>;
 
-/** Retires schedules created before notification content moved to the manager. */
+/** Serializes the manager's schedules and consent cleanup at the SDK boundary. */
 export function useJestNotifications({session, platform, isActive, withPlatformActivity}: {
   session: JestSession | null;
   platform: JestPlatformPort;
@@ -24,19 +24,39 @@ export function useJestNotifications({session, platform, isActive, withPlatformA
     pending.current = result.catch(() => undefined);
     return result;
   }, []);
-  const cancelAllNotifications = useCallback(() => enqueue(async () => {
-    if (!owner.active || !owner.registered || !isActive()) return true;
-    const removed = await withPlatformActivity(() => owner.active && owner.registered && isActive() ? Promise.all(
-      PLAYER_NOTIFICATION_IDS.map(identifier => platform.removeNotification(identifier)),
-    ) : Promise.resolve([]));
-    return removed.every(result => result.status === "success");
-  }), [enqueue, isActive, owner, platform, withPlatformActivity]);
-
-  useEffect(() => {
-    void cancelAllNotifications().catch(error => {
-      captureBrowserException(error, {component: "jest_notifications", operation: "retire_legacy_reminders"});
+  const mayUseSdk = useCallback(() => {
+    if (!owner.active || !owner.registered || !isActive()) return false;
+    const player = platform.getPlayer();
+    return player.registered && player.playerId === session?.player.playerId;
+  }, [isActive, owner, platform, session?.player.playerId]);
+  const removeNotifications = useCallback((identifiers: readonly string[], isCurrent: () => boolean) => enqueue(async () => {
+    if (!mayUseSdk() || !isCurrent()) return false;
+    return withPlatformActivity(async () => {
+      let succeeded = true;
+      for (const identifier of identifiers) {
+        if (!mayUseSdk() || !isCurrent()) return false;
+        const result = await platform.removeNotification(identifier);
+        succeeded = result.status === "success" && succeeded;
+      }
+      return succeeded;
     });
-  }, [cancelAllNotifications]);
+  }), [enqueue, mayUseSdk, platform, withPlatformActivity]);
+  const cancelAllNotifications = useCallback((isCurrent: () => boolean = () => true) =>
+    removeNotifications(PLAYER_NOTIFICATION_IDS, isCurrent), [removeNotifications]);
+  const retireLegacyNotifications = useCallback((isCurrent: () => boolean) =>
+    removeNotifications(RETIRED_NOTIFICATION_IDS, isCurrent), [removeNotifications]);
+  const applyNotifications = useCallback((notifications: readonly JestManagedNotification[], isCurrent: () => boolean) => enqueue(async () => {
+    if (!mayUseSdk() || !isCurrent()) return false;
+    return withPlatformActivity(async () => {
+      let succeeded = true;
+      for (const notification of notifications) {
+        if (!mayUseSdk() || !isCurrent()) return false;
+        const result = await platform.scheduleNotification(notification);
+        succeeded = result.status === "success" && succeeded;
+      }
+      return succeeded;
+    });
+  }), [enqueue, mayUseSdk, platform, withPlatformActivity]);
 
-  return {cancelAllNotifications};
+  return {cancelAllNotifications, retireLegacyNotifications, applyNotifications};
 }
