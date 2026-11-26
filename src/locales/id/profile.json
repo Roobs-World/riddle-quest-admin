@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Tidak dapat menghapus akun",
     "DELETE_ACCOUNT_LOADING": "Menghapus...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Akun Anda telah dihapus.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Akun dihapus",
     "EDIT_BUTTON": "Sunting",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Masukkan nama pengguna baru",
     "GAMES_PLAYED_STAT": "Game yang Dimainkan",

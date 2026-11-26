@@ -65,7 +65,7 @@ export type JestEntryIntent = {
 };
 
 /** Jest SDK storage projection of the cross-target preference schema. */
-export type JestPreferences = PlatformPreferences & {firebaseAccountUid?: string};
+export type JestPreferences = PlatformPreferences;
 
 /** Jest SDK storage projection of a versioned resumable game. */
 export type JestSavedGame = SavedGame;

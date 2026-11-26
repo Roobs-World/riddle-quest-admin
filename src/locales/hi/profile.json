@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "खाता नहीं हटाया जा सका",
     "DELETE_ACCOUNT_LOADING": "हटाया जा रहा है...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "आपका खाता हटा दिया गया है.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "खाता हटा दिया गया है",
     "EDIT_BUTTON": "संपादित करें",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "नया उपयोगकर्ता नाम दर्ज करें",
     "GAMES_PLAYED_STAT": "खेले गए खेल",

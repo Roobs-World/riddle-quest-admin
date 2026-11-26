@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Impossible de supprimer le compte",
     "DELETE_ACCOUNT_LOADING": "Suppression...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Votre compte a été supprimé.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Compte supprimé",
     "EDIT_BUTTON": "Modifier",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Entrez un nouveau nom d'utilisateur",
     "GAMES_PLAYED_STAT": "Jeux joués",

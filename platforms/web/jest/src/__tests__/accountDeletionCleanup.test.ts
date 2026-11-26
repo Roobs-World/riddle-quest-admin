@@ -3,13 +3,11 @@ import {
   ACCOUNT_DELETION_CLEANUP_PENDING_KEY,
   ACCOUNT_DELETION_EPOCH_KEY,
   ACCOUNT_DELETION_PENDING_PLAYER_KEY,
-  ACCOUNT_DELETION_PENDING_UID_KEY,
   ACCOUNT_DELETION_PENDING_PHASE,
   AccountDeletionCleanupError,
   completeTombstonedAccountDeletion,
   discardAccountDeletionForDifferentPlayer,
   getAccountDeletionPendingPhase,
-  getAccountDeletionPendingUid,
   isAccountDeletionCleanupPending,
   markAccountDeletionRequested,
   purgeDeletedPlayerState,
@@ -773,69 +771,4 @@ it("refuses authoritative recovery until an origin-wide deletion generation is v
   expect(retryAuthoritativeDeletion).toHaveBeenCalledTimes(1);
   expect(clearPlayerState).toHaveBeenCalledTimes(1);
   expect(getAccountDeletionPendingPhase()).toBeNull();
-});
-
-
-it("erases all browser data and recovery markers once deletion cleanup succeeds", async () => {
-  const platform = new MockJestPlatform();
-  markAccountDeletionRequested(platform.player.playerId, "retired-uid");
-  for (const storage of [localStorage, sessionStorage]) {
-    storage.setItem("riddleQuest:pendingPlay:v1:old-user", "pending");
-    storage.setItem("legacyUnknownKey", "old-value");
-    storage.setItem("thirdPartyPreference", "old-preference");
-  }
-  await purgeDeletedPlayerState(platform);
-  expect(localStorage.length).toBe(0);
-  expect(sessionStorage.length).toBe(0);
-  expect(getAccountDeletionPendingUid()).toBeUndefined();
-});
-
-it("retains the deleted uid across cleanup failure and removes it after retry", async () => {
-  const platform = new MockJestPlatform();
-  markAccountDeletionRequested(platform.player.playerId, "retired-uid");
-  platform.clearPlayerState = jest.fn().mockRejectedValueOnce(new Error("SDK unavailable")).mockResolvedValue(undefined);
-  localStorage.setItem("unknown-player-state", "old");
-  await expect(purgeDeletedPlayerState(platform)).rejects.toBeInstanceOf(AccountDeletionCleanupError);
-  expect(getAccountDeletionPendingUid()).toBe("retired-uid");
-  expect(localStorage.getItem(ACCOUNT_DELETION_PENDING_UID_KEY)).toBe("retired-uid");
-  expect(localStorage.getItem("unknown-player-state")).toBeNull();
-  await purgeDeletedPlayerState(platform);
-  expect(localStorage.length).toBe(0);
-  expect(sessionStorage.length).toBe(0);
-});
-
-
-it.each(["provider-marker", "server-retry"])("preserves replacement provider data discovered by %s", async source => {
-  const platform = new MockJestPlatform(true);
-  platform.preferences = {firebaseAccountUid: source === "provider-marker" ? "new-uid" : "retired-uid", onboardingComplete: true};
-  const cleared = jest.spyOn(platform, "clearPlayerState");
-  const removeNotification = jest.spyOn(platform, "removeNotification");
-  markAccountDeletionRequested(platform.player.playerId, "retired-uid");
-  await recoverPendingAccountDeletion(platform, "signed", {
-    retryAuthoritativeDeletion: async () => source === "server-retry" ? {activeAccountUid: "new-uid"} : undefined,
-  });
-  expect(cleared).not.toHaveBeenCalled();
-  expect(removeNotification).not.toHaveBeenCalled();
-  expect(platform.preferences.onboardingComplete).toBe(true);
-  expect(localStorage.length).toBe(0);
-  expect(sessionStorage.length).toBe(0);
-});
-
-it("clears this browser's retired account data while retaining the replacement's provider save", async () => {
-  const platform = new MockJestPlatform();
-  platform.preferences = {firebaseAccountUid: "replacement-uid", onboardingComplete: true};
-  const playerData = {schemaVersion: 1 as const, updatedAt: 25};
-  platform.readPlayerData = () => playerData;
-  const cleared = jest.spyOn(platform, "clearPlayerState");
-  localStorage.setItem("riddleQuest:jestFirebaseUid", "retired-uid");
-  localStorage.setItem("retired-account-preference", "old");
-  sessionStorage.setItem("retired-account-transient", "old");
-  const result = await startJestSession(platform, {exchangeIdentity: async () => ({status: "success",
-    customToken: "token", uid: "replacement-uid", accountGeneration: 2, freshAccount: false,
-  })} as never, {reconcile: async () => ({status: "success", value: 0})} as never, async () => undefined);
-  expect(result).toMatchObject({status: "success", value: {playerData, preferences: platform.preferences}});
-  expect(cleared).not.toHaveBeenCalled();
-  expect(localStorage.getItem("retired-account-preference")).toBeNull();
-  expect(sessionStorage.getItem("retired-account-transient")).toBeNull();
-  expect(localStorage.getItem("riddleQuest:jestFirebaseUid")).toBe("replacement-uid");
 });

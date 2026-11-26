@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "アカウントを削除できませんでした",
     "DELETE_ACCOUNT_LOADING": "削除中...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "アカウントが削除されました。",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "アカウントが削除されました",
     "EDIT_BUTTON": "編集",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "新しいユーザー名を入力してください",
     "GAMES_PLAYED_STAT": "プレイしたゲーム",

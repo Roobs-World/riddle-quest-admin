@@ -218,7 +218,7 @@ it("emits only user-initiated changes for the platform persistence adapter", () 
   ]);
 });
 
-it("clears all local and session data after authoritative deletion", () => {
+it("clears only app-owned user state after authoritative deletion", () => {
   /** Removes d local keys. */
   const removedLocalKeys = [
     ...Object.values(PLAYER_PREFERENCE_STORAGE_KEYS),
@@ -237,28 +237,10 @@ it("clears all local and session data after authoritative deletion", () => {
 
   removedLocalKeys.forEach((key) => expect(localStorage.getItem(key)).toBeNull());
   expect(sessionStorage.getItem("riddleQuest:welcomeSession:user-1")).toBeNull();
-  expect(localStorage.getItem("riddleQuest:jestAuthHarness:registered")).toBeNull();
-  expect(localStorage.getItem("unrelated")).toBeNull();
-  expect(sessionStorage.getItem("riddleQuest:jestAuthHarness:initFailed")).toBeNull();
-  expect(localStorage.length).toBe(0);
-  expect(sessionStorage.length).toBe(0);
+  expect(localStorage.getItem("riddleQuest:jestAuthHarness:registered")).toBe("1");
+  expect(localStorage.getItem("unrelated")).toBe("keep");
+  expect(sessionStorage.getItem("riddleQuest:jestAuthHarness:initFailed")).toBe("1");
   expect(document.documentElement.dataset).toEqual({});
-});
-
-it("preserves only requested deletion recovery markers until final cleanup", () => {
-  for (const storage of [localStorage, sessionStorage]) {
-    storage.setItem("pending-deletion", "server-deleted");
-    storage.setItem("riddleQuest:pendingPlay:v1:old-account", "old-journal");
-    storage.setItem("unknown-player-data", "old-data");
-  }
-  clearBrowserPlayerState(["pending-deletion"]);
-  for (const storage of [localStorage, sessionStorage]) {
-    expect(storage.length).toBe(1);
-    expect(storage.getItem("pending-deletion")).toBe("server-deleted");
-  }
-  clearBrowserPlayerState();
-  expect(localStorage.length).toBe(0);
-  expect(sessionStorage.length).toBe(0);
 });
 
 it("blocks stale Jest callbacks from recreating browser state after deletion", () => {

@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Hesap silinemedi",
     "DELETE_ACCOUNT_LOADING": "Siliniyor...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Hesabınız silindi.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Hesap silindi",
     "EDIT_BUTTON": "Düzenle",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Yeni kullanıcı adı girin",
     "GAMES_PLAYED_STAT": "Oynanan Oyunlar",

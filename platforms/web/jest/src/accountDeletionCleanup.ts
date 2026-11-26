@@ -7,7 +7,6 @@ import type {JestPlatformPort} from "./types";
 export const ACCOUNT_DELETION_CLEANUP_PENDING_KEY = "riddleQuest:accountDeletionCleanupPending";
 /** Player identity owning the durable deletion marker. */
 export const ACCOUNT_DELETION_PENDING_PLAYER_KEY = "riddleQuest:accountDeletionPendingPlayer";
-export const ACCOUNT_DELETION_PENDING_UID_KEY = "riddleQuest:accountDeletionPendingUid";
 /** Monotonic deletion generation permanently quiesces tabs that predate a deletion request. */
 export const ACCOUNT_DELETION_EPOCH_KEY = "riddleQuest:accountDeletionEpoch";
 /** Durable phases distinguish requested server deletion from post-server client cleanup. */
@@ -66,19 +65,6 @@ export const isAccountDeletionCleanupPending = (): boolean => getAccountDeletion
 /** Returns the deletion generation captured by cross-tab operation gates. */
 export const getAccountDeletionEpoch = (): string | null => safeBrowserStorageGet("local", ACCOUNT_DELETION_EPOCH_KEY);
 
-export const getAccountDeletionPendingUid = (): string | undefined =>
-  safeBrowserStorageGet("local", ACCOUNT_DELETION_PENDING_UID_KEY) ??
-  safeBrowserStorageGet("session", ACCOUNT_DELETION_PENDING_UID_KEY) ?? undefined;
-
-export function initializeAccountDeletionEpoch(): void {
-  if (getAccountDeletionEpoch() !== null) return;
-  try {
-    rotateAccountDeletionEpoch();
-  } catch {
-    // Ordinary play supports restricted storage; deletion still requires verified durable markers.
-  }
-}
-
 /**
  * Drops a player-scoped marker after the Jest simulator replaces its player.
  * Legacy unscoped markers remain fail-closed and require one-time site-data cleanup.
@@ -97,7 +83,6 @@ export function discardAccountDeletionForDifferentPlayer(playerId: string): bool
       const storage = getCleanupMarkerStorage(area);
       storage.removeItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY);
       storage.removeItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY);
-      storage.removeItem(ACCOUNT_DELETION_PENDING_UID_KEY);
     } catch {
       // Verification below keeps a restricted storage boundary fail-closed.
     }
@@ -151,11 +136,10 @@ export async function completeTombstonedAccountDeletion(
   platform: JestPlatformPort,
   playerSigned: string,
   gate: TombstonedIdentityCleanupGate,
-  retryAuthoritativeDeletion: (playerSigned: string) => Promise<{activeAccountUid?: string} | void>,
+  retryAuthoritativeDeletion: (playerSigned: string) => Promise<void>,
   clearFirebaseAuthentication?: () => Promise<void>,
-  deletedUid?: string,
 ): Promise<void> {
-  if (getAccountDeletionPendingPhase() === null) markAccountDeletionRequested(platform.getPlayer().playerId, deletedUid);
+  if (getAccountDeletionPendingPhase() === null) markAccountDeletionRequested(platform.getPlayer().playerId);
   await gate.runExclusive(async () => {
     /** Provides phase behavior. */
     const phase = getAccountDeletionPendingPhase();
@@ -231,14 +215,7 @@ const rotateAccountDeletionEpoch = (): void => {
 };
 
 /** Persists deletion intent before the authoritative request is allowed to start. */
-export function markAccountDeletionRequested(playerId: string, deletedUid?: string): void {
-  if (deletedUid) {
-    const storage = getCleanupMarkerStorage("local");
-    storage.setItem(ACCOUNT_DELETION_PENDING_UID_KEY, deletedUid);
-    if (storage.getItem(ACCOUNT_DELETION_PENDING_UID_KEY) !== deletedUid) {
-      throw new Error("account-deletion-uid-write-unverified");
-    }
-  }
+export function markAccountDeletionRequested(playerId: string): void {
   persistAccountDeletionCleanupMarker(ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion, playerId);
   rotateAccountDeletionEpoch();
 }
@@ -253,9 +230,7 @@ const removeAccountDeletionCleanupMarker = (persisted: CleanupMarkerStorageArea[
       const storage = getCleanupMarkerStorage(area);
       storage.removeItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY);
       storage.removeItem(ACCOUNT_DELETION_PENDING_PLAYER_KEY);
-      storage.removeItem(ACCOUNT_DELETION_PENDING_UID_KEY);
-      if ([ACCOUNT_DELETION_CLEANUP_PENDING_KEY, ACCOUNT_DELETION_PENDING_PLAYER_KEY, ACCOUNT_DELETION_PENDING_UID_KEY]
-        .some(key => storage.getItem(key) !== null)) {
+      if (storage.getItem(ACCOUNT_DELETION_CLEANUP_PENDING_KEY) !== null) {
         throw new Error(`cleanup-marker-remove-unverified:${area}`);
       }
     } catch (error) {
@@ -282,7 +257,6 @@ export async function purgeDeletedPlayerState(
     clearFirebaseAuthentication,
     waitForPendingNotificationOperations,
     withExclusiveNotificationAccess,
-    activeAccountUid,
   }: {
     /** Stores clear firebase authentication. */
     clearFirebaseAuthentication?: () => Promise<void>;
@@ -290,7 +264,6 @@ export async function purgeDeletedPlayerState(
     waitForPendingNotificationOperations?: () => Promise<void>;
     /** Stores with exclusive notification access. */
     withExclusiveNotificationAccess?: (operation: () => Promise<void>) => Promise<void>;
-    activeAccountUid?: string;
   } = {},
 ): Promise<void> {
   /** Provides persisted marker areas behavior. */
@@ -306,9 +279,6 @@ export async function purgeDeletedPlayerState(
   let platformFailed = false;
   /** Provides browser failed behavior. */
   let browserFailed = false;
-  const deletedUid = getAccountDeletionPendingUid();
-  const storedUid = platform.readPreferences().firebaseAccountUid;
-  const replacementExists = Boolean(activeAccountUid || (deletedUid && storedUid && storedUid !== deletedUid));
   /** Clears notifications. */
   const clearNotifications = async (): Promise<void> => {
     try {
@@ -318,7 +288,7 @@ export async function purgeDeletedPlayerState(
       failures.push(error);
     }
     try {
-      if (!replacementExists && platform.getPlayer().registered) {
+      if (platform.getPlayer().registered) {
         /** Provides removals behavior. */
         const removals = await Promise.allSettled(
           PLAYER_NOTIFICATION_IDS.map((identifier) => platform.removeNotification(identifier)),
@@ -348,7 +318,7 @@ export async function purgeDeletedPlayerState(
     failures.push(error);
   }
   try {
-    if (!replacementExists) await platform.clearPlayerState();
+    await platform.clearPlayerState();
   } catch (error) {
     platformFailed = true;
     failures.push(error);
@@ -360,12 +330,7 @@ export async function purgeDeletedPlayerState(
     failures.push(error);
   }
   try {
-    clearBrowserPlayerState([
-      ACCOUNT_DELETION_CLEANUP_PENDING_KEY,
-      ACCOUNT_DELETION_PENDING_PLAYER_KEY,
-      ACCOUNT_DELETION_PENDING_UID_KEY,
-      ACCOUNT_DELETION_EPOCH_KEY,
-    ]);
+    clearBrowserPlayerState();
   } catch (error) {
     browserFailed = true;
     failures.push(error);
@@ -374,8 +339,6 @@ export async function purgeDeletedPlayerState(
     throw new AccountDeletionCleanupError(notificationsFailed, platformFailed, browserFailed, failures);
   }
 
-  getCleanupMarkerStorage("local").removeItem(ACCOUNT_DELETION_EPOCH_KEY);
-  if (getAccountDeletionEpoch() !== null) throw new Error("account-deletion-epoch-clear-incomplete");
   removeAccountDeletionCleanupMarker(persistedMarkerAreas);
 }
 
@@ -395,7 +358,7 @@ export async function recoverPendingAccountDeletion(
     /** Stores clear firebase authentication. */
     clearFirebaseAuthentication?: () => Promise<void>;
     /** Stores retry authoritative deletion. */
-    retryAuthoritativeDeletion?: () => Promise<{activeAccountUid?: string} | void>;
+    retryAuthoritativeDeletion?: () => Promise<void>;
     /** Stores wait for pending notification operations. */
     waitForPendingNotificationOperations?: () => Promise<void>;
     /** Stores with exclusive notification access. */
@@ -410,17 +373,15 @@ export async function recoverPendingAccountDeletion(
   const authoritativeRetryReady = phase === ACCOUNT_DELETION_PENDING_PHASE.authoritativeDeletion && stage === "signed";
   if (!clientCleanupReady && !authoritativeRetryReady) return false;
 
-  let activeAccountUid: string | undefined;
   if (authoritativeRetryReady) {
     rotateAccountDeletionEpoch();
     if (!retryAuthoritativeDeletion) throw new Error("account-deletion-recovery-unavailable");
-    activeAccountUid = (await retryAuthoritativeDeletion())?.activeAccountUid;
+    await retryAuthoritativeDeletion();
   }
   await purgeDeletedPlayerState(platform, {
     clearFirebaseAuthentication,
     waitForPendingNotificationOperations,
     withExclusiveNotificationAccess,
-    activeAccountUid,
   });
   return true;
 }

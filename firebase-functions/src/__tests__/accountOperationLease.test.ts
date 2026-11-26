@@ -16,6 +16,10 @@ const events: string[] = [];
 const mockDeletionSet = jest.fn(async () => {
   events.push("guard");
 });
+/** Occupies and disables the deterministic Auth UID after guard creation. */
+const mockPreserveDeletedJestAuthUser = jest.fn(async () => {
+  events.push("disable-auth");
+});
 /** Releases one active operation lease. */
 const mockLeaseDelete = jest.fn(async () => {
   events.push("release");
@@ -94,6 +98,7 @@ const firestore = Object.assign(
 );
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore}}));
+jest.mock("../../../platforms/web/jest/server/jestDeletedAuthUser", () => ({preserveDeletedJestAuthUser: mockPreserveDeletedJestAuthUser}));
 
 import {recordJestAccountDeletion} from "../../../platforms/web/jest/server/jestAccountDeletion";
 import {JestAccountDeletedError, JestAccountDeletionBusyError, runWithJestAccountOperationLease} from "../shared/accountDeletion";
@@ -169,7 +174,8 @@ describe("Jest account operation lease", () => {
       },
       {merge: true},
     );
-    expect(events).toEqual(["guard"]);
+    expect(mockPreserveDeletedJestAuthUser).toHaveBeenCalledWith(deterministicJestUid);
+    expect(events).toEqual(["guard", "disable-auth"]);
   });
 
   it.each([
@@ -187,5 +193,6 @@ describe("Jest account operation lease", () => {
       JestAccountDeletionBusyError,
     );
     expect(mockDeletionSet).toHaveBeenCalledTimes(1);
+    expect(mockPreserveDeletedJestAuthUser).not.toHaveBeenCalled();
   });
 });

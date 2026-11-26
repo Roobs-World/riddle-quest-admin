@@ -20,10 +20,9 @@ import {
   selectUngrantedReferralConversions,
 } from "./jestReferralReceipts";
 import {createReservedJestUser} from "./jestUser";
-import {assertJestAccountActive, getJestAccountDeletionRef, isJestAccountDeletionBusyError, respondToDeletedJestAccount as respondToDeletedAccount} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef, isJestAccountDeletionBusyError, respondToDeletedJestAccount} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {grantJestReferralRewards} from "./jestReferralGrant";
-import {deleteJestAccountGeneration} from "./jestAccountLifecycle";
-import {JestIdentityDeletedError, jestIdentityRef, readJestIdentity, readActiveJestIdentity} from "./jestIdentity";
+import {deleteAccountForUser} from "../../../../firebase-functions/src/profile/accountDeletion/deleteAccountData";
 export {selectReferralConversions, selectUngrantedReferralConversions} from "./jestReferralReceipts";
 /** Provides jest shared secret behavior. */
 const jestSharedSecret = defineSecret("JEST_SHARED_SECRET");
@@ -246,32 +245,23 @@ export const exchangeJestIdentity = onProtectedJsonRequestWithSentry(
   {...jestHttpOptions, minInstances: 0},
   async (request, response) => {
     try {
-      const body = request.body;
-      if (!isRecord(body) || (body.freshStart !== undefined && body.freshStart !== true)) throw new Error("invalid-request");
-      const {freshStart, deletedUid, ...identityBody} = body;
-      if (deletedUid !== undefined && !isBoundedString(deletedUid, 128)) throw new Error("invalid-request");
-      if (freshStart === true && !deletedUid) throw new Error("invalid-request");
-      if (freshStart !== true && deletedUid !== undefined) throw new Error("invalid-request");
-      const {playerSigned} = parseJestStringBody(identityBody, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides {player signed} behavior. */
+      const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides player behavior. */
       const player = resolveSignedJestPlayer(playerSigned);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(player.playerId);
+      /** Provides firestore behavior. */
       const firestore = admin.firestore();
-      const providerRef = jestIdentityRef(firestore, player.playerId);
-      const account = await firestore.runTransaction(async (transaction) => {
-        const identity = readJestIdentity(await transaction.get(providerRef), player.playerId);
-        const deletion = await transaction.get(getJestAccountDeletionRef(firestore, identity.uid));
-        const restarting = identity.status !== "active" || deletion.exists;
-        if (restarting && (freshStart !== true || deletedUid !== identity.uid ||
-            deletion.get("cleanupComplete") !== true || deletion.get("cleanupLeaseId"))) {
-          throw new JestIdentityDeletedError(identity.uid);
-        }
-        const accountGeneration = restarting ? identity.accountGeneration + 1 : identity.accountGeneration;
-        const uid = jestFirebaseUid(player.playerId, accountGeneration);
-        const userRef = firestore.collection("users").doc(uid);
-        const userSnapshot = await transaction.get(userRef);
-        if (restarting) {
-          const newDeletion = await transaction.get(getJestAccountDeletionRef(firestore, uid));
-          if (newDeletion.exists) throw new JestIdentityDeletedError(uid);
-        }
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      await firestore.runTransaction(async (transaction) => {
+        /** Provides [user snapshot, deletion snapshot] behavior. */
+        const [userSnapshot, deletionSnapshot] = await Promise.all([
+          transaction.get(userRef),
+          transaction.get(getJestAccountDeletionRef(firestore, uid)),
+        ]);
+        assertJestAccountActive(deletionSnapshot);
         if (userSnapshot.exists) {
           if (player.registered && userSnapshot.get("notificationsEnabled") === undefined) {
             transaction.update(userRef, {notificationsEnabled: true});
@@ -281,21 +271,16 @@ export const exchangeJestIdentity = onProtectedJsonRequestWithSentry(
           if (player.registered) user.notificationsEnabled = true;
           transaction.create(userRef, user);
         }
-        transaction.set(providerRef, {
-          provider: "jest", uid, accountGeneration, status: "active",
-          ...(restarting ? {lastDeletedUid: identity.uid} : identity.lastDeletedUid ? {lastDeletedUid: identity.lastDeletedUid} : {}),
-          ...(identity.premiumCoinsGrantedAt === undefined ? {} : {premiumCoinsGrantedAt: identity.premiumCoinsGrantedAt}),
-        });
-        return {uid, accountGeneration, freshAccount: !userSnapshot.exists};
       });
-      const customToken = await admin.auth().createCustomToken(account.uid, {
-        jestPlayerId: player.playerId, jestRegistered: player.registered,
-        jestAccountGeneration: account.accountGeneration,
-      });
-      if ((await getJestAccountDeletionRef(firestore, account.uid).get()).exists) {
-        throw new JestIdentityDeletedError(account.uid);
-      }
-      response.json({customToken, ...account});
+      /** Provides custom token behavior. */
+      const customToken = await admin
+        .auth()
+        .createCustomToken(uid, {jestPlayerId: player.playerId, jestRegistered: player.registered});
+      // Token creation is outside Firestore. Recheck the permanent guard before
+      // returning it; the retained disabled Auth sentinel covers the remaining
+      // response/redemption race after this read.
+      assertJestAccountActive(await getJestAccountDeletionRef(firestore, uid).get());
+      response.json({customToken, uid});
     } catch (error) {
       if (respondToDeletedJestAccount(error, response)) return;
       captureException(error, {firebaseFunction: "exchangeJestIdentity"});
@@ -312,14 +297,12 @@ export const retryJestAccountDeletion = onProtectedJsonRequestWithSentry(
   {...jestHttpOptions, timeoutSeconds: 540},
   async (request, response) => {
     try {
-      const body = request.body;
-      if (!isRecord(body)) throw new Error("invalid-request");
-      const {deletedUid, ...deletionBody} = body;
-      if (deletedUid !== undefined && !isBoundedString(deletedUid, 128)) throw new Error("invalid-request");
-      const {playerSigned} = parseJestStringBody(deletionBody, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides {player signed} behavior. */
+      const {playerSigned} = parseJestStringBody(request.body, {playerSigned: JEST_HTTP_INPUT_LIMITS.playerSigned});
+      /** Provides player behavior. */
       const player = resolveSignedJestPlayer(playerSigned);
-      const result = await deleteJestAccountGeneration(player.playerId, deletedUid as string | undefined);
-      response.json({accountDeleted: true, ...result});
+      await deleteAccountForUser(jestFirebaseUid(player.playerId), player.playerId);
+      response.json({accountDeleted: true});
     } catch (error) {
       if (isJestAccountDeletionBusyError(error)) {
         response.status(409).json({error: "account-deletion-in-progress"});
@@ -344,8 +327,7 @@ export const grantJestPurchase = onProtectedJsonRequestWithSentry(
         purchaseSigned,
         playerId,
         purchaseToken: requestedToken,
-        accountUid,
-      } = parseJestAccountBody(request.body, {
+      } = parseJestStringBody(request.body, {
         purchaseSigned: JEST_HTTP_INPUT_LIMITS.purchaseSigned,
         playerId: JEST_HTTP_INPUT_LIMITS.playerId,
         purchaseToken: JEST_HTTP_INPUT_LIMITS.purchaseToken,
@@ -354,6 +336,8 @@ export const grantJestPurchase = onProtectedJsonRequestWithSentry(
       const payload = verifyJestSigned(purchaseSigned, jestSharedSecret.value(), JEST_GAME_ID, playerId);
       /** Provides {purchase token, product sku, coins} behavior. */
       const {purchaseToken, productSku, coins} = resolveSignedPurchase(payload, requestedToken, configuredSkus);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(playerId);
       /** Provides firestore behavior. */
       const firestore = admin.firestore();
       /** Provides grant collection behavior. */
@@ -367,6 +351,10 @@ export const grantJestPurchase = onProtectedJsonRequestWithSentry(
         isSafeLegacyJestPurchaseGrantId(purchaseToken) && purchaseToken !== purchaseTokenHash
           ? grantCollection.doc(purchaseToken)
           : undefined;
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      /** Provides deletion ref behavior. */
+      const deletionRef = getJestAccountDeletionRef(firestore, uid);
       /** Provides already processed behavior. */
       let alreadyProcessed = false;
       /** Provides new coins behavior. */
@@ -374,9 +362,6 @@ export const grantJestPurchase = onProtectedJsonRequestWithSentry(
       /** Provides newly unlocked achievement ids behavior. */
       let newlyUnlockedAchievementIds: string[] = [];
       await firestore.runTransaction(async (transaction) => {
-        const {uid} = await readActiveJestIdentity(firestore, transaction, playerId, accountUid);
-        const userRef = firestore.collection("users").doc(uid);
-        const deletionRef = getJestAccountDeletionRef(firestore, uid);
         /** Provides [grant snapshot, legacy grant snapshot, user snapshot, deletion snapshot] behavior. */
         const [grantSnapshot, legacyGrantSnapshot, userSnapshot, deletionSnapshot] = await Promise.all([
           transaction.get(ref),
@@ -463,7 +448,7 @@ export const syncJestSubscriptions = onProtectedJsonRequestWithSentry(
   async (request, response) => {
     try {
       /** Provides {subscriptions signed, player id} behavior. */
-      const {subscriptionsSigned, playerId, accountUid} = parseJestAccountBody(request.body, {
+      const {subscriptionsSigned, playerId} = parseJestStringBody(request.body, {
         subscriptionsSigned: JEST_HTTP_INPUT_LIMITS.subscriptionsSigned,
         playerId: JEST_HTTP_INPUT_LIMITS.playerId,
       });
@@ -477,17 +462,19 @@ export const syncJestSubscriptions = onProtectedJsonRequestWithSentry(
         .map((subscription) => subscription.sku);
       /** Provides blocked skus behavior. */
       const blockedSkus = resolveConflictingSubscriptionSkus(activeSkus, subscriptionSkus);
+      /** Provides uid behavior. */
+      const uid = jestFirebaseUid(playerId);
       /** Provides firestore behavior. */
       const firestore = admin.firestore();
+      /** Provides r ref. */
+      const userRef = firestore.collection("users").doc(uid);
+      /** Provides deletion ref behavior. */
+      const deletionRef = getJestAccountDeletionRef(firestore, uid);
       /** Coins granted by this sync for an active Premium subscription. */
       let premiumCoinsAwarded = 0;
       /** Coin balance after this sync, when the user record is known. */
       let newCoins = 0;
       await firestore.runTransaction(async (transaction) => {
-        const identity = await readActiveJestIdentity(firestore, transaction, playerId, accountUid);
-        const {uid} = identity;
-        const userRef = firestore.collection("users").doc(uid);
-        const deletionRef = getJestAccountDeletionRef(firestore, uid);
         /** Provides [user snapshot, deletion snapshot] behavior. */
         const [userSnapshot, deletionSnapshot] = await Promise.all([
           transaction.get(userRef),
@@ -500,9 +487,7 @@ export const syncJestSubscriptions = onProtectedJsonRequestWithSentry(
           : createReservedJestUser(transaction, firestore, uid, playerId);
         /** Server clock for this grant decision. */
         const now = Date.now();
-        const lastGrant = Math.max(identity.premiumCoinsGrantedAt ?? 0,
-          typeof user.premiumCoinsGrantedAt === "number" && Number.isFinite(user.premiumCoinsGrantedAt) ? user.premiumCoinsGrantedAt : 0);
-        premiumCoinsAwarded = resolvePremiumCoinGrant(activeSkus.length > 0, lastGrant || undefined, now);
+        premiumCoinsAwarded = resolvePremiumCoinGrant(activeSkus.length > 0, user.premiumCoinsGrantedAt, now);
         /** Current coin balance before any Premium grant. */
         const currentCoins = typeof user.coins === "number" ? user.coins : 0;
         newCoins = currentCoins + premiumCoinsAwarded;
@@ -518,12 +503,6 @@ export const syncJestSubscriptions = onProtectedJsonRequestWithSentry(
         };
         if (userSnapshot.exists) transaction.update(userRef, updates);
         else transaction.create(userRef, {...user, ...updates});
-        if (premiumCoinsAwarded > 0 || lastGrant > 0) {
-          transaction.set(jestIdentityRef(firestore, playerId), {
-            provider: "jest", ...identity,
-            premiumCoinsGrantedAt: premiumCoinsAwarded > 0 ? now : lastGrant,
-          });
-        }
       });
       response.json({verified: true, activeSkus, blockedSkus, premiumCoinsAwarded, newCoins});
     } catch (error) {
@@ -543,7 +522,7 @@ export const verifyJestReferrals = onProtectedJsonRequestWithSentry(
   async (request, response) => {
     try {
       /** Provides {referrals signed, player id} behavior. */
-      const {referralsSigned, playerId, accountUid} = parseJestAccountBody(request.body, {
+      const {referralsSigned, playerId} = parseJestStringBody(request.body, {
         referralsSigned: JEST_HTTP_INPUT_LIMITS.referralsSigned,
         playerId: JEST_HTTP_INPUT_LIMITS.playerId,
       });
@@ -572,7 +551,6 @@ export const verifyJestReferrals = onProtectedJsonRequestWithSentry(
         playerId,
         uniqueConversions,
         ungrantedCandidates,
-        accountUid,
       );
       response.json({
         verified: true,
@@ -592,21 +570,6 @@ export const verifyJestReferrals = onProtectedJsonRequestWithSentry(
   },
   jestProtectedJsonBoundary,
 );
-
-function parseJestAccountBody<Field extends string>(body: unknown, limits: Readonly<Record<Field, number>>) {
-  if (!isRecord(body)) throw new Error("invalid-request");
-  const {accountUid, ...payload} = body;
-  if (accountUid !== undefined && !isBoundedString(accountUid, 128)) throw new Error("invalid-request");
-  return {...parseJestStringBody(payload, limits), accountUid: accountUid as string | undefined};
-}
-
-function respondToDeletedJestAccount(error: unknown, response: JestHttpResponse): boolean {
-  if (error instanceof JestIdentityDeletedError) {
-    response.status(409).json({error: "account-deleted", deletedUid: error.deletedUid});
-    return true;
-  }
-  return respondToDeletedAccount(error, response);
-}
 
 /** Indicates whether is record. */
 function isRecord(value: unknown): value is Record<string, unknown> {

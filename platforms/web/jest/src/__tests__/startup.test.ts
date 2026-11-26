@@ -66,7 +66,7 @@ it.each(["throw", "reject"])("fails closed when signed-player retrieval fails vi
   await expect(startJestSession(
     platform, {exchangeIdentity} as never, {reconcile} as never, authenticate,
   )).resolves.toMatchObject({status: "success", value: {firebaseAuthenticated: true}});
-  expect(exchangeIdentity).toHaveBeenCalledWith("mock.signed.player", undefined, undefined);
+  expect(exchangeIdentity).toHaveBeenCalledWith("mock.signed.player");
   expect(authenticate).toHaveBeenCalledWith("firebase");
   markJestPlayable(platform);
 });
@@ -181,7 +181,7 @@ it("runs identity, Firebase auth and recovery in startup order", async () => {
   expect(platform.progress).toEqual([5, 15, 28, 42, 58, 72]);
 });
 
-it.each([false, true])("never recovers purchases before identity succeeds when registered=%s", async (registered) => {
+it.each([false, true])("recovers signed purchases before a later identity failure when registered=%s", async (registered) => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = registered;
@@ -216,9 +216,9 @@ it.each([false, true])("never recovers purchases before identity succeeds when r
     ),
   ).resolves.toMatchObject({status: "retryable-failure"});
 
-  expect(platform.getIncompletePurchases).not.toHaveBeenCalled();
-  expect(backend.grantPurchase).not.toHaveBeenCalled();
-  expect(platform.completePurchase).not.toHaveBeenCalled();
+  expect(platform.getIncompletePurchases).toHaveBeenCalledTimes(1);
+  expect(backend.grantPurchase).toHaveBeenCalledWith("signed-purchases", platform.player.playerId, "pending-token");
+  expect(platform.completePurchase).toHaveBeenCalledWith("pending-token");
 });
 
 it("stops startup when the incomplete-purchase check fails", async () => {
@@ -230,16 +230,16 @@ it("stops startup when the incomplete-purchase check fails", async () => {
     message: "purchase recovery unavailable",
   }));
   /** Provides backend behavior. */
-  const backend = {exchangeIdentity: jest.fn(async () => ({customToken: "firebase", uid: "uid"}))};
+  const backend = {exchangeIdentity: jest.fn()};
 
   await expect(
     startJestSession(platform, backend as never, {} as never, async () => undefined),
   ).resolves.toEqual({status: "retryable-failure", message: "purchase recovery unavailable"});
 
-  expect(backend.exchangeIdentity).toHaveBeenCalledWith("mock.signed.player", undefined, undefined);
+  expect(backend.exchangeIdentity).not.toHaveBeenCalled();
 });
 
-it("recovers an empty first page with more purchases after authentication", async () => {
+it("continues urgent recovery when an empty first page reports more purchases", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = true;
@@ -254,7 +254,7 @@ it("recovers an empty first page with more purchases after authentication", asyn
 
   await startJestSession(
     platform,
-    {exchangeIdentity: async () => ({customToken: "firebase", uid: "uid"})} as never,
+    {exchangeIdentity: async () => Promise.reject(new Error("stop after recovery"))} as never,
     {reconcile} as never,
     async () => undefined,
     undefined,
@@ -269,7 +269,7 @@ it("recovers an empty first page with more purchases after authentication", asyn
   });
 });
 
-it("stops startup when authenticated purchase recovery cannot complete", async () => {
+it("stops startup when urgent purchase recovery cannot complete", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = true;
@@ -282,7 +282,7 @@ it("stops startup when authenticated purchase recovery cannot complete", async (
     },
   }));
   /** Provides backend behavior. */
-  const backend = {exchangeIdentity: jest.fn(async () => ({customToken: "firebase", uid: "uid"}))};
+  const backend = {exchangeIdentity: jest.fn()};
 
   await expect(
     startJestSession(
@@ -293,10 +293,10 @@ it("stops startup when authenticated purchase recovery cannot complete", async (
     ),
   ).resolves.toEqual({status: "retryable-failure", message: "grant unavailable"});
 
-  expect(backend.exchangeIdentity).toHaveBeenCalledWith("mock.signed.player", undefined, undefined);
+  expect(backend.exchangeIdentity).not.toHaveBeenCalled();
 });
 
-it("runs purchase recovery exactly once after authentication", async () => {
+it("does not run successful urgent recovery a second time after authentication", async () => {
   /** Provides platform behavior. */
   const platform = new MockJestPlatform();
   platform.player.registered = true;
@@ -502,7 +502,7 @@ it("stops startup on an authoritative tombstone without Firebase auth or purchas
     startJestSession(new MockJestPlatform(), {exchangeIdentity} as never, {reconcile} as never, authenticateFirebase),
   ).resolves.toEqual({status: "account-deleted"});
 
-  expect(exchangeIdentity).toHaveBeenCalledWith(expect.any(String), undefined, undefined);
+  expect(exchangeIdentity).toHaveBeenCalledWith(expect.any(String));
   expect(authenticateFirebase).not.toHaveBeenCalled();
   expect(reconcile).not.toHaveBeenCalled();
 });
@@ -995,74 +995,4 @@ it("marks the initialized platform playable", () => {
   markJestPlayable(platform);
   expect(platform.progress.at(-1)).toBe(100);
   expect(platform.loaded).toBe(true);
-});
-
-
-it.each([
-  {label: "server-confirmed fresh account", identity: {freshAccount: true, accountGeneration: 2}, savedUid: "old-uid", freshStart: undefined},
-  {label: "different stored account", identity: {freshAccount: false, accountGeneration: 2}, savedUid: "old-uid", freshStart: undefined},
-  {label: "legacy unscoped saved state", identity: {freshAccount: false, accountGeneration: 2}, savedUid: undefined, freshStart: undefined},
-  {label: "explicit fresh start", identity: {freshAccount: true, accountGeneration: 2}, savedUid: "old-uid", freshStart: true},
-])("discards old preferences and progress for $label", async ({identity, savedUid, freshStart}) => {
-  const platform = new MockJestPlatform(true);
-  platform.preferences = {firebaseAccountUid: savedUid, muted: true, onboardingComplete: true, firstMilestoneMarked: true};
-  platform.readPlayerData = () => ({schemaVersion: 1, updatedAt: 10});
-  platform.getEntryIntent = () => ({gameMode: "challenge", reference: "old-reference"});
-  const cleared = jest.spyOn(platform, "clearPlayerState");
-  const exchangeIdentity = jest.fn(async () => ({status: "success", customToken: "new-token", uid: "fresh-uid", ...identity}));
-  const result = await startJestSession(platform, {exchangeIdentity} as never,
-    {reconcile: async () => ({status: "success", value: 0})} as never, async () => undefined,
-    undefined, {freshStart, deletedUid: "old-uid"});
-  expect(result).toMatchObject({status: "success", value: {
-    firebaseUid: "fresh-uid", preferences: {firebaseAccountUid: "fresh-uid"}, playerData: null, entryIntent: {},
-  }});
-  expect(cleared).toHaveBeenCalledTimes(1);
-  expect(platform.preferences).toEqual({firebaseAccountUid: "fresh-uid"});
-  expect(exchangeIdentity).toHaveBeenCalledWith("mock.signed.player", freshStart, "old-uid");
-  markJestPlayable(platform);
-});
-
-it("retains preferences and progress when reopening the same replacement generation", async () => {
-  const platform = new MockJestPlatform(true);
-  const preferences = {firebaseAccountUid: "same-uid", muted: true, onboardingComplete: true};
-  const playerData = {schemaVersion: 1 as const, updatedAt: 10};
-  platform.preferences = preferences;
-  platform.readPlayerData = () => playerData;
-  const cleared = jest.spyOn(platform, "clearPlayerState");
-  const result = await startJestSession(platform, {exchangeIdentity: async () => ({
-    status: "success", customToken: "token", uid: "same-uid", accountGeneration: 3, freshAccount: false,
-  })} as never, {reconcile: async () => ({status: "success", value: 0})} as never, async () => undefined);
-  expect(result).toMatchObject({status: "success", value: {preferences, playerData}});
-  expect(cleared).not.toHaveBeenCalled();
-  markJestPlayable(platform);
-});
-
-it("passes the retired Firebase uid from a tombstone into deletion recovery", async () => {
-  const platform = new MockJestPlatform();
-  const onIdentityDeleted = jest.fn(async () => undefined);
-  const result = await startJestSession(platform, {exchangeIdentity: async () => ({
-    status: "account-deleted", deletedUid: "old-uid",
-  })} as never, {reconcile: jest.fn()} as never, jest.fn(), undefined, {onIdentityDeleted});
-  expect(result).toEqual({status: "account-deleted"});
-  expect(onIdentityDeleted).toHaveBeenCalledWith("mock.signed.player", "old-uid");
-});
-
-
-it("preserves an already resumed replacement when an old tab requests fresh start again", async () => {
-  const platform = new MockJestPlatform(true);
-  const preferences = {firebaseAccountUid: "current-uid", onboardingComplete: true};
-  const playerData = {schemaVersion: 1 as const, updatedAt: 20};
-  platform.preferences = preferences;
-  platform.readPlayerData = () => playerData;
-  platform.getEntryIntent = () => ({gameMode: "challenge"});
-  const cleared = jest.spyOn(platform, "clearPlayerState");
-  const exchangeIdentity = jest.fn(async () => ({status: "success", customToken: "token", uid: "current-uid",
-    accountGeneration: 2, freshAccount: false}));
-  const result = await startJestSession(platform, {exchangeIdentity} as never,
-    {reconcile: async () => ({status: "success", value: 0})} as never, async () => undefined,
-    undefined, {freshStart: true, deletedUid: "retired-uid"});
-  expect(result).toMatchObject({status: "success", value: {preferences, playerData, entryIntent: {}}});
-  expect(cleared).not.toHaveBeenCalled();
-  expect(exchangeIdentity).toHaveBeenCalledWith("mock.signed.player", true, "retired-uid");
-  markJestPlayable(platform);
 });

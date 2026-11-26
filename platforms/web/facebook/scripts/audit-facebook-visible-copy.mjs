@@ -47,6 +47,7 @@ const requiredKeys = {
     "Profile.DELETE_ACCOUNT_ERROR_TITLE",
     "Profile.DELETE_ACCOUNT_LOADING",
     "Profile.DELETE_ACCOUNT_SUCCESS_MESSAGE",
+    "Profile.DELETE_ACCOUNT_SUCCESS_TITLE",
   ],
   shop: [
     "CoinShop.COINS_SUFFIX",

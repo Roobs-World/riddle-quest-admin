@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Не удалось удалить учетную запись",
     "DELETE_ACCOUNT_LOADING": "Удаление...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Ваша учетная запись удалена.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Аккаунт удален",
     "EDIT_BUTTON": "Изменить",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Введите новое имя пользователя",
     "GAMES_PLAYED_STAT": "Сыгранные игры",

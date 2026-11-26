@@ -8,6 +8,19 @@ import {invokeSdkOperation, type JestSdkBoundary} from "./sdkBoundary";
 type Sdk = JestSdkBoundary;
 /** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
+/** Exact client-writable SDK keys removed after authoritative account deletion. */
+const PLAYER_STATE_KEYS = [
+  "locale",
+  "muted",
+  "reducedMotion",
+  "highContrast",
+  "presenceEnabled",
+  "onboardingComplete",
+  "registrationPromptDismissedAt",
+  "firstMilestoneMarked",
+  "jestGuestCompletedRiddles",
+  PLAYER_DATA_KEY,
+] as const;
 /** Bounds subscription cancellation confirmation, which cannot create a new charge. */
 const SUBSCRIPTION_CHECKOUT_TIMEOUT_MS = 30_000;
 /** Bounds provider reads and acknowledgments required for startup purchase recovery. */
@@ -215,7 +228,6 @@ export class JestSdkPlatform implements JestPlatformPort {
     /** Provides data behavior. */
     const data = this.sdk.data?.getAll?.() ?? {};
     return {
-      firebaseAccountUid: typeof data.firebaseAccountUid === "string" ? data.firebaseAccountUid : undefined,
       locale: typeof data.locale === "string" ? data.locale : undefined,
       muted: typeof data.muted === "boolean" ? data.muted : undefined,
       reducedMotion: typeof data.reducedMotion === "boolean" ? data.reducedMotion : undefined,
@@ -263,12 +275,15 @@ export class JestSdkPlatform implements JestPlatformPort {
     await data.flush();
   }
   /**
-   * Clears the entire per-game player store after authoritative account deletion.
+   * Deletes every known app-owned SDK key and flushes after authoritative account deletion.
+   *
+   * @remarks
+   * The exact allowlist avoids erasing provider-owned data or keys belonging to another app.
    */
   async clearPlayerState() {
     /** Provider storage module used to erase the app-owned keys. */
     const data = this.getSdkModule("data");
-    Object.keys(data.getAll()).forEach((key) => data.delete(key));
+    PLAYER_STATE_KEYS.forEach((key) => data.delete(key));
     await data.flush();
   }
   /** @returns Sanitized provider entry data merged with approved launch-query attribution. */

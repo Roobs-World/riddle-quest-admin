@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Không thể xóa tài khoản",
     "DELETE_ACCOUNT_LOADING": "Đang xóa...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Tài khoản của bạn đã bị xóa.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Tài khoản đã bị xóa",
     "EDIT_BUTTON": "Chỉnh sửa",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Nhập tên người dùng mới",
     "GAMES_PLAYED_STAT": "Trò chơi đã chơi",

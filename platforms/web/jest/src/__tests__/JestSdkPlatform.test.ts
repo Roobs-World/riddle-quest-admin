@@ -82,7 +82,6 @@ const savedGame = {
 
 it("stores only low-integrity preferences", () =>
   expect(new JestSdkPlatform(sdk()).readPreferences()).toEqual({
-    firebaseAccountUid: undefined,
     locale: "en",
     muted: undefined,
     reducedMotion: undefined,
@@ -570,7 +569,6 @@ it("round-trips every supported preference", async () => {
   const mock = sdk();
   /** Provides preferences behavior. */
   const preferences = {
-    firebaseAccountUid: "generation-two-uid",
     locale: "fr",
     muted: true,
     reducedMotion: false,
@@ -589,13 +587,23 @@ it("round-trips every supported preference", async () => {
   expect(mock.data.flush).toHaveBeenCalled();
 });
 
-it("deletes every stored key, including unknown old account data, and flushes once", async () => {
+it("deletes every client-writable key and flushes once after authoritative account deletion", async () => {
+  /** Provides mock behavior. */
   const mock = sdk();
-  const values = {locale: "fr", coins: 999, firebaseAccountUid: "old-uid", customLegacyData: {old: true},
-    riddleQuestPlayerState: {schemaVersion: 1, updatedAt: 10}};
-  mock.data.getAll.mockReturnValue(values);
   await new JestSdkPlatform(mock).clearPlayerState();
-  expect(mock.data.delete.mock.calls.map(([key]) => key)).toEqual(Object.keys(values));
+
+  expect(mock.data.delete.mock.calls.map(([key]) => key)).toEqual([
+    "locale",
+    "muted",
+    "reducedMotion",
+    "highContrast",
+    "presenceEnabled",
+    "onboardingComplete",
+    "registrationPromptDismissedAt",
+    "firstMilestoneMarked",
+    "jestGuestCompletedRiddles",
+    "riddleQuestPlayerState",
+  ]);
   expect(mock.data.flush).toHaveBeenCalledTimes(1);
 });
 

@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "계정을 삭제할 수 없습니다",
     "DELETE_ACCOUNT_LOADING": "삭제 중...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "귀하의 계정이 삭제되었습니다.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "계정이 삭제되었습니다.",
     "EDIT_BUTTON": "편집",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "새 사용자 이름 입력",
     "GAMES_PLAYED_STAT": "플레이한 게임",

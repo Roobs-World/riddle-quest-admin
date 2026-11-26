@@ -33,6 +33,7 @@
     "DELETE_ACCOUNT_ERROR_TITLE": "Could not delete account",
     "DELETE_ACCOUNT_LOADING": "Deleting...",
     "DELETE_ACCOUNT_SUCCESS_MESSAGE": "Your account has been deleted.",
+    "DELETE_ACCOUNT_SUCCESS_TITLE": "Account deleted",
     "EDIT_BUTTON": "Edit",
     "ENTER_NEW_USERNAME_PLACEHOLDER": "Enter new username",
     "GAMES_PLAYED_STAT": "Games Played",

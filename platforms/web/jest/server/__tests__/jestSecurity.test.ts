@@ -27,12 +27,6 @@ describe("Jest signed verification", () => {
     ["freshness", () => verifyJestSigned(sign(payload), secret, "game", "p1", 3000, 900)],
   ])("rejects invalid %s", (_name, verify) => expect(verify).toThrow());
   it("creates stable scoped Firebase UIDs", () => expect(jestFirebaseUid("p1")).toBe(jestFirebaseUid("p1")));
-  it("keeps legacy IDs while isolating every recreated account", () => {
-    expect(jestFirebaseUid("p1", 1)).toBe(jestFirebaseUid("p1"));
-    expect(jestFirebaseUid("p1", 2)).not.toBe(jestFirebaseUid("p1"));
-    expect(jestFirebaseUid("p1", 3)).not.toBe(jestFirebaseUid("p1", 2));
-    expect(isJestFirebaseUid(jestFirebaseUid("p1", 2))).toBe(true);
-  });
 
   it("recognizes only canonical deterministic Jest Firebase UIDs", () => {
     expect(isJestFirebaseUid(jestFirebaseUid("p1"))).toBe(true);
