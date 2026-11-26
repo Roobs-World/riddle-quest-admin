@@ -673,7 +673,7 @@ try {
   // The long gate receives metadata only: no upload token, email, credential
   // path, Sentry token, or unrelated ambient environment. Release credentials
   // are read only after it passes.
-  runPnpm(["verify:production"], gateEnvironment);
+  runPnpm(["verify:production:jest"], gateEnvironment);
   assertSourceClean();
   // Capture the installed graph while the read-only package store is available.
   // The credential-bearing rebuild consumes this frozen input without querying pnpm.

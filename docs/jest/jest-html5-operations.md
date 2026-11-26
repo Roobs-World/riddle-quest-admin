@@ -139,7 +139,7 @@ non-cancellable production concurrency lock; it does not provide a shorter CI-on
 YouTube retain their separately documented manual handoff boundaries.
 
 The command refuses a dirty worktree, acquires an exclusive release lock, adds the source commit and a random attempt ID
-to its timestamped version, and runs `verify:production` before reading credential-file contents. Timestamped
+to its timestamped version, and runs `verify:production:jest` before reading credential-file contents. This retains the shared security, type and backend checks while building and validating only the Jest game artifact. Timestamped
 releases require Linux and functional `/usr/bin/bwrap`; the command probes the boundary first and refuses an unsandboxed
 fallback. Every gate, build, validator and uploader child receives a minimal environment and runs with the
 operator home hidden, isolated home/temp/PID/proc state, a read-only host filesystem, and required runtime caches
