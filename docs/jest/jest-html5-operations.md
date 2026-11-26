@@ -17,6 +17,8 @@ Use an uploaded build in Jest's Developer Console and sandbox. The root package 
 
 Sandbox checkout uses the real platform UI at zero charge. Confirm the account's **Sandbox User** marker before any authorized purchase. Purchase acceptance must include signed receipt verification, a one-time grant, recovery after interruption and successful consumption. Subscription acceptance must include platform activation, restoration and cancellation. Jest owns its Stripe customer, wallet, checkout and charge lifecycle; no Stripe secret or direct Stripe client belongs in the game artifact.
 
+Use dedicated sandbox accounts for purchase acceptance, separate from accounts used for ordinary economy playtesting. Sandbox checkout adds the advertised coins to the saved game even though it charges no money. The [26 November balance reconciliation](evidence/coin-balance-reconciliation-2026-11-26.md) removed 17,350 owner-approved test coins from an otherwise ordinary play account. Any approved correction must retain purchase replay receipts and Premium's last-grant timestamp, record an idempotent adjustment, and preserve concurrent gameplay changes.
+
 A local build or artifact audit does not establish hosted gameplay, payment, notification, persistence or referral acceptance. Keep production App Check and origin restrictions intact while investigating a hosted failure. Do not add localhost to the deployed `JEST_GAME_ORIGIN` allowlist.
 
 ## Build and artifact verification

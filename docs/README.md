@@ -35,6 +35,8 @@ Leaderboard requests, page caching and loading behavior are documented in [Leade
 
 The shared catalog, localized collections and unlock authority are documented in [Achievements](common/progression/achievements.md).
 
+Coin earnings, help prices and balance evaluation are documented in [Coin economy](common/core/game-economy.md), including the [Jest sandbox balance reconciliation](jest/evidence/coin-balance-reconciliation-2026-11-26.md).
+
 ## Documentation placement
 
 Move callers and links with a document so it has one canonical location. Add shared module documentation beneath `common/`, and provider-specific documentation beneath that provider's folder.
