@@ -5,7 +5,7 @@ import {isCompletionAdvancePending} from "../../../gameplay/session/completion/c
 import {useReferralSharing} from "../../../sharing/components/ReferralSharingCapability";
 import {CoinFlight} from "./CoinFlight";
 import type {CompletionRewardBreakdown} from "../../rewards/completionRewardBreakdown";
-import chestClosedUrl from "../../../../assets/images-web/chest-closed.png";
+import chestClosedUrl from "../../../../assets/images-web/chest-closed.webp";
 import chestOpenUrl from "../../../../assets/images-web/chest-open.webp";
 import "../../styles/victory.css";
 

@@ -1,6 +1,6 @@
 import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
 import {ProfileSubscriptionContext} from "../browser/ProfileSubscriptionContext";
-import chestUrl from "../../../assets/images-web/chest-closed.png";
+import chestUrl from "../../../assets/images-web/chest-closed.webp";
 import {useProviderProfile} from "./ProviderProfileContext";
 import {useContext, useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";

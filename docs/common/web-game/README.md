@@ -7,3 +7,4 @@ Shared browser components and adapters live beside their features under `src/`, 
 - [Rocket flight motion research](research/rocket-flight-motion-2026-10-17.md)
 - [UI, rendering, input and recovery evidence](evidence/)
 - [Startup work reduction, November 26, 2026](evidence/startup-work-reduction-2026-11-26.md)
+- [Web media conversion and size reductions](media-assets.md)

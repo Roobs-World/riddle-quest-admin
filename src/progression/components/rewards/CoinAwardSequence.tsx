@@ -1,5 +1,5 @@
 import {useRef} from "react";
-import chestClosedUrl from "../../../../assets/images-web/chest-closed.png";
+import chestClosedUrl from "../../../../assets/images-web/chest-closed.webp";
 import chestOpenUrl from "../../../../assets/images-web/chest-open.webp";
 import {useTranslator} from "../../../localization/browser/i18n";
 import {CoinFlight} from "./CoinFlight";
