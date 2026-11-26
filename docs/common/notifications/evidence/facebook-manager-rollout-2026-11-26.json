@@ -30,5 +30,26 @@
   "facebookNotificationsSentByVerification": 0,
   "hostedFacebookDeliveryAndTapObserved": false,
   "facebookBuildEvidence": "../../../facebook/evidence/facebook-campaign-opt-in-build-2026-11-26.json",
-  "androidDeliveryEvidence": "../../../android/evidence/native-notification-tap-2026-11-26.md"
+  "androidDeliveryEvidence": "../../../android/evidence/native-notification-tap-2026-11-26.md",
+  "localBridgeVerification": {
+    "flow": "Firestore trigger through manager registration, Postgres campaign claim, manager delivery and Firebase dispatch to a simulated Meta HTTP endpoint",
+    "providerAcknowledged": "accepted",
+    "incompleteHttp200": "uncertain",
+    "replayedCampaign": "same outcome with zero further provider calls",
+    "alteredReplay": 409,
+    "revocationPreventedLaterDelivery": true,
+    "staleRegistrationDidNotUndoOptOut": true,
+    "androidWireCompatibilityCases": 54
+  },
+  "privateBridgeChecks": {
+    "authenticatedInvalidVercelRegistration": 400,
+    "unsignedFirebaseDispatch": 401,
+    "authenticatedInvalidFirebaseDispatch": 400,
+    "authenticatedExpiredFirebaseDispatch": {
+      "httpStatus": 200,
+      "outcome": "skipped"
+    },
+    "liveRecipientWrites": 0,
+    "liveMetaSends": 0
+  }
 }
