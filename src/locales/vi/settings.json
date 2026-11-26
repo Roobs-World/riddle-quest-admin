@@ -2,7 +2,7 @@
   "Settings": {
     "ABOUT_BUTTON": "Giới thiệu",
     "ACCOUNT_DELETION_BUTTON": "Xóa tài khoản",
-    "ANALYTICS_DESCRIPTION": "Phân tích mức sử dụng tùy chọn với Google để cải thiện trò chơi. Sử dụng cookie phân tích. Mặc định tắt; bạn có thể tắt tại đây bất cứ lúc nào.",
+    "ANALYTICS_DESCRIPTION": "Phân tích mức sử dụng tùy chọn với Google để cải thiện trò chơi. Sử dụng cookie phân tích. Mặc định bật; bạn có thể tắt tại đây bất cứ lúc nào.",
     "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Đóng",
     "CREDITS_BUTTON": "Đội ngũ thực hiện",

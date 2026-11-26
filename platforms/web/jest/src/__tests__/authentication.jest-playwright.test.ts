@@ -172,7 +172,9 @@ describeBrowser("Jest authentication integration", () => {
     await enterRegisteredGame(page);
     await page.getByRole("button", {name: "Settings", exact: true}).click();
     expect(await page.getByRole("combobox", {name: "Language", exact: true}).count()).toBe(0);
-    await page.getByRole("button", {name: "Buy coins", exact: true}).first().click();
+    expect(await page.getByRole("button", {name: "Buy coins", exact: true}).count()).toBe(0);
+    await page.getByRole("button", {name: "Close", exact: true}).click();
+    await page.getByRole("button", {name: /coins\. Buy coins$/u}).click();
     await page.getByText("BEST VALUE", {exact: true}).waitFor();
     /** The two provider consumables keep their issued names, grants and prices. */
     const cards = page.locator(".game-shop-grid article:not(.shop-subscription-card)");

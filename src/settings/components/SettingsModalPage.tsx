@@ -26,18 +26,15 @@ export type SettingsModalPageProps = {
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
   onToggleMute: () => void;
-  /** Shows the platform shop only when a verified catalog is available. */
-  commerceAvailable?: boolean;
 };
 
-/** Renders sound, accessibility, language, help, legal, and shop settings. */
+/** Renders sound, accessibility, language, help, and legal settings. */
 export function SettingsModalPage({
   locale,
   muted,
   platformRegistered,
   onOpenModal,
   onToggleMute,
-  commerceAvailable = true,
 }: SettingsModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
@@ -88,12 +85,6 @@ export function SettingsModalPage({
         <span>{tr("Settings.ABOUT_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>
       </button>
-      {commerceAvailable && (
-        <button className="settings-row" onClick={() => onOpenModal("shop")}>
-          <span>{tr("Navigation.BUY_COINS_BUTTON")}</span>
-          <strong aria-hidden="true">›</strong>
-        </button>
-      )}
       {subscriptionControls}
     </div>
   );

@@ -1,13 +1,13 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import {readBrowserStorage, removeBrowserStorage, writeBrowserStorage} from "../../platform/browser/storage/browserStorage";
+import {readBrowserStorage, writeBrowserStorage} from "../../platform/browser/storage/browserStorage";
 import type {AnalyticsConsent} from "./AnalyticsConsentContext";
 import type {GoogleAnalyticsConsentProps} from "./GoogleAnalyticsConsent";
 import {trackEvent} from "./eventsRuntime";
 
-/** Restores only an affirmative choice for this target; other values keep collection closed. */
+/** Defaults collection to enabled for this target and restores explicit opt-outs. */
 export default function GoogleAnalyticsConsentRuntime({platform, measurementId, available, isCurrent, lifetimeSignal, publish}: Omit<GoogleAnalyticsConsentProps, "children"> & {publish(consent: AnalyticsConsent | null): void}) {
   const storageKey = `riddleQuest:googleAnalyticsConsent:${platform}:v1`;
-  const [enabled, setEnabled] = useState(() => readBrowserStorage("local", storageKey) === "granted");
+  const [enabled, setEnabled] = useState(() => readBrowserStorage("local", storageKey) !== "denied");
   const decision = useRef(enabled);
   const stop = useRef<() => void>(() => {});
   const initialization = useRef<AbortController | null>(null);
@@ -15,9 +15,8 @@ export default function GoogleAnalyticsConsentRuntime({platform, measurementId, 
 
   const change = useCallback((next: boolean) => {
     decision.current = next;
-    if (next) writeBrowserStorage("local", storageKey, "granted");
-    else {
-      removeBrowserStorage("local", storageKey);
+    writeBrowserStorage("local", storageKey, next ? "granted" : "denied");
+    if (!next) {
       initialization.current?.abort();
       stop.current();
       stop.current = () => {};
@@ -34,7 +33,7 @@ export default function GoogleAnalyticsConsentRuntime({platform, measurementId, 
         stop.current = () => {};
       }
       if (event.key !== storageKey && event.key !== null) return;
-      const next = readBrowserStorage("local", storageKey) === "granted";
+      const next = readBrowserStorage("local", storageKey) !== "denied";
       decision.current = next;
       if (!next) {
         initialization.current?.abort();

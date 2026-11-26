@@ -21,17 +21,7 @@ describe("utility modal pages", () => {
     expect(enabledHtml).toContain("On");
     expect(mutedHtml).toContain("Off");
     expect(enabledHtml).not.toContain("Show activity to rivals");
-    expect(
-      renderToString(
-        <SettingsModalPage
-          locale="en"
-          muted={false}
-          onOpenModal={noop}
-          onToggleMute={noop}
-          commerceAvailable={false}
-        />,
-      ),
-    ).not.toContain("Buy coins");
+    expect(enabledHtml).not.toContain("Buy coins");
   });
 
   it("renders instructions, credits, and legal information", () => {

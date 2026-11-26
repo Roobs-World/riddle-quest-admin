@@ -72,7 +72,7 @@ const clearCookies = (measurementId: string) => {
   }
 };
 
-/** Loads the Google tag only after affirmative consent in a real supported production session. */
+/** Loads the Google tag while analytics is enabled in a real supported production session. */
 export async function initializeGoogleAnalytics({measurementId, isCurrent = () => true, signal}: {
   measurementId: string;
   isCurrent?: () => boolean;

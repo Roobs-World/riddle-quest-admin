@@ -2,7 +2,7 @@
   "Settings": {
     "ABOUT_BUTTON": "Informazioni",
     "ACCOUNT_DELETION_BUTTON": "Elimina account",
-    "ANALYTICS_DESCRIPTION": "Analisi facoltativa dell’utilizzo con Google per migliorare il gioco. Usa cookie di analisi. Disattivata per impostazione predefinita; puoi disattivarla qui in qualsiasi momento.",
+    "ANALYTICS_DESCRIPTION": "Analisi facoltativa dell’utilizzo con Google per migliorare il gioco. Usa cookie di analisi. Attivata per impostazione predefinita; puoi disattivarla qui in qualsiasi momento.",
     "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Chiudi",
     "CREDITS_BUTTON": "Crediti",

@@ -1,14 +1,14 @@
 # Google Analytics and action events
 
-Updated 24 November 2026. This describes the source implementation. A local build does not deploy these changes or prove production ingestion.
+Updated 26 November 2026. This describes the source implementation. A local build does not deploy these changes or prove production ingestion.
 
 ## Platform delivery
 
 | Target | Delivery | Collection boundary |
 | --- | --- | --- |
-| Jest | Google Analytics web stream `G-7CWWGNE52Q`, plus existing Jest `captureEvent` | GA requires player opt-in in Settings and an active production session. Jest's own analytics remain separate. |
-| Facebook | Google Analytics web stream `G-1YZP6C2H4V`, plus existing `FBInstant.logEvent` | GA requires player opt-in in Settings, authenticated startup and the existing audience gate. Meta's own analytics remain separate. |
-| Android / Google Play | Native Firebase Analytics for registered Android app `1:329028367192:android:4c0af717dd9c0db1b7eb2d` | Disabled by default. The Account screen and offline menu expose the same device preference. Emulator configurations do not connect the sink. |
+| Jest | Google Analytics web stream `G-7CWWGNE52Q`, plus existing Jest `captureEvent` | GA defaults to on in an active production session. Players can turn it off in Settings. Jest's own analytics remain separate. |
+| Facebook | Google Analytics web stream `G-1YZP6C2H4V`, plus existing `FBInstant.logEvent` | GA defaults to on after authenticated startup and the existing audience gate. Players can turn it off in Settings. Meta's own analytics remain separate. |
+| Android / Google Play | Native Firebase Analytics for registered Android app `1:329028367192:android:4c0af717dd9c0db1b7eb2d` | Defaults to on when there is no saved preference. The Account screen and offline menu expose the same device preference. Emulator configurations do not connect the sink. |
 | Reddit | No Google Analytics or external browser analytics | Browser traffic remains under same-origin `/api/*`. There is no approved custom analytics delivery contract in the current adapter. Shared events do not create network traffic without a destination. |
 | YouTube Playables | YouTube's portal reporting and required SDK lifecycle signals | No external analytics calls or analytics SDK. |
 | GameSnacks | Required GameSnacks lifecycle signals and platform reporting | No additional analytics SDK or custom-event API is assumed. |
@@ -31,9 +31,9 @@ Numeric property and stream IDs identify reporting resources. They do not replac
 
 ## Consent and payloads
 
-Web consent is affirmative, off by default and stored separately for each target. Withdrawal disconnects the external sink, discards initialization events, disables the Google tag, cancels pending initialization and removes GA cookies. Cross-tab storage changes apply the same withdrawal. Local development and trusted browser fixtures do not load the Google tag. The current screen is sent when a consented destination connects; actions before opt-in are discarded.
+Web analytics defaults to on when there is no saved preference. Explicit choices are stored separately for each target as `granted` or `denied`; a saved opt-out remains off after reload. The previous implementation removed the preference on opt-out, so an absent legacy key cannot distinguish a previous opt-out from a new player. Withdrawal disconnects the external sink, discards initialization events, disables the Google tag, cancels pending initialization and removes GA cookies. Cross-tab storage changes apply the same preference. Local development and trusted browser fixtures do not load the Google tag. The current screen is sent when an enabled destination connects; actions while disabled are discarded.
 
-Android stores its choice in app-private native preferences. The JavaScript sink and native SDK both check collection permission. Revocation closes JavaScript delivery immediately. Analytics consent is independent of Google account linking and notification permission.
+Android stores its choice in app-private native preferences and defaults to on only when no choice has been saved. Explicit opt-outs remain off. The JavaScript sink and native SDK both check collection permission, and debug builds keep collection disabled. Revocation closes JavaScript delivery immediately. Analytics consent is independent of Google account linking and notification permission.
 
 Both transports deny advertising storage, ad user data and personalization. Boolean custom parameters become `1` or `0` in both GA transports. Web config also disables Google signals and advertising personalization. Android removes advertising ID and AdServices permissions and disables automatic screen reporting. Google Analytics still processes its own app/browser instance identifiers and transport metadata when collection is enabled. Application payload filtering is not a claim that the SDK sends no device metadata.
 

@@ -2,7 +2,7 @@
   "Settings": {
     "ABOUT_BUTTON": "حول",
     "ACCOUNT_DELETION_BUTTON": "حذف الحساب",
-    "ANALYTICS_DESCRIPTION": "تحليلات استخدام اختيارية مع Google للمساعدة في تحسين اللعبة. تستخدم ملفات تعريف ارتباط للتحليلات. معطلة افتراضيًا؛ يمكنك إيقافها هنا في أي وقت.",
+    "ANALYTICS_DESCRIPTION": "تحليلات استخدام اختيارية مع Google للمساعدة في تحسين اللعبة. تستخدم ملفات تعريف ارتباط للتحليلات. مفعلة افتراضيًا؛ يمكنك إيقافها هنا في أي وقت.",
     "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "إغلاق",
     "CREDITS_BUTTON": "الاعتمادات",

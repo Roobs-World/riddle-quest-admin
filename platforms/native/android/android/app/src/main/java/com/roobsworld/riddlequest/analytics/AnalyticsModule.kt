@@ -71,7 +71,7 @@ class AnalyticsModule(private val context: ReactApplicationContext) : ReactConte
       } else require(existing.options.applicationId == appId) { "firebase-android-app-mismatch" }
       analytics = FirebaseAnalytics.getInstance(context)
       available = true
-      val enabled = preferences.getBoolean("enabled", false) && !denialMarker.baseFile.exists()
+      val enabled = preferences.getBoolean("enabled", true) && !denialMarker.baseFile.exists()
       applyConsent(enabled)
       promise.resolve(enabled)
     } catch (error: Exception) {

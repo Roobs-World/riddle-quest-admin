@@ -2,7 +2,7 @@
   "Settings": {
     "ABOUT_BUTTON": "Acerca de",
     "ACCOUNT_DELETION_BUTTON": "Eliminar Cuenta",
-    "ANALYTICS_DESCRIPTION": "Estadísticas de uso opcionales con Google para mejorar el juego. Usa cookies de análisis. Desactivadas por defecto; puedes desactivarlas aquí cuando quieras.",
+    "ANALYTICS_DESCRIPTION": "Estadísticas de uso opcionales con Google para mejorar el juego. Usa cookies de análisis. Activadas por defecto; puedes desactivarlas aquí cuando quieras.",
     "ANALYTICS_TOGGLE": "Google Analytics",
     "CLOSE_BUTTON": "Cerrar",
     "CREDITS_BUTTON": "Créditos",
