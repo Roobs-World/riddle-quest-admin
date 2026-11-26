@@ -374,7 +374,8 @@ it("records a win reward without layering a coin notice onto the victory result"
     stateRef: {current: {profile: {coins: 100}, lastOutcome: {kind: "win"}} as unknown as GameSessionState},
     postToHost: jest.fn(),
     requestRiddle,
-    onCompletionResult: () => true,
+    onCompletionResult: () => ({id: "owned-win", kind: "win", riddleId: "classic-1", gameMode: "classic",
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 2, isCorrect: true}),
   });
 
   await router({
@@ -462,14 +463,16 @@ function createCompletionDeliveryHarness() {
   stateRef.current = gameSessionReducer(stateRef.current, {type: "guessRequested"});
   stateRef.current = gameSessionReducer(stateRef.current, {type: "guessResolved", attempts: 1, isCorrect: true,
     gameOver: true, canContinue: false, feedback: {guess: [..."piano"], feedback: ["green", "green", "green", "green", "green"]}});
-  /** The delivery owner can reject a late receipt after its question has been superseded. */
+  /** Original delivery identity survives replacement of the visible question. */
+  const outcome = stateRef.current.lastOutcome;
+  /** Account retirement can still reject receipts from this owner. */
   let currentCompletion = true;
   /** All bridge results run the production parsing and state transition. */
   const router = useGameMessageRouter({stateRef,
     dispatch: action => {stateRef.current = gameSessionReducer(stateRef.current, action);},
     postToHost: jest.fn(), requestRiddle: jest.fn(), onCompletionResult: () => {
-      if (currentCompletion) stateRef.current = gameSessionReducer(stateRef.current, {type: "completionAcknowledged"});
-      return currentCompletion;
+      if (currentCompletion && outcome) stateRef.current = gameSessionReducer(stateRef.current, {type: "completionAcknowledged", outcome});
+      return currentCompletion ? outcome : null;
     }});
   return {stateRef, retire: () => {currentCompletion = false;},
     deliver: (data: unknown) => router({type: "host:operationResult", requestId: "owned-completion",
@@ -531,6 +534,23 @@ it("retires receipt details on question change and ignores a previous question's
   await owner.deliver(itemizedCompletion);
   expect(owner.stateRef.current.riddle?.riddleId).toBe("next-question");
   expect(owner.stateRef.current.lastRewards).toBeNull();
+});
+
+it("presents an owned late achievement after Next without restoring the completed question", async () => {
+  const owner = createCompletionDeliveryHarness();
+  const outcome = owner.stateRef.current.lastOutcome;
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "closeModal"});
+  owner.stateRef.current = gameSessionReducer(owner.stateRef.current, {type: "loadRiddle",
+    riddle: {...repeatedRiddle, riddleId: "next-question", sessionToken: "00000000-0000-4000-8000-000000000002", index: 2}});
+  const nextBalance = owner.stateRef.current.profile?.coins;
+  await owner.deliver({...itemizedCompletion, newlyUnlockedAchievementIds: ["first_win"]});
+  expect(owner.stateRef.current.riddle?.riddleId).toBe("next-question");
+  expect(owner.stateRef.current.profile?.coins).toBe(nextBalance);
+  expect(owner.stateRef.current.completionAcknowledged).toBe(false);
+  expect(owner.stateRef.current.lastRewards).toBeNull();
+  expect(owner.stateRef.current.completionMilestones).toEqual([expect.objectContaining({
+    outcome, confirmed: true, steps: [{kind: "achievement", achievementId: "first_win"}],
+  })]);
 });
 
 it("clears receipt details when the account generation changes", async () => {

@@ -4,6 +4,7 @@ import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} fr
 import type {ProductSummary} from "../../platform/contracts/hostServices";
 import type {CompletionRewardBreakdown} from "../../progression/rewards/completionRewardBreakdown";
 import type {LeaderboardCache} from "../../leaderboards/browser/leaderboardCache";
+import type {FanfareStep} from "../../progression/browser/fanfareSequence";
 
 /** Identifies the modal currently presented by the game session. */
 export type GameModal =
@@ -102,6 +103,10 @@ export type GameSessionState = {
   } | null;
   /** Legacy journal field retained to discard unconfirmed unlock predictions on recovery. */
   optimisticAchievementIds: string[];
+  /** Issued outcomes retain their confirmed celebrations after play advances. */
+  completionMilestones: CompletionMilestone[];
+  /** Completed presentations cannot reopen when the same terminal question is recovered. */
+  presentedCompletionKeys: string[];
   /** Optional non-completion reward animation queued for display. */
   auxiliaryFanfare: {
     /** Stores id. */
@@ -136,6 +141,26 @@ export type GameSessionState = {
   completionAcknowledged: boolean;
   /** Best keyboard feedback accumulated from scored guesses. */ letterStates: Record<string, Feedback>;
 };
+
+/** An outcome's celebration outlives the question and its victory dialog. */
+export type CompletionMilestone = {
+  /** Original issued outcome owning this presentation. */
+  outcome: NonNullable<GameSessionState["lastOutcome"]>;
+} & (
+  | {
+      /** Pending outcomes retain delivery ownership without predicting rewards or unlocks. */
+      confirmed: false;
+      reward: null;
+      steps: [];
+    }
+  | {
+      /** Only authoritative receipts supply rewards and unlocks. */
+      confirmed: true;
+      reward: NonNullable<GameSessionState["lastRewards"]>;
+      /** Confirmed milestone order remains immutable throughout its presentation. */
+      steps: FanfareStep[];
+    }
+);
 
 /** Describes every transition accepted by the game-session reducer. */
 export type GameSessionAction =
@@ -334,12 +359,22 @@ export type GameSessionAction =
   | {
       /** Stores type. */
       type: "completionReward"; /** Stores reward. */
+      /** Retained delivery identity remains valid after the next question loads. */
+      outcome: NonNullable<GameSessionState["lastOutcome"]>;
       /** Stores reward. */
       reward: NonNullable<GameSessionState["lastRewards"]>;
     }
   | {
       /** Stores type. */
       type: "completionAcknowledged";
+      /** Same-batch question changes cannot acknowledge a different issued round. */
+      outcome: Pick<NonNullable<GameSessionState["lastOutcome"]>, "riddleId" | "sessionToken">;
+    }
+  | {
+      /** Removes only the confirmed presentation at the front of the queue. */
+      type: "completionMilestonesPresented";
+      /** Issued outcome whose milestones have finished. */
+      outcomeKey: string;
     }
   | {
       /** Stores type. */

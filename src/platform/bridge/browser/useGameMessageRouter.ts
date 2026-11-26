@@ -66,7 +66,7 @@ export function useGameMessageRouter({
   /** Stores request riddle. */
   requestRiddle: () => void;
   /** Stores on completion result. */
-  onCompletionResult?: (ok: boolean, requestId?: string) => boolean;
+  onCompletionResult?: (ok: boolean, requestId?: string) => GameSessionState["lastOutcome"];
   /** Handles an optimistic guess before the default single-response reducer path. */
   onGuessResult?: (message: Extract<HostToGameMessage, {
     /** Correlated result discriminator. */ type: "host:operationResult";
@@ -252,12 +252,13 @@ export function useGameMessageRouter({
           if (message.payload.operation === "completeGame") {
             /** Provides reward behavior. */
             const reward = getNumber(data.coinsEarned);
-            /** Whether this reward still belongs to the visible riddle. */
-            const currentCompletion = onCompletionResult?.(true, message.requestId) ?? true;
-            /** Provides completed outcome behavior. */
-            const completedOutcome = currentCompletion ? committedOutcomeRef.current : null;
-            if (currentCompletion) dispatch({
+            /** An owned prior outcome keeps its rewards after the player advances. */
+            const completedOutcome = onCompletionResult
+              ? onCompletionResult(true, message.requestId) : committedOutcomeRef.current;
+            if (!completedOutcome) return;
+            dispatch({
               type: "completionReward",
+              outcome: completedOutcome,
               reward: {
                 coinsEarned: reward ?? 0,
                 rewardBreakdown: data.isCorrect === true
@@ -276,7 +277,8 @@ export function useGameMessageRouter({
               },
             });
             // The victory result already presents the coin award; no extra notice is layered under it.
-            if (completedOutcome?.kind === "loss") requestRiddle();
+            if (completedOutcome.kind === "loss" && committedOutcomeRef.current?.riddleId === completedOutcome.riddleId &&
+              committedOutcomeRef.current.sessionToken === completedOutcome.sessionToken) requestRiddle();
             return;
           }
           if (message.payload.operation === "leaderboard") {

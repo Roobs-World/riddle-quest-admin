@@ -199,4 +199,20 @@ describe("callable request and response schemas", () => {
     );
     expect(GetLeaderboardRequestSchema.safeParse({type: "xp", limit: 101}).success).toBe(false);
   });
+
+  it("accepts opt-in completion receipts only when they match their terminal guess", () => {
+    const request = {riddleId: "r1", gameMode: "classic", sessionToken, requestId: "guess-request-1", guess: "piano"};
+    expect(SubmitSinglePlayerGuessRequestDataSchema.safeParse(request).success).toBe(true);
+    expect(SubmitSinglePlayerGuessRequestDataSchema.safeParse({...request, includeCompletion: true}).success).toBe(true);
+    expect(SubmitSinglePlayerGuessRequestDataSchema.safeParse({...request, includeCompletion: false}).success).toBe(false);
+    const completion = {attempts: 1, isCorrect: true, coinsEarned: 50, newlyUnlockedAchievementIds: ["first_win"],
+      scoreEarned: 100, xpEarned: 100, newXp: 100, newLevel: 1, leveledUp: false};
+    const guess = {feedback: [{letter: "p", status: "green"}], attempts: 1, isCorrect: true, gameOver: true};
+    expect(SubmitSinglePlayerGuessResponseDataSchema.parse(guess)).toEqual(guess);
+    expect(SubmitSinglePlayerGuessResponseDataSchema.parse({...guess, completion})).toEqual({...guess, completion});
+    expect(SubmitSinglePlayerGuessResponseDataSchema.safeParse({...guess, gameOver: false, completion}).success).toBe(false);
+    expect(SubmitSinglePlayerGuessResponseDataSchema.safeParse({...guess, attempts: 2, completion}).success).toBe(false);
+    expect(SubmitSinglePlayerGuessResponseDataSchema.safeParse({...guess, isCorrect: false, completion}).success).toBe(false);
+    expect(SubmitSinglePlayerGuessResponseDataSchema.safeParse({...guess, completion: {...completion, coinsEarned: -1}}).success).toBe(false);
+  });
 });

@@ -16,9 +16,13 @@ Recorded unlocks remain complete when a coin balance or performance statistic su
 
 ## Browser completion presentation
 
-After a win, the victory dialog waits for the matching authoritative completion receipt, then presents the level-up and every earned achievement in order. Next becomes available after the milestone queue finishes, including an empty queue. Hidden or paused games retain their unread milestones. Profile refreshes do not remove unlocks from the matching receipt just because the refreshed profile already contains them.
+The victory dialog shows its chest, current balance and Next action immediately. Chest artwork is prepared with the modal assets. Next follows the existing progression guard, independently of reward delivery and celebration animations. Provisional Classic wins can continue through their issued-question recovery journal; recovered Classic wins and Daily completions retain their authority checks.
 
-Auxiliary rewards arriving during victory wait until that presentation closes and survive loading the next riddle. The [November 26 Jest release evidence](../../jest/evidence/jest-completion-milestones-2026-11-26.json) records the production checks and exact active build. Updated reducer and component coverage was not run because tests and browser checks require an explicit request.
+Each issued outcome retains its own completion delivery and milestone queue after Next loads another riddle. A rejected provisional outcome retires its unconfirmed delivery and dependent queue entries. Confirmed level-ups and achievements display in order without blocking play. Account changes clear the queue, and presented outcome keys prevent recovery from reopening it. Hidden or paused games retain unread milestones. Profile refreshes do not remove unlocks from the matching receipt just because the refreshed profile already contains them.
+
+Firebase hosts request the completion receipt in the terminal guess response. The server returns the result it already committed; callers that omit the opt-in keep the original response shape. A bounded account-owned host cache lets the existing completion command join the pending guess or reuse its receipt, with the original endpoint retained for recovery and legacy responses. The updated backend must be deployed before releasing the client that requests this field. Rewards and achievements remain authoritative, with no predicted grants written to profiles or local caches.
+
+Auxiliary rewards arriving during victory wait until that presentation closes and survive loading the next riddle. They yield to unread completion milestones so cards do not overlap. The [earlier November 26 Jest release evidence](../../jest/evidence/jest-completion-milestones-2026-11-26.json) records the previous receipt-and-animation-gated behavior. Updated reducer, delivery, contract and component coverage was not run because tests and browser checks require an explicit request.
 
 ## Validation of the November 24, 2026 changes
 

@@ -14,12 +14,15 @@ export function useCompletionDelivery({
   dispatch,
   postToHost,
   ownerKey,
+  retainedOutcomes,
 }: {
   /** Unacknowledged authoritative terminal outcome. */ outcome: GameSessionState["lastOutcome"];
   /** Game-session reducer dispatcher. */ dispatch: Dispatch<GameSessionAction>;
   /** Sends a validated command to the host. */ postToHost: (message: GameToHostMessage) => void;
   /** Account UID and creation generation owning every retained receipt. */ ownerKey?: string;
-}): (ok: boolean, requestId?: string) => boolean {
+  /** Reducer-owned outcomes survive Next and retire explicitly when queued gameplay is rejected. */
+  retainedOutcomes?: readonly NonNullable<GameSessionState["lastOutcome"]>[];
+}): (ok: boolean, requestId?: string) => GameSessionState["lastOutcome"] {
   /** One lazily created completion set survives updates to the mounted game. */
   const [completedKeysRef] = useState(() => ({current: new Set<string>()}));
   /** Pending delivery storage is created once rather than discarded on each answer edit. */
@@ -48,19 +51,20 @@ export function useCompletionDelivery({
 
   /** Handles result. */
   const handleResult = useCallback(
-    (ok: boolean, requestId?: string): boolean => {
-      if (!ok || !requestId || currentOwnerRef.current !== deliveryOwnerRef.current) return false;
+    (ok: boolean, requestId?: string): GameSessionState["lastOutcome"] => {
+      if (!ok || !requestId || currentOwnerRef.current !== deliveryOwnerRef.current) return null;
       /** Provides delivery behavior. */
       const delivery = [...deliveriesRef.current.values()].find((entry) => entry.requestId === requestId);
-      if (!delivery) return false;
+      if (!delivery) return null;
       if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
       completedKeysRef.current.add(delivery.completionKey);
       deliveriesRef.current.delete(delivery.completionKey);
       /** Indicates whether is current. */
-      const isCurrent = currentOutcomeRef.current !== null &&
-        completionPresentationKey(currentOutcomeRef.current) === delivery.completionKey;
-      if (isCurrent) dispatch({type: "completionAcknowledged"});
-      return isCurrent;
+      const currentOutcome = currentOutcomeRef.current;
+      const isCurrent = currentOutcome !== null &&
+        completionPresentationKey(currentOutcome) === delivery.completionKey;
+      if (isCurrent) dispatch({type: "completionAcknowledged", outcome: currentOutcome});
+      return isCurrent ? currentOutcome : delivery.outcome;
     },
     [dispatch],
   );
@@ -75,12 +79,25 @@ export function useCompletionDelivery({
     }
     /** Question identity remains stable through canonical attempt reconciliation. */
     const completionKey = outcome ? completionPresentationKey(outcome) : null;
+    /** Rejected queue segments no longer own completion work, including after the player advanced. */
+    if (retainedOutcomes) {
+      const retainedKeys = new Set(retainedOutcomes.map(completionPresentationKey));
+      for (const [key, delivery] of deliveriesRef.current) {
+        if (retainedKeys.has(key)) continue;
+        if (delivery.timer !== undefined) window.clearTimeout(delivery.timer);
+        deliveriesRef.current.delete(key);
+      }
+    }
     // A canonical guess receipt may clear acknowledgement while updating attempts.
-    if (completionKey && completedKeysRef.current.has(completionKey)) dispatch({type: "completionAcknowledged"});
-    if (outcome && completionKey && !completedKeysRef.current.has(completionKey) && !deliveriesRef.current.has(completionKey))
-      deliveriesRef.current.set(completionKey, {
-        completionKey, outcome, requestId: createRequestId("complete"), attempts: 0,
-      });
+    if (outcome && completionKey && completedKeysRef.current.has(completionKey))
+      dispatch({type: "completionAcknowledged", outcome});
+    for (const pendingOutcome of retainedOutcomes ?? (outcome ? [outcome] : [])) {
+      const key = completionPresentationKey(pendingOutcome);
+      if (!completedKeysRef.current.has(key) && !deliveriesRef.current.has(key))
+        deliveriesRef.current.set(key, {
+          completionKey: key, outcome: pendingOutcome, requestId: createRequestId("complete"), attempts: 0,
+        });
+    }
     for (const delivery of deliveriesRef.current.values()) {
       if (delivery.timer !== undefined) continue;
       delivery.attempts += 1;
@@ -99,7 +116,7 @@ export function useCompletionDelivery({
         },
       });
     }
-  }, [outcome, ownerKey, postToHost, retrySignal, dispatch]);
+  }, [outcome, ownerKey, postToHost, retrySignal, dispatch, retainedOutcomes]);
 
   useEffect(() => {
     /** Clears scheduled timers while preserving receipts for effect replay and reconnection. */

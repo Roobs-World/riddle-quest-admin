@@ -48,7 +48,7 @@ describe("game session persistence", () => {
       },
     });
 
-    completed = gameSessionReducer(completed, {type: "completionAcknowledged"});
+    completed = gameSessionReducer(completed, {type: "completionAcknowledged", outcome: riddle});
     expect(createSavedGame(completed, 101)).toBeNull();
   });
 

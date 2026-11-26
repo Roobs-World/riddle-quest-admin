@@ -251,7 +251,7 @@ describe("GameSessionCheckpoints", () => {
         kind: "win", isCorrect: true, attempts, sessionToken: issued.sessionToken});
       expect(gameSessionReducer(state, {type: "typeLetter", letter: "X"})).toBe(state);
       expect(createSavedGame(state)?.pendingOutcome).toEqual(state.lastOutcome);
-      expect(createSavedGame(gameSessionReducer(state, {type: "completionAcknowledged"}))).toBeNull();
+      expect(createSavedGame(gameSessionReducer(state, {type: "completionAcknowledged", outcome: riddle}))).toBeNull();
     }
   });
 
@@ -442,7 +442,7 @@ describe("GameSessionCheckpoints", () => {
     expect(state.engineSnapshot?.guesses[0].feedback[0]).toBe("green");
     expect(state.lastOutcome?.attempts).toBe(1);
 
-    state = gameSessionReducer(state, {type: "completionAcknowledged"});
+    state = gameSessionReducer(state, {type: "completionAcknowledged", outcome: riddle});
     expect(checkpoints.update(state)).toEqual({kind: "save", game: null});
     expect(checkpoints.update(state, undefined, true)).toBeNull();
   });

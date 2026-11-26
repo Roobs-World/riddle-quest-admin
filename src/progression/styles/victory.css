@@ -77,7 +77,7 @@
   margin-top: 8px;
   padding: 20px 24px;
   border-radius: 22px;
-  font: 900 clamp(24px, 8.2vw, 32px)/1.1 "Manrope", sans-serif;
+  font: 400 clamp(24px, 8.2vw, 32px)/1.1 var(--rq-font-display);
   overflow-wrap: anywhere;
   box-shadow: 0 5px 0 #916812;
 }

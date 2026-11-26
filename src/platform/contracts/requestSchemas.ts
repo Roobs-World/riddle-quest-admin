@@ -111,23 +111,11 @@ export const SubmitSinglePlayerGuessRequestDataSchema = z
     sessionToken: z.string().min(20).max(128),
     guess: PlayableGuessSchema,
     requestId: z.string().min(8).max(128),
+    includeCompletion: z.literal(true).optional(),
   })
   .strict();
 /** Describes a server-authoritative single-player guess request. */
 export type SubmitSinglePlayerGuessRequestData = z.infer<typeof SubmitSinglePlayerGuessRequestDataSchema>;
-
-/** Validates a server-authoritative single-player guess response. */
-export const SubmitSinglePlayerGuessResponseDataSchema = z
-  .object({
-    feedback: z.array(FeedbackItemSchema).max(7),
-    attempts: z.number().int().positive().max(6),
-    isCorrect: z.boolean(),
-    gameOver: z.boolean(),
-    canContinue: z.boolean().optional(),
-  })
-  .strict();
-/** Describes a server-authoritative single-player guess response. */
-export type SubmitSinglePlayerGuessResponseData = z.infer<typeof SubmitSinglePlayerGuessResponseDataSchema>;
 
 /** Validates the complete game request data data shape. */
 export const CompleteGameRequestDataSchema = z
@@ -168,6 +156,25 @@ export const CompleteGameResponseDataSchema = z
   .strict();
 /** Describes complete game response data. */
 export type CompleteGameResponseData = z.infer<typeof CompleteGameResponseDataSchema>;
+
+/** Validates guess feedback and an optional receipt already committed by its terminal guess. */
+export const SubmitSinglePlayerGuessResponseDataSchema = z
+  .object({
+    feedback: z.array(FeedbackItemSchema).max(7),
+    attempts: z.number().int().positive().max(6),
+    isCorrect: z.boolean(),
+    gameOver: z.boolean(),
+    canContinue: z.boolean().optional(),
+    completion: CompleteGameResponseDataSchema.optional(),
+  })
+  .strict()
+  .superRefine((result, context) => {
+    if (result.completion && (!result.gameOver || result.completion.attempts !== result.attempts ||
+      result.completion.isCorrect !== result.isCorrect))
+      context.addIssue({code: z.ZodIssueCode.custom, path: ["completion"], message: "Completion must match its terminal guess."});
+  });
+/** Describes a server-authoritative single-player guess response. */
+export type SubmitSinglePlayerGuessResponseData = z.infer<typeof SubmitSinglePlayerGuessResponseDataSchema>;
 
 /** Validates the daily challenge data data shape. */
 export const DailyChallengeDataSchema = z

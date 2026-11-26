@@ -32,13 +32,15 @@ export const submitSinglePlayerGuess = onCallWithSentry<
   // retry of the same request reuses both the guess receipt and completion
   // receipt, so a dropped response cannot lose or duplicate progression.
   if (result.gameOver) {
-    await completeAuthoritativeGame(
+    const completion = await completeAuthoritativeGame(
       {riddleId: data.riddleId, gameMode: data.gameMode, sessionToken: data.sessionToken},
       {
         uid: request.auth.uid,
         isAnonymous: request.auth.token?.firebase?.sign_in_provider === "anonymous",
       },
     );
+    if (data.includeCompletion)
+      return validateCallableResponse(SubmitSinglePlayerGuessResponseDataSchema, {...result, completion}, "submitSinglePlayerGuess");
   }
   return validateCallableResponse(SubmitSinglePlayerGuessResponseDataSchema, result, "submitSinglePlayerGuess");
 });

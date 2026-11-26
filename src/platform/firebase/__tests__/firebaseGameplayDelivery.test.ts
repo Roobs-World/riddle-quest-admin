@@ -164,3 +164,88 @@ it("does not reuse a pending completion across a later visit of the same UID", a
   expect(mockAuthority).toHaveBeenCalledTimes(2);
   held.resolve({data: receipts.complete});await Promise.all([first, second]);
 });
+
+it("shares a terminal guess's committed reward while it is pending and after it resolves", async () => {
+  const held = deferred<{data: unknown}>();
+  mockAuthority.mockReturnValue(held.promise);
+  const services = createFirebaseHostServices();
+  const guess = call(services, "guess");
+  const completion = call(services, "complete");
+  expect(mockAuthority).toHaveBeenCalledTimes(1);
+  expect(mockAuthority.mock.calls[0]?.[1]).toMatchObject({includeCompletion: true});
+  const terminal = {...receipts.guess, isCorrect: true, gameOver: true, completion: receipts.complete};
+  held.resolve({data: terminal});
+  await expect(guess).resolves.toEqual(terminal);
+  await expect(completion).resolves.toEqual(receipts.complete);
+  await expect(call(services, "complete")).resolves.toEqual(receipts.complete);
+  expect(mockAuthority).toHaveBeenCalledTimes(1);
+  expect(jest.getTimerCount()).toBe(0);
+});
+
+it("falls back to completion delivery when a target returns legacy terminal feedback", async () => {
+  const held = deferred<{data: unknown}>();
+  mockAuthority.mockImplementation(async kind => kind === "guess" ? held.promise : {data: receipts.complete});
+  const services = createFirebaseHostServices();
+  const guess = call(services, "guess");
+  const completion = call(services, "complete");
+  expect(mockAuthority).toHaveBeenCalledTimes(1);
+  held.resolve({data: {...receipts.guess, isCorrect: true, gameOver: true}});
+  await guess;
+  await expect(completion).resolves.toEqual(receipts.complete);
+  expect(mockAuthority.mock.calls.map(([kind]) => kind)).toEqual(["guess", "complete"]);
+});
+
+it("never reuses a terminal reward for a different issued session or account visit", async () => {
+  mockAuthority.mockImplementation(async kind => ({data: kind === "guess"
+    ? {...receipts.guess, isCorrect: true, gameOver: true, completion: receipts.complete}
+    : receipts.complete}));
+  const services = createFirebaseHostServices();services.auth.subscribe(jest.fn());
+  await call(services, "guess");
+  await services.completeGame({gameMode: "classic", riddleId: "classic-17", sessionToken: "another-issued-session"});
+  expect(mockAuthority.mock.calls.map(([kind]) => kind)).toEqual(["guess", "complete"]);
+  mockAuth.currentUser = sdkUser("Bob");mockObserver(mockAuth.currentUser);
+  mockAuth.currentUser = sdkUser("Alice");mockObserver(mockAuth.currentUser);
+  await call(services, "complete");
+  expect(mockAuthority.mock.calls.map(([kind]) => kind)).toEqual(["guess", "complete", "complete"]);
+});
+
+it("keeps only recent guess completions and recovers older sessions through the server", async () => {
+  mockAuthority.mockImplementation(async kind => ({data: kind === "guess"
+    ? {...receipts.guess, isCorrect: true, gameOver: true, completion: receipts.complete}
+    : receipts.complete}));
+  const services = createFirebaseHostServices();
+  const issued = (index: number): Parameters<HostServices["completeGame"]>[0] =>
+    ({gameMode: "classic", riddleId: `classic-${index}`, sessionToken: `issued-session-${index}`});
+  for (let index = 1; index <= 9; index++)
+    await services.submitGuess({...issued(index), requestId: `guess-request-${index}`, guess: "piano"});
+  await services.completeGame(issued(9));
+  expect(mockAuthority).toHaveBeenCalledTimes(9);
+  await services.completeGame(issued(1));
+  expect(mockAuthority).toHaveBeenCalledTimes(10);
+  expect(mockAuthority.mock.calls.at(-1)?.[0]).toBe("complete");
+});
+
+it("does not deliver an old completion under the replacement account after a pending legacy guess", async () => {
+  const held = deferred<{data: unknown}>();
+  mockAuthority.mockReturnValue(held.promise);
+  const services = createFirebaseHostServices();services.auth.subscribe(jest.fn());
+  const guess = call(services, "guess");
+  const completion = call(services, "complete").catch(error => error);
+  mockAuth.currentUser = sdkUser("Bob");mockObserver(mockAuth.currentUser);
+  held.resolve({data: {...receipts.guess, isCorrect: true, gameOver: true}});
+  await guess;
+  expect(await completion).toMatchObject({code: "cancelled"});
+  expect(mockAuthority).toHaveBeenCalledTimes(1);
+});
+
+it("releases a failed guess wait before retrying completion through the server", async () => {
+  mockAuthority.mockRejectedValueOnce(new Error("guess unavailable")).mockResolvedValue({data: receipts.complete});
+  const services = createFirebaseHostServices();
+  const guess = call(services, "guess").catch(error => error);
+  const completion = call(services, "complete").catch(error => error);
+  expect(await guess).toMatchObject({message: "guess unavailable"});
+  expect(await completion).toMatchObject({message: "guess unavailable"});
+  expect(mockAuthority).toHaveBeenCalledTimes(1);
+  await expect(call(services, "complete")).resolves.toEqual(receipts.complete);
+  expect(mockAuthority.mock.calls.map(([kind]) => kind)).toEqual(["guess", "complete"]);
+});

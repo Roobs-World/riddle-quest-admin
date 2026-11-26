@@ -1,5 +1,5 @@
-import {completionPresentationKey} from "../../../gameplay/session/completion/completionPresentation";
-import {useEffect, useId, useLayoutEffect, useRef, useState} from "react";
+import {completionPresentationKey, isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
+import {useEffect, useId, useLayoutEffect, useRef} from "react";
 import "../styles/modal-shell.css";
 import "../../../progression/styles/rewards.css";
 import "../../../commerce/styles/modals.css";
@@ -10,7 +10,6 @@ import {useTranslator} from "../../../localization/browser/i18n";
 import {SpinningWheel} from "../../components/feedback/SpinningWheelLoader";
 import {GameModalPages} from "./GameModalPages";
 import {FanfareTabs} from "../../../progression/components/rewards/FanfareTabs";
-import {createVictoryFanfareSteps} from "../../../progression/browser/fanfareSequence";
 import {getAchievementFanfareOwnerKey} from "../../../progression/browser/achievementFanfareSeen";
 import {VictoryModalContent} from "../../../progression/components/rewards/VictoryModalContent";
 /** A nested confirmation owns focus ahead of its containing modal. */
@@ -65,6 +64,8 @@ export type GameModalViewProps = {
   onDeleteAccount: () => void;
   /** Stores on coin balance preview. */
   onCoinBalancePreview: (balance: number | null) => void;
+  /** Retires only the confirmed completion whose milestone queue finished. */
+  onCompletionMilestonesPresented: (outcomeKey: string) => void;
 };
 /** Coordinates the accessible modal shell and delegates modal-specific content. */
 export function GameModalView({
@@ -87,15 +88,12 @@ export function GameModalView({
   onUpdateAvatar,
   onDeleteAccount,
   onCoinBalancePreview,
+  onCompletionMilestonesPresented,
 }: GameModalViewProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
-  /** Stable accessible identifier connecting the victory dialog to its milestone tabs. */
-  const milestoneId = useId();
-  /** Milestones belong to the exact issued outcome, even when its canonical attempts change. */
-  const outcomeKey = state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null;
-  const [completedMilestonesKey, setCompletedMilestonesKey] = useState<string | null>(null);
-  const milestonesPending = outcomeKey === null || completedMilestonesKey !== outcomeKey;
+  /** Keeps status announcements inside the active dialog's accessible reading scope. */
+  const completionTabsId = useId();
   /** Provides modal ref behavior. */
   const modalRef = useRef<HTMLElement | null>(null);
   /** Last native focus can resume after another surface temporarily covers this modal. */
@@ -215,17 +213,27 @@ export function GameModalView({
     };
   }, [modalOpen, state.guessPending, state.lastRewards, state.modal, continuationPending, interactionBlocked]);
 
-  if (!state.modal) {
-    return null;
-  }
+  /** Completion celebrations survive closing victory and loading the next question. */
+  const completion = state.completionMilestones[0];
+  const completionTabs = completion?.confirmed ? <FanfareTabs
+    key={`${getAchievementFanfareOwnerKey(state.user)}-milestones-${completionPresentationKey(completion.outcome)}`}
+    id={completionTabsId}
+    state={{...state, modal: "victory", lastOutcome: completion.outcome,
+      lastRewards: completion.reward, completionAcknowledged: true}}
+    steps={completion.steps}
+    paused={interactionBlocked || state.paused}
+    onBalancePreview={onCoinBalancePreview}
+    onComplete={() => onCompletionMilestonesPresented(completionPresentationKey(completion.outcome))}
+  /> : null;
+  if (!state.modal) return completionTabs;
   if (state.modal === "reward") {
-    return <FanfareTabs
+    return <>{completionTabs}<FanfareTabs
       key={`${getAchievementFanfareOwnerKey(state.user)}-${state.auxiliaryFanfare?.id ?? "reward"}`}
       state={state}
-      paused={interactionBlocked || state.paused}
+      paused={interactionBlocked || state.paused || completionTabs !== null}
       onBalancePreview={onCoinBalancePreview}
       onComplete={onClose}
-    />;
+    /></>;
   }
   /** Provides titles behavior. */
   const titles: Record<Exclude<GameModal, null>, string> = {
@@ -252,20 +260,15 @@ export function GameModalView({
     state.modal === "victory" || state.modal === "continue" && (state.guessPending || continuationPending);
 
   return (
-    <div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
+    <>{completionTabs}<div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
       {state.modal !== "profile" && state.modal !== "continue" ? <SpinningWheel /> : null}
-      {state.modal === "victory" && state.completionAcknowledged ? <FanfareTabs
-        key={`${getAchievementFanfareOwnerKey(state.user)}-milestones-${outcomeKey}`} id={milestoneId} state={state}
-        steps={createVictoryFanfareSteps(state.lastRewards).filter(step => step.kind !== "victory")}
-        paused={interactionBlocked || state.paused} onBalancePreview={onCoinBalancePreview}
-        onComplete={() => setCompletedMilestonesKey(outcomeKey)} /> : null}
       <section
         ref={modalRef}
         className={`game-modal modal-${state.modal}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="game-modal-title"
-        aria-owns={state.modal === "victory" && state.completionAcknowledged ? milestoneId : undefined}
+        aria-owns={completionTabs ? completionTabsId : undefined}
         onMouseDown={(event) => event.stopPropagation()}
         onFocusCapture={(event) => {
           if (event.target instanceof HTMLElement) lastFocusedControlRef.current = event.target;
@@ -278,8 +281,8 @@ export function GameModalView({
           </button>
         )}
         {state.modal === "victory" ? <VictoryModalContent key={state.lastOutcome?.id ?? "victory"}
-          state={state} milestonesPending={milestonesPending} onBalancePreview={onCoinBalancePreview} onAdvance={() => {
-            if (!state.completionAcknowledged || milestonesPending) return;
+          state={state} onBalancePreview={onCoinBalancePreview} onAdvance={() => {
+            if (isCompletionAdvancePending(state)) return;
             onClose();
             window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
               detail: {outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null},
@@ -306,6 +309,6 @@ export function GameModalView({
           onDeleteAccount={onDeleteAccount}
         />
       </section>
-    </div>
+    </div></>
   );
 }

@@ -302,10 +302,13 @@ export function GameFrameApp({
 
   useGameReadyReporter({initialized: state.initialized, sendReady, postToHost});
 
+  /** Unread completion receipts remain owned after the visible question advances. */
+  const retainedCompletionOutcomes = useMemo(() => state.completionMilestones.map(entry => entry.outcome), [state.completionMilestones]);
   /** Handles completion result. */
   const handleCompletionResult = useCompletionDelivery({
     ownerKey: state.user ? JSON.stringify([state.user.uid, state.user.accountGeneration ?? null]) : undefined,
-    outcome: state.guessPending ? null : state.lastOutcome,
+    outcome: state.lastOutcome,
+    retainedOutcomes: retainedCompletionOutcomes,
     dispatch,
     postToHost,
   });
@@ -458,7 +461,7 @@ export function GameFrameApp({
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
       <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
-        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((state.modal || terminalSurfaceRecovery) && !raceOpen)}
+        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((state.modal || terminalSurfaceRecovery || state.completionMilestones.length > 0) && !raceOpen)}
           onUnavailable={() => setFailedModalOwner(surfaceOwner)}
           recovery={<GameSurfaceRecovery
             onClose={() => {if (!recovery.isPending() && !stateRef.current.pendingCoinSpend) dispatch(stateRef.current.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
@@ -504,6 +507,7 @@ export function GameFrameApp({
               interactionBlocked={interactionBlocked || !online}
               state={state}
               onCoinBalancePreview={setAnimatedCoinBalance}
+              onCompletionMilestonesPresented={outcomeKey => dispatch({type: "completionMilestonesPresented", outcomeKey})}
               onClose={() => {if (!recovery.isPending()) dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
               onContinue={(amount) => {if (!recovery.isPending()) requestContinue(amount);}}
               onRecoverAttempt={isFacebookWebTarget && attemptRecovery ? recovery.request : undefined}

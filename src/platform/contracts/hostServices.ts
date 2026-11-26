@@ -139,6 +139,8 @@ export type SinglePlayerGuessResult = {
   gameOver: boolean;
   /** Indicates that the paid extra attempt can be offered. */
   canContinue?: boolean;
+  /** Authoritative rewards already committed by this terminal guess, when the target supports it. */
+  completion?: CompletionResult;
 };
 
 /** Describes skip result. */

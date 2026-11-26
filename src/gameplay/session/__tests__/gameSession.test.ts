@@ -11,6 +11,7 @@ import {
 } from "../gameSession";
 import {createSavedGame} from "../checkpoints/GameSessionCheckpoints";
 import type {PendingGuessState} from "../gameSessionTypes";
+import {completionPresentationKey} from "../completion/completionPresentation";
 
 it("starts with sound enabled when no sound preference is saved", () => {
   expect(createInitialGameSession().muted).toBe(false);
@@ -31,6 +32,12 @@ const riddle = {
 
 /** Provides reduce behavior. */
 const reduce = (state: GameSessionState, action: GameSessionAction) => gameSessionReducer(state, action);
+
+/** Receipt fixtures must identify an actual completed question. */
+const requireOutcome = (state: GameSessionState): NonNullable<GameSessionState["lastOutcome"]> => {
+  if (!state.lastOutcome) throw new Error("Expected a completed question");
+  return state.lastOutcome;
+};
 
 /** Resolves guess. */
 const resolveGuess = (
@@ -350,7 +357,7 @@ describe("game session reducer", () => {
     expect(state.lastRewards).toBeNull();
     expect(state.optimisticAchievementIds).toEqual([]);
     expect(state.profile?.achievements).toEqual(["first_win"]);
-    state = reduce(state, {type: "completionReward", reward: {
+    state = reduce(state, {type: "completionReward", outcome: requireOutcome(state), reward: {
       coinsEarned: 100, newlyUnlockedAchievementIds: ["wins_5", "level_5", "wins_5"],
     }});
     expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual(["wins_5", "level_5"]);
@@ -363,7 +370,7 @@ describe("game session reducer", () => {
         winStreak: 0, gamesPlayed: 4, wins: 4, achievements: ["first_win"], classicIndex: 1}});
     state = reduce(state, {type: "loadRiddle", riddle});
     state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
-    state = reduce(state, {type: "completionReward", reward: {coinsEarned: 25, newlyUnlockedAchievementIds: []}});
+    state = reduce(state, {type: "completionReward", outcome: requireOutcome(state), reward: {coinsEarned: 25, newlyUnlockedAchievementIds: []}});
     expect(state.profile?.achievements).toEqual(["first_win"]);
     expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([]);
   });
@@ -865,7 +872,7 @@ describe("game session reducer", () => {
     state = reduce(state, update === "authState"
       ? {type: "authState", user, profile: refreshed}
       : {type: "profileUpdated", profile: refreshed});
-    state = reduce(state, {type: "completionReward", reward: {
+    state = reduce(state, {type: "completionReward", outcome: requireOutcome(state), reward: {
       coinsEarned: 100, newLevel: 5, leveledUp: true,
       newlyUnlockedAchievementIds: ["level_5", "coins_1000", "level_5"],
     }});
@@ -877,7 +884,7 @@ describe("game session reducer", () => {
   it("presents a delayed referral after victory without losing either reward on the next level", () => {
     let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
     state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
-    state = reduce(state, {type: "completionReward", reward: {coinsEarned: 100, newLevel: 2, leveledUp: true,
+    state = reduce(state, {type: "completionReward", outcome: requireOutcome(state), reward: {coinsEarned: 100, newLevel: 2, leveledUp: true,
       newlyUnlockedAchievementIds: ["first_win", "perfect_guess"]}});
     state = reduce(state, {type: "showAuxiliaryFanfare", fanfare: {id: "referral-1", kind: "referral",
       coinsAwarded: 100, totalCoins: 200, achievementIds: []}});
@@ -896,7 +903,33 @@ describe("game session reducer", () => {
     expect(state.auxiliaryFanfare).toBeNull();
   });
 
-  it("ignores a completion reward after the next riddle loads", () => {
+  it("removes only a confirmed head celebration and clears every queue on account replacement", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    const outcome = requireOutcome(state);
+    const outcomeKey = completionPresentationKey(outcome);
+    expect(state.completionMilestones).toEqual([{outcome, reward: null, steps: [], confirmed: false}]);
+    expect(reduce(state, {type: "completionMilestonesPresented", outcomeKey})).toBe(state);
+    state = reduce(state, {type: "completionReward", outcome, reward: {coinsEarned: 25,
+      leveledUp: true, newLevel: 2, newlyUnlockedAchievementIds: ["first_win", "first_win"]}});
+    expect(state.completionMilestones[0].steps).toEqual([{kind: "level"}, {kind: "achievement", achievementId: "first_win"}]);
+    expect(reduce(state, {type: "completionMilestonesPresented", outcomeKey: "unrelated"})).toBe(state);
+    const presented = reduce(state, {type: "completionMilestonesPresented", outcomeKey});
+    expect(presented.completionMilestones).toEqual([]);
+    expect(presented.presentedCompletionKeys).toEqual([outcomeKey]);
+    let recovered = reduce(presented, {type: "closeModal"});
+    recovered = reduce(recovered, {type: "loadRiddle", riddle});
+    recovered = resolveGuess(recovered, "PIANO", 1, {isCorrect: true, gameOver: true});
+    expect(recovered.completionMilestones).toEqual([]);
+    recovered = reduce(recovered, {type: "completionReward", outcome, reward: {coinsEarned: 25,
+      newlyUnlockedAchievementIds: ["first_win"]}});
+    expect(recovered.completionMilestones).toEqual([]);
+    const replaced = reduce(state, {type: "authState", user: {uid: "new-player", isAnonymous: false}, profile: null});
+    expect(replaced.completionMilestones).toEqual([]);
+    expect(replaced.presentedCompletionKeys).toEqual([]);
+  });
+
+  it("retains a late completion celebration without replacing the next riddle or its balance", () => {
     /** Provides achievement behavior. */
     const achievement = "daily_completed";
     /** Provides profile behavior. */
@@ -906,12 +939,20 @@ describe("game session reducer", () => {
     };
     /** Provides state behavior. */
     let state = reduce({...createInitialGameSession(), profile}, {type: "loadRiddle", riddle});
-    const afterReceipt = reduce(state, {type: "completionReward", reward: {
-      coinsEarned: 25, newlyUnlockedAchievementIds: [achievement],
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    const outcome = requireOutcome(state);
+    state = reduce(state, {type: "closeModal"});
+    state = reduce(state, {type: "loadRiddle", riddle: {...riddle, riddleId: "classic-2", sessionToken: "next-session", index: 2}});
+    const afterReceipt = reduce(state, {type: "completionReward", outcome, reward: {
+      coinsEarned: 25, totalCoins: 30, newlyUnlockedAchievementIds: [achievement],
     }});
-    expect(afterReceipt).toBe(state);
-    expect(afterReceipt.riddle?.riddleId).toBe("classic-1");
+    expect(afterReceipt.riddle?.riddleId).toBe("classic-2");
     expect(afterReceipt.lastRewards).toBeNull();
+    expect(afterReceipt.profile?.coins).toBe(5);
+    expect(reduce(afterReceipt, {type: "completionAcknowledged", outcome})).toBe(afterReceipt);
+    expect(afterReceipt.completionMilestones).toEqual([{outcome,
+      reward: {coinsEarned: 25, totalCoins: 30, newlyUnlockedAchievementIds: [achievement]},
+      steps: [{kind: "achievement", achievementId: achievement}], confirmed: true}]);
   });
 });
 

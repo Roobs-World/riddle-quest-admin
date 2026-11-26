@@ -1,5 +1,6 @@
 import {beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {GameToHostMessage} from "../../../../platform/bridge/messages";
+import type {GameSessionState} from "../../../session/gameSessionTypes";
 
 /** Describes effect. */
 type Effect = () => void | (() => void);
@@ -87,12 +88,12 @@ describe("useCompletionDelivery", () => {
     mockEffects.length = 0;
     /** Render revokes old acknowledgements before effect cleanup. */
     const acknowledge = useCompletionDelivery({ownerKey: "bob:1", outcome: null, dispatch, postToHost});
-    expect(acknowledge(true, "complete-request-stable")).toBe(false);
+    expect(acknowledge(true, "complete-request-stable")).toBeNull();
     commitDeliveryEffect();
     expect(window.clearTimeout).toHaveBeenCalledWith(1);
     commitDeliveryEffect();
     expect(postToHost).toHaveBeenCalledTimes(1);
-    expect(acknowledge(true, "complete-request-stable")).toBe(false);
+    expect(acknowledge(true, "complete-request-stable")).toBeNull();
     expect(dispatch).not.toHaveBeenCalled();
   });
 
@@ -114,7 +115,7 @@ describe("useCompletionDelivery", () => {
 
   it("cancels its retry even when the local bridge acknowledges synchronously", () => {
     /** Receipt callback becomes available before the effects deliver the local message. */
-    let acknowledge: (ok: boolean, requestId?: string) => boolean;
+    let acknowledge: (ok: boolean, requestId?: string) => GameSessionState["lastOutcome"];
     /** A synchronous bridge listener represents an already-completed idempotent operation. */
     const postToHost = jest.fn<(message: GameToHostMessage) => void>(message => {
       acknowledge(true, message.requestId);
@@ -165,11 +166,11 @@ describe("useCompletionDelivery", () => {
     expect(window.setTimeout).toHaveBeenNthCalledWith(2, expect.any(Function), 2_000);
 
     handleResult(true, "complete-request-stable");
-    expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "completionAcknowledged"}));
     expect(window.clearTimeout).toHaveBeenLastCalledWith(2);
   });
 
-  it("keeps retrying after play advances and ignores a late acknowledgement for the new riddle", () => {
+  it("keeps retrying after play advances and returns the original outcome without acknowledging the new riddle", () => {
     /** Provides post to host behavior. */
     const postToHost = jest.fn<(message: GameToHostMessage) => void>();
     /** Provides dispatch behavior. */
@@ -194,7 +195,28 @@ describe("useCompletionDelivery", () => {
     scheduleRetry();
     commitDeliveryEffect();
     expect(postToHost).toHaveBeenCalledTimes(2);
-    expect(handleLateResult(true, "complete-request-stable")).toBe(false);
+    expect(handleLateResult(true, "complete-request-stable")).toEqual({
+      id: "daily-win", kind: "win", riddleId: "daily-1", gameMode: "challenge",
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true,
+    });
+    expect(handleLateResult(true, "complete-request-stable")).toBeNull();
+    expect(dispatch).not.toHaveBeenCalled();
+  });
+
+  it("retires completion delivery when a rejected guess removes the retained outcome", () => {
+    const outcome = {id: "preview-win", kind: "win" as const, riddleId: "classic-1", gameMode: "classic" as const,
+      sessionToken: "00000000-0000-4000-8000-000000000001", attempts: 1, isCorrect: true};
+    const dispatch = jest.fn(), postToHost = jest.fn<(message: GameToHostMessage) => void>();
+    useCompletionDelivery({outcome, retainedOutcomes: [outcome], dispatch, postToHost});
+    commitDeliveryEffect();
+    mockRefIndex = 0;
+    mockStateIndex = 0;
+    mockEffects.length = 0;
+    const acknowledge = useCompletionDelivery({outcome: null, retainedOutcomes: [], dispatch, postToHost});
+    commitDeliveryEffect();
+    expect(window.clearTimeout).toHaveBeenCalledWith(1);
+    expect(acknowledge(true, "complete-request-stable")).toBeNull();
+    expect(postToHost).toHaveBeenCalledTimes(1);
     expect(dispatch).not.toHaveBeenCalled();
   });
 
@@ -217,8 +239,8 @@ describe("useCompletionDelivery", () => {
     const acknowledge = useCompletionDelivery({outcome: confirmed, dispatch, postToHost});
     commitDeliveryEffect();
     expect(postToHost).toHaveBeenCalledTimes(1);
-    expect(acknowledge(true, "complete-request-stable")).toBe(true);
-    expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
+    expect(acknowledge(true, "complete-request-stable")).toEqual(confirmed);
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "completionAcknowledged"}));
     mockRefIndex = 0;
     mockStateIndex = 0;
     mockEffects.length = 0;
@@ -238,7 +260,7 @@ describe("useCompletionDelivery", () => {
     /** Captures completion before canonical attempt metadata arrives. */
     const acknowledge = useCompletionDelivery({outcome, dispatch, postToHost});
     commitDeliveryEffect();
-    expect(acknowledge(true, "complete-request-stable")).toBe(true);
+    expect(acknowledge(true, "complete-request-stable")).toEqual(outcome);
     dispatch.mockClear();
     mockRefIndex = 0;
     mockStateIndex = 0;
@@ -246,6 +268,6 @@ describe("useCompletionDelivery", () => {
     useCompletionDelivery({outcome: {...outcome, id: "continued-win-6", attempts: 6}, dispatch, postToHost});
     commitDeliveryEffect();
     expect(postToHost).toHaveBeenCalledTimes(1);
-    expect(dispatch).toHaveBeenCalledWith({type: "completionAcknowledged"});
+    expect(dispatch).toHaveBeenCalledWith(expect.objectContaining({type: "completionAcknowledged"}));
   });
 });

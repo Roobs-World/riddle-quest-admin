@@ -3,8 +3,9 @@ import {computeFeedback} from "../rules/computeFeedback";
 import {lowerCaseGraphemes, splitGraphemes} from "../input/graphemes";
 import {type Feedback, type ScoredGuess} from "../contracts/scoring";
 import type {BridgeRiddle, BridgeProfile} from "../../platform/bridge/messages";
-import type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
+import type {CompletionMilestone, GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
 import {getConfirmedRiddleOutcome} from "./completion/ConfirmedRiddleOutcome";
+import {completionPresentationKey} from "./completion/completionPresentation";
 import {isSingleAnswerCell} from "./answerCell";
 import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
 import {parseCompletionRewardBreakdown} from "../../progression/rewards/completionRewardBreakdown";
@@ -56,6 +57,8 @@ export const createInitialGameSession = (): GameSessionState => ({
   notice: null,
   lastRewards: null,
   optimisticAchievementIds: [],
+  completionMilestones: [],
+  presentedCompletionKeys: [],
   auxiliaryFanfare: null,
   lastOutcome: null,
   completionAcknowledged: false,
@@ -769,25 +772,44 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
       return {...state, leaderboardLoading: false, leaderboardLoadError: true, leaderboardRequestId: null};
     case "profileUpdated":
       return {...state, profile: preservePendingCoins(state, action.profile), ...clearLeaderboard()};
-    case "completionReward":
-      if (!state.lastOutcome) return state;
+    case "completionReward": {
+      /** Late receipts enrich their original presentation without replacing current gameplay. */
+      const outcomeKey = completionPresentationKey(action.outcome);
+      const current = state.lastOutcome !== null && completionPresentationKey(state.lastOutcome) === outcomeKey;
+      const previous = state.completionMilestones.find(entry => completionPresentationKey(entry.outcome) === outcomeKey);
+      /** Replayed receipt IDs cannot append the same milestone twice. */
+      const reward = {...action.reward, newlyUnlockedAchievementIds: [...new Set(action.reward.newlyUnlockedAchievementIds)]};
+      const steps = [...(previous?.steps ?? [])];
+      if (reward.leveledUp && !steps.some(step => step.kind === "level")) steps.push({kind: "level"});
+      for (const achievementId of reward.newlyUnlockedAchievementIds)
+        if (!steps.some(step => step.kind === "achievement" && step.achievementId === achievementId))
+          steps.push({kind: "achievement", achievementId});
+      const entry = {outcome: action.outcome, reward, steps, confirmed: true} satisfies CompletionMilestone;
       return {
         ...state,
-        lastRewards: {
-          ...action.reward,
-          newlyUnlockedAchievementIds: [...new Set(action.reward.newlyUnlockedAchievementIds)],
-        },
+        completionMilestones: state.presentedCompletionKeys.includes(outcomeKey) || previous?.confirmed ? state.completionMilestones : previous
+          ? state.completionMilestones.map(candidate => candidate === previous ? entry : candidate)
+          : [...state.completionMilestones, entry],
+        lastRewards: current ? reward : state.lastRewards,
         profile: state.profile
           ? {...state.profile, achievements: [...new Set([
               ...state.profile.achievements,
               ...action.reward.newlyUnlockedAchievementIds,
             ])]}
           : state.profile,
-        optimisticAchievementIds: [],
+        optimisticAchievementIds: current ? [] : state.optimisticAchievementIds,
         ...clearLeaderboard(),
       };
+    }
     case "completionAcknowledged":
-      return {...state, completionAcknowledged: true};
+      return !state.completionAcknowledged && state.lastOutcome && completionPresentationKey(state.lastOutcome) === completionPresentationKey(action.outcome)
+        ? {...state, completionAcknowledged: true} : state;
+    case "completionMilestonesPresented": {
+      const head = state.completionMilestones[0];
+      return head?.confirmed && completionPresentationKey(head.outcome) === action.outcomeKey
+        ? {...state, completionMilestones: state.completionMilestones.slice(1),
+          presentedCompletionKeys: [...new Set([...state.presentedCompletionKeys, action.outcomeKey])]} : state;
+    }
     case "showAuxiliaryFanfare":
       return {...state, auxiliaryFanfare: action.fanfare, modal: state.modal === "victory" ? "victory" : "reward"};
     case "restoreSession":
@@ -953,6 +975,23 @@ export const gameSessionReducer = (state: GameSessionState, action: GameSessionA
   /** Rejected actions and presentation updates keep their existing input revision. */
   let next = reduceGameSession(state, action);
   if (next === state) return state;
+  /** Rejected terminal previews must not leave an unconfirmable celebration in front of later receipts. */
+  if (action.type === "guessFailed" || action.type === "restoreConfirmedRiddle") {
+    const origin = action.type === "restoreConfirmedRiddle" ? action.riddle : state.riddle;
+    if (origin && (!next.lastOutcome || completionPresentationKey(next.lastOutcome) !== completionPresentationKey(origin))) {
+      const rejectedKey = completionPresentationKey(origin);
+      const firstRejected = next.completionMilestones.findIndex(entry => completionPresentationKey(entry.outcome) === rejectedKey);
+      if (firstRejected >= 0) next = {...next, completionMilestones: next.completionMilestones.filter((entry, index) =>
+        index < firstRejected || entry.confirmed)};
+    }
+  }
+  /** Delivery and presentation retain a newly completed question independently of the visible board. */
+  const nextOutcome = next.lastOutcome;
+  if (nextOutcome && (!state.lastOutcome || completionPresentationKey(nextOutcome) !== completionPresentationKey(state.lastOutcome)) &&
+    !next.presentedCompletionKeys.includes(completionPresentationKey(nextOutcome)) &&
+    !next.completionMilestones.some(entry => completionPresentationKey(entry.outcome) === completionPresentationKey(nextOutcome)))
+    next = {...next, completionMilestones: [...next.completionMilestones,
+      {outcome: nextOutcome, reward: null, steps: [], confirmed: false}]};
   if (next.shopReturnModal && next.modal !== "shop" && next.modal !== "reward")
     next = {...next, shopReturnModal: null};
   if ((action.type === "restoreSession" || action.type === "restoreQueuedGuesses") && action.draftRevision)

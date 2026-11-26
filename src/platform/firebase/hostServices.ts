@@ -3,7 +3,7 @@ import type {BridgeProfile, BridgeUser} from "../bridge/messages";
 import {type ClassicRiddleBufferResponse} from "../contracts/requestSchemas";
 import {createGameplayAuthorityDelivery, type HostTranslate} from "../../gameplay/session/gameplayAuthorityDelivery";
 import type {CurrentRiddleResponse, GameFunctionsClient} from "./gameFunctions";
-import type {AuthSnapshot, HostServices} from "../contracts/hostServices";
+import type {AuthSnapshot, CompletionResult, HostServices} from "../contracts/hostServices";
 import {toBridgeProfile} from "../../accounts/profile/profileMapper";
 import {mapRiddleResponse} from "../../gameplay/contracts/riddleResponse";
 /** Signed-in account as the host's auth SDK reports it; a structural subset of Firebase's `User`. */
@@ -69,6 +69,8 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
   let latestSnapshot: AuthSnapshot = {user: toBridgeUser(auth.currentUser), profile: null};
   /** Identical renderer retries share a bounded, account-owned authority response. */
   const gameplayDelivery = createGameplayAuthorityDelivery(tr);
+  /** Recent issued sessions share their pending guess and its committed terminal completion. */
+  const guessCompletions = new Map<string, Promise<CompletionResult | undefined>>();
   /** Account visits invalidate profile and content responses even after same-UID re-entry. */
   let accountVisit = 0;
   /** Complete request data prevents unrelated operations from sharing a pending receipt. */
@@ -178,6 +180,7 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
       latestSnapshot.user?.accountGeneration === user?.accountGeneration;
     if (!sameAccount) {
       accountVisit += 1;
+      guessCompletions.clear();
       classicBuffer = null;
       classicBufferInFlight = null;
       dailyPreload = null;
@@ -218,6 +221,7 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
           if (subscribers.size === 0 && unsubscribeAuth) {
             authObserverVersion += 1;
             accountVisit += 1;
+            guessCompletions.clear();
             unsubscribeAuth();
             unsubscribeAuth = null;
           }
@@ -318,21 +322,29 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
     async completeGame(input) {
       /** Only the admitting account visit owns optional completion follow-up. */
       const ownsAccount = captureAccount();
+      const completionKey = authorityKey("completion", input);
       /** Concurrent retries share one timely authority receipt and one profile refresh. */
-      const result = await gameplayDelivery.run(authorityKey("completion", input), () => functions.completeGame(input), () => {
+      return gameplayDelivery.run(completionKey, async () => {
+        const pendingCompletion = guessCompletions.get(completionKey);
+        if (pendingCompletion) {
+          const completion = await pendingCompletion;
+          if (completion) return completion;
+        }
+        if (!ownsAccount()) throw Object.assign(new Error(tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE")), {code: "cancelled"});
+        return (await functions.completeGame(input)).data;
+      }, () => {
         if (ownsAccount()) {
           if (input.gameMode === "challenge") dailyPreload = null;
           void refreshProfile().catch(() => undefined);
         }
       });
-      return result.data;
     },
     /** Submits guess. */
     async submitGuess(input) {
       /** Terminal follow-up work belongs to the originally authenticated player. */
       const ownsAccount = captureAccount();
       /** One exact guessed request owns its response and terminal refresh work. */
-      const result = await gameplayDelivery.run(authorityKey("guess", input), () => functions.submitSinglePlayerGuess(input), ({data}) => {
+      const pending = gameplayDelivery.run(authorityKey("guess", input), () => functions.submitSinglePlayerGuess({...input, includeCompletion: true}), ({data}) => {
         if (data.gameOver && ownsAccount() && latestSnapshot.user) {
           if (input.gameMode === "challenge") dailyPreload = null;
           /** Current authenticated player for the background refresh. */
@@ -342,6 +354,21 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
             void refreshClassicBuffer(user.uid, classicBuffer.locale, true).catch(() => undefined);
         }
       });
+      const completionKey = authorityKey("completion", {riddleId: input.riddleId, gameMode: input.gameMode, sessionToken: input.sessionToken});
+      const completion = pending.then(({data}) => data.completion);
+      guessCompletions.set(completionKey, completion);
+      // Older sessions still recover through the idempotent completion endpoint.
+      for (const key of guessCompletions.keys()) {
+        if (guessCompletions.size <= 8) break;
+        guessCompletions.delete(key);
+      }
+      const forgetCompletion = () => {
+        if (guessCompletions.get(completionKey) === completion) guessCompletions.delete(completionKey);
+      };
+      void completion.then(receipt => {
+        if (!receipt && guessCompletions.get(completionKey) === completion) guessCompletions.delete(completionKey);
+      }, forgetCompletion);
+      const result = await pending;
       return result.data;
     },
     /** Requests hint. */

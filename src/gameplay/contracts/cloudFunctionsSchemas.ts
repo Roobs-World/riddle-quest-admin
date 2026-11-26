@@ -27,6 +27,7 @@ export const SubmitSinglePlayerGuessInputSchema = z
     sessionToken: z.string().min(20).max(128),
     guess: PlayableGuessSchema,
     requestId: z.string().min(8).max(128),
+    includeCompletion: z.literal(true).optional(),
   })
   .strict();
 
@@ -77,8 +78,14 @@ export const SubmitSinglePlayerGuessOutputSchema = z
     isCorrect: z.boolean(),
     gameOver: z.boolean(),
     canContinue: z.boolean().optional(),
+    completion: CompleteGameOutputSchema.optional(),
   })
-  .strict();
+  .strict()
+  .superRefine((result, context) => {
+    if (result.completion && (!result.gameOver || result.completion.attempts !== result.attempts ||
+      result.completion.isCorrect !== result.isCorrect))
+      context.addIssue({code: z.ZodIssueCode.custom, path: ["completion"], message: "Completion must match its terminal guess."});
+  });
 /** Describes a server-authoritative single-player guess output. */
 export type SubmitSinglePlayerGuessOutput = z.infer<typeof SubmitSinglePlayerGuessOutputSchema>;
 

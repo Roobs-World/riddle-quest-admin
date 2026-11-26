@@ -21,7 +21,7 @@ it("recovers the host-confirmed paid sixth-attempt loss without a provider save"
   expect(gameSessionReducer(state, {type: "typeLetter", letter: "X"})).toBe(state);
   expect(getConfirmedRiddleWin(issued)).toBeNull();
   expect(createSavedGame(state)?.pendingOutcome).toEqual(state.lastOutcome);
-  expect(createSavedGame(gameSessionReducer(state, {type: "completionAcknowledged"}))).toBeNull();
+  expect(createSavedGame(gameSessionReducer(state, {type: "completionAcknowledged", outcome: issued}))).toBeNull();
 });
 
 it.each(["missing", "draft", "forged-win", "foreign"])("checkpoints the canonical loss over a %s provider save", provider => {
