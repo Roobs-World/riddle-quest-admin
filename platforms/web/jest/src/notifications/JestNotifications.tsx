@@ -14,9 +14,9 @@ type JestNotificationsProps = Pick<Parameters<typeof useJestNotifications>[0], "
   install(capability: NotificationRegistrationCommands): () => void;
 };
 
-/** Registers account consent and retires legacy platform schedules. */
+/** Keeps account consent synchronized with the Jest-owned reminder sequence. */
 export function JestNotifications({mockRuntime, authHarness, session, platform, gate, sessionRef, install}: JestNotificationsProps) {
-  const {cancelAllNotifications} = useJestNotifications({
+  const {synchronizeNotifications} = useJestNotifications({
     session,
     platform,
     isActive: gate.isOpen,
@@ -29,26 +29,28 @@ export function JestNotifications({mockRuntime, authHarness, session, platform, 
     const setEnabled = async (enabled: boolean) => {
       const isCurrent = () => isSessionCurrent() && isPlayerNotificationsEnabled() === enabled;
       if (!isCurrent()) return false;
-      const cleanup = enabled ? Promise.resolve(true) : cancelAllNotifications();
-      if (!session?.player.registered || authHarness || mockRuntime) return cleanup;
+      const schedule = synchronizeNotifications();
+      if (!session?.player.registered || authHarness || mockRuntime) {
+        await schedule;
+        return isCurrent();
+      }
       const preference = gate.run(async () => {
         const {setNotificationPreference} = await import("../../../../../src/platform/firebase/browserClient");
         if (!isCurrent()) return false;
         await setNotificationPreference({enabled});
         return true;
       });
-      const results = await Promise.allSettled([preference, cleanup]);
+      const results = await Promise.allSettled([preference, schedule]);
       results.forEach(result => {
         if (result.status === "rejected") captureBrowserException(result.reason, {component: "jest_notifications", operation: "save_preference"});
       });
       const saved = results[0].status === "fulfilled" && results[0].value === true;
-      const removed = results[1].status === "fulfilled" && results[1].value === true;
-      return isCurrent() && saved && removed;
+      return isCurrent() && saved;
     };
     return {
       setEnabled,
     } satisfies NotificationRegistrationCommands;
-  }, [authHarness, cancelAllNotifications, mockRuntime, gate, session?.firebaseUid, session?.player.playerId, session?.player.registered]);
+  }, [authHarness, synchronizeNotifications, mockRuntime, gate, session?.firebaseUid, session?.player.playerId, session?.player.registered]);
   useLayoutEffect(() => {
     return install(commands);
   }, [commands, install]);

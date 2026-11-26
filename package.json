@@ -5,7 +5,7 @@
   "scripts": {
     "audit:jest-artifact": "node platforms/web/jest/scripts/audit-jest-artifact.mjs",
     "build": "pnpm prepare:functions && pnpm build:jest && pnpm --dir firebase-functions build",
-    "build:jest": "pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact",
+    "build:jest": "pnpm check:target-boundaries && pnpm check:locales && pnpm check:licenses && pnpm check:jest-console && pnpm check:jest-notifications && NODE_ENV=production tsc -b && JEST_BUILD=1 VITE_JEST_RUNTIME=1 NODE_ENV=production vite build --mode jest && pnpm audit:jest-artifact",
     "build:notification-manager": "pnpm --filter @riddle-quest/notification-manager build",
     "build:shared": "pnpm --dir firebase-functions build",
     "build:web": "pnpm build:jest",
@@ -15,6 +15,7 @@
     "check:functions-lock": "npm --prefix firebase-functions ci --dry-run --ignore-scripts --omit=dev --no-audit --no-fund --silent",
     "check:jest-console": "node platforms/web/jest/scripts/validate-jest-console-manifest.mjs",
     "check:jest-console:release": "node platforms/web/jest/scripts/validate-jest-console-manifest.mjs --release-ready",
+    "check:jest-notifications": "node platforms/web/jest/scripts/audit-jest-notifications.mjs",
     "check:licenses": "node scripts/web/generate-third-party-licenses.mjs --check",
     "check:locales": "node scripts/web/audit-locales.mjs",
     "check:modern-packages": "node scripts/audit-modern-package-features.mjs",

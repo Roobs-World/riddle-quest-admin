@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "locale": "en",
+  "assetReference": "riddle-q-notification",
+  "campaign": "daily_riddles_v1",
+  "gameMode": "challenge",
+  "callback": "daily_riddle",
+  "notifications": [
+    {
+      "scheduledInDays": 1,
+      "identifier": "riddle-quest-d1-v3",
+      "template": "daily_discovery_v1",
+      "body": "A new Daily riddle is ready. Solve it to earn coins and start your streak.",
+      "ctaText": "Play Daily"
+    },
+    {
+      "scheduledInDays": 2,
+      "identifier": "riddle-quest-d2-v3",
+      "template": "daily_clues_v1",
+      "body": "Today's Daily riddle has a secret word. Follow the color clues and earn coins by solving it.",
+      "ctaText": "Solve the riddle"
+    },
+    {
+      "scheduledInDays": 3,
+      "identifier": "riddle-quest-d3-v3",
+      "template": "daily_streak_v1",
+      "body": "Build your Daily streak one riddle at a time. What will today's clues reveal?",
+      "ctaText": "Build your streak"
+    },
+    {
+      "scheduledInDays": 4,
+      "identifier": "riddle-quest-d4-v3",
+      "template": "daily_reward_v1",
+      "body": "Turn a clever answer into coins. A fresh Daily riddle is waiting to be solved.",
+      "ctaText": "Play for coins"
+    },
+    {
+      "scheduledInDays": 5,
+      "identifier": "riddle-quest-d5-v3",
+      "template": "daily_progress_v1",
+      "body": "Put your word skills to work on today's Daily riddle. Every correct answer builds your progress.",
+      "ctaText": "Take the challenge"
+    },
+    {
+      "scheduledInDays": 6,
+      "identifier": "riddle-quest-d6-v3",
+      "template": "daily_puzzle_v1",
+      "body": "One riddle, one hidden word. Can you crack today's Daily challenge from its clues?",
+      "ctaText": "Crack the clues"
+    },
+    {
+      "scheduledInDays": 7,
+      "identifier": "riddle-quest-d7-v3",
+      "template": "daily_return_v1",
+      "body": "Your next Daily win starts with a guess. Solve today's riddle and earn more coins.",
+      "ctaText": "Start today's riddle"
+    }
+  ]
+}

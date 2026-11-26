@@ -61,10 +61,7 @@ import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/
 import type {NotificationRegistrationCommands} from "../../../../src/notifications/contracts/notificationProvider";
 import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
-
-/** Account registration controls load after the playable session mounts. */
-const JestNotifications = lazy(() => import("./notifications/JestNotifications")
-  .then(module => ({default: module.JestNotifications})));
+import {JestNotifications} from "./notifications/JestNotifications";
 
 /** Account-management controls load when Profile or Settings first renders them. */
 const JestProfileSubscriptions = lazy(() => import("./JestProfileSubscriptions")
@@ -636,9 +633,9 @@ export function JestPlayApp() {
   }
   return (
     <>
-      <Suspense fallback={null}><JestNotifications mockRuntime={mockRuntime} authHarness={authHarness}
+      <JestNotifications mockRuntime={mockRuntime} authHarness={authHarness}
         session={session} sessionRef={sessionRef} platform={platform}
-        gate={notificationOperationGate} install={notificationsDelegate.install} /></Suspense>
+        gate={notificationOperationGate} install={notificationsDelegate.install} />
       {registrationFailure ? (
         <div
           className="play-alert game-shell-alert"
