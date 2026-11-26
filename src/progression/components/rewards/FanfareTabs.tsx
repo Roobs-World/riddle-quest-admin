@@ -30,17 +30,15 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
     .filter(step => step.kind !== "achievement" || !seenAchievements.hasSeen(step.achievementId)));
   /** Current position in the automatic milestone queue. */
   const [index, setIndex] = useState(0);
-  /** Entry, readable hold, and exit state for the front tab. */
-  const [phase, setPhase] = useState<"entering" | "holding" | "ready" | "leaving" | "complete">("entering");
-  /** Delays tab animation until the underlying completion has painted. */
-  const [surfacePainted, setSurfacePainted] = useState(false);
+  /** The front tab starts visible and holds before its exit. */
+  const [phase, setPhase] = useState<"holding" | "ready" | "leaving" | "complete">("holding");
   /** Background tabs retain unread milestones. */
   const [hidden, setHidden] = useState(() => typeof document !== "undefined" && document.hidden);
   /** Completion callback fires once for this presentation. */
   const completed = useRef(false);
   /** The current presentation retains its own consumed tab until its animation finishes. */
   const claimedIndex = useRef<number | null>(null);
-  /** Browser animation completion owns entry, promotion and removal. */
+  /** Browser animation completion owns promotion and removal. */
   const tabs = useRef<HTMLDivElement>(null);
   /** Player preference removes sliding motion. */
   const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => false);
@@ -48,37 +46,25 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
   const active = steps[index];
   /** A provisional win waits for its authoritative acknowledgement. */
   const canComplete = state.modal !== "victory" || state.completionAcknowledged;
+  /** A front award starts on its first visible commit and survives later suspension. */
+  const [collectingIndex, setCollectingIndex] = useState<number | null>(null);
   /** Current completion callback and queue length for scheduled transitions. */
   const latest = useRef({onComplete, count: steps.length});
   useLayoutEffect(() => {latest.current = {onComplete, count: steps.length};});
 
-  useEffect(() => {
-    /** Prevents a frame callback from updating an unmounted presentation. */
-    let retired = false;
-    /** Second paint callback handle retained for cancellation during cleanup. */
-    let secondFrame = 0;
-    /** First paint callback schedules the frame that reveals the tabs. */
-    const firstFrame = window.requestAnimationFrame(() => {
-      secondFrame = window.requestAnimationFrame(() => {
-        if (!retired) setSurfacePainted(true);
-      });
-    });
-    return () => {
-      retired = true;
-      window.cancelAnimationFrame(firstFrame);
-      window.cancelAnimationFrame(secondFrame);
-    };
-  }, []);
+  useLayoutEffect(() => {
+    if (!paused && !hidden && canComplete) setCollectingIndex(index);
+  }, [index, paused, hidden, canComplete]);
 
   useLayoutEffect(() => {
-    if (!surfacePainted || paused || hidden || active?.kind !== "achievement" || claimedIndex.current === index) return;
+    if (paused || hidden || active?.kind !== "achievement" || claimedIndex.current === index) return;
     if (seenAchievements.claim(active.achievementId)) claimedIndex.current = index;
     else {
       // Another receipt may have presented this achievement while it waited in the queue.
       setIndex(index + 1);
       setPhase("holding");
     }
-  }, [active, index, surfacePainted, paused, hidden, seenAchievements]);
+  }, [active, index, paused, hidden, seenAchievements]);
 
   useEffect(() => {
     /** Keeps the presentation suspended while its document is hidden. */
@@ -88,7 +74,7 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
   }, []);
 
   useEffect(() => {
-    if (!surfacePainted || paused || hidden || completed.current) return;
+    if (paused || hidden || completed.current) return;
     if (!active) {
       if (canComplete) {
         completed.current = true;
@@ -107,8 +93,7 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
     /** Moves only the current presentation phase after its hold or animation settles. */
     const advance = () => {
       if (retired) return;
-      if (phase === "entering") setPhase("holding");
-      else if (phase === "holding") setPhase("ready");
+      if (phase === "holding") setPhase("ready");
       else if (index + 1 < latest.current.count) {
         setIndex(index + 1);
         setPhase("holding");
@@ -128,9 +113,9 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
     const animations = Array.from(tabs.current?.children ?? []).flatMap(tab => tab.getAnimations());
     void Promise.all(animations.map(animation => animation.finished)).then(advance, () => undefined);
     return () => {retired = true;};
-  }, [active?.kind, index, steps.length, phase, paused, hidden, canComplete, reducedMotion, surfacePainted]);
+  }, [active?.kind, index, steps.length, phase, paused, hidden, canComplete, reducedMotion]);
 
-  if (!surfacePainted || phase === "complete") return id ? <div id={id} hidden /> : null;
+  if (phase === "complete") return id ? <div id={id} hidden /> : null;
   return (
     <div id={id} ref={tabs} className="fanfare-tabs" data-phase={phase} data-reduced-motion={reducedMotion} data-paused={paused || hidden}>
       {steps.slice(index).filter((step, offset) => offset === 0 || step.kind !== "achievement" ||
@@ -142,7 +127,7 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
           data-kind={step.kind} role={offset === 0 ? "status" : undefined}
           aria-hidden={offset > 0 ? true : undefined} aria-atomic="true">
           <FanfareTabContent step={step} level={state.lastRewards?.newLevel}
-            award={award} collecting={offset === 0 && phase !== "entering" && canComplete}
+            award={award} collecting={offset === 0 && collectingIndex === index && canComplete}
             onBalancePreview={onBalancePreview} />
         </div>;
       })}

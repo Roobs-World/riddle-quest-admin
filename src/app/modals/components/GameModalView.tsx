@@ -1,4 +1,4 @@
-import {completionPresentationKey, isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
+import {completionPresentationKey, getVisibleGameModal, isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
 import {useEffect, useId, useLayoutEffect, useRef} from "react";
 import "../styles/modal-shell.css";
 import "../../../progression/styles/rewards.css";
@@ -90,6 +90,8 @@ export function GameModalView({
   onCoinBalancePreview,
   onCompletionMilestonesPresented,
 }: GameModalViewProps) {
+  /** Pending completion keeps the solved board visible until the full dialog is ready. */
+  const modal = getVisibleGameModal(state);
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
   /** Keeps status announcements inside the active dialog's accessible reading scope. */
@@ -99,14 +101,14 @@ export function GameModalView({
   /** Last native focus can resume after another surface temporarily covers this modal. */
   const lastFocusedControlRef = useRef<HTMLElement | null>(null);
   /** Native keys follow the visible modal callback, readiness and interaction owner. */
-  const keyboardRef = useRef({onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked});
+  const keyboardRef = useRef({onClose, modal, guessPending: state.guessPending, continuationPending, interactionBlocked});
   useLayoutEffect(() => {
-    keyboardRef.current = {onClose, modal: state.modal, guessPending: state.guessPending, continuationPending, interactionBlocked};
-    if (!state.modal) lastFocusedControlRef.current = null;
-  }, [onClose, state.modal, state.guessPending, continuationPending, interactionBlocked]);
+    keyboardRef.current = {onClose, modal, guessPending: state.guessPending, continuationPending, interactionBlocked};
+    if (!modal) lastFocusedControlRef.current = null;
+  }, [onClose, modal, state.guessPending, continuationPending, interactionBlocked]);
 
   /** A page switch remains part of the same modal interaction. */
-  const modalOpen = isBlockingGameModal(state.modal);
+  const modalOpen = isBlockingGameModal(modal);
   useEffect(() => {
     if (!modalOpen) return;
     // Remember the gameplay trigger once. A Settings/Profile child button may
@@ -171,12 +173,12 @@ export function GameModalView({
   }, [modalOpen, interactionBlocked]);
 
   useEffect(() => {
-    if (!state.modal) return;
+    if (!modal) return;
     /** Only entering a different page resets the shell's reading position. */
-    const modal = modalRef.current;
-    modal?.scrollTo({top: 0, left: 0});
-    modal?.parentElement?.scrollTo({top: 0, left: 0});
-  }, [state.modal]);
+    const element = modalRef.current;
+    element?.scrollTo({top: 0, left: 0});
+    element?.parentElement?.scrollTo({top: 0, left: 0});
+  }, [modal]);
 
   useEffect(() => {
     if (!modalOpen || interactionBlocked) {
@@ -211,7 +213,7 @@ export function GameModalView({
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [modalOpen, state.guessPending, state.lastRewards, state.modal, continuationPending, interactionBlocked]);
+  }, [modalOpen, state.guessPending, state.lastRewards, modal, continuationPending, interactionBlocked]);
 
   /** Completion celebrations survive closing victory and loading the next question. */
   const completion = state.completionMilestones[0];
@@ -225,8 +227,8 @@ export function GameModalView({
     onBalancePreview={onCoinBalancePreview}
     onComplete={() => onCompletionMilestonesPresented(completionPresentationKey(completion.outcome))}
   /> : null;
-  if (!state.modal) return completionTabs;
-  if (state.modal === "reward") {
+  if (!modal) return completionTabs;
+  if (modal === "reward") {
     return <>{completionTabs}<FanfareTabs
       key={`${getAchievementFanfareOwnerKey(state.user)}-${state.auxiliaryFanfare?.id ?? "reward"}`}
       state={state}
@@ -257,14 +259,14 @@ export function GameModalView({
   };
   /** Indicates whether is mandatory outcome. */
   const isMandatoryOutcome =
-    state.modal === "victory" || state.modal === "continue" && (state.guessPending || continuationPending);
+    modal === "victory" || modal === "continue" && (state.guessPending || continuationPending);
 
   return (
     <>{completionTabs}<div className="game-modal-backdrop" role="presentation" onMouseDown={isMandatoryOutcome ? undefined : onClose}>
-      {state.modal !== "profile" && state.modal !== "continue" ? <SpinningWheel /> : null}
+      {modal !== "profile" && modal !== "continue" ? <SpinningWheel /> : null}
       <section
         ref={modalRef}
-        className={`game-modal modal-${state.modal}`}
+        className={`game-modal modal-${modal}`}
         role="dialog"
         aria-modal="true"
         aria-labelledby="game-modal-title"
@@ -273,14 +275,14 @@ export function GameModalView({
         onFocusCapture={(event) => {
           if (event.target instanceof HTMLElement) lastFocusedControlRef.current = event.target;
         }}
-        data-analytics-screen={`modal_${state.modal}`}
+        data-analytics-screen={`modal_${modal}`}
       >
         {!isMandatoryOutcome && (
           <button className="modal-x" onClick={onClose} aria-label={tr("CommonAlerts.CLOSE_BUTTON")}>
             ×
           </button>
         )}
-        {state.modal === "victory" ? <VictoryModalContent key={state.lastOutcome?.id ?? "victory"}
+        {modal === "victory" ? <VictoryModalContent key={state.lastOutcome?.id ?? "victory"}
           state={state} onBalancePreview={onCoinBalancePreview} onAdvance={() => {
             if (isCompletionAdvancePending(state)) return;
             onClose();
@@ -288,7 +290,7 @@ export function GameModalView({
               detail: {outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null},
             }));
             onNext();
-          }} /> : <h2 id="game-modal-title">{titles[state.modal]}</h2>}
+          }} /> : <h2 id="game-modal-title">{titles[modal]}</h2>}
 
         <GameModalPages
           state={state}

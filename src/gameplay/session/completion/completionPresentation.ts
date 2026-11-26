@@ -1,6 +1,12 @@
 import {getConfirmedRiddleWin} from "./ConfirmedRiddleOutcome";
 import type {GameSessionState} from "../gameSessionTypes";
 
+/** Opens victory with its confirmed award and milestones in the same render. */
+export function getVisibleGameModal(state: Pick<GameSessionState, "modal" | "lastRewards" | "completionAcknowledged">): GameSessionState["modal"] {
+  return state.modal === "victory" && (!state.completionAcknowledged || state.lastRewards === null)
+    ? null : state.modal;
+}
+
 /** Recovered Classic wins need confirmed progression; provisional Classic and duplicate reads remain responsive. */
 export function isCompletionAdvancePending(state: Pick<GameSessionState, "riddle" | "profile" | "guessPending" | "completionAcknowledged">): boolean {
   if (state.riddle?.gameMode === "challenge") return state.guessPending || !state.completionAcknowledged;

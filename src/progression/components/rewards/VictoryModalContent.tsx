@@ -39,7 +39,7 @@ export function VictoryModalContent({state, onAdvance, onBalancePreview}: {
   const tr = useTranslator();
   /** Only progression authority can delay navigation; decorative milestones never do. */
   const advancePending = isCompletionAdvancePending(state);
-  const reward = state.lastRewards && state.lastRewards.coinsEarned > 0 ? state.lastRewards : null;
+  const reward = state.lastRewards;
   return <>
     <h2 id="game-modal-title">{tr("VictoryModal.TITLE")}</h2>
     <div className="fanfare-content">

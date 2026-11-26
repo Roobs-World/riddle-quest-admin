@@ -16,9 +16,11 @@ Recorded unlocks remain complete when a coin balance or performance statistic su
 
 ## Browser completion presentation
 
-The victory dialog shows its chest, current balance and Next action immediately. Chest artwork is prepared with the modal assets. Next follows the existing progression guard, independently of reward delivery and celebration animations. Provisional Classic wins can continue through their issued-question recovery journal; recovered Classic wins and Daily completions retain their authority checks.
+The victory dialog opens with its confirmed chest award, balance and Next action together. Until the receipt arrives, the solved board stays visible instead of an empty victory dialog. The completion delivery and recovery journal remain active during that wait. Chest artwork is prepared with the modal assets. Next follows the existing progression guard independently of celebration animations.
 
 Each issued outcome retains its own completion delivery and milestone queue after Next loads another riddle. A rejected provisional outcome retires its unconfirmed delivery and dependent queue entries. Confirmed level-ups and achievements display in order without blocking play. Account changes clear the queue, and presented outcome keys prevent recovery from reopening it. Hidden or paused games retain unread milestones. Profile refreshes do not remove unlocks from the matching receipt just because the refreshed profile already contains them.
+
+The first confirmed milestone card is visible on its first render. There is no extra pair of animation frames or entrance slide before its text appears. Later cards still promote and leave in order, and achievement cards retain their three-second readable hold. A screen-reader status outside the inactive board announces the pending confirmation with the existing translated loading label.
 
 Firebase hosts request the completion receipt in the terminal guess response. The server returns the result it already committed; callers that omit the opt-in keep the original response shape. A bounded account-owned host cache lets the existing completion command join the pending guess or reuse its receipt, with the original endpoint retained for recovery and legacy responses. The updated backend must be deployed before releasing the client that requests this field. Rewards and achievements remain authoritative, with no predicted grants written to profiles or local caches.
 

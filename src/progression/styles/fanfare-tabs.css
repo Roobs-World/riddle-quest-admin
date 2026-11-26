@@ -32,9 +32,6 @@
   opacity: .72;
   animation: fanfare-tab-queue var(--tab-slide) cubic-bezier(.16, 1, .3, 1) both;
 }
-.fanfare-tabs[data-phase="entering"] .fanfare-tab.current {
-  animation: fanfare-tab-enter var(--tab-slide) cubic-bezier(.16, 1, .3, 1) both;
-}
 .fanfare-tabs[data-phase="leaving"] .fanfare-tab.current {
   animation: fanfare-tab-exit var(--tab-slide) cubic-bezier(.7, 0, .84, 0) both;
 }
@@ -72,10 +69,6 @@
 html[dir="rtl"] .fanfare-tab { direction: rtl; }
 .fanfare-tabs[data-reduced-motion="true"] { --tab-slide: 0ms; }
 .fanfare-tabs[data-paused="true"] .fanfare-tab { animation-play-state: paused; }
-@keyframes fanfare-tab-enter {
-  from { transform: translateX(-110%); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
 @keyframes fanfare-tab-queue {
   from { transform: translate(-110%, 86px); opacity: 0; }
   to { transform: translate(0, 86px); opacity: .72; }
