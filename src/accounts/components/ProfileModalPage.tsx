@@ -43,8 +43,8 @@ export function ProfileModalPage({
   const providerProfile = useProviderProfile();
   /** Current game username, with provider and localized guest fallbacks. */
   const displayName = profile?.username ?? providerProfile?.username ?? tr("Profile.GUEST_USERNAME");
-  /** Provider avatar without altering account data. */
-  const avatarUrl = providerProfile ? providerProfile.avatarUrl : profile?.avatarUrl;
+  /** Saved game avatar, with the provider photo as the initial fallback. */
+  const avatarUrl = profile?.avatarUrl ?? providerProfile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
   /** Target-specific subscription management surface supplied to Profile. */
@@ -142,7 +142,7 @@ export function ProfileModalPage({
     <div className="profile-page">
       <div className="profile-hero">
         <div className="profile-identity" data-tooltip="profileIdentity">
-          {platformRegistered === undefined || providerProfile ? (
+          {platformRegistered === undefined ? (
             <div className="profile-avatar-button">
               <RankedAvatar avatarUrl={avatarUrl} level={progress.level} size={84}
                 fallback={displayName.slice(0, 1).toUpperCase()} fallbackClassName="profile-avatar-fallback" />

@@ -554,7 +554,7 @@ export function GameFrameApp({
               ownerId={raceOwnerId}
               localPlayer={{
                 displayName: state.profile?.username ?? providerProfile?.username ?? state.user?.displayName ?? tr("Profile.GUEST_USERNAME"),
-                avatarUrl: providerProfile ? providerProfile.avatarUrl : state.profile?.avatarUrl ?? state.user?.photoURL ?? null,
+                avatarUrl: state.profile?.avatarUrl ?? providerProfile?.avatarUrl ?? state.user?.photoURL ?? null,
                 level: state.profile?.level ?? 1,
                 bot: false,
               }}
