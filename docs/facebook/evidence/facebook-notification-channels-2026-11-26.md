@@ -1,0 +1,17 @@
+# Facebook notification delivery channels, 26 November 2026
+
+The notification manager requires a native installation as its delivery destination. A Facebook game session can save the signed-in player's notification preference. It cannot supply a native installation token or constrain Meta's notification API to a native app.
+
+## Provider contract
+
+Meta's App-to-User (A2U) API accepts an app access token and a game-scoped player ID, including IDs from Zero Permissions games. The server posts to `https://graph.fb.gg/{app-id}/notifications`. The documented inputs cover message content, labels, entry data, scheduling and Messenger presentation. Meta selects among the Facebook notification tray, on-platform game notifications and Messenger. The request has no field to exclude browser delivery or address a particular installation. A success result includes a notification ID and establishes that Meta created the notification. It does not establish device receipt. [A2U API](https://developers.facebook.com/documentation/games/retain/notifications/a2u-api/)
+
+Meta requires player opt-in for gaming notifications. Messenger game updates require a bot subscription and address the player's Messenger conversation through the game's Page. Neither channel gives the game an installation token. The Riddle Quest account preference does not establish Facebook notification consent or Messenger subscription. [Notification channels](https://developers.facebook.com/documentation/games/retain/notifications/overview/) · [Messenger game updates](https://developers.facebook.com/documentation/games/retain/notifications/game-updates-messenger/)
+
+## Riddle Quest access and account identity
+
+A read-only Meta app review lookup for Riddle Quest (`1748953042991569`) returned `standard_access: true`, `advanced_access: false`, tier `BASIC` and `in_current_submission: true` for **Instant Games Zero Permission Access**. The privileges list reports that feature as `REJECTED` and `is_live: false`. Standard access covers development with app roles. Advanced access is required for a public Zero Permissions rollout. Approval alone would not add installation targeting to A2U. [Meta migration and access guide](https://developers.facebook.com/documentation/games/build/zero-permissions/onboarding-and-migration/migrating-to-nezp)
+
+Facebook sign-in verifies a game-scoped player ID and derives a Firebase UID from that ID and the account generation. Its profile uses an internal `@players.facebook.invalid` placeholder. Android links Google to the installation's Firebase account. The two sign-in flows supply no shared, verified email or account link for routing a Facebook player's notifications to their Android installation. [Facebook identity](../../../platforms/web/facebook/server/facebookSecurity.ts) · [Facebook profile](../../../platforms/web/facebook/server/facebookUser.ts) · [Android identity](../../../platforms/native/android/src/auth/firebaseGoogleIdentity.ts)
+
+The manager therefore keeps native delivery limited to registered installations. The Facebook game retains its account preference integration. The deployed legacy race-trigger implementation retires queued work without invoking Meta. This check sent no notifications and changed no Meta settings. [Facebook game entry](../../../platforms/web/facebook/src/FacebookPlatformEntry.tsx) · [Legacy trigger](../../../firebase-functions/src/race/notifications/raceLivePushJobs.ts)
