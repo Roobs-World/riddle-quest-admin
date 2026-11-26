@@ -1,0 +1,150 @@
+{
+  "checkedAt": "2026-11-26T03:48:49Z",
+  "firebaseProject": "riddle-quest-ec2b2",
+  "firebaseSourceCommit": "8d66b1e67146a4a900d4dd8fee86a25a45729a47",
+  "supabase": {
+    "project": "vqyjgcqyudqonfhgymoy",
+    "appliedMigration": "20261126034007_native_notification_delivery",
+    "function": "fcm-push",
+    "version": 6,
+    "state": "ACTIVE",
+    "bundleSha256": "216a5d51a8374932b0e5adc20c1283077b7a829c82d387592de79b2472140346",
+    "authenticatedHealthStatus": 200,
+    "unsignedHealthStatus": 401,
+    "expiredSyntheticAndroid": {
+      "httpStatus": 200,
+      "outcome": "skipped",
+      "reason": "expired"
+    },
+    "expiredSyntheticWeb": {
+      "httpStatus": 400,
+      "error": "invalid-request"
+    }
+  },
+  "firebaseRevisions": [
+    {
+      "region": "us-central1",
+      "function": "exchangeJestIdentity",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:59.108962893Z",
+      "revision": "exchangejestidentity-00058-cuc",
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "region": "us-central1",
+      "function": "provisionAndroidAccount",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:48:00.651424936Z",
+      "revision": "provisionandroidaccount-00004-yaq",
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "region": "us-central1",
+      "function": "setAndroidPushSubscription",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:59.208526754Z",
+      "revision": "setandroidpushsubscription-00005-jic",
+      "allTrafficOnLatestRevision": true,
+      "nativeAppIdMatchesApprovedSender": true
+    },
+    {
+      "region": "europe-west1",
+      "function": "provisionAndroidAccount",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:48.780070738Z",
+      "revision": "provisionandroidaccount-00004-cer",
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "region": "europe-west1",
+      "function": "setAndroidPushSubscription",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:50.800215704Z",
+      "revision": "setandroidpushsubscription-00005-faz",
+      "allTrafficOnLatestRevision": true,
+      "nativeAppIdMatchesApprovedSender": true
+    },
+    {
+      "region": "europe-west1",
+      "function": "dispatchAndroidNotification",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:52.517412682Z",
+      "revision": "dispatchandroidnotification-00003-mav",
+      "allTrafficOnLatestRevision": true,
+      "approvedEdgeUrl": true,
+      "edgeSecretVersion": "1"
+    },
+    {
+      "region": "europe-west1",
+      "function": "setNotificationPreference",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:51.781728575Z",
+      "revision": "setnotificationpreference-00002-don",
+      "allTrafficOnLatestRevision": true
+    },
+    {
+      "region": "europe-west1",
+      "function": "createNotificationEnrollment",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:51.499264821Z",
+      "revision": "createnotificationenrollment-00002-xet",
+      "allTrafficOnLatestRevision": true,
+      "senderCredentialsBound": false
+    },
+    {
+      "region": "europe-west1",
+      "function": "getNotificationEnrollmentStatus",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:53.782393317Z",
+      "revision": "getnotificationenrollmentstatus-00004-cot",
+      "allTrafficOnLatestRevision": true,
+      "senderCredentialsBound": false
+    },
+    {
+      "region": "europe-west1",
+      "function": "notificationBrowserBridge",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:52.518239210Z",
+      "revision": "notificationbrowserbridge-00005-mat",
+      "allTrafficOnLatestRevision": true,
+      "senderCredentialsBound": false
+    },
+    {
+      "region": "europe-west1",
+      "function": "dispatchFirebaseNotification",
+      "state": "ACTIVE",
+      "updateTime": "2026-11-26T03:47:51.246012638Z",
+      "revision": "dispatchfirebasenotification-00004-seh",
+      "allTrafficOnLatestRevision": true,
+      "senderCredentialsBound": false
+    }
+  ],
+  "firebaseHttpChecks": {
+    "browserFcmConfiguration": {
+      "httpStatus": 410,
+      "error": "browser-push-disabled"
+    },
+    "browserFcmEnrollment": {
+      "httpStatus": 410,
+      "error": "browser-push-disabled"
+    },
+    "legacyWebConfiguration": {
+      "httpStatus": 410,
+      "error": "browser-push-disabled"
+    },
+    "legacyWebEnrollment": {
+      "httpStatus": 410,
+      "error": "browser-push-disabled"
+    },
+    "browserDispatch": {
+      "httpStatus": 410,
+      "error": "browser-push-disabled"
+    },
+    "unsignedNativeDispatch": {
+      "httpStatus": 401,
+      "error": "bridge-authorization-required"
+    }
+  },
+  "errorLevelLogRowsForNewRevisions": 0,
+  "verificationPushSends": 0
+}
