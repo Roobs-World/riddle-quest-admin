@@ -36,7 +36,7 @@ Each browser credential owns one device handle. Explicit pairing can move that h
 
 Campaigns fan out over every eligible device routing row in the selected platform audience. A database cursor pages that audience without a fixed total-recipient cap. Firebase checks account existence, deletion, stored device consent, master preference, revision and expiry before submitting Web Push. The worker checks Firebase again before display and rejects stale revisions, revoked consent and expired messages. If this check is unavailable, it does not display the notification. Per-campaign/device receipts and serialized worker processing suppress duplicate submissions and displays after uncertain retries.
 
-The [prepared Supabase FCM rollout](supabase-fcm.md) adds a private FCM token route for new browser enrollments. It keeps the same pairing, account authority, consent and worker behavior. Existing Web Push routes remain valid. Its deployment and configuration are tracked separately from source preparation.
+New enrollments on supported browsers use a private FCM token. Existing Web Push subscriptions retain their route. Firebase applies the same account and consent checks to both, and the browser worker handles display and taps. [Supabase FCM delivery](supabase-fcm.md)
 
 The manager's registered browser-device count comes from Firebase, alongside the canonical account count. It excludes native Android devices and does not claim that every account has a reachable device or that every registered device currently permits delivery. Missing bridge configuration displays an unavailable count rather than zero.
 

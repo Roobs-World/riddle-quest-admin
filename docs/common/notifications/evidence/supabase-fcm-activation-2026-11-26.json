@@ -1,0 +1,72 @@
+{
+  "verifiedAt": "2026-11-26T03:26:33Z",
+  "status": "active",
+  "implementationCommit": "487bffd7cb5806afc52c449b826d8d2c5789c2da",
+  "stagingRecord": "supabase-fcm-rollout-2026-11-26.json",
+  "supabase": {
+    "projectRef": "vqyjgcqyudqonfhgymoy",
+    "function": "fcm-push",
+    "version": 1,
+    "unsignedHealthStatus": 401,
+    "authenticatedHealthStatus": 200,
+    "authenticatedHealth": {
+      "status": "ready",
+      "projectId": "riddle-quest-ec2b2"
+    },
+    "temporaryCredentialImportFilesRemoved": true
+  },
+  "firebase": {
+    "projectId": "riddle-quest-ec2b2",
+    "region": "europe-west1",
+    "predeployBuild": "passed",
+    "functions": {
+      "notificationBrowserBridge": {
+        "revision": "notificationbrowserbridge-00004-yoq",
+        "updateTime": "2026-11-26T03:25:42.602124965Z",
+        "approvedBrowserConfigurationVerified": true
+      },
+      "dispatchFirebaseNotification": {
+        "revision": "dispatchfirebasenotification-00003-tof",
+        "updateTime": "2026-11-26T03:25:42.675145064Z",
+        "edgeSecretVersion": "1"
+      },
+      "dispatchAndroidNotification": {
+        "revision": "dispatchandroidnotification-00002-buz",
+        "updateTime": "2026-11-26T03:25:39.774146121Z",
+        "edgeSecretVersion": "1"
+      }
+    },
+    "allThreeActive": true,
+    "allTrafficOnLatestRevisions": true,
+    "edgeUrlVerifiedOnAllThree": "https://vqyjgcqyudqonfhgymoy.supabase.co/functions/v1/fcm-push",
+    "dispatcherSecretName": "NOTIFICATION_FCM_EDGE_SECRET",
+    "errorLogQuery": {
+      "revisions": "three activated revisions",
+      "minimumSeverity": "ERROR",
+      "lookbackMinutes": 15,
+      "returnedRows": 0
+    }
+  },
+  "manager": {
+    "productionUrl": "https://riddle-quest-admin.vercel.app",
+    "enrollmentPageHttpStatus": 200,
+    "workerHttpStatus": 200,
+    "workerMatchesCanonicalSource": true,
+    "requiredFcmCspHostsPresent": true,
+    "unsignedManagementConfigHttpStatus": 401,
+    "publicConfigEndpoint": "/api/push/config-fcm",
+    "publicConfigHttpStatus": 200,
+    "publicConfigVersion": 1,
+    "fcmMatchesDeployedFirebaseBridge": true,
+    "legacyWebPushConfigured": true,
+    "webAppId": "1:329028367192:web:37b64d1d3c78e8b8b7eb2d",
+    "senderId": "329028367192",
+    "vapidPublicKeySha256": "60798e030f6ab06f542e345ee0660eacfa48b0746157bb2835ea0a5908a29e36"
+  },
+  "verificationScope": {
+    "notificationsSentForVerification": 0,
+    "deviceDisplayAndTapVerified": false,
+    "gameBuilds": 0,
+    "gameUploads": 0
+  }
+}
