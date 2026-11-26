@@ -57,6 +57,7 @@ const InstallationBase = z.object({
 });
 const WebInstallationBase = InstallationBase.extend({transport: z.literal("web-push"), target: BrowserPlatform, origin: z.string()});
 const AndroidInstallationBase = InstallationBase.extend({transport: z.literal("android"), target: z.literal("android"), origin: z.null()});
+const FacebookInstallationBase = InstallationBase.extend({transport: z.literal("facebook"), target: z.literal("facebook"), origin: z.null()});
 const FirebaseInstallationBase = InstallationBase.extend({transport: z.literal("firebase"), target: FirebasePushTarget, origin: z.null()});
 export const Installation = z.discriminatedUnion("transport", [
   z.discriminatedUnion("status", [
@@ -66,6 +67,10 @@ export const Installation = z.discriminatedUnion("transport", [
   z.discriminatedUnion("status", [
     AndroidInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),
     AndroidInstallationBase.extend({status: z.literal("disabled")}).strict(),
+  ]),
+  z.discriminatedUnion("status", [
+    FacebookInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),
+    FacebookInstallationBase.extend({status: z.literal("disabled")}).strict(),
   ]),
   z.discriminatedUnion("status", [
     FirebaseInstallationBase.extend({status: z.literal("active"), enrolledAtMs: Revision, nativeRef: Hash, endpointHash: Hash}).strict(),

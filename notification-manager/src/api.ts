@@ -11,6 +11,7 @@ const errorMessages: Record<string, string> = {
   "authentication-required": "Your sign-in has expired. Sign in again.",
   "campaign-request-conflict": "This request was already used for a different message. Start a new notification.",
   "campaign-platform-not-admitted": "This platform is no longer available. Refresh the audience list.",
+  "facebook-campaign-text-invalid": "Facebook messages must use a single line for the title and message. Remove line breaks, tabs and control characters.",
   "campaign-not-found": "This notification is no longer available. Refresh the list.",
   "notification-service-unavailable": "The push service is unavailable. Your draft is safe; please try again.",
   "notification-summary-unavailable": "Notification totals could not be loaded. Please try refreshing the workspace.",

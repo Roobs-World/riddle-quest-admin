@@ -1,20 +1,8 @@
-import {timingSafeEqual} from "node:crypto";
 import {AndroidRegistration, AndroidRegistrationReceipt} from "../../platforms/native/android/server/notificationManagerProtocol.js";
-import {androidBridgeConfiguration} from "./configuration.js";
 import {notificationRpc} from "./database.js";
 import type {Deadline} from "./deadline.js";
-import {ApiError, bearer, header, type ApiRequest} from "./http.js";
+import {ApiError} from "./http.js";
 import {digest} from "./security.js";
-
-export function requireAndroidBridge(request: ApiRequest): void {
-  if (header(request, "origin")) throw new ApiError(403, "android-server-origin-required");
-  const configuration = androidBridgeConfiguration();
-  if (!configuration) throw new ApiError(503, "android-bridge-unconfigured");
-  const supplied = Buffer.from(bearer(request)), expected = Buffer.from(configuration.secret);
-  if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) {
-    throw new ApiError(401, "android-bridge-authentication-required");
-  }
-}
 
 export async function registerAndroidDevice(value: unknown, deadline: Deadline) {
   const result = AndroidRegistration.safeParse(value);

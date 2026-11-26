@@ -10,7 +10,7 @@ begin
   if not found or campaign_row.status not in ('queued', 'sending') or campaign_row.send_at > now_at then return null; end if;
   if exists (select 1 from public.notification_attempts where id = attempt_id) then return null; end if;
   select * into installation_row from public.notification_installations where id = p_installation_id for update;
-  if not found or installation_row.transport <> 'android' or installation_row.status <> 'active' or installation_row.expires_at <= now_at
+  if not found or installation_row.transport not in ('android', 'facebook') or installation_row.status <> 'active' or installation_row.expires_at <= now_at
       or installation_row.created_at > coalesce(campaign_row.started_at, now_at)
       or installation_row.enrolled_at > coalesce(campaign_row.started_at, now_at)
       or (campaign_row.target <> 'all' and campaign_row.target <> installation_row.target) then return null; end if;
@@ -38,7 +38,7 @@ begin
   select * into campaign_row from public.notification_campaigns where id = p_campaign_id for share;
   if not found or campaign_row.status not in ('queued', 'sending') or campaign_row.send_at > clock_timestamp() then return null; end if;
   select * into installation_row from public.notification_installations where id = p_installation_id for share;
-  if not found or installation_row.transport <> 'android' or installation_row.status <> 'active' or installation_row.revision <> p_revision
+  if not found or installation_row.transport not in ('android', 'facebook') or installation_row.status <> 'active' or installation_row.revision <> p_revision
       or installation_row.expires_at <= clock_timestamp()
       or installation_row.enrolled_at > campaign_row.started_at
       or (campaign_row.target <> 'all' and campaign_row.target <> installation_row.target) then return null; end if;

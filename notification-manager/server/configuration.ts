@@ -24,7 +24,7 @@ export function admittedOrigins(): Record<string, string> {
   } catch {throw new Error("notification-origin-configuration-invalid");}
 }
 
-export interface AndroidBridgeConfiguration {endpoint: string; secret: string}
+export interface ProviderBridgeConfiguration {endpoint: string; secret: string}
 
 export interface FirebaseBridgeConfiguration {endpoint: string; secret: string}
 
@@ -47,7 +47,7 @@ export function firebaseNotificationTargets(): string[] {
 }
 
 /** Native devices are admitted only through the trusted Firebase server bridge. */
-export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null {
+export function androidBridgeConfiguration(): ProviderBridgeConfiguration | null {
   const endpoint = process.env.ANDROID_NOTIFICATION_BRIDGE_URL ?? "";
   const secret = process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET ?? "";
   if (endpoint.length > 2048 || /[\u0000-\u0020\u007f]/u.test(endpoint) || !/^[A-Za-z0-9_-]{32,256}$/u.test(secret)) return null;
@@ -59,8 +59,20 @@ export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null 
   } catch {return null;}
 }
 
+/** Meta delivery goes through the game's authenticated Firebase dispatcher. */
+export function facebookBridgeConfiguration(): ProviderBridgeConfiguration | null {
+  const endpoint = process.env.FACEBOOK_NOTIFICATION_BRIDGE_URL;
+  const secret = process.env.NOTIFICATION_MANAGER_BRIDGE_SECRET ?? "";
+  if (endpoint !== "https://europe-west1-riddle-quest-ec2b2.cloudfunctions.net/dispatchFacebookManagerNotification" ||
+      !/^[A-Za-z0-9_-]{32,256}$/u.test(secret)) return null;
+  return {endpoint, secret};
+}
+
 export function admittedPlatforms(): Array<{id: string; origin: string | null}> {
-  return androidBridgeConfiguration() ? [{id: "android", origin: null}] : [];
+  const platforms = [];
+  if (androidBridgeConfiguration()) platforms.push({id: "android", origin: null});
+  if (facebookBridgeConfiguration()) platforms.push({id: "facebook", origin: null});
+  return platforms;
 }
 
 export function requireCampaignTransports(target: string): void {

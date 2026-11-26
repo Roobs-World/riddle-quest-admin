@@ -1,5 +1,6 @@
 import {z} from "zod";
 import {notificationRpc} from "./database.js";
+import {printableFacebookText} from "../../platforms/web/facebook/server/notifications/managerProtocol.js";
 import {admittedPlatforms} from "./configuration.js";
 import {ApiError} from "./http.js";
 import {digest} from "./security.js";
@@ -7,7 +8,11 @@ import {Campaign, Hash, publicCampaign, type CampaignInput} from "./model.js";
 import type {Deadline} from "./deadline.js";
 
 export async function createCampaign(operator: string, input: CampaignInput, deadline: Deadline): Promise<string> {
-  if (input.target !== "all" && !admittedPlatforms().some(platform => platform.id === input.target)) throw new ApiError(400, "campaign-platform-not-admitted");
+  const platforms = admittedPlatforms();
+  if ((input.target === "facebook" || input.target === "all" && platforms.some(platform => platform.id === "facebook")) && !printableFacebookText(input)) {
+    throw new ApiError(400, "facebook-campaign-text-invalid");
+  }
+  if (input.target !== "all" && !platforms.some(platform => platform.id === input.target)) throw new ApiError(400, "campaign-platform-not-admitted");
   const id = digest(`${operator}\0${input.requestId}`);
   const receipt = z.object({id: Hash}).strict().parse(await notificationRpc(deadline, "notification_create_campaign", {
     p_id: id, p_operator: operator, p_request_id: input.requestId, p_fingerprint: digest(JSON.stringify(input)),

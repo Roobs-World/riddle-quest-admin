@@ -1,6 +1,9 @@
 import {z} from "zod";
 import {notificationRpc} from "./database.js";
-import {androidBridgeConfiguration} from "./configuration.js";
+import {AndroidDispatch} from "../../platforms/native/android/server/notificationManagerProtocol.js";
+import {FacebookDispatch} from "../../platforms/web/facebook/server/notifications/managerProtocol.js";
+import {sendProviderNotification} from "./providerBridge.js";
+import {androidBridgeConfiguration, facebookBridgeConfiguration} from "./configuration.js";
 import {Campaign, Installation, Revision} from "./model.js";
 import {deadlineSignal, reserveDeadline, type Deadline} from "./deadline.js";
 
@@ -14,7 +17,7 @@ export async function deliverCampaignNotification(campaignId: string, installati
   const claim = Claim.parse(raw);
   if (claim.installation.status !== "active") throw new Error("notification-claim-invalid");
   const installation = claim.installation;
-  if (installation.transport !== "android") {
+  if (installation.transport !== "android" && installation.transport !== "facebook") {
     await notificationRpc(deadline, "notification_finish_delivery", {p_attempt_id: claim.attemptId, p_outcome: "skipped"});
     return;
   }
@@ -30,14 +33,18 @@ export async function deliverCampaignNotification(campaignId: string, installati
     if (!campaign || expiresAtMs <= Date.now()) {
       outcome = "skipped";
     } else {
-      const configuration = androidBridgeConfiguration();
+      const configuration = installation.transport === "facebook" ? facebookBridgeConfiguration() : androidBridgeConfiguration();
       if (!configuration) outcome = "failed";
       else if (!await admit()) outcome = "skipped";
       else {
-        const {sendAndroidManagerNotification} = await import("../../platforms/native/android/server/managerAndroidDelivery.js");
-        outcome = (await sendAndroidManagerNotification({version: 1, tokenHash: installation.nativeRef,
-          revision: claim.revision, notificationId: campaignId, title: campaign.title, body: campaign.body,
-          imageUrl: campaign.imageUrl, expiresAtMs}, configuration, deadlineSignal(workDeadline, 8000))).outcome;
+        const content = {version: 1, revision: claim.revision, notificationId: campaignId, title: campaign.title,
+          body: campaign.body, imageUrl: campaign.imageUrl, expiresAtMs};
+        const request = installation.transport === "facebook"
+          ? FacebookDispatch.safeParse({...content, recipientHash: installation.nativeRef})
+          : AndroidDispatch.safeParse({...content, tokenHash: installation.nativeRef});
+        outcome = request.success
+          ? (await sendProviderNotification(request.data, configuration, deadlineSignal(workDeadline, 15000))).outcome
+          : "failed";
       }
     }
   } catch {outcome = "uncertain";}
