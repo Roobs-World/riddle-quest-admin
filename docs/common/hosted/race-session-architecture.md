@@ -88,6 +88,8 @@ Waiting clients use bounded exponential backoff with jitter, pause refreshes whi
 
 ## Live lobby readiness
 
+The multiplayer intro discovers invitations through an optional background inbox read. A timeout, failed request or invalid response preserves the last validated invitations and retries through polling, focus and inbox-change events. These reads do not start a race or display a race failure. A successful response replaces the invitations, including clearing them when the inbox is empty; changing provider retires the previous inbox immediately. Accepting an invitation still requires server validation of its current availability.
+
 `LiveRaceGame` uses the same two-seat lobby for friend invitations, public matches and AI opponents. The Play game button stays disabled until the server supplies an opponent. Pressing it sends an idempotent `ready` command and displays Connecting while delivery, the other player's readiness and the shared countdown complete. Native invitation delivery remains separate, with Retry available after dismissal or lobby recovery.
 
 Web joins and rematches opt in with `requiresReady: true`. Matched seats remain in `searching` with an opponent, `startsAtMs: null` and no run until every required human seat is ready. Bots and legacy seats are ready automatically. The last readiness acknowledgement schedules both runs at the same server-owned five-second start boundary. Waiting expires after 15 minutes; expiry or leaving before the start grants no rewards. Recovery preserves the original readiness and deadline.

@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-26",
+  "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "sourceCommit": "d602abfe128b16c318ab22360d2b92d0333faace",
+  "diagnosis": {
+    "reportedSymptom": "Opening multiplayer and waiting without starting a game displayed The race could not continue and Retry.",
+    "sourcePath": "src/races/components/invitations/LiveRaceInbox.tsx",
+    "cause": "The intro automatically reads the optional invitation inbox. An eight-second timeout, transport rejection or invalid response set the same visible error used for a failed race.",
+    "specificProductionReadFailureConfirmed": false,
+    "runtimeReproductionPerformed": false
+  },
+  "behavior": {
+    "passiveInboxFailureShowsRaceError": false,
+    "validatedInvitationsSurviveFailedRefresh": true,
+    "successfulEmptyRefreshClearsInvitations": true,
+    "pollFocusAndInboxEventRecoveryRetained": true,
+    "providerReplacementRetiresPreviousRows": true,
+    "invitationAcceptanceRemainsServerAuthoritative": true
+  },
+  "release": {
+    "command": "pnpm release:jest",
+    "buildVersion": "1.0.0-dev.20261126110517.d602abfe128b.a5c22146",
+    "versionId": "01a21788-be4e-7078-b4e3-921ea25c0ca3",
+    "playableUrl": "https://jest.com/g/riddle-q?versionId=01a21788-be4e-7078-b4e3-921ea25c0ca3",
+    "binaryUploadAttempts": 1,
+    "archiveBytes": 2586625,
+    "archiveSha256": "0a05cb2de9bc078c9d2194c7f9416ee93e0e59fc39d6bd94430d8452b992693e",
+    "activationRequested": true
+  },
+  "authoritativeReadback": {
+    "source": "Jest list_game_versions",
+    "checkedAt": "2026-11-26 11:06:23 UTC",
+    "buildStatus": "ready",
+    "buildProcessingError": null,
+    "isActive": true,
+    "activatedAt": "2026-11-26T11:06:15.830Z"
+  },
+  "backendCohort": {
+    "verification": "Read-only gcloud functions list --v2 metadata",
+    "functions": [
+      "getCurrentClassicRiddle",
+      "getCurrentDailyChallenge",
+      "submitSinglePlayerGuess",
+      "completeGame",
+      "getHint",
+      "spendCoins",
+      "skipRiddle"
+    ],
+    "regions": ["europe-west1", "us-central1"],
+    "allActive": true,
+    "sharedSourceHash": "eb343c55769c23263c81c8a24e26b3c3aafa67e7",
+    "deploymentPerformed": false
+  },
+  "verification": {
+    "productionVerificationPassed": true,
+    "sharedTypeCheckPassed": true,
+    "harnessSyntaxCheckPassed": true,
+    "sourceReviewCompleted": true,
+    "cleanMainCheckoutUsed": true,
+    "browserHarnessExpectationsUpdated": true,
+    "testsAndBrowserHarnessesRun": false,
+    "hostedGameplayAcceptanceRun": false
+  },
+  "gamePublicationChanged": false,
+  "reviewSubmitted": false
+}
