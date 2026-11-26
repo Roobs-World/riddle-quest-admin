@@ -6,9 +6,7 @@
     "COLOR_WRONG": "La lettera non è affatto nella parola",
     "GOAL_DESCRIPTION": "Indovina l'enigma nascosto in 5 tentativi utilizzando gli indizi colorati come guida.",
     "GOAL_TITLE": "L'obiettivo",
-    "GOT_IT_BUTTON": "Capito!",
-    "TIPS_DESCRIPTION": "Inizia con lettere comuni e utilizza il feedback colorato per restringere le tue ipotesi. Ricorda, hai solo 5 tentativi!",
-    "TIPS_TITLE": "Suggerimenti per il successo"
+    "GOT_IT_BUTTON": "Capito!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Tocca per continuare",

@@ -6,9 +6,7 @@
     "COLOR_WRONG": "Letter zit helemaal niet in het woord",
     "GOAL_DESCRIPTION": "Raad het verborgen raadsel in 5 pogingen en gebruik de kleuraanwijzingen om je te begeleiden.",
     "GOAL_TITLE": "Het doel",
-    "GOT_IT_BUTTON": "Begrepen!",
-    "TIPS_DESCRIPTION": "Begin met gewone letters en gebruik de kleurfeedback om uw gissingen te verfijnen. Vergeet niet dat je maar 5 pogingen hebt!",
-    "TIPS_TITLE": "Tips voor succes"
+    "GOT_IT_BUTTON": "Begrepen!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Tik om door te gaan",

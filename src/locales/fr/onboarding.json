@@ -6,9 +6,7 @@
     "COLOR_WRONG": "La lettre n'est pas dans le mot",
     "GOAL_DESCRIPTION": "Devinez l'énigme cachée en 5 essais avec les indices de couleur.",
     "GOAL_TITLE": "L'objectif",
-    "GOT_IT_BUTTON": "Compris !",
-    "TIPS_DESCRIPTION": "Commencez par des lettres courantes et utilisez les couleurs pour réduire vos propositions. Rappel : vous n'avez que 5 essais !",
-    "TIPS_TITLE": "Conseils"
+    "GOT_IT_BUTTON": "Compris !"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Touchez pour continuer",

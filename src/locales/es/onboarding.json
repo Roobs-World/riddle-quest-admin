@@ -6,9 +6,7 @@
     "COLOR_WRONG": "La letra no está en la palabra",
     "GOAL_DESCRIPTION": "Adivina el acertijo oculto en 5 intentos usando las pistas de color.",
     "GOAL_TITLE": "El objetivo",
-    "GOT_IT_BUTTON": "¡Entendido!",
-    "TIPS_DESCRIPTION": "Comienza con letras comunes y usa el color para reducir tus intentos. Recuerda, ¡solo tienes 5 intentos!",
-    "TIPS_TITLE": "Consejos"
+    "GOT_IT_BUTTON": "¡Entendido!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Toca para continuar",
