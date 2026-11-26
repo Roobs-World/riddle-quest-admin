@@ -76,9 +76,8 @@ export async function handleFcmPush(request: Request): Promise<Response> {
     if (remainingMs <= 0) return json(FcmDeliveryResult.parse({outcome: "skipped", reason: "expired"}));
     const requestTimeoutMs = deadlineAtMs - Date.now();
     if (requestTimeoutMs <= 0) return json(FcmDeliveryResult.parse({outcome: "uncertain"}));
-    const message = input.transport === "android"
-      ? {token: input.token, data: input.data, android: {priority: "HIGH", ttl: `${Math.floor(remainingMs / 1000)}s`}}
-      : {token: input.token, data: input.data, webpush: {headers: {TTL: String(Math.floor(remainingMs / 1000)), Urgency: "normal"}}};
+    const message = {token: input.token, android: {priority: "HIGH", restricted_package_name: "com.roobsworld.riddlequest",
+      ttl: `${Math.floor(remainingMs / 1000)}s`, data: input.data}};
     const response = await fetch(FCM_ENDPOINT, {method: "POST", redirect: "error", signal: AbortSignal.timeout(requestTimeoutMs),
       headers: {Authorization: `Bearer ${accessToken}`, "Content-Type": "application/json"}, body: JSON.stringify({message})});
     let result: unknown;

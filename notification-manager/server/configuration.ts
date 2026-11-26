@@ -26,7 +26,7 @@ export function admittedOrigins(): Record<string, string> {
 
 export interface AndroidBridgeConfiguration {endpoint: string; secret: string}
 
-export interface FirebaseBridgeConfiguration {endpoint: string; dispatchEndpoint: string; secret: string}
+export interface FirebaseBridgeConfiguration {endpoint: string; secret: string}
 
 /** One authenticated Firebase bridge owns account-linked browser devices on every target. */
 export function firebaseBridgeConfiguration(): FirebaseBridgeConfiguration | null {
@@ -37,7 +37,7 @@ export function firebaseBridgeConfiguration(): FirebaseBridgeConfiguration | nul
     const url = new URL(endpoint);
     if (url.protocol !== "https:" || url.username || url.password || url.search || url.hash || url.port ||
         !/^[a-z0-9-]+\.cloudfunctions\.net$/u.test(url.hostname) || url.pathname !== "/notificationBrowserBridge") return null;
-    return {endpoint, dispatchEndpoint: new URL("/dispatchFirebaseNotification", url).href, secret};
+    return {endpoint, secret};
   } catch {return null;}
 }
 
@@ -60,15 +60,7 @@ export function androidBridgeConfiguration(): AndroidBridgeConfiguration | null 
 }
 
 export function admittedPlatforms(): Array<{id: string; origin: string | null}> {
-  const platforms: Array<{id: string; origin: string | null}> = Object.entries(admittedOrigins()).map(([id, origin]) => ({id, origin}));
-  if (androidBridgeConfiguration()) platforms.push({id: "android", origin: null});
-  if (firebaseBridgeConfiguration()) {
-    for (const id of firebaseNotificationTargets()) {
-      if (platforms.some(platform => platform.id === id && platform.origin !== null)) throw new Error("notification-platform-transport-conflict");
-      if (!platforms.some(platform => platform.id === id)) platforms.push({id, origin: null});
-    }
-  }
-  return platforms;
+  return androidBridgeConfiguration() ? [{id: "android", origin: null}] : [];
 }
 
 export function requireCampaignTransports(target: string): void {
@@ -76,7 +68,6 @@ export function requireCampaignTransports(target: string): void {
   if (target !== "all" && !platforms.some(platform => platform.id === target) || !platforms.length) {
     throw new Error("notification-platform-unconfigured");
   }
-  if (platforms.some(platform => platform.origin !== null && (target === "all" || platform.id === target))) vapidConfiguration();
 }
 
 export type VapidConfiguration = Readonly<{publicKey: string; privateKey: string; subject: string}>;

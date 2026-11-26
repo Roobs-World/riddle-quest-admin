@@ -36,9 +36,7 @@ export const Subscription = z.object({
 }).strict();
 export type Subscription = z.infer<typeof Subscription>;
 
-export const SubscribeInput = z.object({target: BrowserPlatform, revision: Revision, locale: Locale, subscription: Subscription}).strict();
 export const UnsubscribeInput = z.object({target: BrowserPlatform, revision: Revision}).strict();
-export const ActivityInput = z.object({target: BrowserPlatform, locale: Locale}).strict();
 export const CampaignInput = z.object({
   requestId: z.string().regex(/^[A-Za-z0-9_-]{16,128}$/u),
   title: z.string().trim().min(1).max(200),

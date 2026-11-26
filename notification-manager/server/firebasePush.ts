@@ -1,11 +1,12 @@
 import {createHmac, timingSafeEqual} from "node:crypto";
 import {z} from "zod";
-import {FirebaseFcmPushConfiguration, FirebasePushAudience, FirebasePushBridgeInput, FirebasePushConfiguration, FirebasePushDeviceStatus, FirebasePushRegistration} from "../../src/notifications/contracts/firebasePush.js";
+import {FirebasePushAudience, FirebasePushDeviceStatus, FirebasePushRegistration} from "../../src/notifications/contracts/firebasePush.js";
 import {firebaseBridgeConfiguration, firebaseNotificationTargets, localDevelopmentEnabled} from "./configuration.js";
 import {notificationRpc} from "./database.js";
 import {deadlineSignal, type Deadline} from "./deadline.js";
 import {ApiError, bearer, header, type ApiRequest} from "./http.js";
 import {digest} from "./security.js";
+import {Hash} from "./model.js";
 
 export async function firebaseAudience(deadline: Deadline) {
   const configuration = firebaseBridgeConfiguration();
@@ -61,6 +62,7 @@ export async function registerFirebaseDevice(value: unknown, deadline: Deadline)
   const parsed = FirebasePushRegistration.safeParse(value);
   if (!parsed.success) throw new ApiError(400, "firebase-registration-invalid");
   const input = parsed.data;
+  if (input.enabled) throw new ApiError(410, "browser-push-retired");
   if (!firebaseNotificationTargets().includes(input.target)) throw new ApiError(403, "notification-platform-not-admitted");
   return z.object({installationId: z.string().regex(/^[a-f0-9]{64}$/u), revision: z.number().int().nonnegative().safe()}).strict().parse(
     await notificationRpc(deadline, "notification_register_firebase", {
@@ -95,26 +97,21 @@ async function consumeEnrollmentQuota(request: ApiRequest, origin: string, crede
   if (!address) throw new ApiError(503, "client-address-unavailable");
   const addressHash = createHmac("sha256", secret).update(`firebase-push-rate-v1\0${origin}\0${address}`).digest("hex");
   await notificationRpc(deadline, "notification_consume_quota", {
-    p_address_hash: addressHash, p_installation_id: digest(credential || `configuration:${addressHash}`),
+    p_address_hash: addressHash, p_installation_id: digest(credential),
   });
 }
 
-/** This same-origin broker never exposes the Firebase bridge secret or needs a second player login. */
-export async function browserEnrollment(request: ApiRequest, action: string, value: unknown, deadline: Deadline) {
+/** Keep the authenticated removal path available to previously enrolled browsers. */
+export async function disableBrowserDevice(request: ApiRequest, value: unknown, deadline: Deadline) {
   const origin = enrollmentOrigin(request);
+  const input = z.object({deviceToken: Hash}).strict().safeParse(value);
+  if (!input.success) throw new ApiError(400, "notification-enrollment-request-invalid");
   const configuration = firebaseBridgeConfiguration();
   if (!configuration) throw new ApiError(503, "firebase-bridge-unconfigured");
-  if (!["config", "config-fcm", "enroll", "enroll-fcm", "status", "disable"].includes(action) || !value || typeof value !== "object" || Array.isArray(value))
-    throw new ApiError(400, "notification-enrollment-request-invalid");
-  const parsed = FirebasePushBridgeInput.safeParse({...value, action: action === "config" ? "configuration" : action === "config-fcm" ? "configuration-fcm" : action});
-  if (!parsed.success) throw new ApiError(400, "notification-enrollment-request-invalid");
-  const input = parsed.data;
-  await consumeEnrollmentQuota(request, origin, "deviceToken" in input ? input.deviceToken : "", configuration.secret, deadline);
+  await consumeEnrollmentQuota(request, origin, input.data.deviceToken, configuration.secret, deadline);
   const response = await fetch(configuration.endpoint, {method: "POST", headers: {
     Authorization: `Bearer ${configuration.secret}`, Accept: "application/json", "Content-Type": "application/json"},
-    body: JSON.stringify(input), redirect: "error", signal: deadlineSignal(deadline, 15_000)});
-  const result = await readFirebaseBridgeResponse(response);
-  if (input.action === "configuration") return FirebasePushConfiguration.parse(result);
-  if (input.action === "configuration-fcm") return FirebaseFcmPushConfiguration.parse(result);
-  return FirebasePushDeviceStatus.parse(result);
+    body: JSON.stringify({action: "disable", deviceToken: input.data.deviceToken}),
+    redirect: "error", signal: deadlineSignal(deadline, 15_000)});
+  return FirebasePushDeviceStatus.parse(await readFirebaseBridgeResponse(response));
 }

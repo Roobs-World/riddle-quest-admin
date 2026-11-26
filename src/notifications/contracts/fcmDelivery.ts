@@ -9,19 +9,9 @@ const AndroidData = z.object({
   title: z.string().min(1).max(200), body: z.string().min(1).max(2000),
   imageUrl: z.string().url().max(2048).optional(), expiresAtMs: DecimalTime, accountId: z.string().min(1).max(128),
 }).strict();
-const WebData = z.object({
-  version: z.literal("1"), kind: z.literal("notification"), deviceHash: Hash, notificationId: Hash,
-  registrationRevision: DecimalTime, target: z.string().regex(/^[a-z][a-z0-9-]{0,63}$/u).refine(value => value !== "all"),
-  title: z.string().min(1).max(200), body: z.string().min(1).max(2000),
-  imageUrl: z.string().url().max(2048).optional(), launchUrl: z.string().url().max(2048).optional(), expiresAtMs: DecimalTime,
-}).strict();
-
-export const FcmDeliveryRequest = z.discriminatedUnion("transport", [
-  z.object({version: z.literal(1), transport: z.literal("android"), token: FcmRegistrationToken,
-    expiresAtMs: Time, data: AndroidData}).strict(),
-  z.object({version: z.literal(1), transport: z.literal("web"), token: FcmRegistrationToken,
-    expiresAtMs: Time, data: WebData}).strict(),
-]).refine(input => new TextEncoder().encode(JSON.stringify(input.data)).byteLength <= 3800, "FCM data exceeds its delivery limit")
+export const FcmDeliveryRequest = z.object({
+  version: z.literal(1), transport: z.literal("android"), token: FcmRegistrationToken, expiresAtMs: Time, data: AndroidData,
+}).strict().refine(input => new TextEncoder().encode(JSON.stringify(input.data)).byteLength <= 3800, "FCM data exceeds its delivery limit")
   .refine(input => Number(input.data.expiresAtMs) === input.expiresAtMs, "FCM expiry does not match its payload");
 export type FcmDeliveryRequest = z.infer<typeof FcmDeliveryRequest>;
 

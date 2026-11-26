@@ -11,20 +11,8 @@ function browserBoundary(environment: Readonly<Record<string, string>>): Plugin 
     generateBundle(_options, bundle) {
       for (const id of this.getModuleIds()) {
         const normalized = id.replaceAll("\\", "/");
-        const firebasePackage = /\/node_modules\/firebase\/([^/]+)\//u.exec(normalized)?.[1];
-        const firebaseInternal = /\/node_modules\/@firebase\/([^/]+)\//u.exec(normalized)?.[1];
-        if (firebasePackage && !["app", "messaging"].includes(firebasePackage) ||
-            firebaseInternal && !["app", "messaging", "installations", "component", "logger", "util"].includes(firebaseInternal)) {
-          this.error("Only Firebase app and messaging enrollment modules may enter the notification manager browser bundle.");
-        }
-        if (firebasePackage || firebaseInternal) {
-          const info = this.getModuleInfo(id);
-          for (const importer of [...info?.importers ?? [], ...info?.dynamicImporters ?? []]) {
-            const source = importer.replaceAll("\\", "/");
-            if (!source.includes("/node_modules/") && source !== `${root}src/fcmEnrollment.ts`) {
-              this.error("Firebase browser modules belong only to device enrollment.");
-            }
-          }
+        if (/\/node_modules\/(?:firebase|@firebase)\//u.test(normalized)) {
+          this.error("Firebase device SDKs cannot ship in the notification manager browser bundle.");
         }
         if ((normalized.startsWith(root) && /^\/(?:server|api|supabase)\//u.test(normalized.slice(root.length - 1))) ||
             /\/(?:firebase-admin|web-push)(?:\/|@)/u.test(normalized) || normalized.includes("/platforms/native/")) {
