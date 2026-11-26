@@ -19,6 +19,9 @@ work when YouTube, Netflix, Yahoo and GameSnacks load a locale pack.
 
 TypeScript and platform-boundary checks passed. YouTube, Netflix and Yahoo
 production builds and artifact audits passed; GameSnacks built and packaged
-successfully. The Jest release gate also builds the hosted web targets. No tests
-or browser harnesses were requested or run. These changes remove identifiable work and a sequential
-SDK wait; no measured time-to-play or frame-rate improvement is claimed.
+successfully. The Jest production release gate passed, including hosted-target
+builds and audits. The exact uploaded Jest build is confirmed ready and active
+in the [release evidence](../../../jest/evidence/jest-startup-work-reduction-2026-11-26.json).
+No tests or browser harnesses were requested or run. These changes remove
+identifiable work and a sequential SDK wait; no measured time-to-play or
+frame-rate improvement is claimed.

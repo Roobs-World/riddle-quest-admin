@@ -1,0 +1,33 @@
+{
+  "date": "2026-11-26",
+  "implementationCommit": "160c44cfd5c0ec061f4d267891c9b7317ecff8ac",
+  "releaseCommit": "7181c186c117ed7a343b334ce9789eb3501e5780",
+  "changes": [
+    "Read the initial incomplete-purchase page alongside signed identity and saved state.",
+    "Skip the temporary WebGL context when existing device and preference gates disable decoration.",
+    "Segment each bundled answer once during content validation."
+  ],
+  "verification": {
+    "productionGate": "passed",
+    "webTargetsBuilt": ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"],
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "timingBenchmarkRun": false,
+    "performanceClaim": "Removed a sequential SDK wait and unnecessary work; no measured latency or frame-rate gain claimed."
+  },
+  "jest": {
+    "teamId": "019faa67-d2a6-7169-aa29-a4411a3a3c3d",
+    "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+    "versionId": "01a21619-7cef-75c9-84fa-58f4fd9de428",
+    "buildVersion": "1.0.0-dev.20261126042411.7181c186c117.76dad8ea",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T04:25:06.975Z",
+    "zipBytes": 2602825,
+    "zipSha256": "a2217e5fc1d96524d8d7c330e805e712a43d6415b275c299776505ba9ffeb478",
+    "uploads": 1,
+    "confirmation": "Official Jest list_game_versions returned the exact accepted version ID as ready and active.",
+    "publicationOrReviewSubmitted": false
+  },
+  "releasePreparation": "Earlier attempts stopped before upload when npm refreshed installed metadata and a concurrent task edited release documentation. The successful attempt retained every gate and uploaded once."
+}
