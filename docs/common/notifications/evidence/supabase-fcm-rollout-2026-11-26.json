@@ -1,0 +1,142 @@
+{
+  "recordedAt": "2026-11-26T03:09:10Z",
+  "status": "staged-awaiting-secret-import-and-browser-vapid",
+  "implementationCommit": "487bffd7cb5806afc52c449b826d8d2c5789c2da",
+  "artifactBuildHead": "c14ad8248253a27a0aecf190d5c609baff956974",
+  "mainHeadAtRelease": "d573f83c13cccad84469b5235666effbd7890dff",
+  "mainChangesSinceArtifactBuild": "documentation and evidence only; application sources unchanged",
+  "supabase": {
+    "projectRef": "vqyjgcqyudqonfhgymoy",
+    "authentication": "restored through Codex MCP OAuth",
+    "globalProjectScopedMcpEntryAdded": true,
+    "function": {
+      "name": "fcm-push",
+      "id": "7af96d56-0de9-4044-a1ec-187c98b86abf",
+      "version": 1,
+      "status": "ACTIVE",
+      "createdAt": "2026-11-26T02:56:18.309Z",
+      "verifyJwt": false,
+      "bodyAuthentication": "dedicated server bearer; browser Origin headers rejected",
+      "bundleSha256": "935c5ee4665c2d87e22a58c167f028cdd7ebf1fd329ab78547ba05810aded50c",
+      "remoteSourceMatchesCanonical": true,
+      "fileSha256": {
+        "index.ts": "5b19210a08615563512f137b596da1ae84ea5818f3503c1a950ed87ee197901c",
+        "google.ts": "ed9db9beb3ef74cee6a70f56bb2df49ce3dd5c65644c5e9c8f0781f086f02db9",
+        "deno.json": "33af23583958477c50f9f518616b0f68dac2e864b5c194f8ce3cf74624eb2369",
+        "fcmDelivery.ts": "101a93c8f02dd4670583f704f49655b5c561bcd429c98dfa3bfaa9dd64561db1"
+      },
+      "submittedLockSha256": "9b2abbf898eb5e6734798ddfed74a08d446a4c01bc6a27f0ca280cfba9f62192",
+      "remoteLockRoundtripVerified": false,
+      "remoteLockNote": "Supabase source extraction omitted the submitted lockfile",
+      "unsignedHealthStatus": 401,
+      "lastAuthenticatedHealthStatus": 401,
+      "authenticatedHealthReady": false
+    },
+    "secrets": {
+      "runtimeConfigurationVerified": false,
+      "mcpSetSecretsToolAvailable": false,
+      "oauthSecretsWriteRequested": false,
+      "connectedAdministrativeBrowserAvailable": false,
+      "privateLocalEnvImportPrepared": true,
+      "importFormatValidated": true,
+      "directoryMode": "0700",
+      "fileMode": "0600",
+      "valuesPrinted": false,
+      "valuesRotated": false,
+      "pendingUserAction": "Import the two existing prepared credential values into Supabase Edge Secrets"
+    }
+  },
+  "google": {
+    "projectId": "riddle-quest-ec2b2",
+    "preparedSecretVersions": {
+      "FCM_SERVICE_ACCOUNT_JSON": {"version": 1, "state": "ENABLED"},
+      "NOTIFICATION_FCM_EDGE_SECRET": {"version": 1, "state": "ENABLED"}
+    },
+    "runtimeSecretAccessGranted": {
+      "secret": "NOTIFICATION_FCM_EDGE_SECRET",
+      "member": "serviceAccount:329028367192-compute@developer.gserviceaccount.com",
+      "role": "roles/secretmanager.secretAccessor"
+    }
+  },
+  "firebase": {
+    "cliVersion": "15.37.0",
+    "deploymentNodeVersion": "22.23.1",
+    "deploymentEnvironmentAndCapacityChecks": "passed",
+    "predeployBuildAndArtifactChecks": "passed",
+    "updated": {
+      "notificationBrowserBridge": {
+        "state": "ACTIVE",
+        "revision": "notificationbrowserbridge-00003-pib",
+        "updateTime": "2026-11-26T03:03:53.363007329Z",
+        "edgeUrlConfigured": true,
+        "browserFcmConfigured": false
+      },
+      "getNotificationEnrollmentStatus": {
+        "state": "ACTIVE",
+        "revision": "getnotificationenrollmentstatus-00003-tul",
+        "updateTime": "2026-11-26T03:03:53.871243559Z",
+        "edgeUrlConfigured": true,
+        "reason": "Legacy uploaded clients must understand the FCM and Web Push device union"
+      }
+    },
+    "dispatchSwitchPending": {
+      "dispatchFirebaseNotification": {
+        "state": "ACTIVE",
+        "revision": "dispatchfirebasenotification-00002-ces",
+        "edgeSecretAttached": false,
+        "edgeUrlConfigured": false
+      },
+      "dispatchAndroidNotification": {
+        "state": "ACTIVE",
+        "revision": "dispatchandroidnotification-00001-feg",
+        "edgeSecretAttached": false,
+        "edgeUrlConfigured": false
+      }
+    }
+  },
+  "vercel": {
+    "projectId": "prj_lMHXnKFcYLsTLtuj4Zgug67n25Dz",
+    "teamId": "team_Q3bXo2jPBKdjs3tuoKLtqUe2",
+    "deploymentId": "dpl_HfnzEsrwungtazEcZrSodMTkt1KQ",
+    "deploymentUrl": "https://riddle-quest-admin-u3ultzmfo.vercel.app",
+    "productionUrl": "https://riddle-quest-admin.vercel.app",
+    "state": "READY",
+    "target": "production",
+    "prebuiltProductionBuild": "passed, including API functions",
+    "pushPageStatus": 200,
+    "workerStatus": 200,
+    "workerSha256": "8ead29a2648c9812989559e3cd299e85dc0b744b5fb6f6985eeab898355f1ef7",
+    "workerMatchesCanonicalSource": true,
+    "exactFcmEnrollmentCspHostsPresent": true,
+    "unsignedManagementConfigStatus": 401,
+    "publicFcmConfiguration": {
+      "httpStatus": 200,
+      "version": 1,
+      "legacyWebPushConfigured": true,
+      "fcmConfigured": false
+    },
+    "errorLogQuery": {"since": "1h", "deploymentOnly": true, "exitCode": 0, "jsonRows": 0, "messagesPrinted": false}
+  },
+  "browserVapid": {
+    "approvedProjectId": "riddle-quest-ec2b2",
+    "publicKeySupplied": false,
+    "legacyKeyRejectedAsReplacement": "The root legacy public key is configured alongside qwordly-6ba44 settings, with no verified association to the approved project",
+    "pendingUserAction": "Copy or generate the public Web Push certificate key in the approved Firebase project"
+  },
+  "remaining": [
+    "Import the prepared Supabase secrets and verify authenticated Edge health returns ready",
+    "Deploy both Firebase dispatchers with the approved Edge URL and dedicated secret",
+    "Configure NOTIFICATION_FCM_WEB_CONFIG with the approved Firebase web app and its associated public VAPID key",
+    "Redeploy the browser bridge with that public configuration and verify the live broker returns it",
+    "Remove the temporary private import file after successful configuration"
+  ],
+  "constraints": {
+    "databaseSchemaChanges": 0,
+    "campaignsCreated": 0,
+    "notificationSends": 0,
+    "gameBuilds": 0,
+    "gameUploads": 0,
+    "automatedTests": "not run, not requested",
+    "browserHarnesses": "not run, not requested"
+  }
+}
