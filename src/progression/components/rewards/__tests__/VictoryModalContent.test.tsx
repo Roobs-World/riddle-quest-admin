@@ -24,7 +24,7 @@ function completedState(gameMode: GameSessionState["gameMode"] = "challenge"): G
 }
 
 /** Server rendering observes the actual translated modal and its available action. */
-const renderVictory = (state: GameSessionState) => renderToStaticMarkup(<VictoryModalContent state={state}
+const renderVictory = (state: GameSessionState, milestonesPending = false) => renderToStaticMarkup(<VictoryModalContent state={state} milestonesPending={milestonesPending}
   onAdvance={() => undefined} onBalancePreview={() => undefined} />);
 
 describe("VictoryModalContent", () => {
@@ -54,13 +54,19 @@ describe("VictoryModalContent", () => {
     expect(html).not.toContain("<dl");
   });
 
-  it("keeps Classic Next enabled before duplicate completion acknowledgement while Daily still waits", () => {
-    /** Accepted green feedback proves the Classic win before the separate reward-read acknowledgement. */
+  it("waits for the completion receipt in Classic and Daily so delayed milestones are included", () => {
     const classic = renderVictory({...completedState("classic"), completionAcknowledged: false});
-    expect(classic).toContain('class="play-primary reward-continue">Next Level</button>');
-    /** Daily continuation still waits for its completion routing receipt. */
+    expect(classic).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
     const daily = renderVictory({...completedState("challenge"), completionAcknowledged: false});
     expect(daily).toContain('class="play-primary reward-continue" disabled="">Next</button>');
+  });
+
+  it("waits for all confirmed milestones before enabling Next Level", () => {
+    const state = completedState("classic");
+    state.lastRewards = {coinsEarned: 115, leveledUp: true, newLevel: 2,
+      newlyUnlockedAchievementIds: ["first_win", "perfect_guess"]};
+    expect(renderVictory(state, true)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
+    expect(renderVictory(state, false)).toContain('class="play-primary reward-continue">Next Level</button>');
   });
 
   it("waits for progression when a recovered Classic win is still on its completed index", () => {
@@ -71,13 +77,12 @@ describe("VictoryModalContent", () => {
     expect(renderVictory(state)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
   });
 
-  it("keeps ordinary provisional Classic advancement available", () => {
-    /** A projected win retains its existing bounded issued-question path. */
+  it("waits for a provisional Classic win's confirmed rewards", () => {
     const state = completedState("classic");
     state.completionAcknowledged = false;
     state.profile = {...state.profile!, classicIndex: 1};
     state.riddle = {...state.riddle!, attemptsUsed: 0, acceptedGuesses: []};
-    expect(renderVictory(state)).toContain('class="play-primary reward-continue">Next Level</button>');
+    expect(renderVictory(state)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
   });
 
   it.each(["index", "profile"])("waits for a recovered Classic win with an unknown %s", missing => {

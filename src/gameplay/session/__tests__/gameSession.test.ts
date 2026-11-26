@@ -835,7 +835,50 @@ describe("game session reducer", () => {
       .toHaveLength(0);
   });
 
-  it("does not replay a daily achievement when its completion response arrives after the next riddle loads", () => {
+  it.each(["profileUpdated", "authState"] as const)("keeps every completion unlock when %s arrives before its receipt", update => {
+    const user = {uid: "solver", isAnonymous: false};
+    const profile = {username: "Solver", coins: 100, level: 4, xp: 900, winStreak: 1,
+      gamesPlayed: 4, wins: 4, achievements: ["first_win"], classicIndex: 1};
+    let state = reduce(createInitialGameSession(), {type: "hostInit", locale: "en", gameMode: "classic",
+      user, products: [], profile});
+    state = reduce(state, {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    const refreshed = {...profile, level: 5, achievements: ["first_win", "level_5", "coins_1000"]};
+    state = reduce(state, update === "authState"
+      ? {type: "authState", user, profile: refreshed}
+      : {type: "profileUpdated", profile: refreshed});
+    state = reduce(state, {type: "completionReward", reward: {
+      coinsEarned: 100, newLevel: 5, leveledUp: true,
+      newlyUnlockedAchievementIds: ["level_5", "coins_1000", "level_5"],
+    }});
+    expect(state.lastRewards).toEqual({coinsEarned: 100, newLevel: 5, leveledUp: true,
+      newlyUnlockedAchievementIds: ["wins_5", "perfect_guess", "classic_perfect", "level_5", "coins_1000"]});
+    expect(state.modal).toBe("victory");
+  });
+
+  it("presents a delayed referral after victory without losing either reward on the next level", () => {
+    let state = reduce(createInitialGameSession(), {type: "loadRiddle", riddle});
+    state = resolveGuess(state, "PIANO", 1, {isCorrect: true, gameOver: true});
+    state = reduce(state, {type: "completionReward", reward: {coinsEarned: 100, newLevel: 2, leveledUp: true,
+      newlyUnlockedAchievementIds: ["first_win", "perfect_guess"]}});
+    state = reduce(state, {type: "showAuxiliaryFanfare", fanfare: {id: "referral-1", kind: "referral",
+      coinsAwarded: 100, totalCoins: 200, achievementIds: []}});
+    expect(state.modal).toBe("victory");
+    expect(state.lastRewards).toEqual({coinsEarned: 100, newLevel: 2, leveledUp: true,
+      newlyUnlockedAchievementIds: ["first_win", "perfect_guess"]});
+    state = reduce(state, {type: "closeModal"});
+    expect(state.modal).toBe("reward");
+    state = reduce(state, {type: "loadRiddle", riddle: {...riddle, riddleId: "classic-2", sessionToken: "next-session", index: 2}});
+    expect(state.riddle?.riddleId).toBe("classic-2");
+    expect(state.modal).toBe("reward");
+    expect(state.auxiliaryFanfare).toEqual({id: "referral-1", kind: "referral", coinsAwarded: 100,
+      totalCoins: 200, achievementIds: []});
+    state = reduce(state, {type: "closeModal"});
+    expect(state.modal).toBeNull();
+    expect(state.auxiliaryFanfare).toBeNull();
+  });
+
+  it("ignores a completion reward after the next riddle loads", () => {
     /** Provides achievement behavior. */
     const achievement = "daily_completed";
     /** Provides profile behavior. */
@@ -845,10 +888,12 @@ describe("game session reducer", () => {
     };
     /** Provides state behavior. */
     let state = reduce({...createInitialGameSession(), profile}, {type: "loadRiddle", riddle});
-    state = reduce(state, {type: "completionReward", reward: {
+    const afterReceipt = reduce(state, {type: "completionReward", reward: {
       coinsEarned: 25, newlyUnlockedAchievementIds: [achievement],
     }});
-    expect(state.lastRewards?.newlyUnlockedAchievementIds).toEqual([]);
+    expect(afterReceipt).toBe(state);
+    expect(afterReceipt.riddle?.riddleId).toBe("classic-1");
+    expect(afterReceipt.lastRewards).toBeNull();
   });
 });
 

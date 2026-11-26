@@ -9,7 +9,7 @@
   pointer-events: none;
   direction: ltr;
 }
-.game-modal-backdrop > .fanfare-tabs { z-index: 0; }
+.game-modal-backdrop > .fanfare-tabs { z-index: 2; }
 .fanfare-tab {
   position: absolute;
   inset: 0 0 auto;

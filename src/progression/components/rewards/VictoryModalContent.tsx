@@ -1,7 +1,6 @@
 import {useEffect, useRef, useState} from "react";
 import type {GameSessionState} from "../../../gameplay/session/gameSession";
 import {useTranslator} from "../../../localization/browser/i18n";
-import {isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
 import {CoinFlight} from "./CoinFlight";
 import chestClosedUrl from "../../../../assets/images-web/chest-closed.webp";
 import chestOpenUrl from "../../../../assets/images-web/chest-open.webp";
@@ -37,16 +36,17 @@ function VictoryChestAward({amount, total, onBalancePreview}: {
   </div>;
 }
 
-/** Keeps the win action available while milestone tabs advance automatically. */
-export function VictoryModalContent({state, onAdvance, onBalancePreview}: {
+/** Keeps the win visible until confirmed milestones have finished. */
+export function VictoryModalContent({state, milestonesPending, onAdvance, onBalancePreview}: {
   /** The current completion and its confirmed rewards. */ state: GameSessionState;
+  /** Every earned level and achievement must finish before advancing. */ milestonesPending: boolean;
   /** Advances to the next playable round. */ onAdvance: () => void;
   /** Updates only the decorative balance. */ onBalancePreview: (balance: number | null) => void;
 }) {
   /** Translated win and reward labels for the active locale. */
   const tr = useTranslator();
-  /** Presentation and native activation share the same authoritative advancement policy. */
-  const advancePending = isCompletionAdvancePending(state);
+  /** The action waits for confirmed rewards and every visible milestone. */
+  const advancePending = !state.completionAcknowledged || milestonesPending;
   const reward = state.lastRewards && state.lastRewards.coinsEarned > 0 ? state.lastRewards : null;
   return <>
     <h2 id="game-modal-title">{tr("VictoryModal.TITLE")}</h2>

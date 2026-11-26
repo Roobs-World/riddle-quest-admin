@@ -357,14 +357,14 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         pendingGuessState: null,
         pendingHintState: null,
         engineSnapshot: snapshot,
-        modal: confirmedOutcome?.kind === "win" ? "victory" : questionIndependentModals.has(state.modal) ? state.modal
+        modal: confirmedOutcome?.kind === "win" ? "victory" : state.modal === "reward" && state.auxiliaryFanfare
+          ? "reward" : questionIndependentModals.has(state.modal) ? state.modal
           : action.riddle.awaitingContinue ? "continue" : null,
         notice: action.preserveNotice ? state.notice : null,
         lastOutcome: confirmedOutcome,
         completionAcknowledged: false,
         lastRewards: null,
         optimisticAchievementIds: [],
-        auxiliaryFanfare: null,
         letterStates: computeStates(snapshot.guesses, action.riddle.evaluation?.locale ?? state.locale),
       });
     }
@@ -786,18 +786,15 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
     case "profileUpdated":
       return {...state, profile: preservePendingCoins(state, action.profile), ...clearLeaderboard()};
     case "completionReward":
-      /** Keep server replayed unlocks from reopening an already-shown fanfare after loading another riddle. */
-      const authoritativeAchievementIds = action.reward.newlyUnlockedAchievementIds.filter(
-        (id) => !state.profile?.achievements.includes(id) || state.optimisticAchievementIds.includes(id),
-      );
+      if (!state.lastOutcome) return state;
       return {
         ...state,
         lastRewards: {
           ...action.reward,
-          newlyUnlockedAchievementIds: [
+          newlyUnlockedAchievementIds: [...new Set([
             ...state.optimisticAchievementIds,
-            ...authoritativeAchievementIds.filter(id => !state.optimisticAchievementIds.includes(id)),
-          ],
+            ...action.reward.newlyUnlockedAchievementIds,
+          ])],
         },
         profile: state.profile
           ? {...state.profile, achievements: [...new Set([
@@ -811,7 +808,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
     case "completionAcknowledged":
       return {...state, completionAcknowledged: true};
     case "showAuxiliaryFanfare":
-      return {...state, auxiliaryFanfare: action.fanfare, modal: "reward"};
+      return {...state, auxiliaryFanfare: action.fanfare, modal: state.modal === "victory" ? "victory" : "reward"};
     case "restoreSession":
       // Journal recovery and player edits outrank an older provider or retained checkpoint.
       if (!state.canRestoreCheckpoint || !state.riddle || action.riddleId !== state.riddle.riddleId ||
@@ -949,7 +946,8 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
       return {
         ...state,
         // Commerce dismissal does not decide an unresolved paid-continue boundary.
-        modal: (state.modal === "shop" || state.modal === "reward") && state.shopReturnModal
+        modal: state.modal === "victory" && state.auxiliaryFanfare ? "reward"
+          : (state.modal === "shop" || state.modal === "reward") && state.shopReturnModal
           ? state.shopReturnModal : state.riddle && !state.lastOutcome && state.engineSnapshot?.attemptsUsed === 5 &&
           !state.engineSnapshot.hasUsedContinue && !state.engineSnapshot.gameOver ? "continue" : null,
         shopReturnModal: null,
