@@ -9,6 +9,9 @@ import "../../styles/fanfare-tabs.css";
 /** Readable time after a tab has reached the front of the queue. */
 export const FANFARE_TAB_HOLD_MS = 1000;
 
+/** Achievement details remain readable for two additional seconds. */
+export const ACHIEVEMENT_TAB_HOLD_MS = FANFARE_TAB_HOLD_MS + 2000;
+
 /** Presents one completion or granted reward without a dialog or extra taps. */
 export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps: suppliedSteps, id}: {
   /** Optional accessible identifier referenced by the associated completion dialog. */
@@ -116,8 +119,9 @@ export function FanfareTabs({state, paused, onComplete, onBalancePreview, steps:
       }
     };
     if (phase === "holding" || reducedMotion) {
+      const holdMs = active.kind === "achievement" ? ACHIEVEMENT_TAB_HOLD_MS : FANFARE_TAB_HOLD_MS;
       /** Readable hold or reduced-motion transition cancelled when this phase retires. */
-      const timer = window.setTimeout(advance, phase === "holding" ? FANFARE_TAB_HOLD_MS : 0);
+      const timer = window.setTimeout(advance, phase === "holding" ? holdMs : 0);
       return () => {retired = true; window.clearTimeout(timer);};
     }
     /** Both the outgoing tab and its successor must reach their final frames. */
