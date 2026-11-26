@@ -1,7 +1,7 @@
 import {encryptedHttpsCallable} from "./encryptedCallable";
 import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "../../races/contracts/index";
 import {httpsCallable as rawHttpsCallable, type Functions} from "firebase/functions";
-import {type ClassicRiddleBufferResponse, type SkipRiddleResponse, type SpendCoinsRequest} from "../contracts/requestSchemas";
+import {type ClassicRiddleBufferResponse, type SkipRiddleResponse, type SpendCoinsRequest, type GetLeaderboardRequest, type GetLeaderboardResponse} from "../contracts/requestSchemas";
 import {type CompleteGameInput, type CompleteGameOutput, type SubmitSinglePlayerGuessInput, type SubmitSinglePlayerGuessOutput} from "../../gameplay/contracts/cloudFunctionsSchemas";
 import type {
   AbandonRaceRunRequest,
@@ -268,38 +268,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     SkipRiddleResponse
   >(regions.gameplay, "skipRiddle");
   /** Gets leaderboard. */
-  const getLeaderboard = httpsCallable<
-    {
-      /** Stores type. */
-      type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
-      /** Stores limit. */
-      /** Stores limit. */
-      limit?: number;
-    },
-    {
-      /** Stores entries. */
-      entries: Array<{
-        /** Stores user id. */
-        userId: string;
-        /** Stores username. */
-        username: string;
-        /** Stores avatar url. */
-        avatarUrl?: string;
-        /** Stores level. */
-        level: number;
-        /** Stores xp. */
-        xp: number;
-        /** Stores total wins. */
-        totalWins: number;
-        /** Server-confirmed multiplayer victories. */
-        multiplayerWins?: number;
-        /** Stores best streak. */
-        bestStreak: number;
-      }>;
-      /** Stores requesting user id. */
-      requestingUserId: string;
-    }
-  >(regions.account, "getLeaderboard");
+  const getLeaderboard = httpsCallable<GetLeaderboardRequest, GetLeaderboardResponse>(regions.account, "getLeaderboard");
   /** Updates username. */
   const updateUsername = httpsCallable<
     {

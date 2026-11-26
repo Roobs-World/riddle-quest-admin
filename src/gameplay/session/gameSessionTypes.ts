@@ -3,6 +3,7 @@ import {type GameEngineSnapshot} from "../controllers/GameEngine";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "../../platform/bridge/messages";
 import type {ProductSummary} from "../../platform/contracts/hostServices";
 import type {CompletionRewardBreakdown} from "../../progression/rewards/completionRewardBreakdown";
+import type {LeaderboardCache} from "../../leaderboards/browser/leaderboardCache";
 
 /** Identifies the modal currently presented by the game session. */
 export type GameModal =
@@ -54,6 +55,9 @@ export type GameSessionState = {
   /** Purchasable products exposed by the current platform. */ products: ProductSummary[];
   /** Current leaderboard page. */ leaderboard: BridgeLeaderboardEntry[];
   /** Metric used to rank the current leaderboard page. */ leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
+  /** Zero-based leaderboard page currently selected. */ leaderboardPage: number;
+  /** Cursor for the next page of the selected ranking. */ leaderboardNextCursor: string | null;
+  /** Account-owned results retained across page and modal changes. */ leaderboardCache: LeaderboardCache;
   /** Indicates whether a leaderboard request is in flight. */ leaderboardLoading: boolean;
   /** Correlates results with the latest requested ranking. */ leaderboardRequestId: string | null;
   /** Distinguishes an unavailable ranking from a successful empty result. */ leaderboardLoadError: boolean;
@@ -301,6 +305,7 @@ export type GameSessionAction =
       leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins"; /** Stores entries. */
       /** Stores entries. */
       entries: BridgeLeaderboardEntry[];
+      nextCursor?: string | null;
     }
   | {
       /** Stores type. */
@@ -308,6 +313,12 @@ export type GameSessionAction =
       /** Correlated host request identifier. */ requestId?: string; /** Stores leaderboard type. */
       /** Stores leaderboard type. */
       leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
+      page?: number;
+    }
+  | {
+      type: "leaderboardPageSelected";
+      leaderboardType: GameSessionState["leaderboardType"];
+      page: number;
     }
   | {
       /** Stores type. */

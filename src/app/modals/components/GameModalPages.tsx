@@ -41,7 +41,7 @@ export type GameModalPagesProps = {
   /** Stores on request skip. */
   onRequestSkip: () => void;
   /** Stores on request leaderboard. */
-  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => void;
+  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins", page?: number) => void;
   /** Stores on update username. */
   onUpdateUsername: (username: string) => void;
   /** Stores on update avatar. */
@@ -80,8 +80,11 @@ export function GameModalPages({
     /** Initial reads belong to a page transition rather than repeated metric renders. */
     const enteringLeaderboard = state.modal === "leaderboard" && previousModal.current !== "leaderboard";
     previousModal.current = state.modal;
-    if (enteringLeaderboard) onRequestLeaderboard(state.leaderboardType);
-  }, [onRequestLeaderboard, state.leaderboardType, state.modal]);
+    const invalidatedLeaderboard = state.modal === "leaderboard" && !state.leaderboardLoading &&
+      !state.leaderboardLoadError && !state.leaderboardCache[state.leaderboardType]?.[state.leaderboardPage];
+    if (enteringLeaderboard || invalidatedLeaderboard) onRequestLeaderboard(state.leaderboardType, state.leaderboardPage);
+  }, [onRequestLeaderboard, state.leaderboardCache, state.leaderboardLoadError,
+    state.leaderboardLoading, state.leaderboardPage, state.leaderboardType, state.modal]);
 
   return (
     <>
@@ -131,11 +134,12 @@ export function GameModalPages({
 
       {state.modal === "leaderboard" && (
         <LeaderboardModalPage
-          key={state.leaderboardType}
           entries={state.leaderboard}
           loading={state.leaderboardLoading}
           loadError={state.leaderboardLoadError}
           leaderboardType={state.leaderboardType}
+          page={state.leaderboardPage}
+          nextCursor={state.leaderboardNextCursor}
           onRequestLeaderboard={onRequestLeaderboard}
         />
       )}

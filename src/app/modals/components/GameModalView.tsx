@@ -55,7 +55,7 @@ export type GameModalViewProps = {
   /** Stores on request skip. */
   onRequestSkip: () => void;
   /** Stores on request leaderboard. */
-  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => void;
+  onRequestLeaderboard: (type: "xp" | "totalWins" | "bestStreak" | "multiplayerWins", page?: number) => void;
   /** Stores on update username. */
   onUpdateUsername: (username: string) => void;
   /** Stores on update avatar. */

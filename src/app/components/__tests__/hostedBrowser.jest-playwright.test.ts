@@ -881,6 +881,7 @@ describeBrowser("standalone Jest browser game", () => {
       expect(firstPageFits).toBe(true);
       await page.screenshot({path: "/tmp/riddle-leaderboard-fixed.png"});
       await page.getByRole("button", {name: /next page/i}).click();
+      await page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
       expect(await leaderboardList.locator("li").count()).toBe(10);
       expect(await leaderboardList.locator("li").first().locator("b").textContent()).toBe("11");
       // Changing measurements returns to page one and survives the runtime-validated bridge.

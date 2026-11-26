@@ -280,20 +280,15 @@ export function useGameMessageRouter({
             return;
           }
           if (message.payload.operation === "leaderboard") {
-            /** Provides {bridge leaderboard entry schema} behavior. */
-            const {BridgeLeaderboardEntrySchema} = await import("../messages");
+            const {BridgeLeaderboardResultSchema} = await import("../messages");
             if (isCurrent && !isCurrent()) return;
-            /** Provides entries behavior. */
-            const entries = Array.isArray(data.entries)
-              ? data.entries.flatMap((entry) => {
-                  /** Parses d. */
-                  const parsed = BridgeLeaderboardEntrySchema.safeParse(entry);
-                  return parsed.success ? [parsed.data] : [];
-                })
-              : [];
-            /** Provides leaderboard type behavior. */
-            const leaderboardType = data.type === "totalWins" || data.type === "bestStreak" || data.type === "multiplayerWins" ? data.type : "xp";
-            dispatch({type: "leaderboardLoaded", leaderboardType, entries, requestId: message.requestId});
+            const parsed = BridgeLeaderboardResultSchema.safeParse(data);
+            if (!parsed.success) {
+              dispatch({type: "leaderboardLoadFailed", requestId: message.requestId});
+              return;
+            }
+            dispatch({type: "leaderboardLoaded", leaderboardType: parsed.data.type,
+              entries: parsed.data.entries, nextCursor: parsed.data.nextCursor, requestId: message.requestId});
             return;
           }
           if (message.payload.operation === "profile") {

@@ -278,8 +278,10 @@ export const createRedditHostServices = (accountGeneration = 1): HostServices =>
       return unavailable();
     },
     /** Loads leaderboard. */
-    async loadLeaderboard(type) {
-      return GetLeaderboardResponseSchema.parse(await post("leaderboard.list", {type, limit: 25})).entries;
+    async loadLeaderboard(type, pagination) {
+      const result = GetLeaderboardResponseSchema.parse(await post("leaderboard.list", {type, limit: pagination?.limit ?? 25, paginated: true,
+        ...(pagination?.cursor ? {cursor: pagination.cursor} : {})}));
+      return {entries: result.entries, nextCursor: result.nextCursor ?? null};
     },
     /** Updates username. */
     async updateUsername(username) {

@@ -17,6 +17,7 @@
 import {admin} from "../shared/firebaseAdmin";
 import * as functions from "firebase-functions";
 import {HttpsError} from "firebase-functions/v2/https";
+import {z} from "zod";
 import {captureException} from "../shared/sentry";
 import {browserCallableSecurityOptions} from "../shared/callableSecurity";
 import {onCallWithSentry} from "../shared/sentryHandlers";
@@ -30,6 +31,8 @@ import {
 } from "../../../src/platform/contracts/requestSchemas.js";
 import {validateCallableRequest, validateCallableResponse} from "../validation/callableValidation";
 import {listRaceBotLeaderboardEntries} from "../race/settlement/raceBotLeaderboard";
+import {compareLeaderboardPositions, decodeLeaderboardCursor, encodeLeaderboardCursor, LEADERBOARD_MAX_SCAN_ROWS,
+  type LeaderboardCursor, type PositionedLeaderboardEntry} from "./leaderboardPagination";
 
 /** Defines the level weight value. */
 const LEVEL_WEIGHT = 1_000_000_000;
@@ -122,27 +125,19 @@ function toSafeLeaderboardEntry(raw: Partial<LeaderboardEntry>, fallbackUserId: 
 }
 
 /** Defines the contract for user doc for leaderboard. */
-interface UserDocForLeaderboard {
-  /** Stores username. */
-  username?: string;
-  /** Stores display name. */
-  displayName?: string;
-  /** Stores avatar url. */
-  avatarUrl?: string;
-  /** Stores stats. */
-  stats?: {
-    /** Stores level. */
-    level?: number;
-    /** Stores xp. */
-    xp?: number;
-    /** Stores total wins. */
-    totalWins?: number;
-    /** Server-confirmed multiplayer victories. */
-    multiplayerWins?: number;
-    /** Stores best streak. */
-    bestStreak?: number;
-  };
-}
+const UserDocForLeaderboardSchema = z.object({
+  username: z.string().optional(),
+  displayName: z.string().optional(),
+  avatarUrl: z.string().optional(),
+  stats: z.object({
+    level: z.number().int().positive().optional(),
+    xp: z.number().int().nonnegative().optional(),
+    totalWins: z.number().int().nonnegative().optional(),
+    multiplayerWins: z.number().int().nonnegative().optional(),
+    bestStreak: z.number().int().nonnegative().optional(),
+  }).optional(),
+});
+type UserDocForLeaderboard = z.infer<typeof UserDocForLeaderboardSchema>;
 
 /**
  * Converts a Firestore users/{uid} document into leaderboard row format.
@@ -179,28 +174,6 @@ function toLeaderboardEntryFromUserDoc(userId: string, data: UserDocForLeaderboa
   }
 
   return entry;
-}
-
-/**
- * Sorts leaderboard entries according to leaderboard type.
- *
- * @param entries Entries to sort.
- * @param type Ranking type.
- * @returns New sorted entries array.
- */
-function sortEntries(entries: LeaderboardEntry[], type: LeaderboardType): LeaderboardEntry[] {
-  /** Provides sorted behavior. */
-  const sorted = [...entries];
-  if (type === "xp") {
-    sorted.sort((a, b) => b.progressScore - a.progressScore);
-    return sorted;
-  }
-  if (type === "totalWins") {
-    sorted.sort((a, b) => b.totalWins - a.totalWins);
-    return sorted;
-  }
-  sorted.sort((a, b) => b.bestStreak - a.bestStreak);
-  return sorted;
 }
 
 /** Raw leaderboard document paired with the canonical document identifier. */
@@ -251,25 +224,66 @@ async function liveCanonicalLeaderboardEntries(documents: LeaderboardDocument[])
   });
 }
 
-/**
- * Fallback loader: derives leaderboard from users collection when dedicated
- * leaderboard docs are empty or missing.
- *
- * @param type Ranking type.
- * @param limit Max rows to return.
- * @returns Derived leaderboard entries.
- */
-async function buildLeaderboardFromUsers(type: LeaderboardType, limit: number): Promise<LeaderboardEntry[]> {
-  /** Provides rs snapshot. */
-  const usersSnapshot = await admin.firestore().collection("users").select(...LEADERBOARD_ACCOUNT_FIELDS).limit(1000).get();
-  /** Provides derived behavior. */
-  const derived = usersSnapshot.docs.map((doc) => {
-    /** Provides data behavior. */
-    const data = doc.data() as UserDocForLeaderboard;
-    return toLeaderboardEntryFromUserDoc(doc.id, data);
-  });
+/** Fetches enough live projection rows for one page and a single lookahead. */
+async function loadProjectionPage(type: LeaderboardType, limit: number, cursor?: LeaderboardCursor): Promise<PositionedLeaderboardEntry[]> {
+  const field = type === "xp" ? "progressScore" : type;
+  const base = admin.firestore().collection("leaderboard").orderBy(field, "desc")
+    .orderBy(admin.firestore.FieldPath.documentId(), "desc");
+  const rows: PositionedLeaderboardEntry[] = [];
+  let lastDocument: FirebaseFirestore.QueryDocumentSnapshot | undefined;
+  let scanned = 0;
+  while (rows.length < limit) {
+    const batchSize = Math.min(limit - rows.length, LEADERBOARD_MAX_SCAN_ROWS - scanned);
+    if (batchSize === 0) throw new HttpsError("resource-exhausted", "Leaderboard cleanup limit reached. Please retry later.");
+    const query = lastDocument ? base.startAfter(lastDocument) : cursor ? base.startAfter(cursor.score, cursor.userId) : base;
+    const snapshot = await query.limit(batchSize).get();
+    const live = new Map((await liveCanonicalLeaderboardEntries(snapshot.docs)).map(entry => [entry.userId, entry]));
+    for (const document of snapshot.docs) {
+      const entry = live.get(document.id);
+      const score = document.data()[field];
+      if (!entry || typeof score !== "number" || !Number.isFinite(score) || score < 0) continue;
+      rows.push({entry, cursor: {type, source: "leaderboard", score, userId: document.id, level: entry.level, xp: entry.xp}});
+    }
+    scanned += snapshot.docs.length;
+    if (snapshot.docs.length < batchSize) break;
+    lastDocument = snapshot.docs.at(-1);
+  }
+  return rows;
+}
 
-  return sortEntries(derived, type).slice(0, limit);
+/** The empty-projection fallback uses indexed account rankings rather than scanning accounts. */
+async function loadUserPage(type: LeaderboardType, limit: number, cursor?: LeaderboardCursor): Promise<PositionedLeaderboardEntry[]> {
+  const db = admin.firestore();
+  const source = type === "multiplayerWins" ? "multiplayer" : "users";
+  const field = `stats.${type}`;
+  let query = type === "xp"
+    ? db.collection("users").orderBy("stats.level", "desc").orderBy("stats.xp", "desc")
+    : db.collection("users").orderBy(field, "desc");
+  if (type === "multiplayerWins") query = query.where(field, ">", 0);
+  query = query.orderBy(admin.firestore.FieldPath.documentId(), "desc");
+  if (cursor) query = type === "xp" ? query.startAfter(cursor.level, cursor.xp, cursor.userId)
+    : query.startAfter(cursor.score, cursor.userId);
+  const rows: PositionedLeaderboardEntry[] = [];
+  let lastDocument: FirebaseFirestore.QueryDocumentSnapshot | undefined;
+  let scanned = 0;
+  while (rows.length < limit) {
+    const batchSize = Math.min(limit - rows.length, LEADERBOARD_MAX_SCAN_ROWS - scanned);
+    if (batchSize === 0) throw new HttpsError("resource-exhausted", "Leaderboard cleanup limit reached. Please retry later.");
+    const nextQuery = lastDocument ? query.startAfter(lastDocument) : query;
+    const snapshot = await nextQuery.select(...LEADERBOARD_ACCOUNT_FIELDS).limit(batchSize).get();
+    for (const document of snapshot.docs) {
+      const parsed = UserDocForLeaderboardSchema.safeParse(document.data());
+      if (!parsed.success) continue;
+      const entry = toSafeLeaderboardEntry(toLeaderboardEntryFromUserDoc(document.id, parsed.data), document.id);
+      const score = type === "xp" ? entry.progressScore : type === "totalWins" ? entry.totalWins
+        : type === "bestStreak" ? entry.bestStreak : entry.multiplayerWins ?? 0;
+      rows.push({entry, cursor: {type, source, score, userId: document.id, level: entry.level, xp: entry.xp}});
+    }
+    scanned += snapshot.docs.length;
+    if (snapshot.docs.length < batchSize) break;
+    lastDocument = snapshot.docs.at(-1);
+  }
+  return rows;
 }
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -313,79 +327,46 @@ export async function updateLeaderboardEntry(userId: string): Promise<void> {
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
-/**
- * Callable: return the top N players sorted by the requested stat.
- *
- * Request: `{ type: LeaderboardType, limit?: number }` (limit capped at 100)
- * Response: `{ entries: LeaderboardEntry[], requestingUserId: string }`
- */
+/** Returns one requested page, retaining legacy request limits for existing callers. */
 export const getLeaderboard = onCallWithSentry("getLeaderboard", browserCallableSecurityOptions, async (request) => {
-  if (!request.auth) {
-    throw new HttpsError("unauthenticated", "Must be authenticated to view the leaderboard.");
-  }
-  /** Requests ing user id. */
+  if (!request.auth) throw new HttpsError("unauthenticated", "Must be authenticated to view the leaderboard.");
   const requestingUserId = request.auth.uid;
-
-  /** Provides data behavior. */
-  const data: GetLeaderboardRequest = validateCallableRequest(
-    GetLeaderboardRequestSchema,
-    request.data,
-    "getLeaderboard",
-  );
-  /** Provides type behavior. */
-  const type: LeaderboardType = data.type;
-  /** Provides limit behavior. */
-  const limit = Math.min(data.limit ?? 50, 100);
-
-  /** Provides valid types behavior. */
-  const validTypes: LeaderboardType[] = ["xp", "totalWins", "bestStreak", "multiplayerWins"];
-  if (!validTypes.includes(type)) {
-    throw new HttpsError("invalid-argument", "type must be one of: xp, totalWins, bestStreak, multiplayerWins.");
-  }
-
+  const data: GetLeaderboardRequest = validateCallableRequest(GetLeaderboardRequestSchema, request.data, "getLeaderboard");
+  const {type} = data;
+  const limit = data.limit ?? 50;
+  const queryLimit = limit + (data.paginated ? 1 : 0);
+  const cursor = decodeLeaderboardCursor(data.cursor, type);
   try {
+    let rows: PositionedLeaderboardEntry[];
     if (type === "multiplayerWins") {
-      /** Each bounded source contributes enough rows to determine the combined top scores. */
-      const db = admin.firestore();
-      const [snapshot, opponents] = await Promise.all([
-        db.collection("users").where("stats.multiplayerWins", ">", 0).orderBy("stats.multiplayerWins", "desc")
-          .select(...LEADERBOARD_ACCOUNT_FIELDS).limit(limit).get(),
-        listRaceBotLeaderboardEntries(db, limit),
+      const [players, opponents] = await Promise.all([
+        loadUserPage(type, queryLimit, cursor),
+        listRaceBotLeaderboardEntries(admin.firestore(), queryLimit, cursor),
       ]);
-      const entries = [...snapshot.docs.map(doc => toLeaderboardEntryFromUserDoc(doc.id, doc.data() as UserDocForLeaderboard)), ...opponents]
-        .sort((a, b) => (b.multiplayerWins ?? 0) - (a.multiplayerWins ?? 0) || a.userId.localeCompare(b.userId)).slice(0, limit);
-      return validateCallableResponse(GetLeaderboardResponseSchema, {entries, requestingUserId}, "getLeaderboard");
+      const positionedOpponents: PositionedLeaderboardEntry[] = opponents.map(entry => ({entry, cursor: {
+        type, source: "multiplayer", score: entry.multiplayerWins ?? 0,
+        userId: entry.userId, level: entry.level, xp: entry.xp,
+      }}));
+      rows = [...players, ...positionedOpponents].sort(compareLeaderboardPositions);
+    } else if (cursor?.source === "users") {
+      rows = await loadUserPage(type, queryLimit, cursor);
+    } else {
+      rows = await loadProjectionPage(type, queryLimit, cursor);
+      if (!cursor && rows.length === 0) rows = await loadUserPage(type, queryLimit);
     }
-    /** Provides base ref behavior. */
-    const baseRef = admin.firestore().collection("leaderboard");
-    /** Provides candidate limit behavior. */
-    const candidateLimit = Math.min(Math.max(limit * 2, limit), 200);
-    /** Provides snapshot behavior. */
-    const snapshot = await (type === "xp"
-      ? baseRef.orderBy("progressScore", "desc").limit(candidateLimit).get()
-      : baseRef.orderBy(type, "desc").limit(candidateLimit).get());
-
-    /** Provides entries behavior. */
-    let entries = await liveCanonicalLeaderboardEntries(snapshot.docs);
-
-    if (entries.length === 0) {
-      functions.logger.info(`[Leaderboard] No leaderboard docs for type=${type}; deriving from users collection.`);
-      entries = await buildLeaderboardFromUsers(type, limit);
-    }
-
-    entries = entries.slice(0, limit);
-
-    functions.logger.info(`[Leaderboard] Fetched ${entries.length} entries for type=${type}`);
-
-    /** Provides response behavior. */
+    const visible = rows.slice(0, limit);
+    const last = visible.at(-1);
     const response: GetLeaderboardResponse = {
-      entries,
+      entries: visible.map(({entry}) => entry),
       requestingUserId,
+      ...(data.paginated ? {nextCursor: rows.length > limit && last ? encodeLeaderboardCursor(last.cursor) : null} : {}),
     };
+    functions.logger.info(`[Leaderboard] Fetched ${response.entries.length} entries for type=${type}`);
     return validateCallableResponse(GetLeaderboardResponseSchema, response, "getLeaderboard");
   } catch (error) {
     functions.logger.error("[Leaderboard] Failed to fetch leaderboard:", error);
     captureException(error, {type, limit, userId: requestingUserId});
+    if (error instanceof HttpsError) throw error;
     throw new HttpsError("internal", "Failed to fetch leaderboard.");
   }
 });

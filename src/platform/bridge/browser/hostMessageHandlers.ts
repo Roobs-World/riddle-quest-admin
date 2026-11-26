@@ -8,6 +8,7 @@ import type {HostAuthorityModules} from "../../../app/session/HostAuthorityModul
 import {captureBrowserException} from "../../../observability/browserErrorReporter";
 import {createHostCoinActionEffects, type HostCoinActionInput, type HostCompletionInput} from "../../../progression/browser/hostCompletionEffects";
 import {CONTINUE_COIN_COST} from "../../../commerce/browser/commerceCosts";
+import {LEADERBOARD_PAGE_SIZE} from "../../../leaderboards/browser/leaderboardPagination";
 /** Describes host operation name. */
 export type HostOperationName =
   | "loadRiddle"
@@ -387,12 +388,14 @@ export const createPlayHostMessageHandlers = ({
   },
   loadLeaderboard: async (message) => {
     try {
-      /** Provides entries behavior. */
-      const entries = await authority.leaderboard.loadLeaderboard(message.payload.leaderboardType);
-      trackEvent("leaderboard_viewed", {leaderboard_type: message.payload.leaderboardType, result_count: entries.length});
+      const page = await authority.leaderboard.loadLeaderboard(message.payload.leaderboardType, {
+        limit: LEADERBOARD_PAGE_SIZE,
+        cursor: message.payload.cursor,
+      });
+      trackEvent("leaderboard_viewed", {leaderboard_type: message.payload.leaderboardType, result_count: page.entries.length});
       postOperation(message.requestId, "leaderboard", true, {
         type: message.payload.leaderboardType,
-        entries,
+        ...page,
       });
     } catch (error) {
       reportHostOperationError(error, "leaderboard");

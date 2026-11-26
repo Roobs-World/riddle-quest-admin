@@ -3,7 +3,7 @@ import {computeFeedback} from "../rules/computeFeedback";
 import {splitGraphemes} from "../input/graphemes";
 import {cloneProductPricingCatalog} from "../../commerce/pricing/catalog";
 import type {BridgeLeaderboardEntry, BridgeProfile, BridgeRiddle, BridgeUser} from "../../platform/bridge/messages";
-import type {AuthSnapshot, HostServices, LeaderboardType, ProductSummary} from "../../platform/contracts/hostServices";
+import type {AuthSnapshot, HostServices, LeaderboardPagination, LeaderboardType, ProductSummary} from "../../platform/contracts/hostServices";
 import {toProductSummaries} from "../../platform/contracts/hostServices";
 import {createFakeRaceServices} from "../../races/testing/browser/fakeRaceServices";
 import {predictCompletionAchievementIds} from "../session/completion/predictCompletionAchievements";
@@ -404,20 +404,19 @@ export const createFakeHostServices = ({
       return result;
     },
     /** Loads leaderboard. */
-    async loadLeaderboard(type: LeaderboardType) {
+    async loadLeaderboard(type: LeaderboardType, pagination?: LeaderboardPagination) {
       await new Promise((resolve) => window.setTimeout(resolve, 250));
-      /** Provides rows behavior. */
-      const rows = [...leaderboardRows];
-      if (type === "totalWins") {
-        return rows.sort((left, right) => right.totalWins - left.totalWins);
-      }
-      if (type === "multiplayerWins") {
-        return rows.sort((left, right) => (right.multiplayerWins ?? 0) - (left.multiplayerWins ?? 0));
-      }
-      if (type === "bestStreak") {
-        return rows.sort((left, right) => right.bestStreak - left.bestStreak);
-      }
-      return rows.sort((left, right) => right.xp - left.xp);
+      const score = (entry: BridgeLeaderboardEntry) => type === "totalWins" ? entry.totalWins
+        : type === "multiplayerWins" ? entry.multiplayerWins ?? 0 : type === "bestStreak" ? entry.bestStreak
+          : entry.level * 1_000_000_000 + entry.xp;
+      const rows = [...leaderboardRows].sort((left, right) => score(right) - score(left)
+        || (left.userId < right.userId ? 1 : left.userId > right.userId ? -1 : 0));
+      const cursorIndex = pagination?.cursor ? rows.findIndex(entry => entry.userId === pagination.cursor) : -1;
+      const start = cursorIndex + 1;
+      const limit = pagination?.limit ?? 25;
+      const entries = rows.slice(start, start + limit);
+      const last = entries.at(-1);
+      return {entries, nextCursor: start + entries.length < rows.length && last ? last.userId : null};
     },
     /** Updates username. */
     async updateUsername(username) {

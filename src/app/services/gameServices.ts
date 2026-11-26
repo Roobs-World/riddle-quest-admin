@@ -106,8 +106,8 @@ const createLazyHostServices = (
     return (await loadServices()).requestPurchase(productId);
   },
   /** Loads leaderboard. */
-  async loadLeaderboard(type) {
-    return (await loadServices()).loadLeaderboard(type);
+  async loadLeaderboard(type, pagination) {
+    return (await loadServices()).loadLeaderboard(type, pagination);
   },
   /** Updates username. */
   async updateUsername(username) {

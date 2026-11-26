@@ -1,9 +1,8 @@
 import {RankedAvatar} from "../../progression/components/ranks/RankedAvatar";
-import {useState} from "react";
 import type {GameSessionState} from "../../gameplay/session/gameSession";
 import {useTranslator} from "../../localization/browser/i18n";
 import {PulsingSpinner} from "../../app/components/feedback/SpinningWheelLoader";
-import {LEADERBOARD_PAGE_SIZE, paginateLeaderboard} from "../browser/leaderboardPagination";
+import {LEADERBOARD_PAGE_SIZE} from "../browser/leaderboardPagination";
 
 /** Supported server-authoritative leaderboard measurements. */
 type LeaderboardType = GameSessionState["leaderboardType"];
@@ -18,8 +17,12 @@ export type LeaderboardModalPageProps = {
   loadError?: boolean;
   /** Measurement currently selected by the player. */
   leaderboardType: LeaderboardType;
-  /** Requests one leaderboard measurement from the host. */
-  onRequestLeaderboard: (type: LeaderboardType) => void;
+  /** Zero-based page selected by the player. */
+  page: number;
+  /** Server cursor for the following page, or null at the end. */
+  nextCursor: string | null;
+  /** Requests the selected page of one ranking. */
+  onRequestLeaderboard: (type: LeaderboardType, page?: number) => void;
 };
 
 /** Stable tab order used by every leaderboard render. */
@@ -31,14 +34,12 @@ export function LeaderboardModalPage({
   loading,
   loadError = false,
   leaderboardType,
+  page,
+  nextCursor,
   onRequestLeaderboard,
 }: LeaderboardModalPageProps) {
-  /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
-  /** Zero-based page requested by the player. */
-  const [requestedPage, setRequestedPage] = useState(0);
-  /** Pagination values derived from the latest server entries. */
-  const {activePage, pageCount, pageStart, visibleEntries} = paginateLeaderboard(entries, requestedPage);
+  const pageStart = page * LEADERBOARD_PAGE_SIZE;
 
   return (
     <div className="leaderboard-panel">
@@ -49,8 +50,7 @@ export function LeaderboardModalPage({
             disabled={loading}
             key={type}
             onClick={() => {
-              setRequestedPage(0);
-              onRequestLeaderboard(type);
+              onRequestLeaderboard(type, 0);
             }}
             aria-pressed={leaderboardType === type}
           >
@@ -75,14 +75,14 @@ export function LeaderboardModalPage({
       {!loading && loadError ? (
         <div className="leaderboard-error" role="alert">
           <p>{tr("Leaderboard.LOAD_ERROR")}</p>
-          <button className="play-secondary compact" onClick={() => onRequestLeaderboard(leaderboardType)}>
+          <button className="play-secondary compact" onClick={() => onRequestLeaderboard(leaderboardType, page)}>
             {tr("Leaderboard.RETRY_BUTTON")}
           </button>
         </div>
       ) : null}
       <ol className="leaderboard-list" aria-busy={loading} aria-label={tr("Leaderboard.TITLE")} tabIndex={0} start={pageStart + 1}>
         {!loading && !loadError && entries.length === 0 ? <li className="leaderboard-empty"><span aria-hidden="true">🏆</span><p>{tr("Leaderboard.NO_SCORES_YET")}</p></li> : null}
-        {visibleEntries.map((entry, index) => (
+        {!loading && entries.map((entry, index) => (
               <li key={entry.userId} data-placement={pageStart + index + 1}>
                 <b>{pageStart + index + 1}</b>
                 <RankedAvatar avatarUrl={entry.avatarUrl} level={entry.level} size={30}
@@ -102,22 +102,22 @@ export function LeaderboardModalPage({
             ))}
       </ol>
       </div>
-      {entries.length > LEADERBOARD_PAGE_SIZE ? (
+      {page > 0 || nextCursor !== null ? (
         <nav className="leaderboard-pagination" aria-label={tr("Leaderboard.PAGINATION_LABEL")}>
           <button
             className="play-secondary compact"
-            disabled={activePage === 0}
-            onClick={() => setRequestedPage((page) => Math.max(0, page - 1))}
+            disabled={loading || page === 0}
+            onClick={() => onRequestLeaderboard(leaderboardType, page - 1)}
           >
             {tr("Leaderboard.PREVIOUS_PAGE")}
           </button>
-          <span>
-            {activePage + 1} / {pageCount}
+          <span aria-current="page">
+            {page + 1}
           </span>
           <button
             className="play-secondary compact"
-            disabled={activePage === pageCount - 1}
-            onClick={() => setRequestedPage((page) => Math.min(pageCount - 1, page + 1))}
+            disabled={loading || loadError || nextCursor === null}
+            onClick={() => onRequestLeaderboard(leaderboardType, page + 1)}
           >
             {tr("Leaderboard.NEXT_PAGE")}
           </button>

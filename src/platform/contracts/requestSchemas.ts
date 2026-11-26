@@ -321,8 +321,11 @@ export const GetLeaderboardRequestSchema = z
   .object({
     type: LeaderboardTypeSchema.default("xp"),
     limit: z.number().int().positive().max(100).optional(),
+    cursor: z.string().min(1).max(4096).optional(),
+    paginated: z.literal(true).optional(),
   })
   .strict()
+  .refine(value => value.cursor === undefined || value.paginated === true, "A cursor requires paginated results.")
   .default({type: "xp"});
 /** Describes get leaderboard request. */
 export type GetLeaderboardRequest = z.infer<typeof GetLeaderboardRequestSchema>;
@@ -350,6 +353,7 @@ export const GetLeaderboardResponseSchema = z
   .object({
     entries: z.array(LeaderboardEntrySchema),
     requestingUserId: z.string().min(1),
+    nextCursor: z.string().min(1).max(4096).nullable().optional(),
   })
   .strict();
 /** Describes get leaderboard response. */

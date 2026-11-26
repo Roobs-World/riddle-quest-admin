@@ -50,6 +50,7 @@ const mockOrderBy = jest.fn();
 const mockLeaderboardLimit = jest.fn();
 /** Provides mock leaderboard get behavior. */
 const mockLeaderboardGet = jest.fn();
+const mockLeaderboardStartAfter = jest.fn();
 /** Provides mock users limit behavior. */
 const mockUsersLimit = jest.fn();
 /** Indexed canonical account query seams. */
@@ -60,6 +61,7 @@ const mockUsersOrderBy = jest.fn();
 const mockUsersSelect = jest.fn();
 /** Provides mock users get behavior. */
 const mockUsersGet = jest.fn();
+const mockUsersStartAfter = jest.fn();
 /** Provides mock users doc behavior. */
 const mockUsersDoc = jest.fn();
 /** Provides mock users doc get behavior. */
@@ -92,6 +94,7 @@ const mockDoc = jest.fn().mockReturnValue(mockDocRef);
 const mockLeaderboardQuery = {
   orderBy: mockOrderBy,
   limit: mockLeaderboardLimit,
+  startAfter: mockLeaderboardStartAfter,
   get: mockLeaderboardGet,
 };
 
@@ -101,6 +104,7 @@ const mockUsersQuery = {
   orderBy: mockUsersOrderBy,
   limit: mockUsersLimit,
   select: mockUsersSelect,
+  startAfter: mockUsersStartAfter,
   get: mockUsersGet,
 };
 
@@ -111,6 +115,7 @@ const mockRaceBotQuery = {
   where: jest.fn(),
   orderBy: jest.fn(),
   limit: jest.fn(),
+  startAfter: jest.fn(),
   get: mockRaceBotGet,
 };
 
@@ -143,7 +148,10 @@ const mockCollection = jest.fn((collectionName: string) => {
 jest.mock("firebase-admin", () => ({
   initializeApp: jest.fn(),
   apps: [],
-  firestore: jest.fn(() => ({collection: mockCollection, batch: mockBatch, getAll: mockGetAll, runTransaction: mockRunTransaction})),
+  firestore: Object.assign(
+    jest.fn(() => ({collection: mockCollection, batch: mockBatch, getAll: mockGetAll, runTransaction: mockRunTransaction})),
+    {FieldPath: {documentId: () => "__name__"}},
+  ),
 }));
 
 // â”€â”€ firebase-functions/v2/https mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -178,7 +186,8 @@ jest.mock("firebase-functions/v2/https", () => ({
 // â”€â”€ Import under test (after mocks) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 import {createHash} from "node:crypto";
-import {updateLeaderboardEntry, getLeaderboard, LeaderboardEntry} from "../gameplay/leaderboard";
+import {updateLeaderboardEntry, getLeaderboard} from "../gameplay/leaderboard";
+import type {LeaderboardEntry} from "../../../src/platform/contracts/requestSchemas";
 
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Helpers
@@ -319,13 +328,16 @@ describe("getLeaderboard callable", () => {
     // Re-apply chain because clearAllMocks resets return values
     mockOrderBy.mockReturnValue(mockLeaderboardQuery);
     mockLeaderboardLimit.mockReturnValue(mockLeaderboardQuery);
+    mockLeaderboardStartAfter.mockReturnValue(mockLeaderboardQuery);
     mockUsersLimit.mockReturnValue(mockUsersQuery);
     mockUsersSelect.mockReturnValue(mockUsersQuery);
     mockUsersWhere.mockReturnValue(mockUsersQuery);
     mockUsersOrderBy.mockReturnValue(mockUsersQuery);
+    mockUsersStartAfter.mockReturnValue(mockUsersQuery);
     mockRaceBotQuery.where.mockReturnValue(mockRaceBotQuery);
     mockRaceBotQuery.orderBy.mockReturnValue(mockRaceBotQuery);
     mockRaceBotQuery.limit.mockReturnValue(mockRaceBotQuery);
+    mockRaceBotQuery.startAfter.mockReturnValue(mockRaceBotQuery);
     mockUsersDoc.mockImplementation((id: string) => ({id, path: `users/${id}`, get: mockUsersDocGet}));
     mockGetAll.mockImplementation(mockReadProfiles);
     mockUsersDocGet.mockResolvedValue({
@@ -503,7 +515,7 @@ describe("getLeaderboard callable", () => {
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp", limit: 10});
 
-    expect(mockLeaderboardLimit).toHaveBeenCalledWith(20);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(10);
   });
 
   it("rejects limits above 100 before querying Firestore", async () => {
@@ -520,7 +532,7 @@ describe("getLeaderboard callable", () => {
 
     await callGetLeaderboard({uid: "u1"}, {type: "xp"});
 
-    expect(mockLeaderboardLimit).toHaveBeenCalledWith(100);
+    expect(mockLeaderboardLimit).toHaveBeenCalledWith(50);
   });
 
   it("returns empty entries array when no data", async () => {
@@ -554,17 +566,17 @@ describe("getLeaderboard callable", () => {
     mockUsersGet.mockResolvedValueOnce({
       docs: [
         {
-          id: "u2",
-          data: () => ({
-            username: "Bob",
-            stats: {level: 1, xp: 300, totalWins: 4, bestStreak: 2},
-          }),
-        },
-        {
           id: "u1",
           data: () => ({
             username: "Alice",
             stats: {level: 2, xp: 100, totalWins: 10, bestStreak: 7},
+          }),
+        },
+        {
+          id: "u2",
+          data: () => ({
+            username: "Bob",
+            stats: {level: 1, xp: 300, totalWins: 4, bestStreak: 2},
           }),
         },
       ],
@@ -583,7 +595,9 @@ describe("getLeaderboard callable", () => {
     expect(typedResult.entries).toHaveLength(2);
     expect(typedResult.entries[0].userId).toBe("u1");
     expect(typedResult.entries[1].userId).toBe("u2");
-    expect(mockUsersLimit).toHaveBeenCalledWith(1000);
+    expect(mockUsersLimit).toHaveBeenCalledWith(10);
+    expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.level", "desc");
+    expect(mockUsersOrderBy).toHaveBeenCalledWith("stats.xp", "desc");
     expect(mockUsersSelect).toHaveBeenCalledWith("username", "displayName", "avatarUrl", "stats.level", "stats.xp", "stats.totalWins", "stats.bestStreak", "stats.multiplayerWins");
     expect(mockBatchSet).not.toHaveBeenCalled();
     expect(mockBatchCommit).not.toHaveBeenCalled();

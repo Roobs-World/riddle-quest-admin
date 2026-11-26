@@ -385,10 +385,11 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
       throw new Error("Jest checkout is not ready.");
     },
     /** Loads leaderboard. */
-    async loadLeaderboard(type) {
+    async loadLeaderboard(type, pagination) {
       /** Provides result behavior. */
-      const result = await functions.getLeaderboard({type, limit: 25});
-      return result.data.entries;
+      const result = await functions.getLeaderboard({type, limit: pagination?.limit ?? 25, paginated: true,
+        ...(pagination?.cursor ? {cursor: pagination.cursor} : {})});
+      return {entries: result.data.entries, nextCursor: result.data.nextCursor ?? null};
     },
     /** Updates username. */
     async updateUsername(username) {

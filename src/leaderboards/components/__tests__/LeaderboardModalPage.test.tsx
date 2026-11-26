@@ -22,12 +22,12 @@ describe("LeaderboardModalPage", () => {
   it("renders loading and empty states", () => {
     expect(
       renderToString(
-        <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
+        <LeaderboardModalPage page={0} nextCursor={null} entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
       ),
     ).toContain('aria-busy="true"');
     /** Provides loading html behavior. */
     const loadingHtml = renderToString(
-      <LeaderboardModalPage entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
+      <LeaderboardModalPage page={0} nextCursor={null} entries={[]} loading leaderboardType="xp" onRequestLeaderboard={requestLeaderboard} />,
     );
     expect(loadingHtml).toContain("leaderboard-loading");
     expect(loadingHtml).toMatch(/disabled=""/g);
@@ -35,6 +35,8 @@ describe("LeaderboardModalPage", () => {
     expect(
       renderToString(
         <LeaderboardModalPage
+          page={0}
+          nextCursor={null}
           entries={[]}
           loading={false}
           leaderboardType="xp"
@@ -46,7 +48,7 @@ describe("LeaderboardModalPage", () => {
 
   it("offers Retry after a failed read instead of claiming there are no scores", () => {
     /** Failed ranking renders a recoverable error rather than an empty result. */
-    const html = renderToString(<LeaderboardModalPage entries={[]} loading={false} loadError
+    const html = renderToString(<LeaderboardModalPage page={0} nextCursor={null} entries={[]} loading={false} loadError
       leaderboardType="totalWins" onRequestLeaderboard={requestLeaderboard} />);
     expect(html).toContain('role="alert"');
     expect(html).toContain("Could not load leaderboard");
@@ -56,7 +58,7 @@ describe("LeaderboardModalPage", () => {
 
   it("retains confirmed rows while a same-metric refresh is unavailable", () => {
     /** Confirmed entries stay available alongside the failed refresh notice. */
-    const html = renderToString(<LeaderboardModalPage entries={createEntries(11)} loading={false} loadError
+    const html = renderToString(<LeaderboardModalPage page={0} nextCursor="next" entries={createEntries(10)} loading={false} loadError
       leaderboardType="totalWins" onRequestLeaderboard={requestLeaderboard} />);
     expect(html).toContain("Player 1");
     expect(html).toContain("Could not load leaderboard");
@@ -66,7 +68,7 @@ describe("LeaderboardModalPage", () => {
   it("renders multiplayer victories separately from solo wins and supports older rows", () => {
     /** Rendered multiplayer measurement with a legacy row. */
     const html = renderToString(
-      <LeaderboardModalPage entries={[{...createEntries(1)[0], multiplayerWins: 42}, {...createEntries(2)[1]}]}
+      <LeaderboardModalPage page={0} nextCursor={null} entries={[{...createEntries(1)[0], multiplayerWins: 42}, {...createEntries(2)[1]}]}
         loading={false} leaderboardType="multiplayerWins" onRequestLeaderboard={requestLeaderboard} />,
     );
     expect(html).toContain('aria-pressed="true">Multiplayer wins');
@@ -78,7 +80,9 @@ describe("LeaderboardModalPage", () => {
     /** Rendered leaderboard containing more than one page. */
     const html = renderToString(
       <LeaderboardModalPage
-        entries={createEntries(11)}
+        page={0}
+        nextCursor="next"
+        entries={createEntries(10)}
         loading={false}
         leaderboardType="totalWins"
         onRequestLeaderboard={requestLeaderboard}

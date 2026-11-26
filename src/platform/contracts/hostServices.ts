@@ -32,6 +32,12 @@ export type WebGameMode = "classic" | "challenge";
 /** Describes leaderboard type. */
 export type LeaderboardType = "xp" | "totalWins" | "bestStreak" | "multiplayerWins";
 
+/** Requests one bounded leaderboard page after a previously returned cursor. */
+export type LeaderboardPagination = {limit?: number; cursor?: string};
+
+/** Public rows and the cursor needed to request the following page. */
+export type LeaderboardPage = {entries: BridgeLeaderboardEntry[]; nextCursor: string | null};
+
 /** Describes product summary. */
 export type ProductSummary = {
   /** Stores product id. */
@@ -280,7 +286,7 @@ export type HostServices = {
   /** Requests purchase. */
   requestPurchase(productId: string): Promise<PurchaseResult>;
   /** Loads leaderboard. */
-  loadLeaderboard(type: LeaderboardType): Promise<BridgeLeaderboardEntry[]>;
+  loadLeaderboard(type: LeaderboardType, pagination?: LeaderboardPagination): Promise<LeaderboardPage>;
   /** Updates username. */
   updateUsername(username: string): Promise<BridgeProfile | null>;
   /** Updates avatar. */

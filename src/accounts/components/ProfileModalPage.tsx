@@ -41,8 +41,8 @@ export function ProfileModalPage({
   const tr = useTranslator();
   /** Target-owned display identity, when supplied. */
   const providerProfile = useProviderProfile();
-  /** Provider name with a localized fallback. */
-  const displayName = (providerProfile ? providerProfile.username : profile?.username) ?? tr("Profile.GUEST_USERNAME");
+  /** Current game username, with provider and localized guest fallbacks. */
+  const displayName = profile?.username ?? providerProfile?.username ?? tr("Profile.GUEST_USERNAME");
   /** Provider avatar without altering account data. */
   const avatarUrl = providerProfile ? providerProfile.avatarUrl : profile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */

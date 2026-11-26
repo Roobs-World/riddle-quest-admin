@@ -36,25 +36,25 @@ const profile: BridgeProfile = {
 };
 
 describe("ProfileModalPage", () => {
-  it("shows provider display identity while preserving the authoritative balance", () => {
+  it("shows the current game username with the provider avatar and authoritative balance", () => {
     /** Captures html for this regression check. */
     const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: "https://example.com/jest.webp"}}>
       <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
-    expect(html).toContain("Jest Solver");
+    expect(html).toContain("Nova");
     expect(html).toContain("jest.webp");
     expect(html).toContain("250");
-    expect(html).not.toContain("Nova");
+    expect(html).not.toContain("Jest Solver");
     expect(html).not.toContain('type="file"');
     expect(html).not.toContain('class="play-text-button"');
   });
-  it("uses a guest fallback when the provider has no configured profile", () => {
+  it("preserves the game username when the provider has no configured profile", () => {
     /** Captures html for this regression check. */
     const html = renderToString(<ProviderProfileContext.Provider value={{username: null, avatarUrl: null}}>
       <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
-    expect(html).toContain("Guest");
-    expect(html).not.toContain("Nova");
+    expect(html).toContain("Nova");
+    expect(html).not.toContain("Guest");
   });
 
   it("does not offer Jest-only avatar uploads on targets without registration", () => {
@@ -90,7 +90,7 @@ describe("ProfileModalPage", () => {
       <ProfileModalPage profile={profile} platformRegistered={platformRegistered}
         onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
-    expect(html).toContain("Jest Solver");
+    expect(html).toContain("Nova");
     expect(html.includes("Delete Account")).toBe(platformRegistered !== false);
     expect(html.includes("profile-danger-zone")).toBe(platformRegistered !== false);
     if (platformRegistered === false) expect(html).toContain("Register or Log In");

@@ -81,7 +81,7 @@ export const createFakeHostServices = (script: {
       return {success: true, message: "", costDeducted: 100, newCoins: 200};
     },
     requestPurchase: async () => ({success: false, cancelled: true, productId: "", purchaseType: "consumable"}),
-    loadLeaderboard: async () => [],
+    loadLeaderboard: async () => ({entries: [], nextCursor: null}),
     updateUsername: async () => null,
     updateAvatar: async () => null,
     deleteAccount: async () => {},

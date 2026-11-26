@@ -10,6 +10,7 @@ import {isSingleAnswerCell} from "./answerCell";
 import {markHintPreviewIntent, rejectHintPreview} from "./hintPreview";
 import {parseCompletionRewardBreakdown} from "../../progression/rewards/completionRewardBreakdown";
 import {createRequestId} from "./requestIds";
+import {cacheLeaderboardPage, getFreshLeaderboardPage} from "../../leaderboards/browser/leaderboardCache";
 
 export type {GameModal, GameSessionAction, GameSessionState, PendingGuessState} from "./gameSessionTypes";
 
@@ -32,6 +33,9 @@ export const createInitialGameSession = (): GameSessionState => ({
   products: [],
   leaderboard: [],
   leaderboardType: "xp",
+  leaderboardPage: 0,
+  leaderboardNextCursor: null,
+  leaderboardCache: {},
   leaderboardLoading: false,
   leaderboardRequestId: null,
   leaderboardLoadError: false,
@@ -119,6 +123,19 @@ const resetAccountProgress = (state: GameSessionState): GameSessionState => ({
 /** UID and creation generation together identify one gameplay account. */
 const sameGameAccount = (first: GameSessionState["user"], second: GameSessionState["user"]): boolean =>
   first?.uid === second?.uid && first?.accountGeneration === second?.accountGeneration;
+
+const clearLeaderboard = (): Pick<GameSessionState,
+  "leaderboard" | "leaderboardPage" | "leaderboardNextCursor" | "leaderboardCache" |
+  "leaderboardLoading" | "leaderboardRequestId" | "leaderboardLoadError"
+> => ({
+  leaderboard: [],
+  leaderboardPage: 0,
+  leaderboardNextCursor: null,
+  leaderboardCache: {},
+  leaderboardLoading: false,
+  leaderboardRequestId: null,
+  leaderboardLoadError: false,
+});
 
 /** Computes states. */
 const computeStates = (guesses: ScoredGuess[], locale: string): Record<string, Feedback> => {
@@ -286,6 +303,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
       const sameAccount = sameGameAccount(state.user, action.user);
       /** The same ranking used by the current operation. */
       const sameRanking = state.profile?.xp === action.profile?.xp &&
+        state.profile?.level === action.profile?.level &&
         state.profile?.wins === action.profile?.wins &&
         state.profile?.multiplayerWins === action.profile?.multiplayerWins &&
         state.profile?.bestStreak === action.profile?.bestStreak &&
@@ -296,8 +314,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         user: action.user,
         profile: sameAccount ? preservePendingCoins(state, action.profile) : action.profile,
         pendingCoinSpend: sameAccount ? state.pendingCoinSpend : null,
-        leaderboard: sameAccount && sameRanking ? state.leaderboard : [],
-        ...(!sameAccount ? {leaderboardLoading: false, leaderboardRequestId: null, leaderboardLoadError: false} : {}),
+        ...(!sameAccount || !sameRanking ? clearLeaderboard() : {}),
       };
     }
     case "loadRiddle": {
@@ -719,21 +736,46 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
         }
         return withConfirmedHintFeedback(restored);
       }
-    case "leaderboardRequested":
+    case "leaderboardRequested": {
+      const page = action.page ?? 0;
+      const samePage = state.leaderboardType === action.leaderboardType && state.leaderboardPage === page;
       return {
         ...state,
         leaderboardType: action.leaderboardType,
-        leaderboard: state.leaderboardType === action.leaderboardType ? state.leaderboard : [],
+        leaderboardPage: page,
+        leaderboard: samePage ? state.leaderboard : [],
+        leaderboardNextCursor: samePage ? state.leaderboardNextCursor : null,
         leaderboardLoading: true,
         leaderboardRequestId: action.requestId ?? null,
         leaderboardLoadError: false,
       };
+    }
+    case "leaderboardPageSelected": {
+      const cached = state.leaderboardCache[action.leaderboardType]?.[action.page];
+      if (!cached) return state;
+      return {
+        ...state,
+        leaderboardType: action.leaderboardType,
+        leaderboardPage: action.page,
+        leaderboard: cached.entries,
+        leaderboardNextCursor: cached.nextCursor,
+        leaderboardLoading: false,
+        leaderboardRequestId: null,
+        leaderboardLoadError: false,
+      };
+    }
     case "leaderboardLoaded":
       if (action.requestId && (!state.leaderboardLoading || state.leaderboardRequestId !== action.requestId)) return state;
       return {
         ...state,
         leaderboardType: action.leaderboardType,
         leaderboard: action.entries,
+        leaderboardNextCursor: action.nextCursor ?? null,
+        leaderboardCache: cacheLeaderboardPage(state.leaderboardCache, action.leaderboardType, state.leaderboardPage, {
+          entries: action.entries,
+          nextCursor: action.nextCursor ?? null,
+          loadedAt: Date.now(),
+        }),
         leaderboardLoading: false,
         leaderboardLoadError: false,
         leaderboardRequestId: null,
@@ -742,7 +784,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
       if (action.requestId && (!state.leaderboardLoading || state.leaderboardRequestId !== action.requestId)) return state;
       return {...state, leaderboardLoading: false, leaderboardLoadError: true, leaderboardRequestId: null};
     case "profileUpdated":
-      return {...state, profile: preservePendingCoins(state, action.profile), leaderboard: []};
+      return {...state, profile: preservePendingCoins(state, action.profile), ...clearLeaderboard()};
     case "completionReward":
       /** Keep server replayed unlocks from reopening an already-shown fanfare after loading another riddle. */
       const authoritativeAchievementIds = action.reward.newlyUnlockedAchievementIds.filter(
@@ -764,7 +806,7 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
             ])]}
           : state.profile,
         optimisticAchievementIds: [],
-        leaderboard: [],
+        ...clearLeaderboard(),
       };
     case "completionAcknowledged":
       return {...state, completionAcknowledged: true};
@@ -893,9 +935,15 @@ const reduceGameSession = (state: GameSessionState, action: GameSessionAction): 
       const shopReturnModal = action.modal === "shop"
         ? state.modal === "profile" ? "profile" : state.modal === "shop" ? state.shopReturnModal : null
         : null;
-      return action.modal === "leaderboard"
-        ? {...state, modal: action.modal, shopReturnModal, leaderboardLoading: true, leaderboardLoadError: false}
-        : {...state, modal: action.modal, shopReturnModal};
+      if (action.modal === "leaderboard") {
+        const cached = getFreshLeaderboardPage(state.leaderboardCache, state.leaderboardType, state.leaderboardPage);
+        return {...state, modal: action.modal, shopReturnModal,
+          leaderboard: cached?.entries ?? [],
+          leaderboardNextCursor: cached?.nextCursor ?? null,
+          leaderboardLoading: !cached,
+          leaderboardLoadError: false};
+      }
+      return {...state, modal: action.modal, shopReturnModal};
     }
     case "closeModal":
       return {

@@ -4,6 +4,8 @@ import type {GameToHostMessage} from "../../../platform/bridge/messages";
 import {prepareAvatarImage} from "../../../accounts/browser/avatarImage";
 import {createRequestId} from "../../session/requestIds";
 import {useProvisionalPlayRecovery} from "./useProvisionalPlayRecovery";
+import {getFreshLeaderboardPage} from "../../../leaderboards/browser/leaderboardCache";
+import type {LeaderboardType} from "../../../platform/contracts/requestSchemas";
 /** Routes optional host commands around the ordered Provisional Play recovery module. */
 export function useGameOperations(options: Parameters<typeof useProvisionalPlayRecovery>[0]) {
   /** Shares current game identity and the target sender with operation ownership. */
@@ -45,18 +47,29 @@ export function useGameOperations(options: Parameters<typeof useProvisionalPlayR
   );
   /** Requests leaderboard. */
   const requestLeaderboard = useCallback(
-    (leaderboardType: "xp" | "totalWins" | "bestStreak" | "multiplayerWins") => {
+    (leaderboardType: LeaderboardType, page = 0) => {
+      if (!Number.isInteger(page) || page < 0) return;
+      const current = stateRef.current;
+      const cached = getFreshLeaderboardPage(current.leaderboardCache, leaderboardType, page);
+      if (cached) {
+        dispatch({type: "leaderboardPageSelected", leaderboardType, page});
+        return;
+      }
+      if (current.leaderboardLoading && current.leaderboardRequestId &&
+        current.leaderboardType === leaderboardType && current.leaderboardPage === page) return;
+      const cursor = page === 0 ? undefined : current.leaderboardCache[leaderboardType]?.[page - 1]?.nextCursor;
+      if (page > 0 && !cursor) return;
       /** Correlates ranking success or failure with this exact selection and retry. */
       const requestId = createRequestId("leaderboard");
-      dispatch({type: "leaderboardRequested", leaderboardType, requestId});
+      dispatch({type: "leaderboardRequested", leaderboardType, page, requestId});
       trackEvent("leaderboard_requested", {leaderboard_type: leaderboardType});
       postToHost({
         type: "game:loadLeaderboard",
         requestId,
-        payload: {leaderboardType},
+        payload: {leaderboardType, ...(cursor ? {cursor} : {})},
       });
     },
-    [dispatch, postToHost],
+    [dispatch, postToHost, stateRef],
   );
   /** Updates username. */
   const updateUsername = useCallback(

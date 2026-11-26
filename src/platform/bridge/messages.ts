@@ -193,6 +193,13 @@ export const BridgeLeaderboardEntrySchema = z.object({
 /** A normalized leaderboard row suitable for rendering in the game iframe. */
 export type BridgeLeaderboardEntry = z.infer<typeof BridgeLeaderboardEntrySchema>;
 
+/** A single validated ranking page returned by the host. */
+export const BridgeLeaderboardResultSchema = z.object({
+  type: LeaderboardTypeSchema,
+  entries: z.array(BridgeLeaderboardEntrySchema),
+  nextCursor: z.string().min(1).max(4096).nullable(),
+});
+
 /**
  * Adds a literal message discriminant and optional correlation metadata to a payload schema.
  * @param type - Stable wire-level message name.
@@ -336,6 +343,7 @@ export const GameLoadLeaderboardMessageSchema = envelope(
   "game:loadLeaderboard",
   z.object({
     leaderboardType: LeaderboardTypeSchema,
+    cursor: z.string().min(1).max(4096).optional(),
   }),
 );
 

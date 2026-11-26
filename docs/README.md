@@ -31,6 +31,8 @@ The Settings toggle and universal provider contract are documented in [Notificat
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 
+Leaderboard requests, page caching and loading behavior are documented in [Leaderboard pages](common/leaderboards/README.md).
+
 The shared catalog, localized collections and unlock authority are documented in [Achievements](common/progression/achievements.md).
 
 ## Documentation placement

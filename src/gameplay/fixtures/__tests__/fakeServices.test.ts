@@ -109,9 +109,9 @@ describe("fake host services", () => {
     await expect(services.updateAvatar("data:image/png;base64,YQ==")).resolves.toMatchObject({
       avatarUrl: "data:image/png;base64,YQ==",
     });
-    expect((await services.loadLeaderboard("xp"))[0].xp).toBeGreaterThan(0);
-    expect((await services.loadLeaderboard("totalWins"))[0].totalWins).toBeGreaterThan(0);
-    expect((await services.loadLeaderboard("bestStreak"))[0].bestStreak).toBeGreaterThan(0);
+    expect((await services.loadLeaderboard("xp")).entries[0].xp).toBeGreaterThan(0);
+    expect((await services.loadLeaderboard("totalWins")).entries[0].totalWins).toBeGreaterThan(0);
+    expect((await services.loadLeaderboard("bestStreak")).entries[0].bestStreak).toBeGreaterThan(0);
     expect(await services.getRaceAccess()).toMatchObject({enabled: true});
     expect(
       await services.recordRaceAnalytics({eventId: "event-0001", eventName: "race_mode_viewed", params: {}}),

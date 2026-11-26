@@ -761,7 +761,7 @@ describe("game session reducer", () => {
     expect(state.hintRevealedIndices).toEqual([2]);
   });
 
-  it("keeps cached leaderboard rows while a fresh request is loading", () => {
+  it("clears uncached leaderboard rows while the selected page loads", () => {
     /** Provides existing entry behavior. */
     const existingEntry = {
       userId: "player-1",
@@ -779,7 +779,7 @@ describe("game session reducer", () => {
 
     state = reduce(state, {type: "openModal", modal: "leaderboard"});
 
-    expect(state.leaderboard).toEqual([existingEntry]);
+    expect(state.leaderboard).toEqual([]);
     expect(state.leaderboardLoading).toBe(true);
 
     state = reduce(state, {type: "leaderboardLoaded", leaderboardType: "xp", entries: [existingEntry]});

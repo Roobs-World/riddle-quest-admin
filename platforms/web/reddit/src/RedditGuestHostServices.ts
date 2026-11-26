@@ -229,7 +229,7 @@ export const createRedditGuestHostServices = (savedProfile?: BridgeProfile, save
     requestPurchase: unavailable,
     /** Loads leaderboard. */
     async loadLeaderboard() {
-      return [];
+      return {entries: [], nextCursor: null};
     },
     updateUsername: unavailable,
     updateAvatar: unavailable,

@@ -23,7 +23,7 @@ recorded: string[]} => {
     ...createFakeHostServices(),
     loadLeaderboard: async (type: LeaderboardType) => {
       recorded.push(`leaderboard:${type}`);
-      return [row("other", "Ada", 900), row("device-uid", "Android", 300)];
+      return {entries: [row("other", "Ada", 900), row("device-uid", "Android", 300)], nextCursor: null};
     },
     updateUsername: async (username: string) => {
       recorded.push(`username:${username}`);
@@ -95,7 +95,7 @@ describe("HostedProfileScreen", () => {
     const services = createServices({
       loadLeaderboard: async () => {
         if (fail) throw new Error("unavailable");
-        return [row("other", "Ada", 900)];
+        return {entries: [row("other", "Ada", 900)], nextCursor: null};
       },
     });
     await renderProfile(services);

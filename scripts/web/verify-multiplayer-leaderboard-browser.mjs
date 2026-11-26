@@ -45,6 +45,7 @@ try {
     const waitForScores = () => page.waitForFunction(() => document.querySelector(".leaderboard-list")?.getAttribute("aria-busy") === "false");
     await waitForScores();
     await page.getByRole("button", {name: /next page/i}).click();
+    await waitForScores();
     assert.equal(await list.locator("li b").first().innerText(), "11");
     const multiplayer = page.getByRole("button", {name: /^multiplayer wins$/i});
     await multiplayer.click();
@@ -57,8 +58,10 @@ try {
     const scores = await list.locator("li strong").allTextContents();
     assert.deepEqual(scores.map(Number), [20, 19, 18, 17, 17, 16, 15, 14, 13, 12]);
     await page.getByRole("button", {name: /next page/i}).click();
+    await waitForScores();
     assert.equal(await list.locator("li b").first().innerText(), "11");
     await page.getByRole("button", {name: /previous page/i}).click();
+    await waitForScores();
     assert.equal(await list.locator("li b").first().innerText(), "1");
     await page.evaluate(async () => {await document.fonts.ready; await Promise.all(document.getAnimations().filter(animation => Number.isFinite(animation.effect?.getComputedTiming().endTime)).map(animation => animation.finished.catch(() => {})));});
     const overflow = await page.locator(".modal-leaderboard").evaluate(modal => ({

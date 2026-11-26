@@ -88,7 +88,7 @@ export function useHostedProfile(services: HostServices, onDeleted: () => void):
       setBoard(next);
       setLeaderboard({kind: "loading"});
       services.loadLeaderboard(next).then(
-        (entries) => {
+        ({entries}) => {
           if (mounted.current && requested.current === next) setLeaderboard({kind: "ready", entries});
         },
         () => {

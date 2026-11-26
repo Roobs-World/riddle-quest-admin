@@ -58,7 +58,7 @@ describe("useGameMessageRouter", () => {
     let owned = true;
     /** Both operations validate a successful response, not a simulated rejection. */
     const data = operation === "profile" ? {profile: {username: "Alice", coins: 300, level: 1, xp: 0,
-      winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 0}} : {type: "xp", entries: []};
+      winStreak: 0, gamesPlayed: 0, wins: 0, achievements: [], classicIndex: 0}} : {type: "xp", entries: [], nextCursor: null};
     /** Pending optional presentation remains bound to its originating listener. */
     const pending = router({type: "host:operationResult", payload: {operation, ok: true, data}}, () => owned);
     owned = false;

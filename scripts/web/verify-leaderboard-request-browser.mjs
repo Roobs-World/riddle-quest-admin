@@ -33,7 +33,7 @@ function Fixture(){
   changeCallback:()=>setRevision(value=>value+1),
   settle:(index,failed=false)=>{const message=requests.current[index];dispatch(failed?
    {type:'leaderboardLoadFailed',requestId:message.requestId}:
-   {type:'leaderboardLoaded',requestId:message.requestId,leaderboardType:message.payload.leaderboardType,entries:[]});}};
+   {type:'leaderboardLoaded',requestId:message.requestId,leaderboardType:message.payload.leaderboardType,entries:[],nextCursor:null});}};
  return <><main inert={state.modal!==null}><button id="trigger" onClick={()=>dispatch({type:'openModal',modal:'profile'})}>Profile</button></main>
  <GameModalView state={state} onClose={()=>dispatch({type:'closeModal'})} onOpenModal={modal=>dispatch({type:'openModal',modal})}
   onContinue={noop} onPurchase={operations.requestPurchase} onNext={noop} onToggleMute={noop}
@@ -56,7 +56,7 @@ try {
    const requests=await read();cases.push({name,width,expected,actual:requests.length,types:requests.map(r=>r.payload.leaderboardType)});
    await writeFile(path.join(evidence,'results.json'),JSON.stringify({supportingCompiledSource:true,hostedE2E:false,cases},null,2)+'\n');
    await page.screenshot({path:path.join(evidence,name+'-'+width+'.png')});
-   assert.equal(requests.length,expected,name+' must issue exactly one bridge request per user action');
+   assert.equal(requests.length,expected,name+' must match the expected bridge request count');
    console.log(name+' at '+width+'px: '+requests.length+' requests');
   };
   const settle=async(failed=false)=>{const requests=await read();await page.evaluate(({index,failed})=>window.requestTest.settle(index,failed),{index:requests.length-1,failed});await page.locator('.leaderboard-loading').waitFor({state:'hidden'});};
@@ -65,19 +65,21 @@ try {
   await page.locator('.leaderboard-tabs button').nth(1).click();await checkpoint('changed-metric',2);
   assert.equal(await page.locator('.leaderboard-tabs button:disabled').count(),4,'Pending tabs must prevent repeated requests');
   await settle();
-  await page.locator('.leaderboard-tabs button').nth(1).click();await checkpoint('same-metric-refresh',3);await settle(true);
+  await page.locator('.leaderboard-tabs button').nth(1).click();await checkpoint('same-metric-cached',2);
+  assert.equal(await page.locator('.leaderboard-loading').count(),0,'A fresh cached ranking must render immediately');
+  await page.locator('.leaderboard-tabs button').nth(2).click();await checkpoint('streak-failure',3);await settle(true);
   await page.getByRole('button',{name:'Retry',exact:true}).click();await checkpoint('retry',4);await settle();
   await page.evaluate(()=>window.requestTest.changeCallback());await checkpoint('callback-change',4);
-  await page.locator('.leaderboard-tabs button').nth(2).click();await checkpoint('streak',5);await settle();
-  await page.locator('.leaderboard-tabs button').nth(3).click();await checkpoint('multiplayer',6);
+  await page.locator('.leaderboard-tabs button').nth(2).click();await checkpoint('streak-cached',4);
+  await page.locator('.leaderboard-tabs button').nth(3).click();await checkpoint('multiplayer',5);
   await page.keyboard.press('Escape');await page.getByRole('dialog').waitFor({state:'detached'});
   await page.locator('#trigger').click();await page.getByRole('button',{name:'Leaderboard',exact:true}).click();
-  await checkpoint('close-and-reopen-pending',7);
-  await page.evaluate(()=>window.requestTest.settle(5,true));
-  assert.equal(await page.locator('.leaderboard-loading').count(),1,'Older failure must not finish the new read');await settle();
+  await checkpoint('close-and-reopen-pending',5);
+  assert.equal(await page.locator('.leaderboard-loading').count(),1,'Reopening a pending ranking must retain its existing read');await settle();
   await page.evaluate(()=>window.requestTest.open('statistics'));await page.getByRole('heading',{name:'Statistics',exact:true}).waitFor();
-  await page.evaluate(()=>window.requestTest.open('leaderboard'));await checkpoint('child-page-reentry',8);await settle();
-  await page.locator('.leaderboard-tabs button').nth(0).click();await checkpoint('xp',9);await settle();
+  await page.evaluate(()=>window.requestTest.open('leaderboard'));await checkpoint('child-page-reentry-cached',5);
+  assert.equal(await page.locator('.leaderboard-loading').count(),0,'Reopening a fresh cached ranking must avoid the preloader');
+  await page.locator('.leaderboard-tabs button').nth(0).click();await checkpoint('xp-cached',5);
   await page.keyboard.press('Escape');await page.getByRole('dialog').waitFor({state:'detached'});
   assert.equal(await page.locator('#trigger').evaluate(el=>el===document.activeElement),true,'Closing must return focus to the original trigger');
   await page.close();
