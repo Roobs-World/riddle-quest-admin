@@ -231,12 +231,6 @@ export function JestPlayApp() {
         const capability = current ?? await new Promise<NotificationRegistrationCommands | null>(resolve => waiting.add(resolve));
         return active && capability ? capability.setEnabled(enabled) : false;
       },
-      async registerAccount() {
-        if (!active) throw new Error("notification-registration-unavailable");
-        const capability = current ?? await new Promise<NotificationRegistrationCommands | null>(resolve => waiting.add(resolve));
-        if (!active || !capability) throw new Error("notification-registration-unavailable");
-        return capability.registerAccount();
-      },
       install(capability: NotificationRegistrationCommands) {
         current = capability; if (active) resolveWaiting(capability);
         return () => {if (current === capability) current = null;};
@@ -256,7 +250,6 @@ export function JestPlayApp() {
       subscribe: subscribeToPlayerNotifications,
     },
     saveConsent: notificationsDelegate.setEnabled,
-    registerAccount: notificationsDelegate.registerAccount,
     available: Boolean(session?.player.registered && !authHarness && !mockRuntime),
   }), [authHarness, mockRuntime, notificationsDelegate, session?.player.registered]);
   /** Provides referral sharing behavior. */

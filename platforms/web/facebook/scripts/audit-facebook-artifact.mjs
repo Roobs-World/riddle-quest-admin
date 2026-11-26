@@ -1,14 +1,12 @@
 import {readFile} from "node:fs/promises";
 import path from "node:path";
 import {inspectWebTargetArtifact} from "../../../../scripts/web/web-target-artifact-inventory.mjs";
-import {hasAuditedHostedNotifications} from "../../../../scripts/web/audit-hosted-notifications.mjs";
 
 const inventory = await inspectWebTargetArtifact({
   rootDirectory: process.argv[2] || process.env.FACEBOOK_BUILD_OUT_DIR?.trim() || "platforms/web/facebook/build/dist",
   target: "facebook",
 });
 const {files, root, sizedFiles, totalBytes: artifactBytes} = inventory;
-const hostedNotifications = await hasAuditedHostedNotifications({target: "facebook", root, files});
 const maximumArtifactBytes = 200 * 1024 * 1024;
 const maximumInitialResourceBytes = 5 * 1024 * 1024;
 const facebookSdkEntryResource = "https://connect.facebook.net/en_US/fbinstant.8.0.js";
@@ -20,8 +18,8 @@ if (artifactBytes > maximumArtifactBytes) {
 const inspectable = files.filter((file) => /\.(?:html|js|css|json|map)$/i.test(file));
 const content = (await Promise.all(inspectable.map((file) => readFile(file, "utf8")))).join("\n");
 const forbidden = [
-  ["Game-owned notification response handling", /getNotificationEnrollmentStatus|riddle-quest-notification-enrolled|notificationclick/u],
-  ...hostedNotifications ? [] : [["Unaudited browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u]],
+  ["Game-owned notification response handling", /createNotificationEnrollment|getNotificationEnrollmentStatus|riddle-quest-notification-enrolled|notificationclick/u],
+  ["Browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u],
   ["Firebase Cloud Messaging", /\b(?:fcmregistrations|fcm)\.googleapis\.com\b|messaging\/(?:unsupported-browser|permission-blocked|token-subscribe-failed)|\b(?:setLiveRacePushSubscription|liveChallengePushWorker)\b/u],
   ["Direct parent-window messaging", /\b(?:parent|top)\s*\.\s*postMessage\s*\(/],
   [

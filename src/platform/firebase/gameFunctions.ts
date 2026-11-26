@@ -509,10 +509,10 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
   const listLiveRaceChallenges = httpsCallable<Record<string, never>, import("../../races/contracts/index").LiveRaceChallenge[]>(regions.race, "listLiveRaceChallenges");
   /** Locale-bound retained results never include another account or answer-bearing run. */
   const listLiveRaceHistory = httpsCallable<import("../../races/contracts/index").ListLiveRaceHistoryRequest, import("../../races/contracts/index").ListLiveRaceHistoryResponse>(regions.race, "listLiveRaceHistory");
-  /** Saves the authenticated account's master notification preference. */
-  const setNotificationPreference = httpsCallable<{
-    /** Desired global notification setting. */ enabled: boolean;
-  }, {/** Saved account preference. */ enabled: boolean}>(regions.race, "setNotificationPreference");
+  /** Initializes the signup default or saves the player's explicit setting. */
+  const setNotificationPreference = httpsCallable<{initialize: true} | {enabled: boolean}, {enabled: boolean}>(
+    regions.race, "setNotificationPreference",
+  );
   return {
     createYahooStripeCheckout,
     confirmYahooStripeCheckout,

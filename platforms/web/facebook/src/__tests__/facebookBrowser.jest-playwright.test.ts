@@ -9,7 +9,6 @@ import {describe, expect, it} from "@jest/globals";
 import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
 import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
-import {getHostedNotificationCopy} from "../../../../../src/notifications/copy/hostedNotificationCopy";
 
 /** Documents global. */
 declare global {
@@ -346,12 +345,16 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         notificationAccepted = true;
         return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {accepted: true}})});
       });
-      const enrollmentPair = "d".repeat(64);
+      let preferenceInitializations = 0;
       let enrollmentRequests = 0;
       let enrollmentStatusRequests = 0;
       const notificationPreferences: boolean[] = [];
       await successPage.route("**/setNotificationPreference", async route => {
         const input = JSON.parse(route.request().postData() ?? "{}");
+        if (input.data?.initialize === true) {
+          preferenceInitializations++;
+          return route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {enabled: true}})});
+        }
         expect(typeof input.data?.enabled).toBe("boolean");
         const headers = await route.request().allHeaders();
         expect(headers.authorization).toBe(`Bearer ${firebaseIdToken}`);
@@ -365,14 +368,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       });
       await successPage.route("**/createNotificationEnrollment", async route => {
         enrollmentRequests += 1;
-        expect(notificationPreferences.at(-1)).toBe(true);
-        await route.fulfill({status: 200, contentType: "application/json", body: JSON.stringify({data: {
-          url: `https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`, expiresAtMs: Date.now() + 600_000,
-        }})});
+        return route.fulfill({status: 410, body: ""});
       });
-      await successPage.context().route("https://riddle-quest-admin.vercel.app/push/**", route => route.fulfill({
-        status: 200, contentType: "text/html", body: "<!doctype html><html lang=\"en\"><head><title>Device enrollment fixture</title></head><body>Connect this device</body></html>",
-      }));
       await successPage.addInitScript(() => {
         window.__facebookEvents = [];
         window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
@@ -699,9 +696,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await notificationToggle.count()).toBe(1);
       await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
-      const notificationCopy = getHostedNotificationCopy("fr");
-      await settings.getByRole("status").first().waitFor();
-      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.registrationRequired);
+      expect(preferenceInitializations).toBe(1);
       expect(enrollmentRequests).toBe(0);
       await notificationToggle.click();
       await settings.locator('button[aria-busy="false"][aria-pressed="false"]').waitFor();
@@ -711,23 +706,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await settings.locator('button[aria-busy="false"][aria-pressed="true"]').waitFor();
       expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
       expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe("true");
-      expect(await settings.getByRole("status").allTextContents()).toContain(notificationCopy.registrationRequired);
       expect(notificationPreferences).toEqual([false, true]);
-      const openPages = successPage.context().pages().length;
-      await settings.getByRole("button", {name: notificationCopy.registerNotifications, exact: true}).click();
-      const handoff = settings.getByLabel(notificationCopy.setupLinkLabel, {exact: true});
-      await handoff.waitFor();
-      expect(await handoff.inputValue()).toBe(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
-      expect(enrollmentRequests).toBe(1);
-      expect(successPage.context().pages().length).toBe(openPages);
-      expect(await notificationToggle.getAttribute("aria-pressed")).toBe("true");
-      await successPage.evaluate(() => {
-        window.dispatchEvent(new Event("focus"));
-        document.dispatchEvent(new Event("visibilitychange"));
-        window.dispatchEvent(new MessageEvent("message", {data: {kind: "riddle-quest-notification-enrolled", pairHash: "0".repeat(64)}}));
-      });
+      expect(enrollmentRequests).toBe(0);
       expect(enrollmentStatusRequests).toBe(0);
-      expect(await handoff.inputValue()).toBe(`https://riddle-quest-admin.vercel.app/push/#pair=${enrollmentPair}`);
+      expect(await settings.locator('input[type="url"]').count()).toBe(0);
       expect(await successPage.evaluate(() => Object.keys(localStorage).some(key => key.startsWith("riddleQuest:notificationEnrollment:")))).toBe(false);
       expect(successRequests.some(url => url.includes("accounts.google.com"))).toBe(false);
       expect(notificationClaims).toBe(0);

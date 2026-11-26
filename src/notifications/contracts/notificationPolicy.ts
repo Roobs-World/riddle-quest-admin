@@ -1,13 +1,9 @@
-/** Requirements override our hosted default only at the platform boundary. */
-export function notificationDeliveryForPlatform(platform: string): "hosted" | "account-enrollment" | "platform-required" | "disabled" {
+/** Only authenticated web games manage consent. Push delivery is native. */
+export function notificationDeliveryForPlatform(platform: string): "account-enrollment" | "platform-required" | "disabled" {
   switch (platform) {
     case "jest":
     case "facebook": return "account-enrollment";
     case "android": return "platform-required";
-    case "youtube":
-    case "netflix":
-    case "reddit":
-    case "gamesnacks": return "disabled";
-    default: return "hosted";
+    default: return "disabled";
   }
 }

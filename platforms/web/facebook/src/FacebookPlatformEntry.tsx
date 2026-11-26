@@ -2,7 +2,6 @@ import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import type {NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
 import {createNotificationProvider} from "../../../../src/notifications/controllers/notificationProvider";
-import {createFirebaseNotificationRegistration} from "../../../../src/notifications/browser/firebaseRegistration";
 import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {SpinningWheelLoader} from "../../../../src/app/components/feedback/SpinningWheelLoader";
 import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
@@ -256,18 +255,16 @@ export function FacebookPlatformEntry() {
               await setNotificationPreference({enabled});
               return isAccountActive() && isPlayerNotificationsEnabled() === enabled;
             });
-            const registerAccount = createFirebaseNotificationRegistration({expectedUid: userId,
-              managerOrigin: import.meta.env.VITE_NOTIFICATION_SERVICE_URL || "https://riddle-quest-admin.vercel.app",
-              locale: getCurrentLocale, isCurrent: () => isAccountActive() && isPlayerNotificationsEnabled(),
-              run: operation => deletionGateRef.current.run(operation),
-            });
+            await deletionGateRef.current.run(async () => {
+              if (isAccountActive()) await setNotificationPreference({initialize: true});
+            }).catch(error => captureBrowserException(error, {component: "facebook_notifications", operation: "initialize_preference"}));
             const notifications = createManagerNotificationProvider({
               preferences: {
                 getEnabled: isPlayerNotificationsEnabled,
                 setEnabled: setPlayerNotificationsEnabled,
                 subscribe: subscribeToPlayerNotifications,
               },
-              saveConsent: applyEnabled, registerAccount, available: true,
+              saveConsent: applyEnabled, available: true,
             });
             notificationProvider = createNotificationProvider({platform: "facebook", hosted: () => notifications}) ?? undefined;
             sessionNotifications = notificationProvider;

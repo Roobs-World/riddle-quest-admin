@@ -34,7 +34,7 @@ const consoleManifest = JSON.parse(await readFile(
   "utf8",
 ));
 const forbidden = [
-  ["Game-owned notification response handling", /getNotificationEnrollmentStatus|riddle-quest-notification-enrolled|notificationclick/u],
+  ["Game-owned notification response handling", /createNotificationEnrollment|getNotificationEnrollmentStatus|riddle-quest-notification-enrolled|notificationclick/u],
   ["Browser push notifications", /\bNotification\s*(?:\.|\?\.)\s*requestPermission\b|\b(?:showNotification|PushManager|PushSubscription|pushManager)\b|addEventListener\s*\(\s*["']push["']/u],
   ["Firebase Cloud Messaging", /(?:\bfrom\s*|\bimport\s*(?:\(\s*)?|\brequire\s*\(\s*)["'`](?:firebase|@firebase)\/(?:compat\/)?messaging(?:-compat)?(?:\/|["'`])|\b(?:fcmregistrations|fcm)\.googleapis\.com\b|messaging\/(?:unsupported-browser|permission-blocked|token-subscribe-failed)|\b(?:setLiveRacePushSubscription|liveChallengePushWorker)\b/u],
   [

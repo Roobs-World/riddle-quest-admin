@@ -5,8 +5,6 @@ import {captureBrowserException} from "../../../../../src/observability/browserE
 import type {JestSession} from "../types";
 import {useJestNotifications} from "./useJestNotifications";
 import type {NotificationOperationGate} from "./operationGate";
-import {createFirebaseNotificationRegistration} from "../../../../../src/notifications/browser/firebaseRegistration";
-import {getCurrentLocale} from "../../../../../src/localization/browser/i18n";
 
 type JestNotificationsProps = Pick<Parameters<typeof useJestNotifications>[0], "session" | "platform"> & {
   mockRuntime: boolean;
@@ -47,17 +45,8 @@ export function JestNotifications({mockRuntime, authHarness, session, platform, 
       const removed = results[1].status === "fulfilled" && results[1].value === true;
       return isCurrent() && saved && removed;
     };
-    const eligible = Boolean(uid && session?.player.registered && !authHarness && !mockRuntime);
-    const registerAccount = eligible && uid ? createFirebaseNotificationRegistration({
-      expectedUid: uid,
-      managerOrigin: import.meta.env.VITE_NOTIFICATION_SERVICE_URL || "https://riddle-quest-admin.vercel.app",
-      locale: getCurrentLocale,
-      isCurrent: () => isSessionCurrent() && isPlayerNotificationsEnabled(),
-      run: gate.run,
-    }) : async () => {throw new Error("notification-registration-unavailable");};
     return {
       setEnabled,
-      registerAccount,
     } satisfies NotificationRegistrationCommands;
   }, [authHarness, cancelAllNotifications, mockRuntime, gate, session?.firebaseUid, session?.player.playerId, session?.player.registered]);
   useLayoutEffect(() => {

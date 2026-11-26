@@ -229,7 +229,6 @@ export function GameModalView({
     shop: tr("CoinShop.TITLE"),
     profile: tr("Profile.TITLE"),
     settings: tr("Settings.TITLE"),
-    notifications: tr("Settings.NOTIFICATIONS"),
     leaderboard: tr("Leaderboard.TITLE"),
     achievements: tr("Achievements.MODAL_TITLE"),
     statistics: tr("StatsModal.TITLE"),

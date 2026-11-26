@@ -11,7 +11,6 @@ export type GameModal =
   | "shop"
   | "profile"
   | "settings"
-  | "notifications"
   | "leaderboard"
   | "achievements"
   | "statistics"

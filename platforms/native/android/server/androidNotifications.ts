@@ -36,6 +36,12 @@ export const setAndroidPushSubscription = onCallWithSentry("setAndroidPushSubscr
   ...gameplayInteractiveCallableOptions, secrets: [notificationManagerBridgeSecret],
 }, async request => {
   const input = validateCallableRequest(Subscription, request.data, "setAndroidPushSubscription");
+  if ("token" in input && input.enabled && (request.app || process.env.FUNCTIONS_EMULATOR !== "true")) {
+    const nativeAppId = process.env.ANDROID_FIREBASE_APP_ID;
+    if (!nativeAppId || request.app?.appId !== nativeAppId) {
+      throw new HttpsError("permission-denied", "Verified Android app required.");
+    }
+  }
   const uid = request.auth?.uid;
   if (!uid || !isAndroidAccountProvider(request.auth?.token.firebase?.sign_in_provider) ||
       input.expectedOwnerId && input.expectedOwnerId !== uid) throw new HttpsError("permission-denied", "Android account required.");

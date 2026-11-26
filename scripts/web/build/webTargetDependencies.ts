@@ -1,5 +1,4 @@
 import {webBuildFacts} from "../../release/release-registry.mjs";
-import {notificationDeliveryForPlatform} from "../../../src/notifications/contracts/notificationPolicy.ts";
 import {createHash} from "node:crypto";
 import {mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync} from "node:fs";
 import path from "node:path";
@@ -23,8 +22,7 @@ export function assertTargetDependency(target: string, id: string): void {
   if (!allowed) throw new Error(`Unknown dependency target: ${target}`);
   /** Provides portable behavior. */
   const portable = id.replaceAll("\\", "/");
-  if (/\/src\/notifications\/browser\/(?:hostedPush(?:Controller)?(?:[./]|$)|hosted-notifications-worker\.js)/u.test(portable) &&
-      notificationDeliveryForPlatform(target) !== "hosted") {
+  if (/\/src\/notifications\/browser\/(?:hostedPush(?:Controller)?(?:[./]|$)|hosted-notifications-worker\.js)/u.test(portable)) {
     throw new Error(`${target} artifact cannot use hosted push notifications`);
   }
   /** Provides owner behavior. */

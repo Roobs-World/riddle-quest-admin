@@ -5,7 +5,6 @@ import {getCurrentLocale} from "../../localization/browser/i18n";
 
 type NotificationSettingsState = NotificationSnapshot & {
   change(enabled: boolean): Promise<boolean>;
-  requestSetup(): Promise<boolean>;
 };
 
 /** Settings observes either account registration or a device's actual permission state. */
@@ -55,8 +54,7 @@ function useNotificationSettingsState(provider?: NotificationProvider | null): N
       return false;
     }
   };
-  return snapshot && provider ? {...snapshot, change,
-    requestSetup: () => provider.kind === "manager" ? provider.register() : provider.requestPermission()} : null;
+  return snapshot ? {...snapshot, change} : null;
 }
 
 /** The active account owns notification updates across modal navigation. */

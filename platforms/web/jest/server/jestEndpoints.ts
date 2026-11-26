@@ -259,8 +259,15 @@ export const exchangeJestIdentity = onRequestWithSentry(
           transaction.get(getJestAccountDeletionRef(firestore, uid)),
         ]);
         assertJestAccountActive(deletionSnapshot);
-        if (userSnapshot.exists) return;
-        transaction.create(userRef, createReservedJestUser(transaction, firestore, uid, player.playerId));
+        if (userSnapshot.exists) {
+          if (player.registered && userSnapshot.get("notificationsEnabled") === undefined) {
+            transaction.update(userRef, {notificationsEnabled: true});
+          }
+        } else {
+          const user = createReservedJestUser(transaction, firestore, uid, player.playerId);
+          if (player.registered) user.notificationsEnabled = true;
+          transaction.create(userRef, user);
+        }
       });
       /** Provides custom token behavior. */
       const customToken = await admin

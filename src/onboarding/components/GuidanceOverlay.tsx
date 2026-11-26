@@ -33,8 +33,6 @@ export type GuidanceOverlayProps = {
   modal: GameModal;
   /** Stores on active change. */
   onActiveChange?: (active: boolean) => void;
-  /** Queues optional account prompts after welcome and instructions have closed. */
-  onOnboardingClosed?: () => void;
   /** Stores registration name. */
   registrationName?: string;
   /** Stores registration inviter name. */
@@ -51,7 +49,7 @@ export type GuidanceOverlayProps = {
   multiplayerAvailable?: boolean;
 };
 /** Coordinates onboarding, feature tours, and contextual guidance tooltips. */
-export function GuidanceOverlay({state, modal, onActiveChange, onOnboardingClosed, interactionBlocked = false, suspended = false, economyAvailable = true, commerceAvailable = state.products.length > 0, multiplayerAvailable = false}: GuidanceOverlayProps) {
+export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocked = false, suspended = false, economyAvailable = true, commerceAvailable = state.products.length > 0, multiplayerAvailable = false}: GuidanceOverlayProps) {
   /** Committed catalog identity refreshes the active translated tooltip. */
   const locale = useLocale();
   /** Provides r id. */
@@ -435,7 +433,6 @@ export function GuidanceOverlay({state, modal, onActiveChange, onOnboardingClose
             if (welcomeOnly) {
               setOnboardingStep(null);
               window.dispatchEvent(new CustomEvent("riddle-quest:returning-player-play"));
-              onOnboardingClosed?.();
               return;
             }
             setOnboardingStep(1);
@@ -444,7 +441,6 @@ export function GuidanceOverlay({state, modal, onActiveChange, onOnboardingClose
           completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
           trackEvent("tutorial_complete");
           setOnboardingStep(null);
-          onOnboardingClosed?.();
         }}
       />
     );

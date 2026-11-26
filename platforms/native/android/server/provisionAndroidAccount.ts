@@ -48,12 +48,17 @@ export const provisionAndroidAccount = onCallWithSentry<Record<string, never> | 
       /** Existing account, if any. */
       const snapshot = await transaction.get(userRef);
       if (snapshot.exists) {
+        if (provider === "google.com" && isAndroidAccountProvider(snapshot.get("androidProvider")) &&
+            snapshot.get("notificationsEnabled") === undefined) {
+          transaction.update(userRef, {notificationsEnabled: true});
+        }
         /** Stored balance of the existing account. */
         const coins = snapshot.get("coins");
         return {uid, created: false, coins: typeof coins === "number" ? coins : 0};
       }
       /** Fresh account with its reserved username. */
       const user = createReservedAndroidUser(transaction, firestore, uid, provider);
+      if (provider === "google.com") user.notificationsEnabled = true;
       transaction.create(userRef, user);
       return {uid, created: true, coins: Number(user.coins)};
     });

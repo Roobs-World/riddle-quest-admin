@@ -1,39 +1,31 @@
-import {HttpsError, onRequest} from "firebase-functions/v2/https";
+import {onRequest} from "firebase-functions/v2/https";
 import {admin} from "../shared/firebaseAdmin";
-import {FirebasePushAudience, FirebasePushBridgeInput} from "../../../src/notifications/contracts/firebasePush";
-import {bridgeAuthorized, browserFcmConfiguration, browserPushConfiguration, notificationBridgeSecret, notificationVapidPrivateKey} from "./notificationBridge";
-import {browserDeviceStatus, enrollBrowserDevice} from "./notificationDevices";
+import {FirebasePushBridgeInput} from "../../../src/notifications/contracts/firebasePush";
+import {bridgeAuthorized, notificationBridgeSecret} from "./notificationBridge";
+import {disableBrowserDevice, inactiveBrowserStatus} from "./notificationDevices";
 
 export const notificationBrowserBridge = onRequest({region: "europe-west1", minInstances: 0, timeoutSeconds: 60,
-  secrets: [notificationBridgeSecret, notificationVapidPrivateKey], cors: false}, async (request, response) => {
+  secrets: [notificationBridgeSecret], cors: false}, async (request, response) => {
   response.setHeader("Cache-Control", "no-store");
   if (request.method !== "POST") {response.status(405).json({error: "method-not-allowed"}); return;}
+  if (["configuration", "configuration-fcm", "enroll", "enroll-fcm"].includes(request.body?.action)) {
+    response.status(410).json({error: "browser-push-disabled"});
+    return;
+  }
   if (!bridgeAuthorized(request.get("Authorization"))) {response.status(401).json({error: "bridge-authorization-required"}); return;}
   const parsed = request.rawBody.length <= 12_288 ? FirebasePushBridgeInput.safeParse(request.body) : null;
   if (!parsed?.success) {response.status(400).json({error: "notification-request-invalid"}); return;}
   try {
     const input = parsed.data;
     switch (input.action) {
-      case "configuration": response.json({version: 1, publicKey: browserPushConfiguration().publicKey}); return;
-      case "configuration-fcm": response.json({version: 1, publicKey: browserPushConfiguration().publicKey, fcm: browserFcmConfiguration()}); return;
       case "audience": {
-        const db = admin.firestore();
-        const [accounts, devices] = await Promise.all([db.collection("users").count().get(),
-          db.collection("accountPushDevices").where("expiresAtMs", ">", Date.now()).count().get()]);
-        response.json(FirebasePushAudience.parse({accounts: accounts.data().count, registeredDevices: devices.data().count}));
+        const accounts = await admin.firestore().collection("users").count().get();
+        response.json({accounts: accounts.data().count, registeredDevices: 0});
         return;
       }
-      case "enroll": response.json(await enrollBrowserDevice(input)); return;
-      case "enroll-fcm": {
-        if (!browserFcmConfiguration()) throw new HttpsError("unavailable", "Notification FCM setup is unavailable.");
-        response.json(await enrollBrowserDevice(input)); return;
-      }
-      case "status": response.json(await browserDeviceStatus(input.deviceToken, false, input.renew ?? false)); return;
-      case "disable": response.json(await browserDeviceStatus(input.deviceToken, true)); return;
+      case "status": response.json(inactiveBrowserStatus); return;
+      case "disable": response.json(await disableBrowserDevice(input.deviceToken)); return;
       default: {const exhaustive: never = input; throw exhaustive;}
     }
-  } catch (error) {
-    const rejected = error instanceof HttpsError && ["failed-precondition", "permission-denied", "not-found"].includes(error.code);
-    response.status(rejected ? 409 : 503).json({error: rejected ? "notification-setup-unavailable" : "notification-service-unavailable"});
-  }
+  } catch {response.status(503).json({error: "notification-service-unavailable"});}
 });

@@ -8,9 +8,6 @@ export type NotificationDelivery =
   | "inactive"
   | "save-failed";
 
-/** An account-bound, short-lived browser handoff shown only to the player. */
-export type NotificationSetupLink = Readonly<{url: string; expiresAtMs: number}>;
-
 export type DeviceNotificationSnapshot = Readonly<{
   kind: "device";
   enabled: boolean;
@@ -18,18 +15,12 @@ export type DeviceNotificationSnapshot = Readonly<{
   delivery: NotificationDelivery;
 }>;
 
-/** A registration handoff never asserts that a device can receive push. */
-export type ManagerNotificationRegistration =
-  | Readonly<{kind: "unavailable"}>
-  | Readonly<{kind: "available"}>
-  | Readonly<{kind: "handoff"; link: NotificationSetupLink}>
-  | Readonly<{kind: "failed"; operation: "consent" | "registration"}>;
-
 export type ManagerNotificationSnapshot = Readonly<{
   kind: "manager";
   enabled: boolean;
   busy: boolean;
-  registration: ManagerNotificationRegistration;
+  available: boolean;
+  saveFailed: boolean;
 }>;
 
 export type NotificationSnapshot = DeviceNotificationSnapshot | ManagerNotificationSnapshot;
@@ -62,8 +53,6 @@ export type DeviceNotificationProvider = NotificationLifecycle<DeviceNotificatio
 
 export type ManagerNotificationProvider = NotificationLifecycle<ManagerNotificationSnapshot> & Readonly<{
   kind: "manager";
-  /** Issues the authenticated handoff; device setup completes in the manager. */
-  register(): Promise<boolean>;
 }>;
 
 export type NotificationProvider = DeviceNotificationProvider | ManagerNotificationProvider;
@@ -78,5 +67,4 @@ export type NotificationProviderPolicy =
 /** Lazy game adapters expose registration and consent, without device delivery methods. */
 export type NotificationRegistrationCommands = {
   setEnabled(enabled: boolean): Promise<boolean>;
-  registerAccount(): Promise<NotificationSetupLink>;
 };

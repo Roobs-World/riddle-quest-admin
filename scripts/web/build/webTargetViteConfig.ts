@@ -4,7 +4,6 @@ import {facebookArtifactPlugin} from "../../../platforms/web/facebook/tooling/fa
 import {webBuildFacts} from "../../release/release-registry.mjs";
 import {playableContentModule, playableContentPlugin} from "./playableContentPlugin.ts";
 import {webTargetDependencyPlugin} from "./webTargetDependencies.ts";
-import {hostedNotificationsPlugin} from "./hostedNotificationsPlugin.ts";
 import react, {reactCompilerPreset} from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import {sentryVitePlugin} from "@sentry/vite-plugin";
@@ -528,7 +527,6 @@ export function createWebTargetViteConfig({
   const plugins: PluginOption[] = [
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile, targetRoot),
-    hostedNotificationsPlugin(profile.id),
     webTargetDependencyPlugin(profile.id),
     ...(profile.id === "jest" ? [jestShaderIndentationPlugin(), jestFirebaseScriptPolicyPlugin()] : []),
     react(),
