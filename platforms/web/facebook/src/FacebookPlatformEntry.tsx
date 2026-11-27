@@ -1,4 +1,4 @@
-import {lazy, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {lazy, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore} from "react";
 import type {ProductSummary, PurchaseResult} from "../../../../src/platform/contracts/hostServices";
 import type {NotificationProvider} from "../../../../src/notifications/contracts/notificationProvider";
 import {createNotificationProvider} from "../../../../src/notifications/controllers/notificationProvider";
@@ -12,6 +12,9 @@ import {requireFacebookInstant} from "./fbinstant";
 import {captureBrowserException} from "../../../../src/observability/browserErrorReporter";
 import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
 import {createFacebookReferralSharing} from "./FacebookReferralSharing";
+import {createFacebookPlayerSettingsActions} from "./engagement/FacebookPlayerSettingsActions";
+import {PlayerSettingsActionsProvider} from "../../../../src/settings/components/PlayerSettingsActions";
+import type {PlayerSettingsActionsCapability} from "../../../../src/settings/contracts/playerSettingsActions";
 import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
 import {createFacebookContextChallenges} from "./contextChallenges";
 import {createFacebookTournamentPresentation} from "./FacebookTournamentPresentation";
@@ -68,6 +71,8 @@ type StartupState =
       playerData: PlayerData | null;
       /** Target-owned native sharing, absent when Meta or the server disallows it. */
       referralSharing?: import("../../../../src/sharing/components/ReferralSharingCapability").ReferralSharingCapability;
+      /** Optional user-initiated native player actions for this account. */
+      settingsActions?: PlayerSettingsActionsCapability;
       /** Settings owns the authenticated player's Facebook campaign consent. */
       notificationProvider?: NotificationProvider;
       /** Bounded launch hints; competitive authority remains on the server. */
@@ -110,6 +115,11 @@ export function FacebookPlatformEntry() {
   const hostConfigurationWarning = getHostConfigurationWarning(hostServicesMode);
   /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<StartupState>({status: "loading", progress: 5});
+  const settingsActions = startup.status === "ready" ? startup.settingsActions : undefined;
+  const subscribeSettingsActions = useCallback((listener: () => void) =>
+    settingsActions?.subscribe(listener) ?? (() => undefined), [settingsActions]);
+  const readQuitPending = useCallback(() => settingsActions?.getSnapshot().pendingAction === "quit", [settingsActions]);
+  const quitPending = useSyncExternalStore(subscribeSettingsActions, readQuitPending, readQuitPending);
   /** Provides [presence enabled, set presence enabled] behavior. */
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
@@ -159,6 +169,7 @@ export function FacebookPlatformEntry() {
     /** Payment lifecycle controller for the authenticated Facebook account. */
     let commerceSession: FacebookCommerceSession | undefined;
     let sessionNotifications: NotificationProvider | undefined;
+    let settingsActions: PlayerSettingsActionsCapability | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -365,8 +376,8 @@ export function FacebookPlatformEntry() {
         }
         /** Outbound referrals use Meta's native dialog and the canonical Facebook token issuer. */
         const referralSharing = createFacebookReferralSharing({
-          sdk, enabled: referralsEnabled, ageCategory,
-          isActive: () => active && deletionGateRef.current.isOpen(),
+          sdk, enabled: configurationLoaded, referralsEnabled, ageCategory,
+          isActive: isAdSessionActive,
           reportFailure: (error) => captureBrowserException(error, {component: "facebook_referral", operation: "native_share"}),
         });
         /** Untrusted entry data can select a destination but cannot supply race results. */
@@ -520,6 +531,20 @@ export function FacebookPlatformEntry() {
           deletionGateRef.current,
         );
         playerPersistenceRef.current = playerPersistence;
+        if (configurationLoaded && ageCategory === "13_plus") {
+          settingsActions = createFacebookPlayerSettingsActions({
+            sdk,
+            isActive: isAdSessionActive,
+            flushBeforeQuit: async () => {
+              await playerPersistence.flush();
+              try {await stopPresence?.();} catch (error) {
+                captureBrowserException(error, {component: "facebook_presence", operation: "quit"});
+              }
+            },
+            reportFailure: ({action}) => captureBrowserException(new Error("facebook-player-action-failed"),
+              {component: "facebook_engagement", operation: action}),
+          });
+        }
         unsubscribePause = session.capabilities.lifecycle?.onPause(() =>
           settleFacebookPause({
             flushStorage: () => playerPersistence.flush(),
@@ -535,7 +560,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, notificationProvider, launch,
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
@@ -555,6 +580,7 @@ export function FacebookPlatformEntry() {
       if (levelInterstitialRef.current === levelInterstitial) levelInterstitialRef.current = null;
       commerceSession?.retire();
       sessionNotifications?.retire();
+      settingsActions?.retire();
       unsubscribePreferences?.();
       unsubscribeContext?.();
       void stopPresence?.();
@@ -621,6 +647,7 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready") return;
     analyticsLifetimeRef.current.abort();
     deletionGateRef.current.close();
+    startup.settingsActions?.retire();
     await startup.notificationProvider?.setEnabled(false);
     startup.notificationProvider?.retire();
     await presenceRef.current?.stop();
@@ -630,6 +657,7 @@ export function FacebookPlatformEntry() {
   /** Completes account deletion. */
   const completeAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
+    startup.settingsActions?.retire();
     startup.notificationProvider?.retire();
     await playerPersistenceRef.current?.clear();
     playerPersistenceRef.current = null;
@@ -675,6 +703,8 @@ export function FacebookPlatformEntry() {
       lifetimeSignal={analyticsLifetimeRef.current.signal}
     >
     <PlayerSaveRecoveryLayout recovery={saveRecovery}>
+    <PlayerSettingsActionsProvider capability={startup.settingsActions}>
+    <div style={{display: "contents"}} inert={quitPending || undefined}>
       <PlayHostApp
         raceSurface={FacebookRaceSurface}
         session={createHostedPlaySession({
@@ -689,6 +719,7 @@ export function FacebookPlatformEntry() {
           referralSharing: startup.referralSharing,
           notificationProvider: startup.notificationProvider,
           onPlayerDataChange: (update) => void writePlayerData(update),
+          externalInteractionBlocked: quitPending,
           accountDeletionServiceGate: deletionGateRef.current,
           presenceEnabled,
           onTogglePresence: presenceAvailable ? togglePresence : undefined,
@@ -699,6 +730,8 @@ export function FacebookPlatformEntry() {
         onAccountDeleted={completeAccountDeletion}
         onAuthoritativeComplete={onLevelCompleted}
       />
+    </div>
+    </PlayerSettingsActionsProvider>
     </PlayerSaveRecoveryLayout>
     </GoogleAnalyticsConsent>
   );

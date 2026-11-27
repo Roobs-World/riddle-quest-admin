@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "إضافة إلى الشاشة الرئيسية",
+    "FOLLOW_COMMUNITY_BUTTON": "متابعة صفحتنا",
+    "JOIN_COMMUNITY_BUTTON": "الانضمام إلى مجموعتنا",
+    "QUIT_GAME_BUTTON": "الخروج من اللعبة",
     "ABOUT_BUTTON": "حول",
     "ACCOUNT_DELETION_BUTTON": "حذف الحساب",
     "ANALYTICS_DESCRIPTION": "تحليلات استخدام اختيارية مع Google للمساعدة في تحسين اللعبة. تستخدم ملفات تعريف ارتباط للتحليلات. مفعلة افتراضيًا؛ يمكنك إيقافها هنا في أي وقت.",

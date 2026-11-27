@@ -1,7 +1,7 @@
 import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
 import chestUrl from "../../../assets/images-web/chest-closed.webp";
 import {useProviderProfile} from "./ProviderProfileContext";
-import {useLayoutEffect, useRef, useState} from "react";
+import {useLayoutEffect, useMemo, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {BridgeUser} from "../../platform/bridge/messages";
 import type {GameModal, GameSessionState} from "../../gameplay/session/gameSession";
@@ -44,6 +44,36 @@ export function ProfileModalPage({
   const avatarUrl = profile?.avatarUrl ?? providerProfile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
+  const selectedInviteOwner = useMemo(() => ({shareInvite: referralSharing?.shareInvite}),
+    [referralSharing?.shareInvite]);
+  const inviteOwner = useRef(selectedInviteOwner);
+  const inviteLock = useRef(false);
+  const mounted = useRef(false);
+  const [inviting, setInviting] = useState(false);
+  const [failedInviteOwner, setFailedInviteOwner] = useState<typeof selectedInviteOwner | null>(null);
+  useLayoutEffect(() => {inviteOwner.current = selectedInviteOwner;}, [selectedInviteOwner]);
+  useLayoutEffect(() => {
+    mounted.current = true;
+    return () => {mounted.current = false;};
+  }, []);
+  /** The native dialog result belongs only to the account and provider that opened it. */
+  const inviteFriend = async () => {
+    const selected = inviteOwner.current;
+    if (!mounted.current || inviteLock.current || !selected.shareInvite) return;
+    inviteLock.current = true;
+    setInviting(true);
+    setFailedInviteOwner(null);
+    try {
+      const outcome = await selected.shareInvite();
+      if (mounted.current && inviteOwner.current === selected && outcome !== "success" && outcome !== "cancelled")
+        setFailedInviteOwner(selected);
+    } catch {
+      if (mounted.current && inviteOwner.current === selected) setFailedInviteOwner(selected);
+    } finally {
+      inviteLock.current = false;
+      if (mounted.current) setInviting(false);
+    }
+  };
   /** Recoverable avatar-selection error shown within the profile page. */
   const [avatarError, setAvatarError] = useState<string | null>(null);
   /** Whether the destructive account-deletion confirmation is visible. */
@@ -220,11 +250,13 @@ export function ProfileModalPage({
         </div>
       </dl>
       <div className="profile-links">
-        {referralSharing ? (
-          <button className="profile-invite-button" onClick={referralSharing.shareInvite}>
-            {referralSharing.inviteLabel ?? tr("VictoryModal.SHARE_TEXT", {coins: referralSharing.rewardCoins})}
+        {referralSharing ? <>
+          <button className="profile-invite-button" disabled={inviting} aria-busy={inviting}
+            onClick={() => void inviteFriend()}>
+            {referralSharing.inviteLabel ?? tr("VictoryModal.INVITE_FRIEND")}
           </button>
-        ) : null}
+          {failedInviteOwner === selectedInviteOwner && <p role="alert">{tr("Profile.ALERT_AN_ERROR_OCCURRED")}</p>}
+        </> : null}
         <button data-tooltip="profileStatistics" onClick={() => onOpenModal("statistics")}>
           {tr("StatsModal.TITLE")}
         </button>

@@ -1,4 +1,5 @@
 import {NotificationSettings} from "../../notifications/components/NotificationSettings";
+import {PlayerSettingsActions} from "./PlayerSettingsActions";
 import {AnalyticsConsentControls} from "../../observability/analytics/AnalyticsConsentControls";
 import {useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale} from "../../content/catalog/bundledContent";
@@ -78,6 +79,7 @@ export function SettingsModalPage({
         <span>{tr("Settings.ABOUT_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>
       </button>
+      <PlayerSettingsActions />
     </div>
   );
 }

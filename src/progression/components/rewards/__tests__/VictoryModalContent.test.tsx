@@ -2,6 +2,7 @@ import {describe, expect, it} from "@jest/globals";
 import {renderToStaticMarkup} from "react-dom/server";
 import {createInitialGameSession, type GameSessionState} from "../../../../gameplay/session/gameSession";
 import {VictoryModalContent} from "../VictoryModalContent";
+import {ReferralSharingProvider, type ReferralSharingCapability} from "../../../../sharing/components/ReferralSharingCapability";
 
 /** Completed Daily receipt includes independent bonuses settled by the server. */
 const dailyBreakdown = {baseWinCoins: 75, levelUpBonus: 10, dailyStreakBonus: 10,
@@ -28,6 +29,20 @@ const renderVictory = (state: GameSessionState) => renderToStaticMarkup(<Victory
   onAdvance={() => undefined} onBalancePreview={() => undefined} />);
 
 describe("VictoryModalContent", () => {
+  it("offers result sharing only for confirmed wins on a supporting target", () => {
+    const capability: ReferralSharingCapability = {
+      rewardCoins: 0, shareInvite: async () => "success", shareResult: async () => "success",
+    };
+    const renderShared = (state: GameSessionState, sharing = capability) => renderToStaticMarkup(
+      <ReferralSharingProvider capability={sharing}><VictoryModalContent state={state}
+        onAdvance={() => undefined} onBalancePreview={() => undefined} /></ReferralSharingProvider>,
+    );
+    expect(renderShared(completedState())).toContain('class="result-share"');
+    expect(renderShared({...completedState(), completionAcknowledged: false})).not.toContain('class="result-share"');
+    expect(renderShared(completedState(), {...capability, shareResult: undefined})).not.toContain('class="result-share"');
+    expect(renderVictory(completedState())).not.toContain('class="result-share"');
+  });
+
   it("keeps the Daily award, latest wallet and Next action without the extra heading or stats", () => {
     /** A newer wallet refresh must outrank the balance captured by this historical receipt. */
     const html = renderVictory(completedState());

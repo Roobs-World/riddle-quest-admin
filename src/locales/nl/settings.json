@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "Toevoegen aan startscherm",
+    "FOLLOW_COMMUNITY_BUTTON": "Volg onze pagina",
+    "JOIN_COMMUNITY_BUTTON": "Word lid van onze groep",
+    "QUIT_GAME_BUTTON": "Spel afsluiten",
     "ABOUT_BUTTON": "Over",
     "ACCOUNT_DELETION_BUTTON": "Account verwijderen",
     "ANALYTICS_DESCRIPTION": "Optionele gebruiksanalyse met Google om het spel te verbeteren. Gebruikt analysecookies. Standaard aan; je kunt dit hier op elk moment uitschakelen.",

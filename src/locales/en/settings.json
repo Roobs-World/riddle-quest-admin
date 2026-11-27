@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "Add to home screen",
+    "FOLLOW_COMMUNITY_BUTTON": "Follow our page",
+    "JOIN_COMMUNITY_BUTTON": "Join our group",
+    "QUIT_GAME_BUTTON": "Quit game",
     "ABOUT_BUTTON": "About",
     "ACCOUNT_DELETION_BUTTON": "Delete Account",
     "ANALYTICS_DESCRIPTION": "Optional usage analytics with Google to help improve the game. Uses analytics cookies. On by default; turn it off here at any time.",

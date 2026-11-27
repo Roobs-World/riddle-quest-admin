@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "Añadir a la pantalla de inicio",
+    "FOLLOW_COMMUNITY_BUTTON": "Seguir nuestra página",
+    "JOIN_COMMUNITY_BUTTON": "Unirse a nuestro grupo",
+    "QUIT_GAME_BUTTON": "Salir del juego",
     "ABOUT_BUTTON": "Acerca de",
     "ACCOUNT_DELETION_BUTTON": "Eliminar Cuenta",
     "ANALYTICS_DESCRIPTION": "Estadísticas de uso opcionales con Google para mejorar el juego. Usa cookies de análisis. Activadas por defecto; puedes desactivarlas aquí cuando quieras.",

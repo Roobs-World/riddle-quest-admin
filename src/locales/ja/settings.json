@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "ホーム画面に追加",
+    "FOLLOW_COMMUNITY_BUTTON": "ページをフォロー",
+    "JOIN_COMMUNITY_BUTTON": "グループに参加",
+    "QUIT_GAME_BUTTON": "ゲームを終了",
     "ABOUT_BUTTON": "概要",
     "ACCOUNT_DELETION_BUTTON": "削除アカウント",
     "ANALYTICS_DESCRIPTION": "ゲーム改善のため、Googleによる利用状況の分析を任意で許可できます。分析用Cookieを使用します。初期設定はオンで、ここでいつでもオフにできます。",

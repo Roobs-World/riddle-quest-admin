@@ -39,10 +39,10 @@ export type ReferralSharingCapability = {
   raceShareLabel?: string;
   /** Optional target instructions shown before publication. */
   raceReadyText?: string;
-  /** Shares a completed single-player result. */
-  shareResult: (input: ReferralResultShareInput) => void;
+  /** Shares a completed single-player result when supported by the target. */
+  shareResult?: (input: ReferralResultShareInput) => Promise<ReferralShareOutcome>;
   /** Shares an open invitation from the player profile. */
-  shareInvite: () => void;
+  shareInvite: () => Promise<ReferralShareOutcome>;
   /** Opens this target's native dialog for a server-reserved live PvP lobby. */
   shareLiveRace?: (input: {
     /** Opaque server-owned invitation. */
@@ -51,7 +51,7 @@ export type ReferralSharingCapability = {
   /** The provider can open its invite dialog after an explicitly requested private lobby is reserved. */
   autoOpenLiveRaceInvite?: boolean;
   /** Shares a published multiplayer challenge and distinguishes dismissal from failure. */
-  shareRace: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
+  shareRace?: (input: ReferralRaceShareInput) => Promise<ReferralShareOutcome>;
 };
 
 /** Null means the active release target does not support outbound referral sharing. */
@@ -72,24 +72,37 @@ export function ReferralSharingProvider({
     const lifetime = {active: false};
     if (!capability) return {lifetime, capability: null};
     const shareLiveRace = capability.shareLiveRace?.bind(capability);
+    const shareResult = capability.shareResult?.bind(capability);
+    const shareRace = capability.shareRace?.bind(capability);
     const tracked: ReferralSharingCapability = {
       ...capability,
-      shareInvite: () => {
-        if (lifetime.active) trackEvent("share_requested", {surface: "profile"});
-        capability.shareInvite();
-      },
-      shareResult: input => {
-        if (lifetime.active) trackEvent("share_requested", {surface: "victory", game_mode: input.gameMode});
-        capability.shareResult(input);
-      },
-      shareRace: async input => {
-        if (lifetime.active) trackEvent("share_requested", {surface: "race"});
-        const status = await capability.shareRace(input);
-        if (lifetime.active) trackEvent("share_result", {surface: "race", status});
+      get inviteLabel() {return capability.inviteLabel;},
+      get raceShareLabel() {return capability.raceShareLabel;},
+      get raceReadyText() {return capability.raceReadyText;},
+      shareInvite: async (): Promise<ReferralShareOutcome> => {
+        if (!lifetime.active) return "error";
+        trackEvent("share_requested", {surface: "profile"});
+        const status = await capability.shareInvite();
+        if (lifetime.active) trackEvent("share_result", {surface: "profile", status});
         return status;
       },
-      ...(shareLiveRace ? {shareLiveRace: async (input: Parameters<NonNullable<ReferralSharingCapability["shareLiveRace"]>>[0]) => {
-        if (lifetime.active) trackEvent("share_requested", {surface: "live_race"});
+      ...(shareResult ? {shareResult: async (input: ReferralResultShareInput): Promise<ReferralShareOutcome> => {
+        if (!lifetime.active) return "error";
+        trackEvent("share_requested", {surface: "victory", game_mode: input.gameMode});
+        const status = await shareResult(input);
+        if (lifetime.active) trackEvent("share_result", {surface: "victory", game_mode: input.gameMode, status});
+        return status;
+      }} : {}),
+      ...(shareRace ? {shareRace: async (input: ReferralRaceShareInput): Promise<ReferralShareOutcome> => {
+        if (!lifetime.active) return "error";
+        trackEvent("share_requested", {surface: "race"});
+        const status = await shareRace(input);
+        if (lifetime.active) trackEvent("share_result", {surface: "race", status});
+        return status;
+      }} : {}),
+      ...(shareLiveRace ? {shareLiveRace: async (input: Parameters<NonNullable<ReferralSharingCapability["shareLiveRace"]>>[0]): Promise<ReferralShareOutcome> => {
+        if (!lifetime.active) return "error";
+        trackEvent("share_requested", {surface: "live_race"});
         const status = await shareLiveRace(input);
         if (lifetime.active) trackEvent("share_result", {surface: "live_race", status});
         return status;

@@ -1,5 +1,5 @@
 import {createFacebookReferralSharing} from "../FacebookReferralSharing";
-import type {FacebookInstantSdk, FacebookSharePayload} from "../fbinstant";
+import type {FacebookInstantSdk, FacebookSharePayload, FacebookInvitePayload} from "../fbinstant";
 import {createFacebookAdsCapability} from "../FacebookAdsCapability";
 import type {FacebookReferralToken} from "../referrals";
 import {setLocale} from "../../../../../src/localization/browser/i18n";
@@ -17,7 +17,7 @@ const fixture = () => {
   /** Stores reportFailure for this isolated provider verification. */
   const reportFailure = jest.fn();
   /** Stores options for this isolated provider verification. */
-  const options = {sdk, enabled: true, ageCategory: "13_plus" as const, isActive: () => true, issueToken, renderImage, reportFailure};
+  const options = {sdk, enabled: true, referralsEnabled: true, ageCategory: "13_plus" as const, isActive: () => true, issueToken, renderImage, reportFailure};
   return {options, shareAsync, issueToken, renderImage, reportFailure};
 };
 
@@ -28,7 +28,7 @@ it("uses Meta's native challenge dialog with an opaque token and server destinat
   const capability = createFacebookReferralSharing(options)!;
   expect(capability.inviteLabel).toBe("Invite a friend");
   expect(capability.raceShareLabel).toBe("Challenge a friend");
-  await expect(capability.shareRace({challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 9000}})).resolves.toBe("success");
+  await expect(capability.shareRace!({challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 9000}})).resolves.toBe("success");
   expect(issueToken).toHaveBeenCalledTimes(1);
   expect(shareAsync).toHaveBeenCalledWith({intent: "CHALLENGE", switchContext: false,
     image: "data:image/png;base64,YQ==", text: "Race to 10 · Time to beat: 9.00s",
@@ -43,9 +43,9 @@ it.each(["USER_INPUT", "USER_CANCELLED"])("allows retry after Meta dismisses sha
   const capability = createFacebookReferralSharing(options)!;
   /** Stores input for this isolated provider verification. */
   const input = {challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 9000}};
-  await expect(capability.shareRace(input)).resolves.toBe("cancelled");
+  await expect(capability.shareRace!(input)).resolves.toBe("cancelled");
   expect(reportFailure).not.toHaveBeenCalled();
-  await expect(capability.shareRace(input)).resolves.toBe("success");
+  await expect(capability.shareRace!(input)).resolves.toBe("success");
 });
 
 it("holds the provider gate while a token request is pending and prevents rewarded-ad overlap", async () => {
@@ -57,8 +57,8 @@ it("holds the provider gate while a token request is pending and prevents reward
   /** Stores capability for this isolated provider verification. */
   const capability = createFacebookReferralSharing(options)!;
   /** Stores pending for this isolated provider verification. */
-  const pending = capability.shareRace({challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 1}});
-  await expect(capability.shareRace({challengeId: "challenge-2", preview: {adjustedTimeToBeatMs: 2}})).resolves.toBe("error");
+  const pending = capability.shareRace!({challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 1}});
+  await expect(capability.shareRace!({challengeId: "challenge-2", preview: {adjustedTimeToBeatMs: 2}})).resolves.toBe("error");
   options.sdk.getSupportedAPIs = () => ["shareAsync", "getRewardedVideoAsync"];
   const rewarded = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
   options.sdk.getRewardedVideoAsync = rewarded;
@@ -104,14 +104,14 @@ it("does not open Meta UI after an expired token, transport failure, or account 
   /** Stores capability for this isolated provider verification. */
   const capability = createFacebookReferralSharing(options)!;
   issueToken.mockResolvedValueOnce({token: "a".repeat(43), expiresAtMs: 1});
-  await expect(capability.shareRace(input)).resolves.toBe("error");
+  await expect(capability.shareRace!(input)).resolves.toBe("error");
   issueToken.mockRejectedValueOnce(new Error("private-provider-diagnostics"));
-  await expect(capability.shareRace(input)).resolves.toBe("error");
+  await expect(capability.shareRace!(input)).resolves.toBe("error");
   /** Stores active for this isolated provider verification. */
   let active = true;
   options.isActive = () => active;
   issueToken.mockImplementationOnce(async () => {active = false; return {token: "a".repeat(43), expiresAtMs: Date.now() + 60_000};});
-  await expect(createFacebookReferralSharing(options)!.shareRace(input)).resolves.toBe("error");
+  await expect(createFacebookReferralSharing(options)!.shareRace!(input)).resolves.toBe("error");
   expect(shareAsync).not.toHaveBeenCalled();
   expect(reportFailure.mock.calls.map(([error]) => error.message)).toEqual(["facebook-native-share-failed", "facebook-native-share-failed"]);
 });
@@ -121,37 +121,130 @@ it("rejects invalid destinations and failed image rendering before issuing a tok
   const {options, issueToken, renderImage} = fixture();
   /** Stores capability for this isolated provider verification. */
   const capability = createFacebookReferralSharing(options)!;
-  await expect(capability.shareRace({challengeId: "../unsafe", preview: {adjustedTimeToBeatMs: 1}})).resolves.toBe("error");
-  await expect(capability.shareRace({challengeId: "valid", preview: {adjustedTimeToBeatMs: NaN}})).resolves.toBe("error");
+  await expect(capability.shareRace!({challengeId: "../unsafe", preview: {adjustedTimeToBeatMs: 1}})).resolves.toBe("error");
+  await expect(capability.shareRace!({challengeId: "valid", preview: {adjustedTimeToBeatMs: NaN}})).resolves.toBe("error");
   renderImage.mockReturnValueOnce("https://example.com/external-profile.png");
-  await expect(capability.shareRace({challengeId: "valid", preview: {adjustedTimeToBeatMs: 1}})).resolves.toBe("error");
+  await expect(capability.shareRace!({challengeId: "valid", preview: {adjustedTimeToBeatMs: 1}})).resolves.toBe("error");
   expect(issueToken).not.toHaveBeenCalled();
 });
 
 it("shares results and profile invitations without promising a share-time reward or exposing identity", async () => {
   /** Stores options, shareAsync for this isolated provider verification. */
   const {options, shareAsync} = fixture();
-  /** Stores done for this isolated provider verification. */
-  let done!: () => void;
-  shareAsync.mockImplementationOnce(async () => {done();});
-  /** Stores shared for this isolated provider verification. */
-  const shared = new Promise<void>(resolve => {done = resolve;});
-  /** Stores capability for this isolated provider verification. */
   const capability = createFacebookReferralSharing(options)!;
-  capability.shareResult({gameMode: "challenge", riddleId: "private-riddle-id", attempts: 2, emojiGrid: "🟩"});
-  await shared;
+  await expect(capability.shareResult!({gameMode: "challenge", riddleId: "private-riddle-id", attempts: 2, emojiGrid: "🟩"}))
+    .resolves.toBe("success");
   expect(shareAsync.mock.calls[0][0].data).toEqual({gameMode: "challenge", referralToken: "a".repeat(43)});
   expect(shareAsync.mock.calls[0][0].text).not.toMatch(/coins|register/i);
-  await Promise.resolve();
-  await Promise.resolve();
-  /** Stores invited for this isolated provider verification. */
-  let invited!: () => void;
-  shareAsync.mockImplementationOnce(async () => {invited();});
-  /** Stores invitation for this isolated provider verification. */
-  const invitation = new Promise<void>(resolve => {invited = resolve;});
-  capability.shareInvite();
-  await invitation;
+  await expect(capability.shareInvite()).resolves.toBe("success");
   expect(shareAsync.mock.calls[1][0]).toMatchObject({intent: "INVITE", data: {referralToken: "a".repeat(43)}});
+});
+
+it("prefers the native friend picker when both social dialogs are supported", async () => {
+  const {options, shareAsync, issueToken} = fixture();
+  const inviteAsync = jest.fn(async (_payload: FacebookInvitePayload) => undefined);
+  options.sdk.inviteAsync = inviteAsync;
+  options.sdk.getSupportedAPIs = () => ["inviteAsync", "shareAsync"];
+  await expect(createFacebookReferralSharing(options)!.shareInvite()).resolves.toBe("success");
+  expect(shareAsync).not.toHaveBeenCalled();
+  expect(issueToken).toHaveBeenCalledTimes(1);
+  expect(inviteAsync).toHaveBeenCalledWith({image: "data:image/png;base64,YQ==",
+    text: {default: "Riddle Quest · Complete 10 riddles. Lowest adjusted time wins."},
+    data: {referralToken: "a".repeat(43)}, cta: "Invite a friend", dialogTitle: "Invite a friend"});
+});
+
+it("supports invite-only hosts without referral rewards or unavailable share actions", async () => {
+  const {options, shareAsync, issueToken} = fixture();
+  const inviteAsync = jest.fn(async (_payload: FacebookInvitePayload) => undefined);
+  options.sdk.inviteAsync = inviteAsync;
+  options.sdk.getSupportedAPIs = () => ["inviteAsync"];
+  const capability = createFacebookReferralSharing({...options, referralsEnabled: false})!;
+  expect(capability.shareResult).toBeUndefined();
+  expect(capability.shareRace).toBeUndefined();
+  expect(capability.rewardCoins).toBe(0);
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  expect(issueToken).not.toHaveBeenCalled();
+  expect(shareAsync).not.toHaveBeenCalled();
+  expect(inviteAsync).toHaveBeenCalledWith(expect.objectContaining({data: {}}));
+  expect(inviteAsync.mock.calls[0][0].text.default).not.toMatch(/coins|register/i);
+});
+
+it("falls back to shareAsync only when the native friend picker is unsupported", async () => {
+  const {options, shareAsync, issueToken} = fixture();
+  const inviteAsync = jest.fn(async (_payload: FacebookInvitePayload) => undefined);
+  options.sdk.inviteAsync = inviteAsync;
+  await expect(createFacebookReferralSharing({...options, referralsEnabled: false})!.shareInvite()).resolves.toBe("success");
+  expect(inviteAsync).not.toHaveBeenCalled();
+  expect(issueToken).not.toHaveBeenCalled();
+  expect(shareAsync).toHaveBeenCalledWith(expect.objectContaining({intent: "INVITE", data: {}, switchContext: false}));
+  options.sdk.getSupportedAPIs = () => ["inviteAsync"];
+  delete options.sdk.inviteAsync;
+  expect(createFacebookReferralSharing(options)).toBeUndefined();
+});
+
+it("keeps neutral invitations available when optional attribution fails validation", async () => {
+  const {options, shareAsync, issueToken, reportFailure} = fixture();
+  issueToken.mockResolvedValueOnce({token: "a".repeat(43), expiresAtMs: 1});
+  issueToken.mockRejectedValueOnce(new Error("private-provider-diagnostics"));
+  const capability = createFacebookReferralSharing(options)!;
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  expect(shareAsync.mock.calls.map(([payload]) => payload.data)).toEqual([{}, {}]);
+  expect(reportFailure.mock.calls.map(([error]) => error.message)).toEqual([
+    "facebook-invite-attribution-unavailable", "facebook-invite-attribution-unavailable"]);
+});
+
+it("isolates throwing diagnostics from neutral invitations, provider failure outcomes and retries", async () => {
+  const {options, shareAsync, issueToken, reportFailure} = fixture();
+  reportFailure.mockImplementation(() => {throw new Error("diagnostics-unavailable");});
+  issueToken.mockRejectedValueOnce(new Error("attribution-unavailable"));
+  const capability = createFacebookReferralSharing(options)!;
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  expect(shareAsync).toHaveBeenLastCalledWith(expect.objectContaining({intent: "INVITE", data: {}}));
+  shareAsync.mockRejectedValueOnce(new Error("native-dialog-unavailable"));
+  await expect(capability.shareInvite()).resolves.toBe("error");
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  expect(reportFailure.mock.calls.map(([error]) => error.message)).toEqual([
+    "facebook-invite-attribution-unavailable", "facebook-native-share-failed"]);
+  expect(shareAsync).toHaveBeenCalledTimes(3);
+});
+
+it.each(["USER_INPUT", "USER_CANCELLED"])("reports native picker cancellation without opening a second dialog: %s", async code => {
+  const {options, shareAsync, reportFailure} = fixture();
+  const inviteAsync = jest.fn(async (_payload: FacebookInvitePayload) => {throw {code};});
+  options.sdk.inviteAsync = inviteAsync;
+  options.sdk.getSupportedAPIs = () => ["inviteAsync", "shareAsync"];
+  await expect(createFacebookReferralSharing(options)!.shareInvite()).resolves.toBe("cancelled");
+  expect(shareAsync).not.toHaveBeenCalled();
+  expect(reportFailure).not.toHaveBeenCalled();
+});
+
+it("keeps the native picker exclusive until it settles and allows retry after failure", async () => {
+  const {options, shareAsync} = fixture();
+  let release!: () => void;
+  const inviteAsync = jest.fn(async (_payload: FacebookInvitePayload) => undefined);
+  inviteAsync.mockImplementationOnce(() => new Promise<void>(resolve => {release = resolve;}));
+  inviteAsync.mockRejectedValueOnce(new Error("provider-details"));
+  options.sdk.inviteAsync = inviteAsync;
+  options.sdk.getSupportedAPIs = () => ["inviteAsync", "shareAsync"];
+  const capability = createFacebookReferralSharing({...options, referralsEnabled: false})!;
+  const pending = capability.shareInvite();
+  await expect(capability.shareInvite()).resolves.toBe("error");
+  expect(inviteAsync).toHaveBeenCalledTimes(1);
+  release();
+  await expect(pending).resolves.toBe("success");
+  await expect(capability.shareInvite()).resolves.toBe("error");
+  await expect(capability.shareInvite()).resolves.toBe("success");
+  expect(shareAsync).not.toHaveBeenCalled();
+});
+
+it("does not open an invitation when the account retires during failed attribution", async () => {
+  const {options, shareAsync, issueToken} = fixture();
+  let active = true;
+  options.isActive = () => active;
+  issueToken.mockImplementationOnce(async () => {active = false; throw new Error("account-retired");});
+  await expect(createFacebookReferralSharing(options)!.shareInvite()).resolves.toBe("error");
+  expect(shareAsync).not.toHaveBeenCalled();
 });
 
 it("shares a private PvP lobby through Meta's native friend challenge dialog", async () => {

@@ -212,6 +212,18 @@ export interface FacebookInstantTournaments {
   postScoreAsync(score: number): Promise<void>;
 }
 
+/** Host-owned actions for the game's linked official Facebook page and group. */
+export interface FacebookInstantCommunity {
+  /** Checks current eligibility to follow the linked official game page. */
+  canFollowOfficialPageAsync?(): Promise<boolean>;
+  /** Opens Meta's official-page follow overlay after an explicit player request. */
+  followOfficialPageAsync?(): Promise<void>;
+  /** Checks current eligibility to join the linked official game group. */
+  canJoinOfficialGroupAsync?(): Promise<boolean>;
+  /** Opens Meta's official-group join overlay after an explicit player request. */
+  joinOfficialGroupAsync?(): Promise<void>;
+}
+
 /** Defines the contract for facebook instant sdk. */
 export interface FacebookInstantSdk {
   /** Sends native Meta events; a returned error means the event was rejected. */
@@ -235,6 +247,14 @@ export interface FacebookInstantSdk {
   getSupportedAPIs(): string[];
   /** Returns Meta's player locale after the game has started. */
   getLocale?(): string | null;
+  /** Checks shortcut eligibility; false after a creation request in this SDK session. */
+  canCreateShortcutAsync?(): Promise<boolean>;
+  /** Opens Meta's shortcut prompt at most once per SDK session, including declines. */
+  createShortcutAsync?(): Promise<void>;
+  /** Exits through Meta's host after the game has checkpointed pending state. */
+  quit?(): void;
+  /** Independently optional page-follow and group-join APIs advertised by this host. */
+  community?: FacebookInstantCommunity;
   /** Opens Meta's top-level matchmaking API and optionally switches the context. */
   matchPlayerAsync?(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
   /** Checks whether the current player can use native matchmaking. */

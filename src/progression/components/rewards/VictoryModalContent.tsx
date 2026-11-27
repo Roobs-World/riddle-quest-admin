@@ -1,9 +1,10 @@
-import {useRef} from "react";
+import {useMemo, useRef} from "react";
 import type {GameSessionState} from "../../../gameplay/session/gameSession";
 import {isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
 import {useTranslator} from "../../../localization/browser/i18n";
 import {SpinningWheelLoader} from "../../../app/components/feedback/SpinningWheelLoader";
 import {CoinFlight} from "./CoinFlight";
+import {ResultShareButton} from "../../../sharing/components/ResultShareButton";
 import chestClosedUrl from "../../../../assets/images-web/chest-closed.webp";
 import chestOpenUrl from "../../../../assets/images-web/chest-open.webp";
 import "../../styles/victory.css";
@@ -41,6 +42,10 @@ export function VictoryModalContent({state, onAdvance, onBalancePreview}: {
   /** Only progression authority can delay navigation; decorative milestones never do. */
   const advancePending = isCompletionAdvancePending(state);
   const reward = state.lastRewards;
+  const outcome = state.lastOutcome;
+  const shareResult = useMemo(() => outcome ? {
+    gameMode: outcome.gameMode, riddleId: outcome.riddleId, attempts: outcome.attempts,
+  } : null, [outcome]);
   return <>
     <h2 id="game-modal-title">{tr("VictoryModal.TITLE")}</h2>
     <div className="fanfare-content">
@@ -51,6 +56,8 @@ export function VictoryModalContent({state, onAdvance, onBalancePreview}: {
         : <button className="play-primary reward-continue" onClick={onAdvance}>
           {tr(state.riddle?.gameMode !== "classic" ? "GameScreenAlerts.NEXT_BUTTON" : "VictoryModal.NEXT_LEVEL_BUTTON")}
         </button>)}
+      {outcome?.kind === "win" && state.completionAcknowledged && shareResult &&
+        <ResultShareButton key={outcome.id} result={shareResult} />}
     </div>
   </>;
 }

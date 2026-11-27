@@ -14,9 +14,7 @@ const updateAvatar = async () => undefined;
 /** Fake target capability used to expose referral UI in server-rendered tests. */
 const referralSharing: ReferralSharingCapability = {
   rewardCoins: 100,
-  shareInvite: noop,
-  shareRace: noop,
-  shareResult: noop,
+  shareInvite: async () => "success",
 };
 
 /** Complete profile fixture displayed by the registered-player variant. */
@@ -131,6 +129,7 @@ describe("ProfileModalPage", () => {
       </ReferralSharingProvider>,
     );
     expect(html).toContain("Invite a friend");
-    expect(html).toContain("100");
+    expect(html).not.toContain("100 coins each");
+    expect(html).toContain('aria-busy="false"');
   });
 });

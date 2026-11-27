@@ -1,5 +1,9 @@
 {
   "Settings": {
+    "ADD_SHORTCUT_BUTTON": "Tambahkan ke layar utama",
+    "FOLLOW_COMMUNITY_BUTTON": "Ikuti halaman kami",
+    "JOIN_COMMUNITY_BUTTON": "Gabung ke grup kami",
+    "QUIT_GAME_BUTTON": "Keluar dari game",
     "ABOUT_BUTTON": "Tentang",
     "ACCOUNT_DELETION_BUTTON": "Hapus Akun",
     "ANALYTICS_DESCRIPTION": "Analisis penggunaan opsional dengan Google untuk membantu meningkatkan game. Menggunakan cookie analitik. Aktif secara default; nonaktifkan di sini kapan saja.",

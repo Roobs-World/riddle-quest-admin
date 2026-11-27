@@ -94,6 +94,17 @@
 .modal-victory .reward-continue-loading .pulsing-spinner {
   scale: 0.6;
 }
+.modal-victory .result-share {
+  width: 100%;
+}
+.modal-victory .result-share button {
+  min-height: 44px;
+  width: 100%;
+}
+.modal-victory .result-share p {
+  margin: 4px 0 0;
+  font-size: 14px;
+}
 @keyframes victory-chest-open {
   0%, 100% { transform: scale(1) rotate(0); }
   42% { transform: scale(1.12) rotate(-3deg); }
