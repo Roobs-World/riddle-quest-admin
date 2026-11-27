@@ -4,7 +4,7 @@ Facebook checkout uses `FBInstant.payments`. The backend requires both a signed 
 
 As of 27 November 2026, all seven one-time products are registered in Meta's catalog and use the existing SDK checkout and server grant implementation. The missing $4.99 non-consumable Remove Interstitial Ads product was added; the dashboard confirmed seven of seven products. Checkout remains disabled: payout setup, IAP approval, the required game permission and actual V2 payment-event acceptance remain outstanding. See the [catalog and readiness record](evidence/facebook-payments-catalog-2026-11-27.md).
 
-The local Functions configuration still disables `commerce` and `rewarded_ads`, and does not set `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1`. These are local deployment inputs, not a verification of deployed configuration. Neither a saved callback nor a successful verification handshake proves that payment events will arrive. No hosted purchase or refund acceptance is claimed.
+The local Functions configuration still disables `commerce` and does not set `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1`. The later [rewarded-ad rollout](evidence/facebook-rewarded-ad-setup-2026-11-27.md) removed `rewarded_ads` from the local disabled-feature list and verified that the deployed startup and rewarded-continuation functions retain only `commerce`. That rollout did not change payment readiness. Neither a saved callback nor a successful verification handshake proves that payment events will arrive. No hosted purchase or refund acceptance is claimed.
 
 ## Supported products and subscriptions
 
