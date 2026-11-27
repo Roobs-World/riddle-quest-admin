@@ -9,6 +9,7 @@
 - [Subscription authority and ad eligibility](facebook-ad-eligibility.md)
 - [Subscription ad gate correction and verification](evidence/facebook-subscription-ad-gate-2026-11-27.md)
 - [Live dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md)
+- [Prerequisite follow-up and single-account testing limits](evidence/facebook-prerequisite-followup-2026-11-27.md)
 - [Expanded API candidate and local build evidence](evidence/facebook-expanded-api-build-2026-11-27.md)
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md)
 - [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)

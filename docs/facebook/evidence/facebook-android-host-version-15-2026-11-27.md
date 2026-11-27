@@ -32,7 +32,13 @@ The desktop observation contained 49 advertised names. The two names present the
 
 ## Native Privacy Policy cancellation
 
-From Settings, selecting **Privacy Policy** opened the Facebook app's native **Open link in Facebook browser?** confirmation. Selecting **CANCEL** dismissed that confirmation and restored Settings. The external browser was not opened. This establishes the phone's native cancellation/recovery path for Privacy Policy; mobile Terms of Use and successful external navigation were not exercised.
+From Settings, selecting **Privacy Policy** opened the Facebook app's native **Open link in Facebook browser?** confirmation. Selecting **CANCEL** dismissed that confirmation and restored Settings. The external browser was not opened.
+
+A later single-account follow-up rechecked the rendered version 15 bundle, restored the kettle puzzle and 1,035 coins, then repeated the cancellation path for **Terms of Use**. The native prompt said the player would leave the game and open the link in Facebook. **CANCEL** returned to Settings; closing Settings restored enabled gameplay controls. Successful external navigation remains untested.
+
+## Activity fallback follow-up
+
+Opened **Multiplayer → Activity**. The ordinary game view changed from **Loading results…** to **No completed matches yet.** Closing it restored Settings and Multiplayer with 1,035 coins unchanged. Reopening Multiplayer and Activity produced the same empty result and closed cleanly a second time. The inspected mobile SDK advertised no overlay factory, so this is the in-game Activity fallback and recovery, not native overlay acceptance or multiplayer participation. No tournament tab, match, invitation or score publication was triggered.
 
 ## Background and return
 

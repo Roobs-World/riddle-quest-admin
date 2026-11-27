@@ -6,6 +6,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 
 ## Authoritative evidence and status
 
+- [Prerequisite follow-up](evidence/facebook-prerequisite-followup-2026-11-27.md): fresh connector permission/review discrepancies, six workflow prerequisites and payment/tournament limits; product dashboard views were not freshly rechecked. Current testing remains single-account.
 - [Dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md): current product-specific hosting, review and cross-play observations.
 - [Connector review JSON](evidence/facebook-live-review-state-2026-11-27.json): app-review status, requirements and individual privileges. There is no separate dashboard-prerequisites JSON.
 - [Permission-specific role-access follow-up](evidence/facebook-role-access-followup-2026-11-27.json): Zero Permission Access reports BASIC standard access and no advanced access, while aggregate privilege and review-history fields remain inconsistent.

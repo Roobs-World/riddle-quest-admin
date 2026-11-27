@@ -140,6 +140,8 @@ Cross-Play Management is Not Linked. Do not invent a destination, associated app
 
 ## Reconcile review prerequisites before submission
 
+The [prerequisite follow-up](evidence/facebook-prerequisite-followup-2026-11-27.md) records fresh connector discrepancies and contract limits without refreshing the product-specific dashboard views below. The owner requested continued single-account checks; multi-person acceptance remains untested.
+
 Business Verification is Verified and In App Ads is Approved. Those statuses cover only their named requirements. Approved Partner Program, Policy, Quality, In App Purchases, Bot, and App Property are Not Submitted in the recorded dashboard state. Policy and Quality submission controls are disabled.
 
 The permission-specific Zero Permission Access query reports `standard_access: true`, `advanced_access: false`, and tier `BASIC`. Its aggregate privilege still reports `is_live: false`, `is_rejected: true`, `grant_status: REJECTED`, and `access_level: none`. BASIC role-account access and the unresolved public-access status must remain distinct.
