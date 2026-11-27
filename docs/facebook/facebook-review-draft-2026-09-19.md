@@ -1,6 +1,6 @@
 # Riddle Quest — Facebook review preparation
 
-Historical handoff. Use the [27 November reviewer handoff for Riddle Quest Testing version 12](facebook-review-draft-2026-11-27.md) for current candidate instructions, evidence, and remaining prerequisites. The September configuration and release claims below are retained as history.
+Historical handoff. Use the [27 November reviewer handoff for Riddle Quest Testing version 14](facebook-review-draft-2026-11-27.md) for current candidate instructions, evidence, and remaining prerequisites. The September configuration and release claims below are retained as history.
 
 **Status: preparation in progress; not ready for final submission.**
 

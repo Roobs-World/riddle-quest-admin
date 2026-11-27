@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-11-27T14:24:45.199960+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "61fc18b0a3df0d6efd69b2b28eb1eeb3abb8e24f",
+  "archiveSha256": "d44c2e9b59b9eea398d8bdd0382149898161a2726bad8ec2d8289a1bb0cae03d",
+  "archiveBytes": 2865660,
+  "version": 14,
+  "bundleId": "30477676368485685",
+  "status": "Testing",
+  "processingComplete": true,
+  "providerDownloadSha256": "d44c2e9b59b9eea398d8bdd0382149898161a2726bad8ec2d8289a1bb0cae03d",
+  "sdk": "8.0 [Network Enabled Zero Permissions]",
+  "productionUnchanged": {
+    "version": 9,
+    "bundleId": "29168977262783270"
+  },
+  "evidence": "Authenticated Meta Web Hosting row, Testing confirmation and independent provider download hash and byte count match.",
+  "archiveEntries": 422,
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "hostedSmoke": {
+    "startup": "Passed after slow initial startup: restored Classic coconut puzzle and 920 coins.",
+    "settingsCancellation": "Privacy Policy and Terms of Use opened native Riddle Quest confirmations for the fixed roobsworld.com/riddle-quest destinations. Go back cancelled each; controls became enabled again.",
+    "quitRelaunch": "Quit game left the game for Facebook Gaming. Relaunching the exact version-14 Play destination restored the same puzzle, 920 coins and enabled Settings and Multiplayer.",
+    "diagnosticChanges": "No SDK replacement, HTTP fixtures, runtime state injection or live account replacement.",
+    "externalSideEffects": "Native confirmation open/cancel and ordinary game quit/relaunch only; no message, invitation, purchase, account deletion, notification opt-in, production promotion or review submission."
+  },
+  "localVerification": {
+    "focusedTests": 39,
+    "focusedSuites": 2,
+    "browserSuites": 1,
+    "browserIntegratedTests": 1,
+    "browserSeconds": 33.233,
+    "browserOldEntryFailed": true,
+    "artifactFiles": 420,
+    "artifactMiB": 4.51,
+    "initialMiB": 0.71,
+    "canonicalPreflight": "passed"
+  },
+  "limitations": "The stale checkout and never-settling eligibility cases use local external-boundary fixtures. Live commerce remains disabled. Version-13 rewarded observations remain historical. Mobile, two-account co-play, approvals and the remaining submission gates remain open."
+}
