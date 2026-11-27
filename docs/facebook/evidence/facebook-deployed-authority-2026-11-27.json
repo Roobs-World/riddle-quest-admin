@@ -1,0 +1,694 @@
+{
+  "checkedAt": "2026-11-27T12:59:57.396996+00:00",
+  "finishedAt": "2026-11-27T13:00:42.141067+00:00",
+  "projectId": "riddle-quest-ec2b2",
+  "appName": "Riddle Quest",
+  "method": "Read-only gcloud functions describe --v2 with explicit field projection; no function invocation",
+  "scope": "Canonical 25 Facebook exports, deleteAccount, and six notification/settlement delivery endpoints; does not cover every shared gameplay/race function.",
+  "canonicalExportSource": "platforms/web/facebook/server/scripts/audit-facebook-backend-exports.js",
+  "canonicalExpectedExports": [
+    "issueFacebookIdentityNonce",
+    "exchangeFacebookIdentity",
+    "grantFacebookPurchase",
+    "facebookPaymentWebhook",
+    "facebookDataDeletionCallback",
+    "facebookDataDeletionStatus",
+    "recordFacebookTournament",
+    "listFacebookTournament",
+    "blockRival",
+    "reportRival",
+    "listLiveRaceHistory",
+    "aggregatePresenceStatus",
+    "setPresenceConsent",
+    "createFacebookReferral",
+    "bindFacebookReferral",
+    "syncKnownRivalPresenceVisibility",
+    "syncBlockedRivalPresenceVisibility",
+    "joinFacebookContext",
+    "leaveFacebookContext",
+    "listFacebookContextBoard",
+    "recordFacebookContextRun",
+    "getFacebookClientConfiguration",
+    "claimFacebookNotificationPermissionPrompt",
+    "acceptFacebookNotificationPermissionPrompt",
+    "grantFacebookRewardedContinue"
+  ],
+  "functionCount": 32,
+  "commonObservedEnvironmentForAllFunctions": {
+    "FACEBOOK_APP_ID": "1748953042991569",
+    "FACEBOOK_FIREBASE_APP_ID": "1:329028367192:web:9b535c8edb2639f8b7eb2d",
+    "FACEBOOK_GAME_ORIGINS": "https://www.facebook.com,https://apps.facebook.com,https://apps-1748953042991569.apps.fbsbx.com",
+    "FACEBOOK_DELETION_STATUS_BASE_URL": "https://facebookdatadeletionstatus-h5dplxxwha-uc.a.run.app",
+    "NOTIFICATION_MANAGER_URL": "https://riddle-quest-admin.vercel.app"
+  },
+  "missingEnvironmentValue": "null means the explicitly selected environment variable was not returned/configured; no default is inferred in this JSON.",
+  "functions": [
+    {
+      "name": "aggregatePresenceStatus",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "aggregatepresencestatus-00037-saz",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:33.590199346Z",
+      "build": "projects/329028367192/locations/europe-west1/builds/5c953ea3-e8a4-45d2-9e63-7e93d1c45707",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1795665862720516",
+        "object": "aggregatePresenceStatus/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "deliverLiveRaceChallengePush",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "deliverliveracechallengepush-00016-yoh",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:30.461617210Z",
+      "build": "projects/329028367192/locations/europe-west1/builds/5c953ea3-e8a4-45d2-9e63-7e93d1c45707",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1795665861024796",
+        "object": "deliverLiveRaceChallengePush/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "dispatchFacebookManagerNotification",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "dispatchfacebookmanagernotification-00001-zow",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:08:10.226320159Z",
+      "build": "projects/329028367192/locations/europe-west1/builds/17d0787f-de0e-4db9-9e72-0c5413a287eb",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1795666030303140",
+        "object": "dispatchFacebookManagerNotification/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "setNotificationPreference",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "setnotificationpreference-00004-rix",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:08:17.506331772Z",
+      "build": "projects/329028367192/locations/europe-west1/builds/d9b91ec3-74fe-4534-b041-98797b05c70d",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1795666032173278",
+        "object": "setNotificationPreference/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "syncFacebookManagerRegistration",
+      "region": "europe-west1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "syncfacebookmanagerregistration-00001-rul",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:08:30.799292727Z",
+      "build": "projects/329028367192/locations/europe-west1/builds/17d0787f-de0e-4db9-9e72-0c5413a287eb",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-europe-west1",
+        "generation": "1795666070198976",
+        "object": "syncFacebookManagerRegistration/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "acceptFacebookNotificationPermissionPrompt",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "acceptfacebooknotificationpermissionprompt-00037-nop",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:05.954767151Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665829300264",
+        "object": "acceptFacebookNotificationPermissionPrompt/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "bindFacebookReferral",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "bindfacebookreferral-00038-jip",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:19.267961254Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665847605775",
+        "object": "bindFacebookReferral/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "blockRival",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "blockrival-00037-del",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:14.948552924Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665785417951",
+        "object": "blockRival/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "claimFacebookNotificationPermissionPrompt",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "claimfacebooknotificationpermissionprompt-00037-qet",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:58.724580649Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665828603085",
+        "object": "claimFacebookNotificationPermissionPrompt/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "createFacebookReferral",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "createfacebookreferral-00037-noh",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:57.940253893Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665827966322",
+        "object": "createFacebookReferral/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "deleteAccount",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "deleteaccount-00051-jaj",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T19:21:51.848425073Z",
+      "build": "projects/329028367192/locations/us-central1/builds/47a3e60b-9214-4373-883c-e1320d5e19ee",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795720894733231",
+        "object": "deleteAccount/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "deliverRacePerformanceEvent",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "deliverraceperformanceevent-00035-sul",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:02.015554283Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665831386956",
+        "object": "deliverRacePerformanceEvent/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "deliverRaceSettlementEvent",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "deliverracesettlementevent-00036-fos",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:01.611827550Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665831286640",
+        "object": "deliverRaceSettlementEvent/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "exchangeFacebookIdentity",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "exchangefacebookidentity-00039-voj",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:06.367834416Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665837072983",
+        "object": "exchangeFacebookIdentity/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "facebookDataDeletionCallback",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "facebookdatadeletioncallback-00038-dax",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:04.832229569Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775590450",
+        "object": "facebookDataDeletionCallback/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "facebookDataDeletionStatus",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "facebookdatadeletionstatus-00037-pam",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:04.839289734Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775622990",
+        "object": "facebookDataDeletionStatus/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "facebookPaymentWebhook",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "facebookpaymentwebhook-00002-som",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:05.204264498Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775048446",
+        "object": "facebookPaymentWebhook/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "getFacebookClientConfiguration",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "getfacebookclientconfiguration-00039-ger",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-27T06:51:21.054317238Z",
+      "build": "projects/329028367192/locations/us-central1/builds/7737f92a-4640-498e-9f1a-6748352cc0f4",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795762226012771",
+        "object": "getFacebookClientConfiguration/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "grantFacebookPurchase",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "grantfacebookpurchase-00003-vuq",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:05.931959873Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665836732718",
+        "object": "grantFacebookPurchase/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "grantFacebookRewardedContinue",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "grantfacebookrewardedcontinue-00022-moq",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-27T06:39:30.252112044Z",
+      "build": "projects/329028367192/locations/us-central1/builds/ea99d099-ca8a-40a0-908c-a759e1b31378",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795761503460266",
+        "object": "grantFacebookRewardedContinue/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "issueFacebookIdentityNonce",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "issuefacebookidentitynonce-00038-lok",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:03.669207172Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775572747",
+        "object": "issueFacebookIdentityNonce/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "joinFacebookContext",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "joinfacebookcontext-00037-can",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:00.638103978Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665829873065",
+        "object": "joinFacebookContext/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "leaveFacebookContext",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "leavefacebookcontext-00037-yat",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:00.832896589Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665828558472",
+        "object": "leaveFacebookContext/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "listFacebookContextBoard",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "listfacebookcontextboard-00037-yoc",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:03.792368005Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665828526984",
+        "object": "listFacebookContextBoard/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "listFacebookTournament",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "listfacebooktournament-00037-geq",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:06.338922396Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775694395",
+        "object": "listFacebookTournament/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "listLiveRaceHistory",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "listliveracehistory-00014-xep",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:58.279808945Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665829436712",
+        "object": "listLiveRaceHistory/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "recordFacebookContextRun",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "recordfacebookcontextrun-00038-gor",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:00.337981056Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665829919034",
+        "object": "recordFacebookContextRun/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "recordFacebookTournament",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "recordfacebooktournament-00038-zew",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:04.206805693Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665775627410",
+        "object": "recordFacebookTournament/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "reportRival",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "reportrival-00038-wem",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:18.922132273Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665846654534",
+        "object": "reportRival/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "setPresenceConsent",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "setpresenceconsent-00037-cef",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:03:15.868703306Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665785835803",
+        "object": "setPresenceConsent/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "syncBlockedRivalPresenceVisibility",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "syncblockedrivalpresencevisibility-00038-wex",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:00.050955535Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665830174739",
+        "object": "syncBlockedRivalPresenceVisibility/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    },
+    {
+      "name": "syncKnownRivalPresenceVisibility",
+      "region": "us-central1",
+      "state": "ACTIVE",
+      "runtime": "nodejs22",
+      "revision": "syncknownrivalpresencevisibility-00037-wuz",
+      "allTrafficOnLatestRevision": true,
+      "updatedAt": "2026-11-26T04:04:10.657239010Z",
+      "build": "projects/329028367192/locations/us-central1/builds/b7b35978-4937-453d-8fba-069609589236",
+      "resolvedSource": {
+        "bucket": "gcf-v2-sources-329028367192-us-central1",
+        "generation": "1795665830686298",
+        "object": "syncKnownRivalPresenceVisibility/function-source.zip"
+      },
+      "environment": {
+        "FACEBOOK_DISABLED_FEATURES": "commerce,rewarded_ads",
+        "FACEBOOK_PAYMENTS_WEBHOOK_ENABLED": null,
+        "FACEBOOK_PAYMENT_ENVIRONMENTS": null
+      }
+    }
+  ],
+  "limitations": [
+    "Control-plane metadata only. No function was invoked and no Firebase configuration, source or deployment was changed.",
+    "Source object generations identify uploaded source objects; this evidence does not establish their bytes match a Git commit.",
+    "The canonical 25 exports plus seven explicitly named account/notification/delivery endpoints do not include every shared gameplay/race endpoint.",
+    "Metadata does not prove signed identity/receipt validation, entitlements, idempotency, webhook delivery, notification dispatch or account cleanup.",
+    "All observed endpoint update times predate this thread start, 2026-11-27T10:23:01.109Z."
+  ]
+}

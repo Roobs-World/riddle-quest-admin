@@ -45,3 +45,11 @@ The only additional game progression was the single normal Classic win; its 35 c
 No Firebase code, configuration or provider server module was edited, and no backend deployment occurred. No permission, community membership, notification consent, purchase, deletion, review submission, Production promotion or app association was changed.
 
 The [role-access query](facebook-role-access-followup-2026-11-27.json) explicitly confirms BASIC standard access for app-role users and absent advanced access. These checks therefore do not prove public availability. The [API checklist](../facebook-api-submission-checklist-2026-11-27.md) still retains six implementation gaps, eleven conditional entries, native mobile work and provider/review prerequisites.
+
+## Later lifecycle observation limit
+
+A further observation on the same candidate read the existing DOM while opening and cancelling the native Terms prompt. Before and during that prompt, the game document remained `visible`, the main element remained `game-app` without its `paused` class or pause banner, and music remained playing with advancing time. This native dialog therefore did not exercise an observable game pause; it is not acceptance evidence for `onPause` or `onResume`.
+
+A subsequent tab-fronting attempt also did not yield an observed hidden game document. No artificial visibility event, SDK replacement or lifecycle callback was injected to turn that attempt into a pass. The game was restored to the foreground, ready at 920 coins.
+
+The existing [host lifecycle bridge](../../../src/platform/bridge/browser/useHostBridgeLifecycle.ts) maps browser visibility and platform callbacks to the same pause state. Even a successful ordinary background/return check would establish combined recovery without independently identifying the native callback source. Native pause/resume, save-drain and mobile-host acceptance remain open.
