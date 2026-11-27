@@ -13,7 +13,7 @@ test("the isolated runner downloads and pins the Codex executable without npm", 
   assert.doesNotMatch(source, /run\("npx"/u);
   assert.doesNotMatch(source, /run\("codex"/u);
   assert.doesNotMatch(source, /deploy-jest\.yml/u);
-  assert.doesNotMatch(source, /\/merge|GITHUB_TOKEN|SENTRY_AUTH_TOKEN|SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT|x-access-token|api.github.com/u);
+  assert.doesNotMatch(source, /\/merge|GITHUB_TOKEN|SENTRY_AUTH_TOKEN|JEST_MCP_ACCESS_TOKEN|SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT|x-access-token|api.github.com/u);
   assert.equal((source.match(/await checkDeployment\(\)/gu) ?? []).length, 3);
   const agentEnvironment = /const agentEnv = (.*);/u.exec(source)?.[1];
   assert.doesNotMatch(agentEnvironment, /GITHUB|TICKET|CHECK_URL/u);

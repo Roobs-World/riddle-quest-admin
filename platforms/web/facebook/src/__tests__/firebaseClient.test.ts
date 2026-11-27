@@ -3,8 +3,6 @@ import {
   parseFacebookClientConfiguration,
   parseFacebookContextBoardResponse,
   parseFacebookContextRecordResponse,
-  parseFacebookNotificationPromptAcceptance,
-  parseFacebookNotificationPromptClaim,
   parseFacebookTournamentRecordResponse,
   parseFacebookTournamentResponse,
 } from "../facebookCallableResponses";
@@ -32,27 +30,6 @@ describe("Facebook callable response validation", () => {
       {...configuration, extraCapability: true},
     ])
       expect(() => parseFacebookClientConfiguration(invalid)).toThrow("configuration response");
-  });
-
-  test("accepts only exact bounded notification prompt lease responses", () => {
-    expect(parseFacebookNotificationPromptClaim({granted: false})).toEqual({granted: false});
-    expect(parseFacebookNotificationPromptClaim({granted: true, claimedAtMs: 123})).toEqual({
-      granted: true,
-      claimedAtMs: 123,
-    });
-    expect(parseFacebookNotificationPromptAcceptance({accepted: true})).toBeUndefined();
-    for (const invalid of [
-      null,
-      {granted: true},
-      {granted: true, claimedAtMs: -1},
-      {granted: true, claimedAtMs: 1.5},
-      {granted: false, claimedAtMs: 1},
-      {granted: false, extra: true},
-    ])
-      expect(() => parseFacebookNotificationPromptClaim(invalid)).toThrow("prompt claim response");
-    for (const invalid of [null, {accepted: false}, {accepted: true, extra: true}]) {
-      expect(() => parseFacebookNotificationPromptAcceptance(invalid)).toThrow("acceptance response");
-    }
   });
 
   test("rejects forged social fields, windows, IDs, ordering, ranks, and player projections", () => {

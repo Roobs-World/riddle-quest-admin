@@ -370,10 +370,8 @@ export const createPlayHostMessageHandlers = ({
       }
       applyPurchaseBalance(result);
       setNotice(
-        result.purchaseType === "subscription"
-          ? tr("CoinShop.SUBSCRIPTION_ACTIVE_NOTICE")
-          : result.purchaseType === "durable"
-            ? tr("CommonAlerts.SUCCESS_TITLE")
+        result.purchaseType && result.purchaseType !== "consumable"
+          ? tr("CommonAlerts.SUCCESS_TITLE")
           : tr("WebPortal.PURCHASE_COMPLETE", {coins: result.coinsAwarded ?? 0}),
       );
       postOperation(message.requestId, "purchase", true, result);

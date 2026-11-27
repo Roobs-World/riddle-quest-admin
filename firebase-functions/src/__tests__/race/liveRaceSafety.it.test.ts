@@ -5,7 +5,7 @@ import {getFirestore} from "firebase-admin/firestore";
 import {getDatabase, type Database} from "firebase-admin/database";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {blockKnownRival, reportKnownRival} from "../../social/socialSafety";
-import {getAccountDeletionRef, ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
 import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../../../../platforms/web/reddit/server/redditSecurity";
@@ -24,7 +24,7 @@ let db: FirebaseFirestore.Firestore;
 let database: Database;
 /** Cleanup is permitted only after both loopback demo guards pass. */
 async function clear() {
-  for (const name of ["users", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "socialModerationQueue", "socialReportRateLimits", ACCOUNT_DELETION_COLLECTION, "localizedRiddles", "providerIdentities", "redditGatewayNonces", "redditGatewayRateLimits"])
+  for (const name of ["users", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "socialModerationQueue", "socialReportRateLimits", JEST_ACCOUNT_DELETION_COLLECTION, "localizedRiddles", "providerIdentities", "redditGatewayNonces", "redditGatewayRateLimits"])
     await db.recursiveDelete(db.collection(name));
   await database.ref().set(null);
 }
@@ -91,11 +91,11 @@ it("routes signed Reddit safety through strict shared callables and deletion lea
     await send("gameplay.safety.report", {...payload, targetUserId: ids[1]});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
     /** Permanent owner deletion is rejected by the shared lease before another moderation record. */
-    await getAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 2000});
+    await getJestAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 2000});
     await send("gameplay.safety.report", {...payload, requestId: "signed-deleted-report-0002"});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
     expect((await db.collection("socialModerationQueue").get()).size).toBe(1);
-    expect((await getAccountDeletionRef(db, ids[0]).collection("activeOperations").get()).empty).toBe(true);
+    expect((await getJestAccountDeletionRef(db, ids[0]).collection("activeOperations").get()).empty).toBe(true);
   } finally {
     jest.restoreAllMocks(); jest.useRealTimers();
     for (const [key, value] of Object.entries(original)) {if (value === undefined) delete process.env[key]; else process.env[key] = value;}
@@ -165,7 +165,7 @@ it.each(["facebook", "reddit"] as const)("authorizes both %s human seats, preser
 it.each(["stranger", "deleted", "expired", "corrupt-seat", "cross-provider"] as const)("rejects %s live-target reports without queue writes", async kind => {
   /** Every rejected fixture starts with a real bound pair. */
   const {ids, seats} = await pair();
-  if (kind === "deleted") await getAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 2000});
+  if (kind === "deleted") await getJestAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 2000});
   if (kind === "corrupt-seat") await db.doc(`liveRaceMatches/${seats[0].ticketId}`).update({tickets: [seats[1].ticketId, seats[0].ticketId]});
   if (kind === "cross-provider") await db.doc(`liveRaceTickets/${seats[1].ticketId}`).update({userId: `reddit_${"b".repeat(40)}`});
   await expect(reportKnownRival(kind === "stranger" ? ids[2] : ids[0], {liveTicketId: seats[0].ticketId, category: "spam", requestId: "rejected-live-report"},

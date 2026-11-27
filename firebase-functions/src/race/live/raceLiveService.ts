@@ -8,7 +8,7 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_WIN_COINS, RACE_RULES,
   type JoinLiveRace, type UpdateLiveRace} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
-import {getAccountDeletionRef, assertAccountActive} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef, assertJestAccountActive} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {assertAndroidRaceAccount} from "../../../../platforms/native/android/server/race/androidRaceAccount";
 import {applyRaceGuess, applyRaceHint, applyRaceSkip, refreshRaceRun} from "../runs/raceEngine";
@@ -92,8 +92,8 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
     /** Reads fresh recovery authority and only public identity fields before shared-pool locks or content queries. */
     const [intent, current, receipt, owner, deletion] = await Promise.all([readLiveJoinIntent(db, transaction, userId, input), transaction.get(pointer), transaction.get(ticketRef),
       transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username", "stats.level", "avatarUrl", "androidProvider"]}).then(([profile]) => profile),
-      transaction.get(getAccountDeletionRef(db, userId))]);
-    assertAccountActive(deletion);
+      transaction.get(getJestAccountDeletionRef(db, userId))]);
+    assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
     assertAndroidRaceAccount(userId, owner.data());
     /** Provides previous id behavior. */
@@ -206,7 +206,7 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
       ...(rematch ? {rematchOfTicketId: input.rematchOfTicketId, inviteRecipientId: rematch.recipientId} : {}), createdAtMs: nowMs, seenAtMs: nowMs,
       run: liveRun({...deck, locale: input.locale, categoryId: input.categoryId}, userId, ticketId)};
     if (privateEntry) {
-      if (!rematch && !["facebook", "android"].includes(raceProviderScope(userId) ?? ""))
+      if (!rematch && !["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? ""))
         throw new HttpsError("permission-denied", "Platform invitations unavailable.");
       /** Private seats are recoverable but cannot be selected by public searches. */
       const expiresAt = admin.firestore.Timestamp.fromMillis(nowMs + 7 * 86_400_000);
@@ -345,8 +345,8 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   const ticketRef = db.doc(`liveRaceTickets/${input.ticketId}`);
   /** Provides [snapshot, deletion] behavior. */
   const [snapshot, deletion] = await Promise.all([transaction.get(ticketRef),
-    transaction.get(getAccountDeletionRef(db, userId)), options.authorize?.()]);
-  assertAccountActive(deletion);
+    transaction.get(getJestAccountDeletionRef(db, userId)), options.authorize?.()]);
+  assertJestAccountActive(deletion);
   /** Deletion boundaries stay local to this attempt; a retry must read them again. */
   const deletionSnapshots = new Map<string, FirebaseFirestore.DocumentSnapshot>([[userId, deletion]]);
   if (!snapshot.exists) throw new HttpsError("not-found", "Live race unavailable.");
@@ -426,7 +426,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
   const [receipt, checks] = await Promise.all([
     input.action === "poll" ? null : transaction.get(requestRef),
     rivalId && !match.deletedSeats?.[1 - seat] ? Promise.all([transaction.get(db.doc(`users/${userId}/blockedRivals/${rivalUser}`)),
-      transaction.get(db.doc(`users/${rivalUser}/blockedRivals/${userId}`)), transaction.get(getAccountDeletionRef(db, rivalUser))]) : [],
+      transaction.get(db.doc(`users/${rivalUser}/blockedRivals/${userId}`)), transaction.get(getJestAccountDeletionRef(db, rivalUser))]) : [],
   ]);
   if (checks[2]) deletionSnapshots.set(rivalUser, checks[2]);
   /** Read-only polls have no command binding or receipt to persist. */
@@ -504,7 +504,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
       const participantId = match.runs[seat]!.userId;
       /** Reuse only this attempt's canonical deletion read; unobserved accounts still need one. */
       const [profile, deletion] = await Promise.all([transaction.get(db.doc(`users/${participantId}`)),
-        deletionSnapshots.get(participantId) ?? transaction.get(getAccountDeletionRef(db, participantId))]);
+        deletionSnapshots.get(participantId) ?? transaction.get(getJestAccountDeletionRef(db, participantId))]);
       return profile.exists && !deletion.exists ? profile : null;
     }));
     /** Only Facebook delivery needs the winner's frozen context; other providers use the match receipt. */

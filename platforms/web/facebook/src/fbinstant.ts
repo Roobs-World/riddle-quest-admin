@@ -6,12 +6,8 @@ export interface FacebookPlayerData {
 
 /** Defines the contract for facebook instant player. */
 export interface FacebookInstantPlayer {
-  /** Checks whether Meta permits a game bot subscription prompt for this player. */
-  canSubscribeBotAsync?(): Promise<boolean>;
-  /** Reads the player's existing game bot subscription from Meta. */
-  isSubscribedBotAsync?(): Promise<boolean>;
-  /** Opens Meta's own game bot subscription prompt after an eligibility check. */
-  subscribeBotAsync?(): Promise<void>;
+  /** Reads Meta's coarse age category without exposing a birth date. */
+  getAgeCategoryAsync?(): Promise<"TN" | "AD" | "UNKNOWN">;
   /** Gets id. */
   getID(): string;
   /** Gets signed player info async. */
@@ -241,6 +237,8 @@ export interface FacebookInstantSdk {
   getLocale?(): string | null;
   /** Opens Meta's top-level matchmaking API and optionally switches the context. */
   matchPlayerAsync?(matchTag?: string, switchContextWhenMatched?: boolean, offlineMatch?: boolean): Promise<void>;
+  /** Checks whether the current player can use native matchmaking. */
+  checkCanPlayerMatchAsync?(): Promise<boolean>;
   /** Opens Meta's native share dialog after the game has started. */
   shareAsync?(payload: FacebookSharePayload): Promise<void>;
   /** Opens Meta's native friend invitation picker when supported by this host. */

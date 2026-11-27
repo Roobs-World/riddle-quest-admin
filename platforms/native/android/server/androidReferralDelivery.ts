@@ -1,7 +1,7 @@
 import {onDocumentCreated} from "firebase-functions/v2/firestore";
 import {z} from "zod";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
-import {isAccountDeletedError, runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {androidReferralHash} from "./androidReferralIdentity";
 import {settleAndroidReferralAfterPlay} from "./androidReferrals";
 
@@ -30,7 +30,7 @@ export const deliverAndroidReferralPlay = onDocumentCreated(
     )
       return;
     try {
-      await runWithAccountOperationLease(data.data.uid, 60, () =>
+      await runWithJestAccountOperationLease(data.data.uid, 60, () =>
         settleAndroidReferralAfterPlay(admin.firestore(), data.data.uid, {
           kind: "live",
           matchId: data.data.matchId,
@@ -38,7 +38,7 @@ export const deliverAndroidReferralPlay = onDocumentCreated(
         }),
       );
     } catch (error) {
-      if (!isAccountDeletedError(error)) throw error;
+      if (!isJestAccountDeletedError(error)) throw error;
     }
     await admin.firestore().runTransaction(async (tx) => {
       /** Current account-owned snapshot or effect lifetime checked before applying work. */

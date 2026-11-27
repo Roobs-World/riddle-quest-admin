@@ -1,8 +1,7 @@
 import {SpinningWheel} from "../../app/components/feedback/SpinningWheelLoader";
-import {ProfileSubscriptionContext} from "../browser/ProfileSubscriptionContext";
 import chestUrl from "../../../assets/images-web/chest-closed.webp";
 import {useProviderProfile} from "./ProviderProfileContext";
-import {useContext, useLayoutEffect, useRef, useState} from "react";
+import {useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
 import type {BridgeUser} from "../../platform/bridge/messages";
 import type {GameModal, GameSessionState} from "../../gameplay/session/gameSession";
@@ -45,8 +44,6 @@ export function ProfileModalPage({
   const avatarUrl = profile?.avatarUrl ?? providerProfile?.avatarUrl;
   /** Optional outbound sharing supplied by the active release target. */
   const referralSharing = useReferralSharing();
-  /** Target-specific subscription management surface supplied to Profile. */
-  const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Recoverable avatar-selection error shown within the profile page. */
   const [avatarError, setAvatarError] = useState<string | null>(null);
   /** Whether the destructive account-deletion confirmation is visible. */
@@ -258,7 +255,6 @@ export function ProfileModalPage({
           </span>
         </button>
       </div>
-      {subscriptionControls}
       {accountManagement?.deletion && <div className="profile-danger-zone">
         <button
           ref={deleteTriggerRef}

@@ -1,6 +1,6 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
-import {getAccountDeletionRef} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceDeadlineAtMs, raceRules} from "../runs/raceEngine";
 import {raceDeckContentVersion, validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "../runs/raceDeckSnapshot";
 import {projectRaceMatchCandidate, raceMatchCandidateEquals} from "../matchmaking/raceMatchCandidates";
@@ -44,11 +44,11 @@ export async function reconcileRaceChallenge(transaction: FirebaseFirestore.Tran
   /** Provides [lobby, deletion, existing, original] behavior. */
   const [lobby, deletion, original] = await Promise.all([
     transaction.get(db.doc(`raceInviteLobbies/${document.id}`)),
-    transaction.get(getAccountDeletionRef(db, challenge.creatorId)),
+    transaction.get(getJestAccountDeletionRef(db, challenge.creatorId)),
     challenge.riddles ? Promise.resolve(null) : transaction.get(db.doc(`raceRuns/${challenge.creatorRunId}`)),
   ]);
   /** Provides scope behavior. */
-  const scope = lobby.exists || challenge.scope === "invitation" || document.id.startsWith("race-invite-") ? "invitation" : "public";
+  const scope = lobby.exists || challenge.scope === "invitation" || document.id.startsWith("jest-invite-") ? "invitation" : "public";
   if (challenge.status !== "active" || challenge.expiresAtMs <= nowMs || deletion.exists) {
     if (existing.exists && !dryRun) transaction.delete(existing.ref);
     return existing.exists ? "changed" : "skipped";

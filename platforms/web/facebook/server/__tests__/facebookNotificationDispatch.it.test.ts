@@ -1,4 +1,3 @@
-import {ACCOUNT_DELETION_COLLECTION} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {createHash} from "node:crypto";
 import {readFileSync} from "node:fs";
 import {getApps, initializeApp} from "firebase-admin/app";
@@ -53,7 +52,7 @@ beforeAll(async () => {
 beforeEach(async () => {
   delete process.env.FACEBOOK_DISABLED_FEATURES;
   await db.recursiveDelete(db.doc(`users/${actor.uid}`));
-  await db.doc(`${ACCOUNT_DELETION_COLLECTION}/${actor.uid}`).delete();
+  await db.doc(`jestAccountDeletionTombstones/${actor.uid}`).delete();
   await db.doc(`users/${actor.uid}`).set({provider: "facebook", stats: {wins: 1}});
   await db.doc(providerPath).set({provider: "facebook", appId: APP, providerPlayerId: actor.playerId,
     uid: actor.uid, accountGeneration: 1, status: "active"});
@@ -66,7 +65,7 @@ afterAll(async () => {
   if (db) {
     await db.recursiveDelete(db.doc(`users/${actor.uid}`));
     await Promise.all([db.doc(providerPath).delete(), db.doc(`facebookNotificationPromptLeases/${actor.uid}`).delete(),
-      db.doc(`${ACCOUNT_DELETION_COLLECTION}/${actor.uid}`).delete()]);
+      db.doc(`jestAccountDeletionTombstones/${actor.uid}`).delete()]);
   }
   await rules?.cleanup();
 });
@@ -151,7 +150,7 @@ it("enforces current consent, emergency-off, provider generation and deletion au
   await db.doc(providerPath).update({accountGeneration: 2});
   expect(await ledger().claim(request)).toBe(false);
   await db.doc(providerPath).update({accountGeneration: 1});
-  await db.doc(`${ACCOUNT_DELETION_COLLECTION}/${actor.uid}`).set({recreationBlocked: true});
+  await db.doc(`jestAccountDeletionTombstones/${actor.uid}`).set({recreationBlocked: true});
   expect(await ledger().claim(request)).toBe(false);
   expect((await db.doc(statePath).get()).exists).toBe(false);
 });
@@ -163,7 +162,7 @@ it("revokes new sending while retaining authorized cleanup during opt-out/deleti
   await ledger().suspend();
   expect(await ledger().claim(work("revoked_send"))).toBe(false);
   await db.doc(providerPath).update({status: "deleting"});
-  await db.doc(`${ACCOUNT_DELETION_COLLECTION}/${actor.uid}`).set({recreationBlocked: true});
+  await db.doc(`jestAccountDeletionTombstones/${actor.uid}`).set({recreationBlocked: true});
   await db.doc(`facebookNotificationPromptLeases/${actor.uid}`).delete();
   process.env.FACEBOOK_DISABLED_FEATURES = "notifications";
   /** Deletion cleanup is server-owned and scoped to one known slot. */

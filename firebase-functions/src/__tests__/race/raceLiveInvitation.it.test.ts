@@ -7,7 +7,7 @@ import {requestDocumentId} from "../../race/raceSetupService";
 import {LIVE_RACE_COUNTDOWN_MS} from "../../../../src/races/contracts/index.js";
 
 /** Authenticated fixture identities share one provider. */
-const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`;
+const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
 /** Stable server clock for invitation expiration and countdowns. */
 const NOW = 1_800_000_000_000;
 /** Isolated emulator database for atomic reservation checks. */

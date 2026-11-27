@@ -13,6 +13,8 @@ const PresenceConsentRequestSchema = z.object({enabled: z.boolean()}).strict();
 const PresenceConsentResponseSchema = z.object({success: z.literal(true), enabled: z.boolean()}).strict();
 /** Provides facebook uid behavior. */
 const facebookUid = /^facebook_[0-9a-f]{40}$/;
+/** Provides jest uid behavior. */
+const jestUid = /^jest_[0-9a-f]{40}$/;
 
 /** Requires provider claims to agree with the UID namespace before account-wide consent changes. */
 export function requirePresenceConsentIdentity(request: CallableRequest<unknown>): string {
@@ -21,7 +23,9 @@ export function requirePresenceConsentIdentity(request: CallableRequest<unknown>
   const {uid, token} = request.auth;
   /** Provides facebook behavior. */
   const facebook = facebookUid.test(uid) && token.provider === "facebook";
-  if (!facebook) throw new HttpsError("permission-denied", "Platform identity is invalid.");
+  /** Provides jest behavior. */
+  const jest = jestUid.test(uid) && typeof token.jestPlayerId === "string" && token.jestPlayerId.length > 0;
+  if (!facebook && !jest) throw new HttpsError("permission-denied", "Platform identity is invalid.");
   return uid;
 }
 

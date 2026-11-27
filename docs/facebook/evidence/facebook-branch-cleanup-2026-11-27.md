@@ -1,5 +1,7 @@
 # Facebook branch cleanup — 27 November 2026
 
+**Scope correction:** The owner subsequently clarified that all Jest backend integrations must remain. The backend and monitoring removals recorded below were reversed; see [client isolation with retained Jest backend](facebook-client-backend-boundary-2026-11-27.md). This earlier record describes commit `b54e9d501`, not the final corrected scope.
+
 The owner requested a Facebook branch based on `web`, followed by removal of the Jest game provider and verification of Facebook API replacements. This source change does not publish, upload, activate, deploy or change live data.
 
 ## Removal and replacement

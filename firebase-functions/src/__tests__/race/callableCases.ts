@@ -190,7 +190,7 @@ export const createRaceCallableCases = (
       handler: handlers.reserveRaceInvite,
       input: {locale: "en", requestId},
       serviceMock: mocks.reserveRaceInviteForUser,
-      response: {challengeId: `race-invite-${"a".repeat(64)}-${"b".repeat(32)}`, expiresAtMs: 1_800_604_800_000},
+      response: {challengeId: `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`, expiresAtMs: 1_800_604_800_000},
       expectedCall: [userId, {locale: "en", requestId}],
       accessCall: [userId],
     },

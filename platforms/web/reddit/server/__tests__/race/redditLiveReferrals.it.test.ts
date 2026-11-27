@@ -6,7 +6,7 @@ import {deliverRacePerformance} from "../../../../../../firebase-functions/src/r
 import {issueRedditReferralToken, bindRedditReferralToken} from "../../redditReferrals";
 import {processRaceDeliveryQueue} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryQueue";
 import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
-import {getAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
 import {LIVE_RACE_WAIT_MS} from "../../../../../../src/races/contracts/index.js";
 import {requestDocumentId} from "../../../../../../firebase-functions/src/race/raceSetupService";
@@ -308,7 +308,7 @@ it.each(["disabled", "deleted", "expired", "missing-source"])("suppresses pendin
   /** Provides event behavior. */
   const event = (await db.collection("racePerformanceOutbox").get()).docs[0];
   if (condition === "disabled") process.env.REDDIT_DISABLED_FEATURES = "referrals,commerce,notifications";
-  if (condition === "deleted") await getAccountDeletionRef(db, PLAYERS[1]).set({deletedAtMs: START + 15001});
+  if (condition === "deleted") await getJestAccountDeletionRef(db, PLAYERS[1]).set({deletedAtMs: START + 15001});
   if (condition === "expired") await db.doc(`liveRaceTickets/${seats[1].ticketId}`).update({expiresAt: Timestamp.fromMillis(START + 15001)});
   if (condition === "missing-source") await db.doc(`liveRaceMatches/${seats[0].ticketId}`).delete();
   await deliverRacePerformance(event.id, db, START + 16000);

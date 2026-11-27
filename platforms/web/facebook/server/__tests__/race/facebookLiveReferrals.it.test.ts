@@ -6,7 +6,7 @@ import {deliverRacePerformance} from "../../../../../../firebase-functions/src/r
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebookReferrals";
 import {processRaceDeliveryQueue} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryQueue";
 import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
-import {ACCOUNT_DELETION_COLLECTION, getAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {Timestamp} from "firebase-admin/firestore";
 import {LIVE_RACE_WAIT_MS} from "../../../../../../src/races/contracts/index.js";
 import {requestDocumentId} from "../../../../../../firebase-functions/src/race/raceSetupService";
@@ -21,7 +21,7 @@ const PLAYERS = [`facebook_${"a".repeat(40)}`, `facebook_${"b".repeat(40)}`];
 const INVITER = `facebook_${"e".repeat(40)}`;
 /** Renders the collections interface. */
 const COLLECTIONS = ["users", "facebookReferralTokens", "facebookReferralBindings", "facebookReferralDailyCaps", "facebookReferralSettlements",
-  ACCOUNT_DELETION_COLLECTION, "racePerformanceOutbox", "raceMaintenance", "liveRaceTickets", "liveRaceMatches",
+  "jestAccountDeletionTombstones", "racePerformanceOutbox", "raceMaintenance", "liveRaceTickets", "liveRaceMatches",
   "liveRaceQueues", "liveRacePlayers", "localizedRiddles/en/riddles", "facebookTournaments"];
 /** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;
@@ -182,7 +182,7 @@ it("cannot collide with a chosen legacy recorded-race request ID", async () => {
   expect((await db.doc(`users/${PLAYERS[1]}`).get()).data()?.coins).toBe(325);
 });
 
-it.each(["android", "reddit"])("preserves %s live wins without Facebook referral work", async provider => {
+it.each(["jest", "reddit"])("preserves %s live wins without Facebook referral work", async provider => {
   /** Provides players behavior. */
   const players = [0, 1].map(i => `${provider}_${String(i + 1).repeat(40)}`);
   /** Provides seats behavior. */
@@ -192,7 +192,7 @@ it.each(["android", "reddit"])("preserves %s live wins without Facebook referral
   expect((await db.collection("racePerformanceOutbox").where("source", "==", "facebook_live").get()).empty).toBe(true);
   /** Provides events behavior. */
   const events = (await db.collection("racePerformanceOutbox").get()).docs;
-  expect(events.map(event => event.data().source)).toEqual(provider === "android" ? [] : ["reddit_live"]);
+  expect(events.map(event => event.data().source)).toEqual(provider === "jest" ? [] : ["reddit_live"]);
   expect((await db.collection("facebookReferralSettlements").get()).empty).toBe(true);
   expect((await db.doc(`users/${INVITER}`).get()).data()?.coins).toBe(300);
 });
@@ -261,7 +261,7 @@ it.each(["disabled", "deleted", "expired", "missing-source"])("suppresses pendin
   /** Provides event behavior. */
   const event = (await db.collection("racePerformanceOutbox").get()).docs[0];
   if (condition === "disabled") process.env.FACEBOOK_DISABLED_FEATURES = "referrals,commerce,rewarded_ads";
-  if (condition === "deleted") await getAccountDeletionRef(db, PLAYERS[1]).set({deletedAtMs: START + 15001});
+  if (condition === "deleted") await getJestAccountDeletionRef(db, PLAYERS[1]).set({deletedAtMs: START + 15001});
   if (condition === "expired") await db.doc(`liveRaceTickets/${seats[1].ticketId}`).update({expiresAt: Timestamp.fromMillis(START + 15001)});
   if (condition === "missing-source") await db.doc(`liveRaceMatches/${seats[0].ticketId}`).delete();
   await deliverRacePerformance(event.id, db, START + 16000);

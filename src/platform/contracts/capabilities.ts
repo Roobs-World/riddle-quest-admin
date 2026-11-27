@@ -97,10 +97,6 @@ export type PlatformPreferences = {
   onboardingComplete?: boolean;
   /** Explicit player consent for account-wide presence publication. */
   presenceEnabled?: boolean;
-  /** Last durable Facebook notification-prompt outcome. */
-  facebookNotificationPermission?: "unknown" | "declined" | "accepted";
-  /** Server-authorized Facebook prompt time in Unix epoch milliseconds. */
-  facebookNotificationLastPromptAtMs?: number;
 };
 
 export type {SavedGame} from "../../gameplay/session/checkpoints/savedGame";
@@ -249,40 +245,6 @@ export type AttemptRecoveryCapability = {
     newCoins: number}>>;
 };
 
-/** Optional provider-owned notification permission and scheduling boundary. */
-export type NotificationCapability = {
-  /** Requests permission from a player-initiated, policy-eligible UI flow. */
-  requestPermission(): Promise<PlatformResult<void>>;
-  /**
-   * Schedules one provider template.
-   *
-   * @param templateId - Allowlisted provider template identifier.
-   * @param deliverAt - Delivery time in Unix epoch milliseconds.
-   * @param payload - Bounded template substitution values.
-   * @returns The provider notification identifier used for cancellation.
-   */
-  schedule(templateId: string, deliverAt: number, payload: Record<string, string>): Promise<PlatformResult<string>>;
-  /** Cancels a notification previously returned by {@link schedule}. */
-  cancel(notificationId: string): Promise<PlatformResult<void>>;
-};
-
-/** Optional provider-owned outbound sharing surface. */
-export type SharingCapability = {
-  /**
-   * Opens the provider share UI with bounded presentation and opaque attribution data.
-   *
-   * @param payload - Text, optional image, and target-owned entry metadata.
-   */
-  share(payload: {
-    /** Stores text. */
-    text: string; /** Stores image. */
-    /** Stores image. */
-    image?: string; /** Stores data. */
-    /** Stores data. */
-    data?: Record<string, string>;
-  }): Promise<PlatformResult<void>>;
-};
-
 /** Optional provider context selection that never exposes a social graph to game code. */
 export type NativeSocialCapability = {
   /** Observes successful provider context changes; unsubscribe retires the callback. */
@@ -308,7 +270,7 @@ export type NativeSocialCapability = {
    *
    * @param tag - Optional bounded provider matchmaking hint.
    */
-  matchPlayer(tag?: string): Promise<
+  matchPlayer?(tag?: string): Promise<
     PlatformResult<{
       /** Stores context id. */
       contextId: string; /** Stores context type. */
@@ -409,10 +371,6 @@ export type PlatformCapabilities = {
   ads?: AdsCapability;
   /** Optional provider-funded extra attempt; supplied only by Facebook. */
   attemptRecovery?: AttemptRecoveryCapability;
-  /** Provider notification permission and scheduling surface. */
-  notifications?: NotificationCapability;
-  /** Provider-owned outbound sharing surface. */
-  sharing?: SharingCapability;
   /** Provider thread/group selection without exposing a social graph. */
   nativeSocial?: NativeSocialCapability;
   /** Server-authoritative offline opponent selection. */

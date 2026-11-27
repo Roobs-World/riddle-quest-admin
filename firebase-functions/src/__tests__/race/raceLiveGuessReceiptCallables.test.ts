@@ -4,11 +4,11 @@ import type {CallableRequest} from "firebase-functions/v2/https";
 const mockConfirm = jest.fn(), mockLease = jest.fn();
 jest.mock("../../race/live/raceLiveGuessReceipt", () => ({confirmLiveGuessReceiptForUser: mockConfirm}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
-jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithAccountOperationLease: mockLease}));
+jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithJestAccountOperationLease: mockLease}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"), onCall: jest.fn((options, handler) => Object.assign(handler, {deploymentOptions: options}))}));
 import {confirmLiveGuessReceipt} from "../../race/api/raceLiveCallables";
 /** Verified identity is absent from the historical request locator. */
-const OWNER = `facebook_${"a".repeat(40)}`, input = {ticketId: "a".repeat(64), requestId: "original-guess-001", riddleId: "riddle-1", position: 0, guessesUsedBefore: 0};
+const OWNER = `jest_${"a".repeat(40)}`, input = {ticketId: "a".repeat(64), requestId: "original-guess-001", riddleId: "riddle-1", position: 0, guessesUsedBefore: 0};
 /** Actual wrapped callable callback uses the established onCall test seam. */
 const handler = confirmLiveGuessReceipt as unknown as (request: CallableRequest<unknown>) => Promise<unknown>;
 beforeEach(() => {jest.clearAllMocks(); mockConfirm.mockResolvedValue({status: "accepted"});});

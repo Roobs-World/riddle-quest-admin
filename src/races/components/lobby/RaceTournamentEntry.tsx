@@ -69,12 +69,13 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   const active = useRef(true);
   useLayoutEffect(() => {active.current = true; return () => {active.current = false;};}, []);
   /** Only committed provider operations may acknowledge a pending native selection. */
-  const choiceOwner = useRef({native: props.nativeSocial, choose: props.nativeSocial?.chooseContext,
+  const choiceOwner = useRef({native: props.nativeSocial, chooseContext: props.nativeSocial?.chooseContext, matchPlayer: props.nativeSocial?.matchPlayer,
     board: props.contextBoard, list: props.contextBoard?.list, notify: props.contextBoard?.onContextChange});
   useLayoutEffect(() => {
-    choiceOwner.current = {native: props.nativeSocial, choose: props.nativeSocial?.chooseContext,
+    choiceOwner.current = {native: props.nativeSocial, chooseContext: props.nativeSocial?.chooseContext, matchPlayer: props.nativeSocial?.matchPlayer,
       board: props.contextBoard, list: props.contextBoard?.list, notify: props.contextBoard?.onContextChange};
-  }, [props.nativeSocial, props.nativeSocial?.chooseContext, props.contextBoard, props.contextBoard?.list, props.contextBoard?.onContextChange]);
+  }, [props.nativeSocial, props.nativeSocial?.chooseContext, props.nativeSocial?.matchPlayer,
+    props.contextBoard, props.contextBoard?.list, props.contextBoard?.onContextChange]);
   /** Submit opaque tickets independently; optional board failures cannot suppress live completion. */
   const completed = useCallback((view: LiveRaceView) => {
     props.onLiveResult?.(view);
@@ -90,17 +91,19 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
     coins={props.coins} ownerId={props.ownerId} localPlayer={props.localPlayer} onCompleted={completed}
     onRematch={rematchOfTicketId => setRematch({...rematch, rematchOfTicketId})} onClose={() => setRematch(null)} />;
   /** The target adapter owns context synchronization and the actual native SDK dialog. */
-  const choose = async () => {
+  const choose = async (operation: "chooseContext" | "matchPlayer") => {
     /** Capture the original receiver and its committed board ownership before opening the dialog. */
-    const native = props.nativeSocial, method = native?.chooseContext, owner = choiceOwner.current;
-    if (!active.current || choosing.current || !native || !method || owner.native !== native || owner.choose !== method ||
+    const native = props.nativeSocial, method = native?.[operation], owner = choiceOwner.current;
+    if (!active.current || choosing.current || !native || !method || owner.native !== native || owner[operation] !== method ||
       owner.board !== props.contextBoard || owner.list !== props.contextBoard?.list || owner.notify !== props.contextBoard?.onContextChange) return;
     choosing.current = true; setBusy(true); setContextError(false);
     /** Only the initiating tab lifetime may display a chooser failure. */
     const started = revision.current;
     try {
       /** Context membership is synchronized before this success reaches presentation. */
-      const result = await method.call(native);
+      const result = operation === "matchPlayer"
+        ? await method.call(native, `race10_v1_${props.locale}`)
+        : await method.call(native);
       if (!active.current || choiceOwner.current !== owner) return;
       if (result.status === "success") {
         setContextError(false);
@@ -116,8 +119,17 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   const navigation = <>
     <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
       onSelect={(next, keyboard = false) => {revision.current++; setContextError(false); keyboardSelection.current = keyboard; setDestination(next);}} />
-    {props.nativeSocial && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) && <div className="race-hub-social-actions"><button type="button" disabled={busy} onClick={() => void choose()}>
-      {tr("RaceTo10.CHOOSE_CONTEXT")}</button></div>}
+    {props.nativeSocial && (props.nativeSocial.matchPlayer || destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
+      <div className="race-hub-social-actions">
+        {(destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
+          <button type="button" disabled={busy} onClick={() => void choose("chooseContext")}>
+            {tr("RaceTo10.CHOOSE_CONTEXT")}
+          </button>}
+        {props.nativeSocial.matchPlayer &&
+          <button type="button" disabled={busy} onClick={() => void choose("matchPlayer")}>
+            {tr("RaceTo10.MATCH_PLAYER")}
+          </button>}
+      </div>}
     {contextError && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
   </>;
   return destination === "tournaments" ? <RaceTournamentBoard {...props} navigation={navigation} />

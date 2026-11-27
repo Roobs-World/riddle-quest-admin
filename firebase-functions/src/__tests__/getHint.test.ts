@@ -3,14 +3,14 @@ import {HttpsError} from "firebase-functions/v2/https";
 
 /** Provides mock purchase authoritative hint behavior. */
 const mockPurchaseAuthoritativeHint = jest.fn();
-/** Provides mock run with account operation lease behavior. */
-const mockRunWithAccountOperationLease = jest.fn(
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
-  runWithAccountOperationLease: mockRunWithAccountOperationLease,
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
 jest.mock("firebase-functions/v2/https", () => {

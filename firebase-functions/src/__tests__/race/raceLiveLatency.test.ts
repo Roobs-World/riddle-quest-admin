@@ -4,7 +4,7 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLi
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 
 /** Fixed authoritative observation clock and authenticated provider subjects. */
-const NOW = 1_800_000_000_000, OWNER = `facebook_${"a".repeat(40)}`, RIVAL = `facebook_${"b".repeat(40)}`;
+const NOW = 1_800_000_000_000, OWNER = `jest_${"a".repeat(40)}`, RIVAL = `jest_${"b".repeat(40)}`;
 
 it.each(["poll", "guess"] as const)("delivers a human %s within three database round trips", async action => {
   jest.useFakeTimers().setSystemTime(NOW);

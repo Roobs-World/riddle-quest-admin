@@ -11,7 +11,7 @@ import {
 } from "../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {validateCallableResponse} from "../validation/callableValidation";
-import {getAccountDeletionRef} from "../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {readSettledRaceOutcome} from "./settlement/raceSettlement";
 import {PRIVATE_RACE_PLAYER_NAME} from "./privacy/raceOpponentPrivacy";
 import {
@@ -47,7 +47,7 @@ export async function getRaceChallengePreview(
       throw new HttpsError("failed-precondition", "RaceTo10.ERROR_LOCALE_MISMATCH");
     }
     /** Provides deletion behavior. */
-    const deletion = await transaction.get(getAccountDeletionRef(db, challenge.creatorId));
+    const deletion = await transaction.get(getJestAccountDeletionRef(db, challenge.creatorId));
     if (!deletion.exists) return challengePreview(challenge, options.nowMs ?? Date.now());
     /** Provides scrubbed behavior. */
     const scrubbed = {...challenge, creatorSnapshot: {displayName: PRIVATE_RACE_PLAYER_NAME}};
@@ -167,7 +167,7 @@ export async function listRaceInboxForUser(
   /** Provides deletion snapshots behavior. */
   const deletionSnapshots =
     opponentIds.length > 0
-      ? await db.getAll(...opponentIds.map((opponentId) => getAccountDeletionRef(db, opponentId)))
+      ? await db.getAll(...opponentIds.map((opponentId) => getJestAccountDeletionRef(db, opponentId)))
       : [];
   /** Deletes d opponent ids. */
   const deletedOpponentIds = new Set(deletionSnapshots.filter((item) => item.exists).map((item) => item.id));

@@ -211,7 +211,7 @@ export function useGameMessageRouter({
           }
           if (message.payload.operation === "purchase") {
             if (data.cancelled === true) return;
-            if (data.purchaseType === "subscription" || data.purchaseType === "durable") {
+            if (typeof data.purchaseType === "string" && data.purchaseType !== "consumable") {
               dispatch({type: "closeModal"});
               return;
             }

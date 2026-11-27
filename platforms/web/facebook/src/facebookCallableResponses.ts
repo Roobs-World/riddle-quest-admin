@@ -51,53 +51,6 @@ newCoins: number} {
   return {newCoins: record.newCoins};
 }
 
-/** Describes facebook notification prompt claim. */
-export type FacebookNotificationPromptClaim =
-  | {
-      /** Stores granted. */
-      granted: false;
-    }
-  | {
-      /** Stores granted. */
-      granted: true; /** Stores claimed at ms. */
-      /** Stores claimed at ms. */
-      claimedAtMs: number;
-    };
-
-/** Rejects extra fields and unsafe server clocks before prompt state is persisted. */
-export function parseFacebookNotificationPromptClaim(value: unknown): FacebookNotificationPromptClaim {
-  if (typeof value !== "object" || value === null || Array.isArray(value)) {
-    throw new Error("Invalid Facebook notification prompt claim response.");
-  }
-  /** Provides record behavior. */
-  const record = value as Record<string, unknown>;
-  if (record.granted === false && Object.keys(record).length === 1) return {granted: false};
-  if (
-    record.granted === true &&
-    Object.keys(record).length === 2 &&
-    typeof record.claimedAtMs === "number" &&
-    Number.isSafeInteger(record.claimedAtMs) &&
-    record.claimedAtMs >= 0 &&
-    record.claimedAtMs <= FACEBOOK_FIRESTORE_TIMESTAMP_MAX_MS
-  ) {
-    return {granted: true, claimedAtMs: record.claimedAtMs};
-  }
-  throw new Error("Invalid Facebook notification prompt claim response.");
-}
-
-/** Parses facebook notification prompt acceptance. */
-export function parseFacebookNotificationPromptAcceptance(value: unknown): void {
-  if (
-    typeof value !== "object" ||
-    value === null ||
-    Array.isArray(value) ||
-    Object.keys(value).length !== 1 ||
-    (value as Record<string, unknown>).accepted !== true
-  ) {
-    throw new Error("Invalid Facebook notification prompt acceptance response.");
-  }
-}
-
 /** Describes facebook client configuration. */
 export type FacebookClientConfiguration = {
   /** Stores interstitials enabled. */

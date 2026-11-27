@@ -3,34 +3,34 @@ import type {DocumentSnapshot, Firestore} from "firebase-admin/firestore";
 import {admin} from "./firebaseAdmin";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
 
-/** Permanent guards retain their historical storage name so deleted accounts stay blocked. */
-export const ACCOUNT_DELETION_COLLECTION = "jestAccountDeletionTombstones";
+/** Permanent, pseudonymous guard records for deleted game identities. */
+export const JEST_ACCOUNT_DELETION_COLLECTION = "jestAccountDeletionTombstones";
 /** Ephemeral leases that serialize authenticated mutations with deletion. */
-export const ACCOUNT_OPERATION_COLLECTION = "activeOperations";
+export const JEST_ACCOUNT_OPERATION_COLLECTION = "activeOperations";
 /** Diagnostic margin beyond the callable's expected runtime limit. */
-const ACCOUNT_OPERATION_LEASE_MARGIN_MS = 30_000;
+const JEST_ACCOUNT_OPERATION_LEASE_MARGIN_MS = 30_000;
 
 /** Expected error used to stop a deleted platform identity from being recreated. */
-export class AccountDeletedError extends Error {
+export class JestAccountDeletedError extends Error {
   /** Creates one deleted-account boundary error. */
   constructor() {
     super("account-deleted");
-    this.name = "AccountDeletedError";
+    this.name = "JestAccountDeletedError";
   }
 }
 
 /** Expected retryable error while an older authenticated operation drains. */
-export class AccountDeletionBusyError extends Error {
+export class JestAccountDeletionBusyError extends Error {
   /** Creates one deletion-in-progress boundary error. */
   constructor() {
     super("account-deletion-in-progress");
-    this.name = "AccountDeletionBusyError";
+    this.name = "JestAccountDeletionBusyError";
   }
 }
 
 /** Resolves the permanent deletion guard for one Firebase UID. */
-export const getAccountDeletionRef = (db: Firestore, userId: string) =>
-  db.collection(ACCOUNT_DELETION_COLLECTION).doc(userId);
+export const getJestAccountDeletionRef = (db: Firestore, userId: string) =>
+  db.collection(JEST_ACCOUNT_DELETION_COLLECTION).doc(userId);
 
 /**
  * Creates an operation lease atomically with the permanent deletion guard check.
@@ -39,22 +39,22 @@ export const getAccountDeletionRef = (db: Firestore, userId: string) =>
  * that commits first is observed after the deletion guard is written, so the
  * destructive sweep waits for the older operation to drain.
  */
-export async function runWithAccountOperationLease<Result>(
+export async function runWithJestAccountOperationLease<Result>(
   userId: string,
   timeoutSeconds: number,
   operation: () => Result | Promise<Result>,
   db: Firestore = admin.firestore(),
 ): Promise<Result> {
   /** Provides deletion ref behavior. */
-  const deletionRef = getAccountDeletionRef(db, userId);
+  const deletionRef = getJestAccountDeletionRef(db, userId);
   /** Provides lease ref behavior. */
-  const leaseRef = deletionRef.collection(ACCOUNT_OPERATION_COLLECTION).doc(randomUUID());
+  const leaseRef = deletionRef.collection(JEST_ACCOUNT_OPERATION_COLLECTION).doc(randomUUID());
   /** Provides bounded timeout seconds behavior. */
   const boundedTimeoutSeconds =
     Number.isFinite(timeoutSeconds) && timeoutSeconds > 0 ? timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
   /** Diagnostic deadline recorded on the lease. */
   const lease = {
-    expiresAt: new Date(Date.now() + boundedTimeoutSeconds * 1_000 + ACCOUNT_OPERATION_LEASE_MARGIN_MS),
+    expiresAt: new Date(Date.now() + boundedTimeoutSeconds * 1_000 + JEST_ACCOUNT_OPERATION_LEASE_MARGIN_MS),
   };
   try {
     // One atomic commit instead of a read-then-commit transaction: the
@@ -68,7 +68,7 @@ export async function runWithAccountOperationLease<Result>(
     await db.runTransaction(async (transaction) => {
       /** Provides deletion snapshot behavior. */
       const deletionSnapshot = await transaction.get(deletionRef);
-      assertAccountActive(deletionSnapshot);
+      assertJestAccountActive(deletionSnapshot);
       transaction.set(leaseRef, lease);
     });
   }
@@ -81,29 +81,29 @@ export async function runWithAccountOperationLease<Result>(
   }
 }
 
-/** Refuses deletion while any authenticated game operation could still write. */
-export async function assertNoActiveAccountOperations(deletionRef: ReturnType<typeof getAccountDeletionRef>) {
+/** Refuses deletion while any authenticated Jest operation could still write. */
+export async function assertNoActiveJestAccountOperations(deletionRef: ReturnType<typeof getJestAccountDeletionRef>) {
   /** Provides snapshot behavior. */
-  const snapshot = await deletionRef.collection(ACCOUNT_OPERATION_COLLECTION).limit(1).get();
-  if (!snapshot.empty) throw new AccountDeletionBusyError();
+  const snapshot = await deletionRef.collection(JEST_ACCOUNT_OPERATION_COLLECTION).limit(1).get();
+  if (!snapshot.empty) throw new JestAccountDeletionBusyError();
 }
 
 /** Throws when a transaction observed a permanent deletion guard. */
-export function assertAccountActive(snapshot: Pick<DocumentSnapshot, "exists">): void {
-  if (snapshot.exists) throw new AccountDeletedError();
+export function assertJestAccountActive(snapshot: Pick<DocumentSnapshot, "exists">): void {
+  if (snapshot.exists) throw new JestAccountDeletedError();
 }
 
 /** Identifies the expected deleted-account error without exposing other failures. */
-export const isAccountDeletedError = (error: unknown): error is AccountDeletedError =>
-  error instanceof AccountDeletedError || (error instanceof Error && error.message === "account-deleted");
+export const isJestAccountDeletedError = (error: unknown): error is JestAccountDeletedError =>
+  error instanceof JestAccountDeletedError || (error instanceof Error && error.message === "account-deleted");
 
 /** Identifies the expected retryable operation-drain condition. */
-export const isAccountDeletionBusyError = (error: unknown): error is AccountDeletionBusyError =>
-  error instanceof AccountDeletionBusyError ||
+export const isJestAccountDeletionBusyError = (error: unknown): error is JestAccountDeletionBusyError =>
+  error instanceof JestAccountDeletionBusyError ||
   (error instanceof Error && error.message === "account-deletion-in-progress");
 
 /** Emits the stable browser response for a valid signed identity that was deleted. */
-export function respondToDeletedAccount(
+export function respondToDeletedJestAccount(
   error: unknown,
   response: {
     /** Provides status behavior. */
@@ -113,15 +113,7 @@ export function respondToDeletedAccount(
     };
   },
 ): boolean {
-  if (!isAccountDeletedError(error)) return false;
+  if (!isJestAccountDeletedError(error)) return false;
   response.status(409).json({error: "account-deleted"});
   return true;
-}
-
-/** Persists the guard before any identity-linked account data is removed. */
-export async function recordAccountDeletion(userId: string): Promise<void> {
-  const deletionRef = getAccountDeletionRef(admin.firestore(), userId);
-  await deletionRef.set({schemaVersion: 1, recreationBlocked: true,
-    deletedAt: admin.firestore.FieldValue.serverTimestamp()}, {merge: true});
-  await assertNoActiveAccountOperations(deletionRef);
 }

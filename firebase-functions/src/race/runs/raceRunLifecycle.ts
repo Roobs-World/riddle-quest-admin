@@ -1,7 +1,7 @@
 import {type ReadyRaceRunRequest, type RaceRunResponse} from "../../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
-import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceDeadlineAtMs, RACE_START_LEAD_MS, type RaceRunRecord} from "./raceEngine";
 import {projectRaceRunResponse} from "./raceRunResponse";
 import {assertRaceInteractionAllowed} from "./raceRunMutation";
@@ -33,7 +33,7 @@ export async function readyRaceRunForUser(userId: string, input: ReadyRaceRunReq
     /** Provides stored behavior. */
     const stored = parseRunRecord(snapshot.data(), snapshot.id);
     if (stored.userId !== userId) throw new HttpsError("permission-denied", "This race run belongs to another player.");
-    assertAccountActive(await transaction.get(getAccountDeletionRef(db, userId)));
+    assertJestAccountActive(await transaction.get(getJestAccountDeletionRef(db, userId)));
     /** Provides privacy behavior. */
     const privacy = await resolveRaceOpponentPrivacy(transaction, db, stored);
     await assertRaceInteractionAllowed(transaction, db, userId, privacy.run.opponent?.subjectUserId);

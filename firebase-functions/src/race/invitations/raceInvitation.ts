@@ -2,7 +2,7 @@ import {admin} from "../../shared/firebaseAdmin";
 import {createHash, randomUUID} from "node:crypto";
 import {ReserveRaceInviteResponseSchema, RaceEntryResponseSchema, RACE_CHALLENGE_TTL_MS, type ReserveRaceInviteRequest, type ReserveRaceInviteResponse, type RaceLocale, type RaceChallengePreview, type RaceEntryResponse, type RaceInvitationView, type CancelRaceInviteRequest} from "../../../../src/races/contracts/index.js";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getAccountDeletionRef} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {assertRaceInteractionAllowed} from "../runs/raceRunMutation";
 import {challengePreview, dbOrDefault, parseChallengeRecord, parseRunRecord, requestDocumentId, stripUndefined, resolveChallengeRiddles, type Firestore, type RaceChallengeRecord} from "../raceSetupService";
 import {parseRaceInvitation, assertRaceInvitationOpen, type RaceInvitationRecord} from "./raceInvitationRecord";
@@ -45,8 +45,8 @@ export async function reserveRaceInviteForUser(
   const commandBinding = bindRaceRequest({kind: "reserve", input});
   /** Non-reversible creator component used to namespace the opaque challenge ID. */
   const ownerHash = createHash("sha256").update(userId).digest("hex");
-  /** Opaque challenge identifier sent through the provider invitation entry payload. */
-  const challengeId = `race-invite-${ownerHash}-${randomUUID().replace(/-/g, "")}`;
+  /** Opaque challenge identifier sent through the Jest referral entry payload. */
+  const challengeId = `jest-invite-${ownerHash}-${randomUUID().replace(/-/g, "")}`;
   /** Authoritative two-seat lobby document. */
   const lobbyRef = db.collection("raceInviteLobbies").doc(challengeId);
   /** Shared expiration timestamp for the lobby and request receipt. */
@@ -57,7 +57,7 @@ export async function reserveRaceInviteForUser(
     /** Existing idempotency receipt, when the request was already handled. */
     const existing = await transaction.get(requestRef);
     /** Deletion is checked even when replaying an earlier reservation receipt. */
-    const deletion = await transaction.get(getAccountDeletionRef(db, userId));
+    const deletion = await transaction.get(getJestAccountDeletionRef(db, userId));
     if (deletion.exists) throw new HttpsError("permission-denied", "Race invitation account is deleted.");
     if (existing.exists) {
       /** Historical receipts prove their retained language through the original canonical lobby. */
@@ -124,7 +124,7 @@ type RaceEntryResolution = {
 
 /** Legacy claim contract retained while lifecycle-aware readers migrate. */
 export async function claimRaceInviteForUser(userId: string, challengeId: string, locale: RaceLocale, options: InvitationOptions = {}): Promise<boolean> {
-  if (!challengeId.startsWith("race-invite-")) return false;
+  if (!challengeId.startsWith("jest-invite-")) return false;
   /** Firestore adapter for the authorization transaction. */
   const db = dbOrDefault(options.db);
   /** Authority wall-clock, never a client timestamp. */
@@ -140,7 +140,7 @@ export async function claimRaceInviteForUser(userId: string, challengeId: string
     if (invitation.creatorId === userId) throw new HttpsError("failed-precondition", "The creator cannot claim their own invite.");
     if (raceProviderScope(userId) !== raceProviderScope(invitation.creatorId)) assertRaceChallengeEligible("provider");
     /** A legacy caller cannot claim a seat for either deleted identity. */
-    const deletions = await Promise.all([transaction.get(getAccountDeletionRef(db, userId)), transaction.get(getAccountDeletionRef(db, invitation.creatorId))]);
+    const deletions = await Promise.all([transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, invitation.creatorId))]);
     if (deletions.some(deletion => deletion.exists)) throw new HttpsError("permission-denied", "Race invitation account is deleted.");
     await assertRaceInteractionAllowed(transaction, db, userId, invitation.creatorId);
     if (invitation.recipientId && invitation.recipientId !== userId) throw new HttpsError("already-exists", "Race invite lobby has already been claimed.");
@@ -174,11 +174,11 @@ async function resolveRaceEntryForUser(userId: string, challengeId: string, loca
   return db.runTransaction(async transaction => {
     /** Public recording and exclusive reservation are independent records. */
     const [reservation, recording, userDeletion] = await Promise.all([
-      transaction.get(db.doc(`raceInviteLobbies/${challengeId}`)), transaction.get(db.doc(`raceChallenges/${challengeId}`)), transaction.get(getAccountDeletionRef(db, userId)),
+      transaction.get(db.doc(`raceInviteLobbies/${challengeId}`)), transaction.get(db.doc(`raceChallenges/${challengeId}`)), transaction.get(getJestAccountDeletionRef(db, userId)),
     ]);
     if (userDeletion.exists) return {entry: {status: "unavailable", reason: "deleted", serverNowMs}};
     /** Missing exclusive authorization must never become a public recording. */
-    if (!reservation.exists && (!recording.exists || recording.data()?.scope === "invitation" || challengeId.startsWith("race-invite-"))) return {entry: {status: "unavailable", reason: "missing", serverNowMs}};
+    if (!reservation.exists && (!recording.exists || recording.data()?.scope === "invitation" || challengeId.startsWith("jest-invite-"))) return {entry: {status: "unavailable", reason: "missing", serverNowMs}};
     /** Validated independent invitation facts, if this is a private reservation. */
     let invitation: RaceInvitationRecord | undefined;
     if (reservation.exists) {
@@ -204,7 +204,7 @@ async function resolveRaceEntryForUser(userId: string, challengeId: string, loca
     if (challenge && invitation && (challenge.creatorId !== creatorId || challenge.locale !== invitation.locale)) return {entry: {status: "unavailable", reason: "invalid", serverNowMs}};
     /** Account deletion and bidirectional blocks protect both waiting and ready reads. */
     const [creatorDeletion, outgoingBlock, incomingBlock] = await Promise.all([
-      transaction.get(getAccountDeletionRef(db, creatorId)), transaction.get(db.doc(`users/${userId}/blockedRivals/${creatorId}`)), transaction.get(db.doc(`users/${creatorId}/blockedRivals/${userId}`)),
+      transaction.get(getJestAccountDeletionRef(db, creatorId)), transaction.get(db.doc(`users/${userId}/blockedRivals/${creatorId}`)), transaction.get(db.doc(`users/${creatorId}/blockedRivals/${userId}`)),
     ]);
     if (creatorDeletion.exists) return {entry: {status: "unavailable", reason: "deleted", serverNowMs}};
     if (outgoingBlock.exists || incomingBlock.exists) return {entry: {status: "unavailable", reason: "blocked", serverNowMs}};
@@ -281,7 +281,7 @@ export async function cancelRaceInviteForUser(userId: string, input: CancelRaceI
     const receiptRef = db.doc(`raceInviteRequests/${requestDocumentId(userId, `cancel:${input.requestId}`)}`);
     /** All authorization reads precede mutation writes. */
     const [receipt, reservation, recording, deletion] = await Promise.all([
-      transaction.get(receiptRef), transaction.get(db.doc(`raceInviteLobbies/${input.challengeId}`)), transaction.get(db.doc(`raceChallenges/${input.challengeId}`)), transaction.get(getAccountDeletionRef(db, userId)),
+      transaction.get(receiptRef), transaction.get(db.doc(`raceInviteLobbies/${input.challengeId}`)), transaction.get(db.doc(`raceChallenges/${input.challengeId}`)), transaction.get(getJestAccountDeletionRef(db, userId)),
     ]);
     if (deletion.exists) throw new HttpsError("permission-denied", "Race invitation account is deleted.");
     if (!reservation.exists) throw new HttpsError("not-found", "Race invitation is unavailable.");

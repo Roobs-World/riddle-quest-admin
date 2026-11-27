@@ -6,7 +6,7 @@ import {facebookLiveContextSelection, prepareFacebookLiveContext, assertFacebook
 import {LIVE_RACE_INVITE_MS, LiveRaceChallengeSchema,
   type JoinLiveRace, type LiveRaceView, type LiveRaceChallenge} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
-import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {assertAndroidRaceAccount} from "../../../../platforms/native/android/server/race/androidRaceAccount";
 import {requestDocumentId, stripUndefined, type Firestore} from "../raceSetupService";
@@ -51,17 +51,17 @@ async function readInvitation(db: Firestore, transaction: FirebaseFirestore.Tran
   const ticket = snapshot.data() as LiveTicket | undefined;
   if (!isLiveRaceRetained(snapshot, nowMs) || !ticket?.privateChallenge || raceProviderScope(userId) !== raceProviderScope(ticket.userId) ||
     ticket.inviteRecipientId && ![ticket.userId, ticket.inviteRecipientId].includes(userId) ||
-    !(["facebook", "android"].includes(raceProviderScope(userId) ?? "") ||
+    !(["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? "") ||
       raceProviderScope(userId) === "reddit" && ticket.rematchOfTicketId && ticket.inviteRecipientId))
     throw new HttpsError("not-found", "Invitation unavailable.");
   /** Account deletion and blocks are checked in the same transaction as acceptance. */
   const [viewerDeleted, creatorDeleted, blocked, reverseBlocked, [creator, viewer]] = await Promise.all([
-    transaction.get(getAccountDeletionRef(db, userId)), transaction.get(getAccountDeletionRef(db, ticket.userId)),
+    transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, ticket.userId)),
     transaction.get(db.doc(`users/${userId}/blockedRivals/${ticket.userId}`)),
     transaction.get(db.doc(`users/${ticket.userId}/blockedRivals/${userId}`)),
     transaction.getAll(db.doc(`users/${ticket.userId}`), db.doc(`users/${userId}`), {fieldMask: ["username", "stats.level", "avatarUrl", "androidProvider"]}),
   ]);
-  assertAccountActive(viewerDeleted);
+  assertJestAccountActive(viewerDeleted);
   assertAndroidRaceAccount(userId, viewer.data());
   assertAndroidRaceAccount(ticket.userId, creator.data());
   if (creatorDeleted.exists || blocked.exists || reverseBlocked.exists || !creator.exists || ticket.rematchOfTicketId && !viewer.exists)

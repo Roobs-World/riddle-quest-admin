@@ -7,7 +7,7 @@ import {selectRaceFreshCandidate} from "./raceMatchFreshness";
 
 /** Supported receipt measurements contain no player identities, answer text or archived decks. */
 export const RaceMatchMeasurementSchema = z.object({
-  provider: z.enum(["facebook", "reddit", "android"]), locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
+  provider: z.enum(["jest", "facebook", "reddit", "android"]), locale: RaceLocaleSchema, categoryId: RaceCategoryIdSchema,
   createdAtMs: z.number().int().nonnegative(), expiresAtMs: z.number().int().nonnegative(),
   matchPolicyHash: z.string().regex(/^[a-f0-9]{64}$/).optional(), matchPolicyRevision: z.number().int().positive().optional(),
   matchExperiment: RaceMatchExperimentAssignmentSchema.optional(),

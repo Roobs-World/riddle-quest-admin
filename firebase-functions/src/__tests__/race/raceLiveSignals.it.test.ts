@@ -9,7 +9,7 @@ import {streamLiveRaceChanges} from "../../race/live/raceLiveStream";
 import {removeLiveRaceIdentitySnapshots} from "../../profile/accountDeletion/liveRaceAccountDeletion";
 
 /** Dedicated demo project prevents these fixtures from reaching a live database. */
-const PROJECT = "demo-riddle-quest-push", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`;
+const PROJECT = "demo-riddle-quest-push", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`;
 /** Provides environment behavior. */
 let environment: RulesTestEnvironment, db: FirebaseFirestore.Firestore;
 beforeAll(async () => {

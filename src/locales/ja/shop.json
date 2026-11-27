@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": "コイン",
-    "LOADING_TEXT": "ショップを読み込み中...",
     "NO_PACKS_AVAILABLE": "現在コインパックはありません。",
     "PURCHASE_BUTTON": "購入",
-    "PERIOD_MONTHLY": "月",
-    "PERIOD_WEEKLY": "週",
-    "PERIOD_YEARLY": "年",
-    "START_TRIAL_BUTTON": "無料トライアルを開始",
-    "SUBSCRIBE_BUTTON": "登録する",
-    "CANCEL_SUBSCRIPTION": "定期購入を解約",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "自動更新を停止しました。請求期間の終了までプレミアムをご利用いただけます。",
-    "SUBSCRIPTION_ACTIVE": "プレミアム有効",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "プレミアム登録が有効です。",
-    "SUBSCRIPTION_BENEFITS_TITLE": "特典内容",
-    "SUBSCRIPTION_BENEFIT_COINS": "30日ごとに{coins}コインを残高に追加",
-    "SUBSCRIPTION_BENEFIT_STATUS": "Riddle Quest アカウントのプレミアムステータス",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "Riddle Quest の開発チームを応援できます",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "自動更新されます。プロフィールまたは設定からいつでも解約できます。",
     "TITLE": "コインショップ",
     "YOUR_BALANCE": "残高",
     "BADGE_STARTER": "スターター",
     "BADGE_POPULAR": "人気",
     "BADGE_BEST_VALUE": "最もお得",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "このサブスクリプションは解約できません。",
     "PACK_BUYING_POWER": "ヒント最大{hints}回、または追加の挑戦{continues}回。"
   }
 }

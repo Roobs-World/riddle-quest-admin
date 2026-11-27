@@ -7,7 +7,7 @@ import {liveJoinIntentRef} from "../../race/invitations/raceLiveJoinIntent";
 import {requestDocumentId} from "../../race/raceSetupService";
 
 /** This suite mutates only an owned loopback demo and two fixture accounts. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Actual Admin SDK transactions exercise intent publication, replay, conditional leave and settlement. */
 let db: FirebaseFirestore.Firestore;
 /** Only this suite owns and terminates its SDK client. */

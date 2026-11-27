@@ -43,7 +43,7 @@ describe("Facebook referral callables", () => {
 
   it("requires exact Facebook provider claims and honors the referral kill switch", async () => {
     await expect(call(createFacebookReferral, {}, undefined)).rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "reddit"}})).rejects.toMatchObject({
+    await expect(call(createFacebookReferral, {}, {uid, token: {provider: "jest"}})).rejects.toMatchObject({
       code: "unauthenticated",
     });
     await expect(

@@ -1,5 +1,5 @@
 import {RACE_TARGET_CORRECT} from "../../../../src/races/contracts/index.js";
-import {runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import {finishFacebookRaceReferralDelivery, needsFacebookRaceReferral} from "./facebookRaceReferralDelivery";
 import {validateFacebookLiveRaceReferralSource} from "./facebookLiveRaceReferralDelivery";
@@ -36,7 +36,7 @@ export async function readFacebookLiveTournamentDeliveryInput(transaction: Fireb
 export async function finishFacebookLiveRaceDelivery(db: Firestore, eventRef: FirebaseFirestore.DocumentReference,
   userId: string, nowMs: number, hasContext = false): Promise<void> {
   if (hasContext && isFacebookFeatureEnabled("matchmaking")) {
-    await runWithAccountOperationLease(userId, 120, async () => {
+    await runWithJestAccountOperationLease(userId, 120, async () => {
       /** Deletion, receipt/source bindings and the original active board are re-read before delivery. */
       const input = await db.runTransaction(async transaction => {
         /** A retired receipt cannot reconstruct a deleted score. */
@@ -67,7 +67,7 @@ export async function finishFacebookLiveRaceDelivery(db: Firestore, eventRef: Fi
   if (isFacebookFeatureEnabled("tournaments")) {
     // Deletion waits for this lease before sweeping board entries. A late worker
     // cannot recreate deleted identity or tournament rows after that sweep.
-    await runWithAccountOperationLease(userId, 120, async () => {
+    await runWithJestAccountOperationLease(userId, 120, async () => {
       /** Source validation selects only an opaque owned ticket and its exact content locale. */
       const input = await db.runTransaction(async transaction => {
         /** A re-read receipt prevents a deleted or acknowledged delivery from being reconstructed. */

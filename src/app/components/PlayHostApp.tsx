@@ -42,8 +42,6 @@ export function PlayHostApp({
     externalInteractionBlocked,
     initialPlayerData,
     onPlayerDataChange,
-    registrationName,
-    registrationInviterName,
     initialRaceChallengeId,
     initialRaceInbox,
     initialRaceLobby,
@@ -431,8 +429,6 @@ export function PlayHostApp({
           interactionBlocked={serverInteractionActive}
           restoredGame={initialPlayerData?.activeGame}
           onSaveGame={onPlayerDataChange ? saveActiveGame : undefined}
-          registrationName={registrationName}
-          registrationInviterName={registrationInviterName}
           initialRaceChallengeId={initialRaceChallengeId}
           initialRaceInbox={initialRaceInbox}
           initialRaceLobby={initialRaceLobby}

@@ -7,7 +7,7 @@ import {startRaceRunForUser} from "../../race/raceService";
 import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
 
 /** All catalog, account and gameplay observations belong to one private loopback demo. */
-const PROJECT=process.env.GCLOUD_PROJECT??"", A=`facebook_${"a".repeat(40)}`, NOW=1_800_000_000_000;
+const PROJECT=process.env.GCLOUD_PROJECT??"", A=`jest_${"a".repeat(40)}`, NOW=1_800_000_000_000;
 /** Actual queries and commits exercise category listing, recording and both live admission paths. */
 let db: FirebaseFirestore.Firestore;
 /** Only the invoking isolated demo owns these collections. */

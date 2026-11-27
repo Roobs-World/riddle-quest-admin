@@ -18,6 +18,7 @@ test("repairs accept source and tests only in the shared source folders covered 
     "src/gameplay/browser/fixed.ts",
     "src/app/testing/mocks/shared-ui.test.ts",
     "src/app/testing/mockss/shared-ui.test.ts",
+    "platforms/web/jest/server/fixed.ts",
     "platforms/web/facebook/src/fixed.ts",
     "platforms/web/facebook/server/fixed.ts",
     "platforms/web/facebook/scripts/audit-facebook-artifact.mjs",
@@ -30,6 +31,8 @@ test("repairs accept source and tests only in the shared source folders covered 
 });
 test("repairs reject parked targets, unknown folders and source-prefix lookalikes", () => {
   for (const path of [
+    "platforms/web/jest/src/fixed.ts",
+    "platforms/web/jest/scripts/audit-jest-artifact.mjs",
     "platforms/native/android/src/auth/fixed.ts",
     "platforms/native/android/server/account.ts",
     "platforms/web/reddit/src/server/fixed.ts",
@@ -38,8 +41,10 @@ test("repairs reject parked targets, unknown folders and source-prefix lookalike
     "platforms/web/netflix/src/main.tsx",
     "platforms/web/yahoo/server/fixed.ts",
     "platforms/web/gamesnacks/src/main.tsx",
-    "platforms/web/facebook-extra/src/fixed.ts",
+    "platforms/web/jest-extra/src/fixed.ts",
     "platforms/web/facebook-other/scripts/fixed.mjs",
+    "platforms/web/jest/package.json",
+    "platforms/web/jest/server/package.json",
     "platforms/web/facebook/server/package.json",
     "platforms/web/facebook/vite.config.ts",
     "packages/portal/src/jest/fixed.ts",

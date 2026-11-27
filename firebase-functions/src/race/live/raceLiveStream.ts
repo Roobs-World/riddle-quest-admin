@@ -2,7 +2,7 @@ import {Timestamp} from "firebase-admin/firestore";
 import {HttpsError, type CallableResponse} from "firebase-functions/v2/https";
 import {randomUUID} from "node:crypto";
 import {z} from "zod";
-import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import type {Firestore} from "../raceSetupService";
 
 /** Maximum stream admission lifetime before credentials and authority are checked again. */
@@ -29,8 +29,8 @@ export async function streamLiveRaceChanges(db: Firestore, userId: string, ticke
   const lease = await db.runTransaction(async transaction => {
     /** Canonical ticket, account, deletion guard and current stream admission ledger. */
     const [ticket, owner, deletion, admissions] = await Promise.all([transaction.get(db.doc(`liveRaceTickets/${ticketId}`)),
-      transaction.get(db.doc(`users/${userId}`)), transaction.get(getAccountDeletionRef(db, userId)), transaction.get(admissionRef)]);
-    assertAccountActive(deletion);
+      transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(admissionRef)]);
+    assertJestAccountActive(deletion);
     if (!owner.exists || !ticket.exists || ticket.data()?.userId !== userId)
       throw new HttpsError("permission-denied", "Live observation unavailable.");
     /** Server clock and the retained ticket deadline that bound admission. */
@@ -99,7 +99,7 @@ export async function streamLiveRaceChanges(db: Firestore, userId: string, ticke
       };
       try {
         subscribe(() => db.doc(`users/${userId}`).onSnapshot(snapshot => {if (!snapshot.exists) finish();}, finish));
-        subscribe(() => getAccountDeletionRef(db, userId).onSnapshot(snapshot => {if (snapshot.exists) finish();}, finish));
+        subscribe(() => getJestAccountDeletionRef(db, userId).onSnapshot(snapshot => {if (snapshot.exists) finish();}, finish));
         subscribe(() => db.doc(`liveRaceSignals/${ticketId}`).onSnapshot(snapshot => {
           if (!active()) {finish(); return;}
           /** Match notifications are private and expire with their owned seat. */

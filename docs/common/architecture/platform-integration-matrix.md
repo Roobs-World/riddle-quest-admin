@@ -1,9 +1,10 @@
 # Platform integration matrix
 
-On the `facebook` branch, Jest game SDK/runtime/release integration is removed; Jest test tooling remains. Each release owns its provider SDK and exposes only capabilities approved for that provider. Missing capabilities stay absent from the shared UI; another target's SDK must never fill the gap.
+On the `facebook` branch, the Jest browser SDK/runtime/release target is removed, while every Jest backend integration and the test tooling remain. Each release owns its provider SDK and exposes only capabilities approved for that provider. Missing capabilities stay absent from the shared UI; another target's SDK must never fill the gap.
 
 | Target | Provider integration | Identity and saves | Commerce and social | Ads |
 | --- | --- | --- | --- | --- |
+| Jest backend | Server-only signed API integration | Signed player exchange, account lifecycle and avatar sync | Purchase/subscription reconciliation, referral grants, race/presence and manager-owned notification plans | No client SDK or ad capability |
 | Facebook | FBInstant v8.0 | Nonce-bound signed player exchange, custom Firebase App Check and FBInstant player data | Signed one-time payments, contexts, matchmaking, tournaments, referrals, manager-owned A2U notifications, presence, and overlay identity | Result interstitials and opt-in rewarded video; controlled by backend flags, age policy, provider API availability, and placement IDs |
 | Reddit | Devvit Web and Payments | Server-side Reddit identity exchange and same-origin storage gateway | Reddit Gold purchases, matchmaking, tournaments, and presence | No game ad integration |
 | YouTube | YouTube Playables Game API | Playable Save | Provider lifecycle, locale, audio, readiness, and health reporting | Forbidden by the self-contained Playables contract |

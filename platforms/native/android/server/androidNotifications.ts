@@ -7,7 +7,7 @@ import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
 import {gameplayInteractiveCallableOptions} from "../../../../firebase-functions/src/shared/gameplayCallableOptions";
 import {onCallWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
 import {validateCallableRequest} from "../../../../firebase-functions/src/validation/callableValidation";
-import {assertAccountActive, getAccountDeletionRef, runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef, runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isAndroidAccountProvider} from "./androidUser";
 import {sendFcmNotification} from "../../../../firebase-functions/src/notifications/fcmEdgeDelivery";
 
@@ -45,7 +45,7 @@ export const setAndroidPushSubscription = onCallWithSentry("setAndroidPushSubscr
   const uid = request.auth?.uid;
   if (!uid || !isAndroidAccountProvider(request.auth?.token.firebase?.sign_in_provider) ||
       input.expectedOwnerId && input.expectedOwnerId !== uid) throw new HttpsError("permission-denied", "Android account required.");
-  return runWithAccountOperationLease(uid, 30, async () => {
+  return runWithJestAccountOperationLease(uid, 30, async () => {
     const db = admin.firestore(), nowMs = Date.now();
     const ref = "token" in input && (input.enabled || input.expectedOwnerId !== undefined)
       ? db.doc(`androidPushTokens/${androidPushTokenHash(input.token)}`) : null;
@@ -53,11 +53,11 @@ export const setAndroidPushSubscription = onCallWithSentry("setAndroidPushSubscr
     const commandDigest = createHash("sha256").update(JSON.stringify(input)).digest("hex");
     const committed = await db.runTransaction(async tx => {
       const [user, deleted, current, owned, device] = await Promise.all([
-        tx.get(db.doc(`users/${uid}`)), tx.get(getAccountDeletionRef(db, uid)),
+        tx.get(db.doc(`users/${uid}`)), tx.get(getJestAccountDeletionRef(db, uid)),
         ref ? tx.get(ref) : Promise.resolve(null), tx.get(db.collection("androidPushTokens").where("uid", "==", uid).limit(6)),
         deviceRef ? tx.get(deviceRef) : Promise.resolve(null),
       ]);
-      assertAccountActive(deleted);
+      assertJestAccountActive(deleted);
       if (!user.exists || !isAndroidAccountProvider(user.data()?.androidProvider)) throw new HttpsError("not-found", "Android account unavailable.");
       const previousDevice = device?.data();
       const previousHash = typeof previousDevice?.tokenHash === "string" && /^[a-f0-9]{64}$/.test(previousDevice.tokenHash) ? previousDevice.tokenHash : null;
@@ -146,7 +146,7 @@ export async function sendAndroidPush(
   const [registration, account, deleted] = await Promise.all([
     ref.get(),
     db.doc(`users/${uid}`).get(),
-    getAccountDeletionRef(db, uid).get(),
+    getJestAccountDeletionRef(db, uid).get(),
   ]);
   /** Current server-owned provider registration or immutable referral ownership. */
   const binding = registration.data();

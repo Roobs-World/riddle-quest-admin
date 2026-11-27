@@ -1,12 +1,13 @@
 # Platform source ownership
 
-This checkout is the owner-requested `facebook` branch based on `web`. It removes the Jest game platform and uses Facebook as the default web target. Platform folders still identify source ownership; this branch exception does not change the signed `main` authority checks used by automated monitoring repairs. Jest unit-test tooling is unrelated to the removed game provider and remains available.
+This checkout is the owner-requested `facebook` branch based on `web`. It removes the Jest browser client and uses Facebook as the default web target. All Jest backend integrations remain supported under `platforms/web/jest/server`, shared Firebase Functions and the notification manager. Platform folders still identify source ownership; this branch exception does not change the signed `main` authority checks used by automated monitoring repairs. Jest unit-test tooling is unrelated to the removed browser client and remains available.
 
 ## Target roots
 
 | Target | Canonical source | Boundary |
 | --- | --- | --- |
 | Android / Google Play | `platforms/native/android` | Bare React Native app, native views, device bridges and Android-only server integration |
+| Jest backend | `platforms/web/jest/server` | Signed identity, purchases/subscriptions, referrals, avatar sync, notifications and account lifecycle; no browser entry or SDK |
 | Facebook | `platforms/web/facebook` | FBInstant entry, SDK adapter, Facebook-only ads, provider authority and release scripts |
 | Reddit | `platforms/web/reddit` | Browser adapter, Devvit package and trusted same-origin gateway; Firebase integration in `server` |
 | YouTube | `platforms/web/youtube` | Self-contained Playable entry, YouTube save/lifecycle SDK and release packaging |
@@ -23,7 +24,7 @@ Common source lives in feature folders such as `src/gameplay`, `src/races`, `src
 
 These are ordinary folders governed by root `package.json`, `tsconfig.json`, `vite.config.ts`, and `jest.config.cjs`. They have no separate package configuration or generated package builds. Callers import canonical implementations directly. Cross-feature aggregate entry points and files that merely re-exported another implementation have been removed. See the [feature source analysis and rationale](shared-source-layout.md).
 
-Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
+Provider-only controllers and contracts follow the provider even when both its client and server use them. Facebook's catalog lives in `platforms/web/facebook/src/commerce`; Reddit's catalog lives in `platforms/web/reddit/src/shared`. Jest's server-used referral campaigns and notification protocol live under its `server/referrals` and `server/notifications` directories. Android's account, Google identity, billing, notification, referral, and entry controllers live in its native source tree. Shared authoritative gameplay and Firebase infrastructure remain in `firebase-functions/src`, grouped by [server responsibility](functions-source-layout.md). Decide ownership by behavior and callers rather than an old provider-prefixed filename.
 
 The notification management website is a separate top-level workspace at `notification-manager/`. Vercel hosts its React frontend and API routes. Supabase owns its Postgres database, operator authentication and notification image storage. Its server code is outside the game and Firebase deployment graphs. See the [notification service guide](../notifications/service.md).
 
@@ -41,7 +42,7 @@ Firebase still deploys only `firebase-functions`, with Node 22, its existing reg
 
 Preparation copies canonical shared source and provider server dependencies into repository-shaped paths within `.build-source`. An archive-local CommonJS boundary preserves server emission without rebuilding or vendoring a shared package. TypeScript follows imports from the authoritative server entries and creates the archive-local `lib` tree. Staging a browser source file does not include it in the compiled deployment graph. The Functions entry is `lib/firebase-functions/src/index.js`. Generated source copies and compiled output are build artifacts. Maintenance scripts, source discovery, export and capacity audits, and cycle checks follow those same canonical roots.
 
-Facebook uploads, activation, publication and review submission require an explicit user request. Building the Facebook artifact does not upload it. Follow the [Facebook release runbook](../../facebook/facebook-instant-games-operations.md) for exact source/archive binding and receipt handling. The removed Jest provider's [documentation](../../jest/README.md) and dated evidence are retained for historical reference; their commands are not available in this branch.
+Facebook uploads, activation, publication and review submission require an explicit user request. Building the Facebook artifact does not upload it. Follow the [Facebook release runbook](../../facebook/facebook-instant-games-operations.md) for exact source/archive binding and receipt handling. The [Jest backend guide](../../jest/jest-backend-operations.md) documents the retained integrations. Jest browser build/upload commands are unavailable in this branch; older client-release documents retain their historical scope.
 
 ## Directory size
 
@@ -53,4 +54,4 @@ Run tests and browser harnesses only when explicitly requested. Build the artifa
 
 Active operational documents use current paths. Dated evidence, research and historical ADRs retain the paths and revisions that were actually observed. For those older records, `packages/core`, `packages/solo`, `packages/hosted`, and `packages/web-game` describe the former shared workspaces. Earlier records use `packages/portal` for the web client, `packages/android` for the native root, and `packages/reddit-app` for the Devvit root. The intermediate `src/core`, `src/solo`, `src/hosted`, and `src/web` folders also appear in older records. Use the feature layout to find current owners rather than rewriting historical results.
 
-The Sentry background worker remains in `tooling/sentry-worker`. Its automated repair policy covers shared source plus Facebook source, server code and scripts. Native and other provider roots remain outside that policy. Repair PRs target `main`. Signed main-base checks, deployed-version verification, exact-head merge checks and deployment authority remain required. See [the worker runbook](../../sentry-worker/README.md).
+The Sentry background worker remains in `tooling/sentry-worker`. Its automated repair policy covers shared source, Jest server code, and Facebook source, server code and scripts. Jest deployment inventory and Functions authority checks remain enabled. Native and other provider roots remain outside that policy. Repair PRs target `main`. Signed main-base checks, deployed-version verification, exact-head merge checks and deployment authority remain required. See [the worker runbook](../../sentry-worker/README.md).

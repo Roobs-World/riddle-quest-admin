@@ -1,5 +1,5 @@
 import {createFacebookTournamentPresentation} from "../FacebookTournamentPresentation";
-import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
+import {createFacebookAdsCapability} from "../FacebookAdsCapability";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "../fbinstant";
 import type {ListFacebookTournamentResponse} from "../../../../../src/races/contracts/index";
 
@@ -15,15 +15,12 @@ const fixture = () => {
   /** Native metadata matches only the exact official scope. */
   const native: FacebookInstantTournament = {getID: () => "native-1", getContextID: () => "context-1", getEndTime: () => endsAtMs / 1000,
     getPayload: () => ({kind: "rq-race10-tournament-v1", locale: "en", tournamentId: board.tournamentId, startsAtMs, endsAtMs})};
-  /** Successful fake subscription models a second real adapter's native prompt. */
-  let subscribed = false;
   /** Only advertised callable SDK APIs can admit either production dialog. */
   const sdk = {getSupportedAPIs: () => ["getTournamentAsync", "tournament.createAsync", "tournament.shareAsync", "tournament.postScoreAsync",
-    "player.canSubscribeBotAsync", "player.isSubscribedBotAsync", "player.subscribeBotAsync"],
+    "getRewardedVideoAsync"],
     context: {getID: () => "context-1"}, getTournamentAsync: jest.fn(async () => native),
     tournament: {shareAsync: jest.fn(async () => undefined), createAsync: jest.fn(async () => native), postScoreAsync: jest.fn(async () => undefined)},
-    player: {isSubscribedBotAsync: jest.fn(async () => subscribed), canSubscribeBotAsync: jest.fn(async () => true),
-      subscribeBotAsync: jest.fn(async () => {subscribed = true;})}} as unknown as FacebookInstantSdk;
+    getRewardedVideoAsync: jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}))} as unknown as FacebookInstantSdk;
   /** Standings, optional diagnostics and native image rendering remain independently controllable. */
   const options = {sdk, enabled: true, ageCategory: "13_plus" as const, isActive: () => true, getLocale: () => "en" as const,
     list: jest.fn(async () => board), now: () => startsAtMs + 1000, renderImage: jest.fn(() => "data:image/png;base64,YQ=="), reportFailure: jest.fn()};
@@ -44,19 +41,19 @@ it.each(["standings", "metadata"])("releases the shared native dialog gate after
   else jest.mocked(sdk.getTournamentAsync!).mockImplementationOnce(() => new Promise(resolve => {release = () => resolve(native); admit();}));
   /** Tournament sharing acquires the original native slot. */
   const tournaments = createFacebookTournamentPresentation(options)!;
-  /** Notification permission requests exercise the actual independent adapter and gate. */
-  const notifications = createFacebookNotificationCapability(sdk)!;
+  /** Rewarded ads exercise the actual independent adapter and gate. */
+  const ads = createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
   /** Retain the original local share completion. */
   const original = tournaments.share("en");
   try {
     await ready;
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
     await jest.advanceTimersByTimeAsync(7999);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
     await jest.advanceTimersByTimeAsync(1);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "success"});
     await expect(original).resolves.toMatchObject({status: "retryable-failure"});
-    expect(sdk.player.subscribeBotAsync).toHaveBeenCalledTimes(1);
+    expect(sdk.getRewardedVideoAsync).toHaveBeenCalledTimes(1);
     release(); await jest.advanceTimersByTimeAsync(0);
     expect(sdk.tournament!.shareAsync).not.toHaveBeenCalled();
     expect(sdk.tournament!.createAsync).not.toHaveBeenCalled();
@@ -88,13 +85,13 @@ it("shares one eight-second budget across standings and native metadata", async 
   /** The original shared slot belongs to tournament preparation. */
   const original = createFacebookTournamentPresentation(options)!.share("en");
   /** Another real SDK adapter can retry once that original slot is released. */
-  const notifications = createFacebookNotificationCapability(sdk)!;
+  const ads = createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
   try {
     await standingsReady; await jest.advanceTimersByTimeAsync(4000); releaseStandings(); await metadataReady;
     await jest.advanceTimersByTimeAsync(3999);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
     await jest.advanceTimersByTimeAsync(1);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "success"});
     await expect(original).resolves.toMatchObject({status: "retryable-failure"});
     releaseMetadata(); await jest.advanceTimersByTimeAsync(0);
     expect(sdk.tournament!.shareAsync).not.toHaveBeenCalled();
@@ -123,16 +120,16 @@ it.each(["share", "create", "cancelled", "failure"])("retains admitted native %s
   const controller = new AbortController();
   /** Retirement after native admission cannot free the occupied SDK slot. */
   const original = createFacebookTournamentPresentation(options)!.share("en", controller.signal);
-  /** Independent native consent must remain excluded while the dialog is open. */
-  const notifications = createFacebookNotificationCapability(sdk)!;
+  /** Independent rewarded ads must remain excluded while the dialog is open. */
+  const ads = createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
   try {
     await ready; controller.abort();
     expect(jest.getTimerCount()).toBe(0);
     await jest.advanceTimersByTimeAsync(16000);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
     release();
     await expect(original).resolves.toMatchObject({status: kind === "cancelled" ? "cancelled" : kind === "failure" ? "retryable-failure" : "success"});
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "success"});
     expect(jest.getTimerCount()).toBe(0);
   } finally {
     release(); await original; jest.useRealTimers();
@@ -156,7 +153,7 @@ it("contains an optional reporter fault while completing expired preparation", a
   try {
     await ready; await jest.advanceTimersByTimeAsync(8000);
     await expect(observed).resolves.toEqual({value: {status: "retryable-failure", message: "facebook-tournament-share-failed"}});
-    await expect(createFacebookNotificationCapability(sdk)!.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!.showRewarded("continue")).resolves.toMatchObject({status: "success"});
     expect(jest.getTimerCount()).toBe(0);
   } finally {
     release(); await observed; jest.useRealTimers();
@@ -180,11 +177,11 @@ it.each(["standings", "metadata"])("retires %s preparation immediately without a
   const controller = new AbortController();
   /** Target adapter owns the optional preparation-cancellation contract. */
   const share = createFacebookTournamentPresentation(options)!.share;
-  /** Original operation and notification adapter share the real SDK gate. */
-  const original = share("en", controller.signal), notifications = createFacebookNotificationCapability(sdk)!;
+  /** Original operation and rewarded ad adapter share the real SDK gate. */
+  const original = share("en", controller.signal), ads = createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
   try {
     await ready; controller.abort(); await jest.advanceTimersByTimeAsync(0);
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "success"});
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "success"});
     await expect(original).resolves.toMatchObject({status: "cancelled"});
     expect(jest.getTimerCount()).toBe(0);
     release(); await jest.advanceTimersByTimeAsync(0);
@@ -204,5 +201,5 @@ it("does not admit preparation for an already retired board", async () => {
   await expect(createFacebookTournamentPresentation(options)!.share("en", controller.signal)).resolves.toMatchObject({status: "cancelled"});
   expect(options.list).not.toHaveBeenCalled();
   expect(sdk.getTournamentAsync).not.toHaveBeenCalled();
-  await expect(createFacebookNotificationCapability(sdk)!.requestPermission()).resolves.toMatchObject({status: "success"});
+  await expect(createFacebookAdsCapability({sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!.showRewarded("continue")).resolves.toMatchObject({status: "success"});
 });

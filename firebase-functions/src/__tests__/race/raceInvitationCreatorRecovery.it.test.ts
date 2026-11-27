@@ -6,9 +6,9 @@ import {getRaceEntryForUser,cancelRaceInviteForUser} from "../../race/invitation
 import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 
 /** Only the dedicated loopback demo owns these profile, invitation and recording fixtures. */
-const PROJECT=process.env.GCLOUD_PROJECT??"",A=`facebook_${"a".repeat(40)}`,B=`facebook_${"b".repeat(40)}`,NOW=1_800_000_000_000;
+const PROJECT=process.env.GCLOUD_PROJECT??"",A=`jest_${"a".repeat(40)}`,B=`jest_${"b".repeat(40)}`,NOW=1_800_000_000_000;
 /** A canonical reservation, not a client prefix, establishes the original creator. */
-const ID=`race-invite-${createHash("sha256").update(A).digest("hex")}-${"c".repeat(32)}`;
+const ID=`jest-invite-${createHash("sha256").update(A).digest("hex")}-${"c".repeat(32)}`;
 /** Real Firestore transactions retain permissions and atomic cancellation behavior. */
 let db:FirebaseFirestore.Firestore;
 /** Cleanup stays within the private demo and named identities. */

@@ -361,6 +361,21 @@
       "indexes": []
     },
     {
+      "collectionGroup": "jestPurchaseGrants",
+      "fieldPath": "grantedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "jestReferralRewards",
+      "fieldPath": "grantedAt",
+      "indexes": []
+    },
+    {
+      "collectionGroup": "jestReferralVerifications",
+      "fieldPath": "verifiedAt",
+      "indexes": []
+    },
+    {
       "collectionGroup": "riddleSupplyRequests",
       "fieldPath": "requestedAt",
       "indexes": []

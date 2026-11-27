@@ -33,10 +33,6 @@ export type GuidanceOverlayProps = {
   modal: GameModal;
   /** Stores on active change. */
   onActiveChange?: (active: boolean) => void;
-  /** Stores registration name. */
-  registrationName?: string;
-  /** Stores registration inviter name. */
-  registrationInviterName?: string;
   /** Prevents an obscured guidance surface from taking or handling focus. */
   interactionBlocked?: boolean;
   /** Preserves pending guidance while multiplayer owns presentation and focus. */
@@ -294,7 +290,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
     /** Provides candidate behavior. */
     const candidate = candidates.find(
       ({id, when}) =>
-        // The start-of-riddle coin tip waits behind a blocking prompt such as post-win registration.
+        // The start-of-riddle coin tip waits until the active modal has closed.
         when && !(id === "gameCoins" && interactionBlocked) && !hasSeenContextualTooltip(seenMarkers, id, userId),
     );
     if (!candidate) {

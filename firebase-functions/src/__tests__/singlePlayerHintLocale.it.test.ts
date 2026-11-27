@@ -12,7 +12,7 @@ import {HINT_COST_COINS} from "../shared/constants";
 /** Canonical writes must remain in the allocated private demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** This account alone owns every session, receipt and cleanup in the fixture. */
-const OWNER = `facebook_${"0123456789".repeat(4)}`;
+const OWNER = `jest_${"0123456789".repeat(4)}`;
 /** Real SDK transactions retain production read, conflict and retry behavior. */
 let db: FirebaseFirestore.Firestore;
 /** Opaque reference construction matches the authority's stored receipt identity. */

@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LiveGuessReceiptQuerySchema, type LiveGuessReceiptQuery, type LiveGuessReceiptResult} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
-import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {evaluateRaceRollout} from "../access/raceRollout";
 import {requestDocumentId} from "../raceSetupService";
@@ -32,15 +32,15 @@ export async function confirmLiveGuessReceiptForUser(userId: string, request: Li
   return db.runTransaction(async tx => {
     /** Access and deletion share the proof snapshot; no operation lease or canonical write is needed. */
     const [owner, deletion, rollout, snapshot] = await tx.getAll(db.doc(`users/${userId}`),
-      getAccountDeletionRef(db, userId), db.doc("raceConfig/rollout"), db.doc(`liveRaceTickets/${input.ticketId}`));
-    assertAccountActive(deletion);
+      getJestAccountDeletionRef(db, userId), db.doc("raceConfig/rollout"), db.doc(`liveRaceTickets/${input.ticketId}`));
+    assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
     /** A foreign or malformed locator reveals no proof or opponent identity. */
     const ticket = snapshot.data() as (LiveTicket & FirebaseFirestore.DocumentData) | undefined;
     if (!ticket || ticket.userId !== userId || ticket.deleted || ticket.cancelled || !retained(ticket, nowMs) ||
       ticket.run?.userId !== userId || ticket.run?.runId !== input.ticketId ||
       typeof ticket.matchId !== "string" || !/^[a-f0-9]{64}$/.test(ticket.matchId)) return {status: "unconfirmed"};
-    if (!evaluateRaceRollout(rollout.data(), userId, ticket.run.locale).enabled)
+    if ((provider === "jest" && ticket.run.locale !== "en") || !evaluateRaceRollout(rollout.data(), userId, ticket.run.locale).enabled)
       throw new HttpsError("permission-denied", "Live receipt unavailable.");
     if (ticket.pool !== createHash("sha256").update(`${provider}:${ticket.run.locale}:${ticket.run.categoryId}`).digest("hex"))
       return {status: "unconfirmed"};

@@ -2,7 +2,6 @@ import {describe, expect, test} from "@jest/globals";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {FacebookPlatformBootstrap} from "../FacebookPlatformBootstrap";
 import {createFacebookAdsCapability} from "../FacebookAdsCapability";
-import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
 
 /** Creates sdk. */
 const createSdk = () => {
@@ -103,7 +102,7 @@ describe("FacebookPlatformBootstrap", () => {
     expect(result.value.capabilities.nativeSocial).toBeDefined();
     await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success", value: {contextId: "chooser-only", contextType: "GROUP"}});
     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
-    await expect(result.value.capabilities.nativeSocial?.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+    expect(result.value.capabilities.nativeSocial?.matchPlayer).toBeUndefined();
     if (harness.sdk.matchPlayerAsync) expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
   });
 
@@ -139,7 +138,7 @@ describe("FacebookPlatformBootstrap", () => {
     /** Running provider operation has not completed. */
     const showing = ads.showInterstitial("result");
     await expect(result.value.capabilities.nativeSocial.chooseContext()).resolves.toMatchObject({status: "unavailable"});
-    await expect(result.value.capabilities.nativeSocial.matchPlayer("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
+    await expect(result.value.capabilities.nativeSocial.matchPlayer!("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
     expect(harness.sdk.context.chooseAsync).not.toHaveBeenCalled();
     expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
     finish();
@@ -161,7 +160,7 @@ describe("FacebookPlatformBootstrap", () => {
       const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
       if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
       await expect(operation === "choose" ? result.value.capabilities.nativeSocial.chooseContext()
-        : result.value.capabilities.nativeSocial.matchPlayer("race10_v1_en"))
+        : result.value.capabilities.nativeSocial.matchPlayer!("race10_v1_en"))
         .resolves.toMatchObject({status: error instanceof Error ? "retryable-failure" : "cancelled"});
       /** A failed native operation must not permanently suppress later result ads. */
       const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
@@ -177,33 +176,31 @@ describe("FacebookPlatformBootstrap", () => {
     /** Deferred result at the actual context/match SDK boundary. */
     const pending = new Promise<void>(resolve => {finish = resolve;});
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync",
-      "player.canSubscribeBotAsync", "player.isSubscribedBotAsync", "player.subscribeBotAsync"];
+      "getRewardedVideoAsync"];
     harness.sdk.context = {
       getID: () => "thread-1", getType: () => "THREAD",
       chooseAsync: jest.fn(async () => {if (operation === "choose") await pending;}),
     };
     harness.sdk.matchPlayerAsync = jest.fn(async () => {if (operation === "match") await pending;});
     harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
-    harness.sdk.player.canSubscribeBotAsync = jest.fn(async () => true);
-    harness.sdk.player.isSubscribedBotAsync = jest.fn(async () => false);
-    harness.sdk.player.subscribeBotAsync = jest.fn(async () => undefined);
+    harness.sdk.getRewardedVideoAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
     /** Startup exposes the public platform social adapter. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
-    /** Public capability owns the same SDK used by ads and notification prompts. */
+    /** Public capability owns the same SDK used by both advertising formats. */
     const social = result.value.capabilities.nativeSocial;
     /** Real interstitial adapter, with a supported configured test placement. */
     const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
-    /** Real bot prompt adapter observes the same provider occupancy. */
-    const notifications = createFacebookNotificationCapability(harness.sdk)!;
+    /** Rewarded video observes the same provider occupancy. */
+    const rewarded = createFacebookAdsCapability({sdk: harness.sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
     /** Provider context/match dialog remains open across competing calls. */
-    const opened = operation === "choose" ? social.chooseContext() : social.matchPlayer("race10_v1_en");
+    const opened = operation === "choose" ? social.chooseContext() : social.matchPlayer!("race10_v1_en");
     await expect(ads.showInterstitial("result")).resolves.toMatchObject({status: "unavailable"});
-    await expect(notifications.requestPermission()).resolves.toMatchObject({status: "unavailable"});
-    await expect(operation === "choose" ? social.matchPlayer("race10_v1_en") : social.chooseContext())
+    await expect(rewarded.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
+    await expect(operation === "choose" ? social.matchPlayer!("race10_v1_en") : social.chooseContext())
       .resolves.toMatchObject({status: "unavailable"});
     expect(harness.sdk.getInterstitialAdAsync).not.toHaveBeenCalled();
-    expect(harness.sdk.player.subscribeBotAsync).not.toHaveBeenCalled();
+    expect(harness.sdk.getRewardedVideoAsync).not.toHaveBeenCalled();
     expect(operation === "choose" ? harness.sdk.matchPlayerAsync : harness.sdk.context.chooseAsync).not.toHaveBeenCalled();
     finish();
     await expect(opened).resolves.toEqual({status: "success", value: {contextId: "thread-1", contextType: "THREAD"}});
@@ -235,7 +232,6 @@ describe("FacebookPlatformBootstrap", () => {
     expect(result.value.capabilities.accountManagement).toEqual({username: true, avatar: false, deletion: true});
     expect(result.value.capabilities.commerce).toBeUndefined();
     expect(result.value.capabilities.ads).toBeUndefined();
-    expect(result.value.capabilities.notifications).toBeUndefined();
     expect(result.value.capabilities.sharing).toBeUndefined();
     expect(result.value.capabilities.nativeSocial).toBeUndefined();
     expect(result.value.capabilities.overlay).toBeUndefined();
@@ -391,12 +387,12 @@ describe("FacebookPlatformBootstrap", () => {
     expect(harness.sdk.context.chooseAsync).toHaveBeenCalledWith({minSize: 2, maxSize: 50});
     contextId = "group-1";
     contextType = "GROUP";
-    await expect(social?.matchPlayer("race10_v1_en")).resolves.toEqual({
+    await expect(social?.matchPlayer!("race10_v1_en")).resolves.toEqual({
       status: "success",
       value: {contextId: "group-1", contextType: "GROUP"},
     });
     expect(harness.sdk.matchPlayerAsync).toHaveBeenCalledWith("race10_v1_en", true, true);
-    await expect(social?.matchPlayer("race10_v1:en")).resolves.toEqual({
+    await expect(social?.matchPlayer!("race10_v1:en")).resolves.toEqual({
       status: "terminal-failure", message: "facebook-match-tag-invalid",
     });
     expect(harness.sdk.matchPlayerAsync).toHaveBeenCalledTimes(1);
@@ -412,7 +408,7 @@ describe("FacebookPlatformBootstrap", () => {
       status: "unavailable",
       message: "facebook-context-unavailable",
     });
-    await expect(social?.matchPlayer("x".repeat(101))).resolves.toEqual({
+    await expect(social?.matchPlayer!("x".repeat(101))).resolves.toEqual({
       status: "terminal-failure",
       message: "facebook-match-tag-invalid",
     });
@@ -533,7 +529,7 @@ describe("FacebookPlatformBootstrap", () => {
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success") throw new Error("bootstrap failed");
     expect(result.value.capabilities.nativeSocial).toBeDefined();
-    await expect(result.value.capabilities.nativeSocial?.matchPlayer()).resolves.toMatchObject({status: "unavailable"});
+    expect(result.value.capabilities.nativeSocial?.matchPlayer).toBeUndefined();
   });
 
   test("fails closed for invalid identity and retryably for SDK failures", async () => {

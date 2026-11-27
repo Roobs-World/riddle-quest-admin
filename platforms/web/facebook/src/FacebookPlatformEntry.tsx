@@ -160,9 +160,10 @@ export function FacebookPlatformEntry() {
     void (async () => {
       try {
         /** Provides age category behavior. */
-        const ageCategory = parseFacebookAgeCategory(import.meta.env.VITE_FACEBOOK_AGE_CATEGORY);
+        const configuredAudience = parseFacebookAgeCategory(import.meta.env.VITE_FACEBOOK_AGE_CATEGORY);
+        const bootstrap = new FacebookPlatformBootstrap(undefined, configuredAudience);
         /** Provides result behavior. */
-        const result = await new FacebookPlatformBootstrap(undefined, ageCategory).initialize((progress) => {
+        const result = await bootstrap.initialize((progress) => {
           if (active) setStartup({status: "loading", progress});
         });
         if (result.status !== "success") {
@@ -170,6 +171,7 @@ export function FacebookPlatformEntry() {
         }
         /** Provides session behavior. */
         const session = result.value;
+        const ageCategory = bootstrap.resolvedAgeCategory;
         /** Provides sdk behavior. */
         const sdk = requireFacebookInstant();
         /** Provides r id. */

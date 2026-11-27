@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": " monedas",
-    "LOADING_TEXT": "Cargando tienda...",
     "NO_PACKS_AVAILABLE": "No hay paquetes de monedas disponibles ahora.",
     "PURCHASE_BUTTON": "COMPRAR",
-    "PERIOD_MONTHLY": "mes",
-    "PERIOD_WEEKLY": "semana",
-    "PERIOD_YEARLY": "año",
-    "START_TRIAL_BUTTON": "PRUEBA GRATIS",
-    "SUBSCRIBE_BUTTON": "SUSCRIBIRSE",
-    "CANCEL_SUBSCRIPTION": "Cancelar suscripción",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "Renovación cancelada. Premium seguirá activo hasta el final del período de facturación.",
-    "SUBSCRIPTION_ACTIVE": "Premium activo",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "Tu suscripción premium está activa.",
-    "SUBSCRIPTION_BENEFITS_TITLE": "Qué incluye",
-    "SUBSCRIPTION_BENEFIT_COINS": "{coins} monedas añadidas a tu saldo cada 30 días",
-    "SUBSCRIPTION_BENEFIT_STATUS": "Estado Premium en tu cuenta de Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "Apoya al equipo detrás de Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "Se renueva automáticamente. Cancela cuando quieras desde Perfil o Ajustes.",
     "TITLE": "TIENDA DE MONEDAS",
     "YOUR_BALANCE": "Tu saldo",
     "BADGE_STARTER": "INICIAL",
     "BADGE_POPULAR": "POPULAR",
     "BADGE_BEST_VALUE": "MEJOR OFERTA",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "No se puede cancelar esta suscripción.",
     "PACK_BUYING_POWER": "Hasta {hints} pistas o {continues} intentos adicionales."
   }
 }

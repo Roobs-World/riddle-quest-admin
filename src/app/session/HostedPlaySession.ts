@@ -29,10 +29,6 @@ export type HostedPlaySession = Readonly<{
   initialPlayerData?: PlayerData | null;
   /** Stores on player data change. */
   onPlayerDataChange?: (update: PlayerDataUpdate) => void;
-  /** Stores registration name. */
-  registrationName?: string;
-  /** Stores registration inviter name. */
-  registrationInviterName?: string;
   /** Stores initial race challenge id. */
   initialRaceChallengeId?: string;
   /** Stores initial race inbox. */

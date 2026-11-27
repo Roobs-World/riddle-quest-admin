@@ -13,7 +13,7 @@ type ConnectionValue = {
 /** Provides priority behavior. */
 const priority = {online: 1, playing: 2, racing: 3} as const;
 /** Provides presence user id behavior. */
-const presenceUserId = /^facebook_[0-9a-f]{40}$/;
+const presenceUserId = /^(?:facebook|jest)_[0-9a-f]{40}$/;
 
 /** Reduces server-observed sessions to one public state without trusting a client aggregate. */
 export function aggregatePresenceValue(
@@ -24,7 +24,7 @@ export function aggregatePresenceValue(
   /** Provides highest behavior. */
   let highest: keyof typeof priority | "offline" = "offline";
   for (const connection of Object.values(value as Record<string, ConnectionValue>)) {
-    if (connection?.platform !== "facebook") continue;
+    if (connection?.platform !== "facebook" && connection?.platform !== "jest") continue;
     if (!facebookPresenceEnabled && connection?.platform === "facebook") continue;
     /** Provides state behavior. */
     const state = connection?.state;

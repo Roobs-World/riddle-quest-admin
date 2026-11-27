@@ -1,4 +1,4 @@
-import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
+import {Suspense, useCallback, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
 import type {GameToHostMessage} from "../../platform/bridge/messages";
 import {BRIDGE_PROTOCOL_VERSION} from "../../platform/bridge/constants";
 import musicUrl from "../../../assets/audio-web/music.webm";
@@ -7,7 +7,6 @@ import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, 
 import {tr} from "../../localization/browser/i18n";
 import {createRequestId} from "../session/requestIds";
 import {dispatchLocalBridge, GAME_TO_HOST_EVENT} from "../../platform/bridge/browser/localBridge";
-import {ShopSubscriptionContext} from "../../commerce/browser/ShopSubscriptionContext";
 import {useProviderProfile} from "../../accounts/components/ProviderProfileContext";
 import {GuidanceOverlay} from "../../onboarding/components/GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "../../app/components/feedback/SpinningWheelLoader";
@@ -67,8 +66,6 @@ export function GameFrameApp({
   startupError,
   restoredGame,
   onSaveGame,
-  registrationName,
-  registrationInviterName,
   initialRaceChallengeId,
   initialRaceInbox = false,
   initialRaceLobby = false,
@@ -105,10 +102,6 @@ export function GameFrameApp({
   restoredGame?: SavedGame | null;
   /** Stores on save game. */
   onSaveGame?: (game: SavedGame | null) => void;
-  /** Stores registration name. */
-  registrationName?: string;
-  /** Stores registration inviter name. */
-  registrationInviterName?: string;
   /** Stores initial race challenge id. */
   initialRaceChallengeId?: string;
   /** Stores initial race inbox. */
@@ -143,10 +136,8 @@ export function GameFrameApp({
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
   const providerProfile = useProviderProfile();
-  /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
-  const shopCatalog = useContext(ShopSubscriptionContext);
-  /** Existing offers or a retryable catalog error keep the shop entry available. */
-  const commerceAvailable = state.products.length > 0 || Boolean(shopCatalog?.catalogError);
+  /** Shop entry is available when the provider exposes a supported offer. */
+  const commerceAvailable = state.products.some(product => product.productType !== "subscription");
   /** Terminal receipts belong to the exact account generation that opened the race. */
   const raceAccount = useMemo(() => ({ownerId: raceOwnerId, generation: state.user?.accountGeneration}), [raceOwnerId, state.user?.accountGeneration]);
   /** Retired race callbacks cannot change the replacement account's display. */
@@ -554,8 +545,6 @@ export function GameFrameApp({
           modal={state.modal}
           suspended={raceOpen || (failedModalOwner === surfaceOwner && Boolean(state.modal || terminalSurfaceRecovery))}
           onActiveChange={setGuidanceActive}
-          registrationName={registrationName}
-          registrationInviterName={registrationInviterName}
           interactionBlocked={interactionBlocked || !online}
         />
         <GameSurfaceBoundary key={`multiplayer-${surfaceOwner}`} surface="multiplayer" visible={raceOpen && raceEnabled}

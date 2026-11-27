@@ -3,6 +3,8 @@ import {createHash, createHmac, sign, timingSafeEqual} from "node:crypto";
 export const REPAIR_BASE_BRANCH = "main";
 
 const PROJECT = "riddle-quest-ec2b2";
+const TEAM_ID = "019faa67-d2a6-7169-aa29-a4411a3a3c3d";
+const GAME_ID = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const MAX_TICKET_AGE_MS = 4 * 60 * 60 * 1000;
 const MAX_RECONCILE_AGE_MS = 12 * 60 * 60 * 1000;
 const text = (value, limit = 300) => typeof value === "string" ? value.slice(0, limit) : "";
@@ -58,10 +60,86 @@ export async function currentFunctions(env = process.env, fetcher = fetch) {
   throw new Error("functions_authority_incomplete_inventory");
 }
 
-export function evaluateDeployment(event, inventory) {
+async function mcpResponse(response) {
+  if (!response.ok) throw new Error(`Jest MCP authority failed (${response.status})`);
+  const body = await response.text();
+  if (body.length > 1_000_000) throw new Error("jest_authority_response_too_large");
+  if (response.headers.get("content-type")?.includes("text/event-stream")) {
+    const messages = body.split(/\r?\n\r?\n/u).flatMap((block) => {
+      const data = block.split(/\r?\n/u).filter((line) => line.startsWith("data:")).map((line) => line.slice(5).trimStart()).join("\n");
+      return data ? [JSON.parse(data)] : [];
+    });
+    return messages.findLast((message) => message.result || message.error);
+  }
+  return body ? JSON.parse(body) : null;
+}
+
+async function boundedHtml(url, fetcher) {
+  const response = await fetcher(url, {headers: {"Cache-Control": "no-cache", Accept: "text/html"}, cache: "no-store", signal: AbortSignal.timeout(12_000), redirect: "error"});
+  if (!response.ok || !response.headers.get("content-type")?.includes("text/html")) throw new Error("jest_public_authority_unavailable");
+  const reader = response.body?.getReader();
+  if (!reader) throw new Error("jest_public_authority_empty");
+  const chunks = [];
+  let length = 0;
+  try {
+    for (;;) {
+      const {done, value} = await reader.read();
+      if (done) break;
+      length += value.length;
+      if (length > 256_000) throw new Error("jest_public_authority_too_large");
+      chunks.push(Buffer.from(value));
+    }
+  } finally {await reader.cancel();}
+  return Buffer.concat(chunks).toString("utf8");
+}
+
+export async function currentJestProduction(fetcher = fetch) {
+  const html = await boundedHtml("https://jest.com/g/riddle-q", fetcher);
+  const frames = [...html.matchAll(/<iframe\b[^>]*\bsrc\s*=\s*(["'])(.*?)\1[^>]*>/giu)];
+  if (frames.length !== 1) throw new Error("jest_public_authority_ambiguous");
+  const url = new URL(frames[0][2].replaceAll("&amp;", "&"));
+  const match = new RegExp(`^/${GAME_ID}/([A-Za-z0-9][A-Za-z0-9._-]{0,63})/index\\.html$`, "u").exec(url.pathname);
+  if (url.protocol !== "https:" || url.hostname !== `${GAME_ID}.builds.jest.com` || url.port || url.username || url.password || url.hash || !match || [...url.searchParams.keys()].some((key) => !["sid", "tce"].includes(key))) throw new Error("jest_public_authority_invalid_frame");
+  // The query contains a platform session identifier; neither persist nor log it.
+  const resource = `${url.origin}${url.pathname}`;
+  const index = await boundedHtml(resource, fetcher);
+  if (!/<html\b/iu.test(index)) throw new Error("jest_public_authority_invalid_index");
+  return [{id: null, version: match[1], isActive: true, buildStatus: "ready", authority: "public-live-iframe", resource}];
+}
+
+export async function currentJestVersions(env = process.env, fetcher = fetch) {
+  if (!env.JEST_MCP_ACCESS_TOKEN) throw new Error("jest_authority_not_configured");
+  const headers = {Authorization: `Bearer ${env.JEST_MCP_ACCESS_TOKEN}`, "Content-Type": "application/json", Accept: "application/json, text/event-stream"};
+  const call = (body) => fetcher("https://jest.com/mcp", {method: "POST", headers, body: JSON.stringify(body), signal: AbortSignal.timeout(12_000), redirect: "error"});
+  const initialized = await call({jsonrpc: "2.0", id: 1, method: "initialize", params: {protocolVersion: "2025-03-26", capabilities: {}, clientInfo: {name: "riddle-quest-sentry-worker", version: "1.0.0"}}});
+  const sessionId = initialized.headers.get("mcp-session-id");
+  const initialization = await mcpResponse(initialized);
+  if (!initialization?.result?.protocolVersion) throw new Error("jest_authority_initialization_failed");
+  if (sessionId) headers["Mcp-Session-Id"] = sessionId;
+  headers["MCP-Protocol-Version"] = initialization.result.protocolVersion;
+  await mcpResponse(await call({jsonrpc: "2.0", method: "notifications/initialized"}));
+  const response = await mcpResponse(await call({jsonrpc: "2.0", id: 2, method: "tools/call", params: {name: "list_game_versions", arguments: {teamId: TEAM_ID, gameId: GAME_ID, limit: 100}}}));
+  if (response?.error || response?.result?.isError) throw new Error("jest_authority_tool_failed");
+  const content = response?.result?.content?.find((item) => item.type === "text")?.text;
+  const versions = content ? JSON.parse(content) : null;
+  if (!Array.isArray(versions) || versions.filter((version) => version.isActive).length !== 1) throw new Error("jest_authority_invalid_inventory");
+  return versions;
+}
+
+export function evaluateDeployment(event, inventory, env = process.env) {
   if (!event.release || !event.environment || !Number.isFinite(Date.parse(event.timestamp))) return {allowed: false, reason: "event_deployment_missing"};
   let deployment;
-  if (event.runtime === "firebase-functions") {
+  if (event.runtime === "jest-html5") {
+    if (event.environment !== "production") return {allowed: false, reason: "event_environment_out_of_scope"};
+    const matches = inventory.filter((version) => `riddle-quest@${version.version}` === event.release);
+    if (matches.length !== 1) return {allowed: false, reason: "jest_release_not_in_inventory"};
+    const version = matches[0];
+    const previews = new Set((env.SENTRY_WORKER_JEST_PREVIEW_IDS ?? "").split(",").map((id) => id.trim()).filter(Boolean));
+    if (version.buildStatus !== "ready" || (!version.isActive && !previews.has(version.id))) return {allowed: false, reason: "jest_release_not_current_or_authorized_preview"};
+    const active = inventory.find((candidate) => candidate.isActive);
+    deployment = {runtime: event.runtime, environment: event.environment, release: event.release, versionId: version.id, active: version.isActive, activeVersion: active?.version, authority: version.authority ?? "management-mcp", resource: version.resource ?? null};
+    if (!active?.version) return {allowed: false, reason: "jest_active_version_missing"};
+  } else if (event.runtime === "firebase-functions") {
     if (!["production", PROJECT].includes(event.environment)) return {allowed: false, reason: "event_environment_out_of_scope"};
     // A Git SHA fallback from SENTRY_RELEASE cannot identify a serving revision.
     if (!/^[a-z][a-z0-9-]*-\d{5}-[a-z0-9]+$/u.test(event.release)) return {allowed: false, reason: "functions_runtime_revision_missing"};
@@ -81,8 +159,17 @@ export async function verifyDeployment(event, env = process.env, fetcher = fetch
       if (!cache.has(key)) cache.set(key, operation());
       return cache.get(key);
     };
-    const inventory = event.runtime === "firebase-functions" ? await load("functions", () => currentFunctions(env, fetcher)) : [];
-    return evaluateDeployment(event, inventory);
+    let inventory;
+    if (event.runtime === "jest-html5") {
+      inventory = await load("jest-production", () => currentJestProduction(fetcher));
+      if (`riddle-quest@${inventory[0].version}` !== event.release) {
+        if (!env.JEST_MCP_ACCESS_TOKEN) return {allowed: false, reason: "jest_release_not_current_preview_authority_unavailable"};
+        const versions = await load("jest-previews", () => currentJestVersions(env, fetcher));
+        if (versions.find((version) => version.isActive)?.version !== inventory[0].version) return {allowed: false, reason: "jest_deployment_authorities_disagree"};
+        inventory = versions;
+      }
+    } else inventory = event.runtime === "firebase-functions" ? await load("functions", () => currentFunctions(env, fetcher)) : [];
+    return evaluateDeployment(event, inventory, env);
   } catch (error) {
     return {allowed: false, reason: "deployment_authority_unavailable", detail: /^[a-z][a-z0-9_]+$/u.test(error.message) ? error.message : "authority_request_failed"};
   }

@@ -16,7 +16,7 @@ export function isAndroidAccountProvider(provider: unknown): provider is Android
  * Creates the initial server-authoritative profile for one Android Firebase identity.
  *
  * @remarks
- * Uses the shared starting balance, stats, and progress so every hosted
+ * Mirrors the Jest starting balance, stats, and progress so every hosted
  * target begins the same game. The username derives from the Firebase uid
  * rather than any device identifier, and the provider is retained so a later
  * Google sign-in link can be audited.

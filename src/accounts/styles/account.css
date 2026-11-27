@@ -192,7 +192,6 @@
   gap: 8px;
 }
 .profile-links button,
-.profile-subscriptions button,
 .settings-row {
   min-height: 48px;
   border: 1px solid #d7c9b4;
@@ -619,18 +618,4 @@
   50% {
     transform: translateY(-7px);
   }
-}
-
-.profile-subscriptions {
-  grid-column: 1 / -1;
-}
-.profile-subscription {
-  display: grid;
-  gap: 8px;
-  padding: 12px;
-  border: 1px solid #d7c9b4;
-  border-radius: 10px;
-}
-.profile-subscription + .profile-subscription {
-  margin-top: 8px;
 }

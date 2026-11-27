@@ -16,7 +16,7 @@ jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNee
 /** Every destructive fixture is constrained to one private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** Canonical provider identity cannot trigger another provider's referral delivery. */
-const OWNER = `facebook_${"d".repeat(40)}`;
+const OWNER = `jest_${"d".repeat(40)}`;
 /** Session completion and helper repair share the normal Admin SDK database. */
 let db: FirebaseFirestore.Firestore;
 /** User subcollections and completion receipts are removed only from the private fixture. */

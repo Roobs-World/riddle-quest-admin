@@ -1,4 +1,5 @@
 import type {PlatformCapabilities} from "../../../../src/platform/contracts/capabilities";
+import type {FacebookInstantSdk} from "./fbinstant";
 
 /** Describes facebook age category. */
 export type FacebookAgeCategory = "13_plus" | "unknown";
@@ -25,6 +26,22 @@ export type FacebookCapabilityVisibility = FacebookOptionalCapabilityAvailabilit
 /** Accepts only the explicit verified 13+ build value; every other value is unknown. */
 export const parseFacebookAgeCategory = (value: string | undefined): FacebookAgeCategory =>
   value === "13_plus" ? "13_plus" : "unknown";
+
+/** Host age information may narrow, but never broaden, the approved release audience. */
+export async function resolveFacebookPlayerAgeCategory(
+  sdk: FacebookInstantSdk,
+  configuredAudience: FacebookAgeCategory,
+): Promise<FacebookAgeCategory> {
+  if (configuredAudience !== "13_plus") return "unknown";
+  if (!sdk.getSupportedAPIs().includes("player.getAgeCategoryAsync") ||
+      typeof sdk.player.getAgeCategoryAsync !== "function") return configuredAudience;
+  try {
+    const category = await sdk.player.getAgeCategoryAsync();
+    return category === "TN" || category === "AD" ? "13_plus" : "unknown";
+  } catch {
+    return "unknown";
+  }
+}
 
 /** Applies authenticated server gates to the SDK capabilities without affecting core play. */
 export function gateFacebookSessionCapabilities(

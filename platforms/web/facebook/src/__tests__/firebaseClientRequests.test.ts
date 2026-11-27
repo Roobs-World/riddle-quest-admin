@@ -12,8 +12,6 @@ jest.mock("firebase/functions", () => ({
 jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebaseFunctions: {}}));
 
 import {
-  acceptFacebookNotificationPermissionPrompt,
-  claimFacebookNotificationPermissionPrompt,
   getFacebookClientConfiguration,
 } from "../firebaseClient";
 
@@ -34,8 +32,6 @@ describe("Facebook empty callable requests", () => {
         removeInterstitialAds: false,
       },
     ],
-    ["claimFacebookNotificationPermissionPrompt", claimFacebookNotificationPermissionPrompt, {granted: false}],
-    ["acceptFacebookNotificationPermissionPrompt", acceptFacebookNotificationPermissionPrompt, {accepted: true}],
   ] as const)("%s supplies the server's required empty object", async (name, invoke, response) => {
     mockInvoke.mockResolvedValueOnce({data: response});
     await invoke();

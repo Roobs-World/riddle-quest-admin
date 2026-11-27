@@ -4,7 +4,7 @@ import type {FacebookInstantSdk} from "./fbinstant";
 /** Provider UI occupancy is scoped to the SDK instance, never another platform. */
 const activeDialogs = new WeakSet<FacebookInstantSdk>();
 
-/** Prevents Meta social dialogs, shares, ads and subscription prompts from overlapping. */
+/** Prevents Meta social dialogs, shares, ads and checkouts from overlapping. */
 export async function runFacebookSdkDialog<Result = void>(
   sdk: FacebookInstantSdk,
   operation: () => Promise<PlatformResult<Result>>,

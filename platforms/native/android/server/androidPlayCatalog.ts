@@ -1,5 +1,5 @@
 import {createHash} from "node:crypto";
-import {COIN_PRODUCTS, SUBSCRIPTIONS} from "../../../../firebase-functions/src/shared/productCatalog";
+import {JEST_COIN_PRODUCTS, JEST_SUBSCRIPTIONS} from "../../../../firebase-functions/src/shared/productCatalog";
 
 /** Google Play package that owns every Android purchase token. */
 export const ANDROID_PACKAGE_NAME = "com.roobsworld.riddlequest";
@@ -8,13 +8,13 @@ export const ANDROID_PACKAGE_NAME = "com.roobsworld.riddlequest";
  * Coins granted per Google Play in-app product.
  *
  * @remarks
- * Play Console products use the shared SKUs for consistent coin packs
+ * Play Console products use the Jest SKUs so both targets sell identical packs
  * at identical coin values; the server owns the mapping, never the client.
  */
-export const ANDROID_COIN_PRODUCTS: Readonly<Record<string, number>> = COIN_PRODUCTS;
+export const ANDROID_COIN_PRODUCTS: Readonly<Record<string, number>> = JEST_COIN_PRODUCTS;
 
 /** Google Play subscription products and the entitlement each confers. */
-export const ANDROID_SUBSCRIPTIONS: Readonly<Record<string, string>> = SUBSCRIPTIONS;
+export const ANDROID_SUBSCRIPTIONS: Readonly<Record<string, string>> = JEST_SUBSCRIPTIONS;
 
 /**
  * Opaque account binding the app passes to Play as `obfuscatedAccountId`.

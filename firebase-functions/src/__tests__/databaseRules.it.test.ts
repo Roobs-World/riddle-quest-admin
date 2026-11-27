@@ -13,8 +13,8 @@ const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "";
 // Every destructive fixture operation requires the private loopback demo services.
 if (!PROJECT_ID.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIREBASE_DATABASE_EMULATOR_HOST ?? ""))
   throw new Error("Private demo presence emulators required");
-/** Defines the other Facebook user value. */
-const OTHER_FACEBOOK_USER = `facebook_${"a".repeat(40)}`;
+/** Defines the jest user value. */
+const JEST_USER = `jest_${"a".repeat(40)}`;
 /** Defines the facebook user value. */
 const FACEBOOK_USER = `facebook_${"b".repeat(40)}`;
 /** Provides environment behavior. */
@@ -30,7 +30,7 @@ beforeAll(async () => {
     await set(ref(context.database(), "presenceVisibility/player-1/player-2"), true);
     await set(ref(context.database(), "presenceOptIn/player-2"), true);
     await set(ref(context.database(), "presenceViewers/player-2/player-1"), true);
-    await set(ref(context.database(), `presenceConsent/${OTHER_FACEBOOK_USER}`), true);
+    await set(ref(context.database(), `presenceConsent/${JEST_USER}`), true);
     await set(ref(context.database(), `presenceConsent/${FACEBOOK_USER}`), true);
     await set(ref(context.database(), "featureGates/facebookPresence"), true);
   });
@@ -41,18 +41,18 @@ afterAll(async () => environment.cleanup());
 describe("Realtime Database presence rules", () => {
   it("permits only validated own-session writes and no connection reads", async () => {
     /** Provides own behavior. */
-    const own = environment.authenticatedContext(OTHER_FACEBOOK_USER, {provider: "facebook"}).database();
+    const own = environment.authenticatedContext(JEST_USER, {jestPlayerId: "jest-player"}).database();
     /** Provides facebook behavior. */
     const facebook = environment.authenticatedContext(FACEBOOK_USER, {provider: "facebook"}).database();
     /** Provides other behavior. */
     const other = environment.authenticatedContext("player-2").database();
     /** Provides path behavior. */
-    const path = `presenceConnections/${OTHER_FACEBOOK_USER}/session-1`;
-    await assertSucceeds(set(ref(own, path), {platform: "facebook", state: "online", updatedAt: 1}));
+    const path = `presenceConnections/${JEST_USER}/session-1`;
+    await assertSucceeds(set(ref(own, path), {platform: "jest", state: "online", updatedAt: 1}));
     await assertFails(get(ref(own, path)));
     await assertFails(set(ref(other, path), {platform: "facebook", state: "racing", updatedAt: 2}));
-    await assertFails(set(ref(own, path), {platform: "facebook", state: "forged", updatedAt: 2}));
-    await assertFails(set(ref(own, path), {platform: "unsupported", state: "online", updatedAt: 2}));
+    await assertFails(set(ref(own, path), {platform: "jest", state: "forged", updatedAt: 2}));
+    await assertFails(set(ref(own, path), {platform: "facebook", state: "online", updatedAt: 2}));
     await assertSucceeds(
       set(ref(facebook, `presenceConnections/${FACEBOOK_USER}/session-2`), {
         platform: "facebook",
@@ -62,7 +62,7 @@ describe("Realtime Database presence rules", () => {
     );
     await assertFails(
       set(ref(facebook, `presenceConnections/${FACEBOOK_USER}/session-2`), {
-        platform: "unsupported",
+        platform: "jest",
         state: "racing",
         updatedAt: 2,
       }),
@@ -79,10 +79,10 @@ describe("Realtime Database presence rules", () => {
     );
     await assertFails(set(ref(facebook, `presenceConsent/${FACEBOOK_USER}`), true));
     await assertSucceeds(set(ref(facebook, `presenceConnections/${FACEBOOK_USER}/session-2`), null));
-    await assertFails(set(ref(own, path), {platform: "facebook", state: "online", updatedAt: -1}));
+    await assertFails(set(ref(own, path), {platform: "jest", state: "online", updatedAt: -1}));
     await assertFails(
       set(ref(own, path), {
-        platform: "facebook",
+        platform: "jest",
         state: "online",
         updatedAt: Date.now() + 120_000,
       }),
@@ -111,16 +111,16 @@ describe("Realtime Database presence rules", () => {
     await assertFails(set(ref(self, path), {state: "online", updatedAt: 2}));
   });
 
-  it("fails Facebook presence closed at the server gate for every Facebook player", async () => {
+  it("fails Facebook presence closed at the server gate without affecting Jest", async () => {
     /** Provides facebook behavior. */
     const facebook = environment.authenticatedContext(FACEBOOK_USER, {provider: "facebook"}).database();
-    /** Provides rival player behavior. */
-    const rivalPlayer = environment.authenticatedContext(OTHER_FACEBOOK_USER, {provider: "facebook"}).database();
+    /** Provides jest player behavior. */
+    const jestPlayer = environment.authenticatedContext(JEST_USER, {jestPlayerId: "jest-player"}).database();
     await environment.withSecurityRulesDisabled(async (context) => {
       await set(ref(context.database(), `presenceStatus/${FACEBOOK_USER}`), {state: "online", updatedAt: 1});
-      await set(ref(context.database(), `presenceStatus/${OTHER_FACEBOOK_USER}`), {state: "online", updatedAt: 1});
+      await set(ref(context.database(), `presenceStatus/${JEST_USER}`), {state: "online", updatedAt: 1});
       await set(ref(context.database(), `presenceOptIn/${FACEBOOK_USER}`), true);
-      await set(ref(context.database(), `presenceVisibility/${OTHER_FACEBOOK_USER}/${FACEBOOK_USER}`), true);
+      await set(ref(context.database(), `presenceVisibility/${JEST_USER}/${FACEBOOK_USER}`), true);
     });
     /** Resolves initial. */
     let resolveInitial!: () => void;
@@ -136,7 +136,7 @@ describe("Realtime Database presence rules", () => {
     });
     /** Provides unsubscribe behavior. */
     const unsubscribe = onValue(
-      ref(rivalPlayer, `presenceStatus/${FACEBOOK_USER}`),
+      ref(jestPlayer, `presenceStatus/${FACEBOOK_USER}`),
       (snapshot) => {
         if (snapshot.exists()) resolveInitial();
       },
@@ -158,10 +158,10 @@ describe("Realtime Database presence rules", () => {
         updatedAt: 2,
       }),
     );
-    await assertFails(get(ref(rivalPlayer, `presenceStatus/${OTHER_FACEBOOK_USER}`)));
-    await assertFails(
-      set(ref(rivalPlayer, `presenceConnections/${OTHER_FACEBOOK_USER}/enabled`), {
-        platform: "facebook",
+    await assertSucceeds(get(ref(jestPlayer, `presenceStatus/${JEST_USER}`)));
+    await assertSucceeds(
+      set(ref(jestPlayer, `presenceConnections/${JEST_USER}/enabled`), {
+        platform: "jest",
         state: "online",
         updatedAt: 2,
       }),

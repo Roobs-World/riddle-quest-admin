@@ -10,8 +10,6 @@ import {
   parseFacebookClientConfiguration,
   parseFacebookPurchaseGrant,
   parseFacebookRewardedContinue,
-  parseFacebookNotificationPromptAcceptance,
-  parseFacebookNotificationPromptClaim,
   parseFacebookContextBoardResponse,
   parseFacebookContextRecordResponse,
   parseFacebookTournamentRecordResponse,
@@ -50,33 +48,6 @@ export const grantFacebookRewardedContinue = async (input: Parameters<typeof gra
   /** Authority response is validated before applying its balance and continuation. */
   const result = await grantFacebookRewardedContinueRaw(input);
   return {...result, data: parseFacebookRewardedContinue(result.data)};
-};
-
-/** Provides claim facebook notification permission prompt raw behavior. */
-const claimFacebookNotificationPermissionPromptRaw = httpsCallable<{
-  /** Explicit Settings requests are independent of automatic prompt cooldowns. */
-  source?: "settings";
-}, unknown>(
-  firebaseFunctions,
-  "claimFacebookNotificationPermissionPrompt",
-);
-/** Provides claim facebook notification permission prompt behavior. */
-export const claimFacebookNotificationPermissionPrompt = async (input: {source?: "settings"} = {}) => {
-  /** Provides result behavior. */
-  const result = await claimFacebookNotificationPermissionPromptRaw(input);
-  return {...result, data: parseFacebookNotificationPromptClaim(result.data)};
-};
-
-/** Provides accept facebook notification permission prompt raw behavior. */
-const acceptFacebookNotificationPermissionPromptRaw = httpsCallable<Record<string, never>, unknown>(
-  firebaseFunctions,
-  "acceptFacebookNotificationPermissionPrompt",
-);
-/** Provides accept facebook notification permission prompt behavior. */
-export const acceptFacebookNotificationPermissionPrompt = async (): Promise<void> => {
-  /** Provides result behavior. */
-  const result = await acceptFacebookNotificationPermissionPromptRaw({});
-  parseFacebookNotificationPromptAcceptance(result.data);
 };
 
 /** Reads fail-closed Facebook feature switches and durable ad suppression. */

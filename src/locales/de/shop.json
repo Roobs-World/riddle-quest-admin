@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": " Münzen",
-    "LOADING_TEXT": "Shop wird geladen...",
     "NO_PACKS_AVAILABLE": "Derzeit keine Münzpakete verfügbar.",
     "PURCHASE_BUTTON": "KAUFEN",
-    "PERIOD_MONTHLY": "Monat",
-    "PERIOD_WEEKLY": "Woche",
-    "PERIOD_YEARLY": "Jahr",
-    "START_TRIAL_BUTTON": "GRATIS TESTEN",
-    "SUBSCRIBE_BUTTON": "ABONNIEREN",
-    "CANCEL_SUBSCRIPTION": "Abonnement kündigen",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "Verlängerung gekündigt. Premium bleibt bis zum Ende des Abrechnungszeitraums aktiv.",
-    "SUBSCRIPTION_ACTIVE": "Premium aktiv",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "Dein Premium-Abo ist aktiv.",
-    "SUBSCRIPTION_BENEFITS_TITLE": "Das bekommst du",
-    "SUBSCRIPTION_BENEFIT_COINS": "{coins} Münzen alle 30 Tage auf dein Guthaben",
-    "SUBSCRIPTION_BENEFIT_STATUS": "Premium-Status für dein Riddle-Quest-Konto",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "Unterstütze das Team hinter Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "Verlängert sich automatisch. Jederzeit unter Profil oder Einstellungen kündbar.",
     "TITLE": "MÜNZSHOP",
     "YOUR_BALANCE": "Ihr Guthaben",
     "BADGE_STARTER": "EINSTIEG",
     "BADGE_POPULAR": "BELIEBT",
     "BADGE_BEST_VALUE": "BESTES ANGEBOT",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Dieses Abonnement kann nicht gekündigt werden.",
     "PACK_BUYING_POWER": "Bis zu {hints} Hinweise oder {continues} zusätzliche Versuche."
   }
 }

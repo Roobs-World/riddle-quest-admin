@@ -9,7 +9,7 @@ import type {
 import {parsePlayerData} from "../../../../src/accounts/browser/playerState/playerDataValidation";
 import {requireFacebookInstant, type FacebookInstantSdk} from "./fbinstant";
 import {createFacebookLifecycle} from "./createFacebookLifecycle";
-import {resolveFacebookCapabilityVisibility, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
+import {resolveFacebookCapabilityVisibility, resolveFacebookPlayerAgeCategory, type FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookOverlayCapability} from "./FacebookOverlayCapability";
 import {createFirebaseRaceMatchmaking} from "../../../../src/races/transport/browser/firebaseRaceMatchmaking";
 import {LANGUAGE_OPTIONS} from "../../../../src/localization/browser/i18n";
@@ -35,15 +35,6 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(typeof value.onboardingComplete === "boolean" ? {onboardingComplete: value.onboardingComplete} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
     ...(typeof value.notificationsEnabled === "boolean" ? {notificationsEnabled: value.notificationsEnabled} : {}),
-    ...(value.facebookNotificationPermission === "unknown" ||
-    value.facebookNotificationPermission === "declined" ||
-    value.facebookNotificationPermission === "accepted"
-      ? {facebookNotificationPermission: value.facebookNotificationPermission}
-      : {}),
-    ...(Number.isSafeInteger(value.facebookNotificationLastPromptAtMs) &&
-    (value.facebookNotificationLastPromptAtMs as number) >= 0
-      ? {facebookNotificationLastPromptAtMs: value.facebookNotificationLastPromptAtMs as number}
-      : {}),
   };
 };
 
@@ -174,6 +165,12 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
   private readonly getSdk: () => FacebookInstantSdk;
   /** Stores age category. */
   private readonly ageCategory: FacebookAgeCategory;
+  private playerAgeCategory: FacebookAgeCategory = "unknown";
+
+  /** The entry uses the same audience decision as bootstrap-owned capabilities. */
+  get resolvedAgeCategory(): FacebookAgeCategory {
+    return this.playerAgeCategory;
+  }
 
   /** Creates a facebook platform bootstrap instance. */
   constructor(getSdk: () => FacebookInstantSdk = requireFacebookInstant, ageCategory: FacebookAgeCategory = "unknown") {
@@ -204,9 +201,10 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
       await storage.readPreferences();
       /** Provides supported apis behavior. */
       const supportedApis = new Set(sdk.getSupportedAPIs());
+      this.playerAgeCategory = await resolveFacebookPlayerAgeCategory(sdk, this.ageCategory);
       /** Provides visibility behavior. */
       const visibility = resolveFacebookCapabilityVisibility({
-        ageCategory: this.ageCategory,
+        ageCategory: this.playerAgeCategory,
         available: {
           commerce: false,
           ads: false,
@@ -245,27 +243,34 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
                   }
                 });
               },
-              /** Provides match player behavior. */
-              async matchPlayer(tag?: string) {
-                if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
-                  return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
-                }
-                if (!supportedApis.has("matchPlayerAsync") || typeof sdk.matchPlayerAsync !== "function") {
-                  return {status: "unavailable" as const, message: "facebook-matchmaking-unavailable"};
-                }
-                return runFacebookSdkDialog(sdk, async () => {
-                  try {
-                    await sdk.matchPlayerAsync!(tag, true, true);
-                    return facebookContextResult(sdk);
-                  } catch (error) {
-                    return facebookSocialFailure(error);
+              ...(supportedApis.has("matchPlayerAsync") && typeof sdk.matchPlayerAsync === "function" ? {
+                /** Provides match player behavior. */
+                async matchPlayer(tag?: string) {
+                  if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
+                    return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
                   }
-                });
-              },
+                  if (!supportedApis.has("matchPlayerAsync") || typeof sdk.matchPlayerAsync !== "function") {
+                    return {status: "unavailable" as const, message: "facebook-matchmaking-unavailable"};
+                  }
+                  return runFacebookSdkDialog(sdk, async () => {
+                    try {
+                      if (supportedApis.has("checkCanPlayerMatchAsync") &&
+                          typeof sdk.checkCanPlayerMatchAsync === "function" &&
+                          await sdk.checkCanPlayerMatchAsync() !== true) {
+                        return {status: "unavailable", message: "facebook-matchmaking-unavailable"};
+                      }
+                      await sdk.matchPlayerAsync!(tag, true, true);
+                      return facebookContextResult(sdk);
+                    } catch (error) {
+                      return facebookSocialFailure(error);
+                    }
+                  });
+                },
+              } : {}),
             }
           : undefined;
       /** Provides overlay behavior. */
-      const overlay = this.ageCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
+      const overlay = this.playerAgeCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
       return success({
         platform: "facebook",
         playerId,
@@ -273,7 +278,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
         capabilities: {
           accountManagement: {username: true, avatar: false, deletion: true},
           ...(nativeSocial ? {nativeSocial} : {}),
-          ...(this.ageCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true, directInvites: true})} : {}),
+          ...(this.playerAgeCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true, directInvites: true})} : {}),
           ...(overlay ? {overlay} : {}),
           lifecycle: createFacebookLifecycle(sdk),
         },

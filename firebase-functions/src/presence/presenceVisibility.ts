@@ -1,7 +1,7 @@
 import {getDatabase, type Database} from "firebase-admin/database";
 import {getFirestore, type Firestore} from "firebase-admin/firestore";
 import {onDocumentWritten} from "firebase-functions/v2/firestore";
-import {isAccountDeletedError, runWithAccountOperationLease} from "../shared/accountDeletion";
+import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "../shared/accountDeletion";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "../shared/callableSecurity";
 
 /** Provides valid user id behavior. */
@@ -22,11 +22,11 @@ export async function refreshPresenceVisibility(
   // Both owners' deletion sweeps must wait for older mirrors to finish. A
   // cleanup-trigger delivery after either tombstone must not recreate edges.
   try {
-    return await runWithAccountOperationLease(
+    return await runWithJestAccountOperationLease(
       viewerUserId,
       BROWSER_CALLABLE_TIMEOUT_SECONDS,
       () =>
-        runWithAccountOperationLease(
+        runWithJestAccountOperationLease(
           targetUserId,
           BROWSER_CALLABLE_TIMEOUT_SECONDS,
           async () => {
@@ -94,7 +94,7 @@ export async function refreshPresenceVisibility(
       firestore,
     );
   } catch (error) {
-    if (isAccountDeletedError(error)) return false;
+    if (isJestAccountDeletedError(error)) return false;
     throw error;
   }
 }

@@ -1,7 +1,7 @@
 import {getProfileLevel} from "../../profile/profileLevel";
 import {withRaceDeliveryReceipt} from "../delivery/raceDeliveryFailures";
 import {admin} from "../../shared/firebaseAdmin";
-import {getAccountDeletionRef} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {creatorRaceResult} from "./raceSettlement";
 import {parseRunRecord, persistRaceAchievementEvent, requestDocumentId, type Firestore} from "../raceSetupService";
 import {parseRaceSettlementEvent} from "../delivery/raceDeliveryRecords";
@@ -42,8 +42,8 @@ export async function deliverRaceSettlement(
           transaction.get(db.doc(`raceRuns/${runId}`)),
           transaction.get(db.doc(`users/${event.userId}`)),
           transaction.get(db.doc(`users/${event.creatorId}`)),
-          transaction.get(getAccountDeletionRef(db, event.userId)),
-          transaction.get(getAccountDeletionRef(db, event.creatorId)),
+          transaction.get(getJestAccountDeletionRef(db, event.userId)),
+          transaction.get(getJestAccountDeletionRef(db, event.creatorId)),
           transaction.get(db.doc(`users/${event.userId}/blockedRivals/${event.creatorId}`)),
           transaction.get(db.doc(`users/${event.creatorId}/blockedRivals/${event.userId}`)),
         ]);

@@ -8,7 +8,7 @@ import {parseRunRecord} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 
 /** Every mutation is guarded by a private loopback demo emulator. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", OWNER = `facebook_${"a".repeat(40)}`, PEER = `facebook_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", OWNER = `jest_${"a".repeat(40)}`, PEER = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Real SDK exercises canonical state, response validation and idempotent receipts. */
 let db: FirebaseFirestore.Firestore;
 /** One Indic conjunct and one canonically expanding sequence isolate output-cell and request capacities. */

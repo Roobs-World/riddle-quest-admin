@@ -20,7 +20,7 @@ import {
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/deleteAccountData";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {deliverRaceSettlement} from "../../race/settlement/raceSettlementDelivery";
-import {recordAccountDeletion} from "../../shared/accountDeletion";
+import {recordJestAccountDeletion} from "../../../../platforms/web/jest/server/jestAccountDeletion";
 
 /** Defines the project id value. */
 const PROJECT_ID = process.env.GCLOUD_PROJECT ?? "riddle-quest-ec2b2";
@@ -252,7 +252,7 @@ describe("Race to 10 transactional service", () => {
     expect(results[0].run.startsAtMs).toBeLessThanOrEqual(NOW + 8_500);
   });
 
-  it("reserves one race invite recipient idempotently", async () => {
+  it("reserves one Jest invite recipient idempotently", async () => {
     /** Initial server-owned invite lobby reservation. */
     const reservation = await reserveRaceInviteForUser(
       "creator-1",
@@ -972,7 +972,7 @@ describe("Race to 10 transactional service", () => {
     try {
       await parentRead.promise;
       // Account deletion persists its guard before sweeping copied race identities.
-      await recordAccountDeletion("creator-1");
+      await recordJestAccountDeletion("creator-1");
       /** Provides deletion behavior. */
       const deletion = removeCrossUserRaceIdentitySnapshots("creator-1");
       await phaseOneCommitStarted.promise;

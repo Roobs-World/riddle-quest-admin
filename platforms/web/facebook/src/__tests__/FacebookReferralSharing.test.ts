@@ -1,6 +1,6 @@
 import {createFacebookReferralSharing} from "../FacebookReferralSharing";
 import type {FacebookInstantSdk, FacebookSharePayload} from "../fbinstant";
-import {createFacebookNotificationCapability} from "../FacebookNotificationCapability";
+import {createFacebookAdsCapability} from "../FacebookAdsCapability";
 import type {FacebookReferralToken} from "../referrals";
 import {setLocale} from "../../../../../src/localization/browser/i18n";
 
@@ -48,7 +48,7 @@ it.each(["USER_INPUT", "USER_CANCELLED"])("allows retry after Meta dismisses sha
   await expect(capability.shareRace(input)).resolves.toBe("success");
 });
 
-it("holds the provider gate while a token request is pending and prevents subscription overlap", async () => {
+it("holds the provider gate while a token request is pending and prevents rewarded-ad overlap", async () => {
   /** Stores options, issueToken, shareAsync for this isolated provider verification. */
   const {options, issueToken, shareAsync} = fixture();
   /** Stores release for this isolated provider verification. */
@@ -59,13 +59,12 @@ it("holds the provider gate while a token request is pending and prevents subscr
   /** Stores pending for this isolated provider verification. */
   const pending = capability.shareRace({challengeId: "challenge-1", preview: {adjustedTimeToBeatMs: 1}});
   await expect(capability.shareRace({challengeId: "challenge-2", preview: {adjustedTimeToBeatMs: 2}})).resolves.toBe("error");
-  options.sdk.getSupportedAPIs = () => ["shareAsync", "player.canSubscribeBotAsync", "player.isSubscribedBotAsync", "player.subscribeBotAsync"];
-  /** Stores subscribe for this isolated provider verification. */
-  const subscribe = jest.fn(async () => undefined);
-  options.sdk.player = {canSubscribeBotAsync: async () => true, isSubscribedBotAsync: async () => false,
-    subscribeBotAsync: subscribe} as unknown as FacebookInstantSdk["player"];
-  await expect(createFacebookNotificationCapability(options.sdk)!.requestPermission()).resolves.toMatchObject({status: "unavailable"});
-  expect(subscribe).not.toHaveBeenCalled();
+  options.sdk.getSupportedAPIs = () => ["shareAsync", "getRewardedVideoAsync"];
+  const rewarded = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
+  options.sdk.getRewardedVideoAsync = rewarded;
+  const ads = createFacebookAdsCapability({sdk: options.sdk, placementId: "", rewardedPlacementId: "continue", rewardedEnabled: true, adFree: false})!;
+  await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
+  expect(rewarded).not.toHaveBeenCalled();
   release({token: "a".repeat(43), expiresAtMs: Date.now() + 60_000});
   await expect(pending).resolves.toBe("success");
   expect(issueToken).toHaveBeenCalledTimes(1);

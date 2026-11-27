@@ -6,6 +6,7 @@ const repositoryRoot = path.resolve(functionsRoot, "..");
 const stagedRoot = path.join(functionsRoot, ".build-source");
 const serverRoots = [
   "platforms/native/android/server",
+  "platforms/web/jest/server",
   "platforms/web/facebook/server",
   "platforms/web/reddit/server",
   "platforms/web/yahoo/server",

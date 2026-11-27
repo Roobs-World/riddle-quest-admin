@@ -6,7 +6,7 @@ import type {RaceRunRecord} from "../../race/runs/raceEngine";
 import {startRaceRunForUser, submitRaceGuessForUser, requestRaceHintForUser} from "../../race/raceService";
 
 /** Mutation guards confine authored catalogs and canonical accounts to one private loopback demo emulator. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", OWNER = `facebook_${"a".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", OWNER = `jest_${"a".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Actual SDK implements immutable deck publication, run mutation and idempotent receipts. */
 let db: FirebaseFirestore.Firestore;
 /** Decomposed European/Japanese answers and Indic conjuncts exceed seven UTF-16 units while fitting seven slots. */

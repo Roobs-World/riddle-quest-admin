@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": " coins",
-    "LOADING_TEXT": "Loading shop...",
     "NO_PACKS_AVAILABLE": "No coin packs are available right now.",
     "PURCHASE_BUTTON": "PURCHASE",
-    "PERIOD_MONTHLY": "month",
-    "PERIOD_WEEKLY": "week",
-    "PERIOD_YEARLY": "year",
-    "START_TRIAL_BUTTON": "START FREE TRIAL",
-    "SUBSCRIBE_BUTTON": "SUBSCRIBE",
-    "CANCEL_SUBSCRIPTION": "Cancel subscription",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "Renewal cancelled. Premium stays active until the end of your billing period.",
-    "SUBSCRIPTION_ACTIVE": "Premium active",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "Your premium subscription is active.",
-    "SUBSCRIPTION_BENEFITS_TITLE": "What you get",
-    "SUBSCRIPTION_BENEFIT_COINS": "{coins} coins added to your balance every 30 days",
-    "SUBSCRIPTION_BENEFIT_STATUS": "Premium status on your Riddle Quest account",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "Support the team behind Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "Renews automatically. Cancel anytime in Profile or Settings.",
     "TITLE": "COIN SHOP",
     "YOUR_BALANCE": "Your balance",
     "BADGE_STARTER": "STARTER",
     "BADGE_POPULAR": "POPULAR",
     "BADGE_BEST_VALUE": "BEST VALUE",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "Cancellation is unavailable for this subscription.",
     "PACK_BUYING_POWER": "Up to {hints} hints or {continues} extra attempts."
   }
 }

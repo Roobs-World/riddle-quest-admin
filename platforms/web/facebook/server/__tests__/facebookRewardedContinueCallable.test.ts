@@ -26,7 +26,7 @@ beforeEach(() => {mockGrant.mockReset().mockResolvedValue(0); mockEnabled.mockRe
 it("enforces the shared App Check boundary", () => {
   expect(boundaries).toEqual([["grantFacebookRewardedContinue", expect.objectContaining({enforceAppCheck: true}), expect.any(Function)]]);
 });
-it.each([null, {uid, token: {provider: "reddit"}}, {uid: "facebook_bad", token: {provider: "facebook"}}])("rejects non-Facebook identity %p", async value => {
+it.each([null, {uid, token: {provider: "jest"}}, {uid: "facebook_bad", token: {provider: "facebook"}}])("rejects non-Facebook identity %p", async value => {
   await expect(call(data, value)).rejects.toMatchObject({code: "unauthenticated"});
   expect(mockGrant).not.toHaveBeenCalled();
 });

@@ -4,14 +4,14 @@ import {HttpsError} from "firebase-functions/v2/https";
 const mockCompleteAuthoritativeGame = jest.fn();
 /** Provides mock on call behavior. */
 const mockOnCall = jest.fn((_options: unknown, handler: unknown) => handler);
-/** Provides mock run with account operation lease behavior. */
-const mockRunWithAccountOperationLease = jest.fn(
+/** Provides mock run with jest account operation lease behavior. */
+const mockRunWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
-  runWithAccountOperationLease: mockRunWithAccountOperationLease,
+  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
 }));
 
 jest.mock("firebase-functions/v2/https", () => {

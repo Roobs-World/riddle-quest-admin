@@ -50,7 +50,6 @@ const requiredKeys = {
   ],
   shop: [
     "CoinShop.COINS_SUFFIX",
-    "CoinShop.LOADING_TEXT",
     "CoinShop.NO_PACKS_AVAILABLE",
     "CoinShop.PURCHASE_BUTTON",
     "CoinShop.TITLE",

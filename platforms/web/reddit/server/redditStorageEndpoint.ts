@@ -1,6 +1,6 @@
 import {defineSecret} from "firebase-functions/params";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
-import {runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {onRequestWithSentry} from "../../../../firebase-functions/src/shared/sentryHandlers";
 import {
   consumeRedditGatewayNonce,
@@ -157,7 +157,7 @@ export const redditStorage = onRequestWithSentry("redditStorage", options, async
     /** Provides storage ref behavior. */
     const storageRef = db.collection("redditPlayerStorage").doc(identity.uid);
     /** Provides result behavior. */
-    const result = await runWithAccountOperationLease(identity.uid, 60, async () => {
+    const result = await runWithJestAccountOperationLease(identity.uid, 60, async () => {
       if (operation === "storage.read") {
         /** Provides snapshot behavior. */
         const snapshot = await storageRef.get();

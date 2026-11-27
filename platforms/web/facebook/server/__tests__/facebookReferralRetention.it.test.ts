@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, FieldValue, Timestamp} from "firebase-admin/firestore";
 import {prepareFacebookReferralTokenRetention} from "../facebookReferralRetention";
-import {ACCOUNT_DELETION_COLLECTION, getAccountDeletionRef} from "../../../../../firebase-functions/src/shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {bindFacebookReferralToken, issueFacebookReferralToken, settleFacebookReferralAfterAuthoritativeWin,
   FACEBOOK_REFERRAL_TOKEN_TTL_MS} from "../facebookReferrals";
 
@@ -17,7 +17,7 @@ const token = "t".repeat(43);
 const now = 1_700_000_000_000;
 /** Collections owned by these isolated fixtures. */
 const collections = ["users", "facebookReferralTokens", "facebookReferralBindings", "facebookReferralSettlements",
-  "facebookReferralDailyCaps", ACCOUNT_DELETION_COLLECTION];
+  "facebookReferralDailyCaps", "jestAccountDeletionTombstones"];
 
 beforeAll(() => {
   if (!/^(127\.0\.0\.1|localhost):\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? ""))
@@ -72,7 +72,7 @@ it("rejects unbound, mismatched, deleted or corrupted receipt retries after toke
   await db.doc(`facebookReferralBindings/${invitee}`).update({tokenExpiresAtMs: now + 2});
   await expect(bindFacebookReferralToken(invitee, token, now + 3, db)).rejects.toThrow("facebook-referral-binding-conflict");
   await db.doc(`facebookReferralBindings/${invitee}`).update({tokenExpiresAtMs: now + FACEBOOK_REFERRAL_TOKEN_TTL_MS});
-  await getAccountDeletionRef(db, invitee).set({});
+  await getJestAccountDeletionRef(db, invitee).set({});
   await expect(bindFacebookReferralToken(invitee, token, now + 4, db)).rejects.toThrow("account-deleted");
 });
 

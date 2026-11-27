@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
-import {getAccountDeletionRef} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../profile/accountDeletion/raceAccountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import type {RaceRunRecord} from "../../race/runs/raceEngine";
@@ -62,11 +62,11 @@ async function fixtures(provider: string) {
 
 /** Mirrors the real deletion guard-before-race-sweep order without any Auth/Storage/provider call. */
 async function erase(userId: string) {
-  await getAccountDeletionRef(db, userId).set({recreationBlocked: true});
+  await getJestAccountDeletionRef(db, userId).set({recreationBlocked: true});
   await removeCrossUserRaceIdentitySnapshots(userId);
 }
 
-it.each(["facebook", "reddit", "facebook"])("removes %s searching tickets and active pointers without retiring another player", async provider => {
+it.each(["facebook", "reddit", "jest"])("removes %s searching tickets and active pointers without retiring another player", async provider => {
   /** Provides [owner, other] behavior. */
   const [owner, other] = await fixtures(provider);
   /** Provides ticket behavior. */
@@ -318,7 +318,7 @@ it.each(["cleanup-first", "guard-first", "completion-first", "concurrent"] as co
     riddleId: riddle.riddleId, guess: riddle.answer}, {db, nowMs: START + 15000});
   if (order === "cleanup-first") {await erase(players[0]); await complete();}
   else if (order === "guard-first") {
-    await getAccountDeletionRef(db, players[0]).set({recreationBlocked: true});
+    await getJestAccountDeletionRef(db, players[0]).set({recreationBlocked: true});
     await complete(); await erase(players[0]);
   } else if (order === "completion-first") {await complete(); await erase(players[0]);}
   else await Promise.all([erase(players[0]), complete()]);

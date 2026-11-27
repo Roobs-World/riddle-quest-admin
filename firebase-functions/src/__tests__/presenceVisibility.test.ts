@@ -1,7 +1,7 @@
 // Lease draining is covered with the real deletion service in the ordering emulator suite.
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual("../shared/accountDeletion"),
-  runWithAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
+  runWithJestAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
     operation(),
 }));
 

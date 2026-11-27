@@ -1,5 +1,3 @@
--- Retired-provider storage retained only to prevent schema diffs from dropping persisted consent records.
--- No current application route or notification planner calls this function.
 -- Opaque consent-order tombstones stay after expiry so delayed requests cannot reverse an opt-out.
 -- These rows are never part of the campaign dispatcher audience.
 create table public.notification_jest_registrations (

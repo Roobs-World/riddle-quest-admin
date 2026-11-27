@@ -18,7 +18,7 @@ test("health reports actual configuration presence without exposing credentials"
   assert.equal(body.status, "not_configured");
   assert.equal(body.workerEnabled, false);
   assert.equal(body.targetBranch, "main");
-  assert.deepEqual(body.authorityConfigured, {functions: false});
+  assert.deepEqual(body.authorityConfigured, {jestProduction: "public-live-iframe", jestPreviews: false, functions: false});
 });
 test("legacy branch configuration and repair contexts fail closed before upstream calls", async (context) => {
   const previousTarget = process.env.TARGET_BRANCH;
@@ -28,14 +28,14 @@ test("legacy branch configuration and repair contexts fail closed before upstrea
     else process.env.TARGET_BRANCH = previousTarget;
     globalThis.fetch = previousFetch;
   });
-  process.env.TARGET_BRANCH = "legacy";
+  process.env.TARGET_BRANCH = "jest";
   const response = await request("GET");
   assert.equal(JSON.parse(response.body).workerEnabled, false);
-  assert.equal(JSON.parse(response.body).targetBranch, "legacy");
+  assert.equal(JSON.parse(response.body).targetBranch, "jest");
   const requests = [];
   globalThis.fetch = async (...args) => {requests.push(args); throw new Error("must not contact upstream");};
   await assert.rejects(reserveBranch("123", "token", {}), {message: "unsupported_base_branch"});
-  const result = await checkRepairContext({base: "legacy"}, "token", async () => {
+  const result = await checkRepairContext({base: "jest"}, "token", async () => {
     requests.push("deployment");
     return {allowed: true};
   });
@@ -228,8 +228,9 @@ test("signed webhook reports unavailable authority and never creates a repair br
   const requests = [];
   globalThis.fetch = async (url, options = {}) => {
     requests.push({url: String(url), method: options.method ?? "GET"});
+    if (String(url) === "https://jest.com/g/riddle-q") return new Response(null, {status: 503});
     assert.match(String(url), /^https:\/\/sentry.io\//u);
-    return Response.json(String(url).includes("/events/latest/") ? {eventID: "event", dateCreated: new Date().toISOString(), release: {version: "dailychallengescheduler-00056-kax"}, tags: [{key: "runtime", value: "firebase-functions"}, {key: "environment", value: "production"}]} : [{id: "123", title: "issue"}]);
+    return Response.json(String(url).includes("/events/latest/") ? {eventID: "event", dateCreated: new Date().toISOString(), release: {version: "riddle-quest@test"}, tags: [{key: "runtime", value: "jest-html5"}, {key: "environment", value: "production"}]} : [{id: "123", title: "issue"}]);
   };
   const body = Buffer.from('{ "data": { "project": { "slug": "riddle-quest" }, "issue": { "id": "123" } } }');
   const signature = createHmac("sha256", "test").update(body).digest("hex");
@@ -237,7 +238,7 @@ test("signed webhook reports unavailable authority and never creates a repair br
   await handler({method: "POST", headers: {"sentry-hook-signature": signature}, body}, response);
   assert.equal(response.statusCode, 202);
   assert.equal(JSON.parse(response.body).reason, "deployment_authority_unavailable");
-  assert.equal(requests.length, 2);
+  assert.equal(requests.length, 3);
   assert.ok(requests.every((item) => item.method === "GET"));
 });
 

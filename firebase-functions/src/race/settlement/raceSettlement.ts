@@ -2,7 +2,7 @@ import {RACE_CHALLENGE_TTL_MS, RACE_TARGET_CORRECT, RACE_RULES, RaceOutcomeSchem
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
 import {raceRewardAwardsAgree} from "./raceAchievements";
-import {getAccountDeletionRef} from "../../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceClock, raceOutcome, raceOperationAtMs, refreshRaceRun, type RaceRunRecord} from "../runs/raceEngine";
 import {raceRunPrivacyWrite, resolveRaceOpponentPrivacy} from "../privacy/raceOpponentPrivacy";
 import {persistRaceAchievementEvent, readRaceCoinBalance, stripUndefined, type Firestore} from "../raceSetupService";
@@ -70,7 +70,7 @@ export async function settleRaceRun(
   /** Provides [owner, deletion] behavior. */
   const [owner, deletion] = await Promise.all([
     transaction.get(ownerRef),
-    transaction.get(getAccountDeletionRef(db, run.userId)),
+    transaction.get(getJestAccountDeletionRef(db, run.userId)),
   ]);
   // Deleted accounts must never be recreated by a delayed deadline or retry.
   if (deletion.exists || !owner.exists) {

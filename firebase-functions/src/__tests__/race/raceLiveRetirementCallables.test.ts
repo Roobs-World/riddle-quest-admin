@@ -5,11 +5,11 @@ const mockRetire = jest.fn(), mockAccess = jest.fn(), mockLease = jest.fn(async 
 jest.mock("../../race/live/raceLiveRetirement", () => ({retireLiveRaceJoinForUser: mockRetire}));
 jest.mock("../../race/access/raceRollout", () => ({assertRaceAccess: mockAccess}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
-jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithAccountOperationLease: mockLease}));
+jest.mock("../../shared/accountDeletion", () => ({...jest.requireActual("../../shared/accountDeletion"), runWithJestAccountOperationLease: mockLease}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"), onCall: jest.fn((options, handler) => Object.assign(handler, {deploymentOptions: options}))}));
 import {retireLiveRaceJoin} from "../../race/api/raceLiveCallables";
 /** Canonical verified identity remains distinct from all untrusted request fields. */
-const OWNER = `facebook_${"a".repeat(40)}`, input = {requestId: "original-join-request", expectedOwnerId: OWNER};
+const OWNER = `jest_${"a".repeat(40)}`, input = {requestId: "original-join-request", expectedOwnerId: OWNER};
 /** Actual onCall wrapper exposes its callback in the established unit seam. */
 const handler = retireLiveRaceJoin as unknown as (request: CallableRequest<unknown>) => Promise<unknown>;
 beforeEach(() => {jest.clearAllMocks(); mockRetire.mockResolvedValue({status: "retired"});});

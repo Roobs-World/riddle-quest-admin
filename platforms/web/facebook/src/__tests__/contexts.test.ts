@@ -114,12 +114,12 @@ describe("FacebookContextCoordinator", () => {
     /** Provides value behavior. */
     const value = fixture();
     value.setCurrent({status: "cancelled"});
-    await expect(value.coordinator.matchPlayer("race10_v1:ja")).resolves.toEqual({status: "cancelled"});
+    await expect(value.coordinator.matchPlayer!("race10_v1:ja")).resolves.toEqual({status: "cancelled"});
     expect(value.backend.join).not.toHaveBeenCalled();
 
     value.setCurrent(ok("context-c"));
     (value.backend.join as jest.Mock).mockRejectedValueOnce(new Error("private backend detail"));
-    await expect(value.coordinator.matchPlayer("race10_v1:ja")).resolves.toEqual({
+    await expect(value.coordinator.matchPlayer!("race10_v1:ja")).resolves.toEqual({
       status: "retryable-failure",
       message: "facebook-context-sync-failed",
     });
@@ -148,7 +148,7 @@ describe("FacebookContextCoordinator", () => {
     const first = value.coordinator.chooseContext();
     value.setCurrent(ok("context-c", "GROUP"));
     /** Provides second behavior. */
-    const second = value.coordinator.matchPlayer("race10_v1:ja");
+    const second = value.coordinator.matchPlayer!("race10_v1:ja");
     await new Promise<void>((resolve) => setTimeout(resolve, 0));
     expect(value.backend.join).toHaveBeenCalledTimes(2);
     releaseFirstJoin();

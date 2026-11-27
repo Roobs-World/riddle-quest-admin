@@ -21,7 +21,7 @@ it("normalizes supported legacy preferences and validates current immutable attr
 
 it.each([
   {requestId: "another-request"}, {requestId: undefined}, {challengeId: "wrong/path"}, {expiresAtMs: NaN}, {createdAtMs: Number.MAX_SAFE_INTEGER + 1}, {expiresAtMs: 1000},
-  {fingerprint: "private corrupt payload"}, {locale: "fr"}, {provider: "facebook"}, {acceptedRunId: "run"},
+  {fingerprint: "private corrupt payload"}, {locale: "fr"}, {provider: "jest"}, {acceptedRunId: "run"},
   {acceptedAtMs: 2000}, {acceptedRunId: "run", acceptedAtMs: 999}, {startsAtMs: 2000},
   {terminalStatus: "completed"}, {terminalAtMs: 2000}, {finishedTen: true}, {actualPerformanceMs: 12000},
   {matchPolicyHash: "b".repeat(64)}, {matchPolicyRevision: 999}, {matchPolicyVersion: 2},

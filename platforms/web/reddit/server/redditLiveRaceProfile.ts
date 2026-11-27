@@ -1,5 +1,5 @@
 import {LiveRaceViewSchema} from "../../../../src/races/contracts/index.js";
-import {getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import type {LiveMatch, LiveTicket} from "../../../../firebase-functions/src/race/live/raceLiveState";
 import {readRedditSocialProfile} from "./redditSocialProfile";
 
@@ -21,7 +21,7 @@ export async function hydrateRedditLiveRaceProfile(value: unknown, db: FirebaseF
   const rivalId = match.runs[match.tickets[0] === view.ticketId ? 1 : 0].userId;
   /** Blocking and deletion suppress native identity even on a recovered join. */
   const checks = await db.getAll(db.doc(`users/${ticket.userId}/blockedRivals/${rivalId}`),
-    db.doc(`users/${rivalId}/blockedRivals/${ticket.userId}`), getAccountDeletionRef(db, rivalId));
+    db.doc(`users/${rivalId}/blockedRivals/${ticket.userId}`), getJestAccountDeletionRef(db, rivalId));
   /** Native profile stays out of storage and is rechecked against its bounded cache. */
   const rival = checks.some(check => check.exists) ? undefined : await readRedditSocialProfile(rivalId, {db, nowMs});
   view.opponent = {...view.opponent, displayName: rival?.displayName ?? "Riddle Quest player", avatarUrl: rival?.avatarUrl ?? null};

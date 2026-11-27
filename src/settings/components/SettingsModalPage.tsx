@@ -1,9 +1,8 @@
 import {NotificationSettings} from "../../notifications/components/NotificationSettings";
 import {AnalyticsConsentControls} from "../../observability/analytics/AnalyticsConsentControls";
-import {useContext, useSyncExternalStore, type ChangeEvent} from "react";
+import {useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale} from "../../content/catalog/bundledContent";
 import {youtubeText} from "../../localization/copy/localGameCopy";
-import {ProfileSubscriptionContext} from "../../accounts/browser/ProfileSubscriptionContext";
 import type {GameModal} from "../../gameplay/session/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../localization/browser/i18n";
 import {
@@ -34,8 +33,6 @@ export function SettingsModalPage({
 }: SettingsModalPageProps) {
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
-  /** Target-specific subscription management shared with Profile. */
-  const subscriptionControls = useContext(ProfileSubscriptionContext);
   /** Applied accessibility choices also update when the platform restores preferences. */
   const reducedMotion = useSyncExternalStore(subscribeToPlayerReducedMotion, isPlayerReducedMotionEnabled, () => false);
   /** Android and hosted settings reuse the same translated accessibility labels. */
@@ -81,7 +78,6 @@ export function SettingsModalPage({
         <span>{tr("Settings.ABOUT_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>
       </button>
-      {subscriptionControls}
     </div>
   );
 }

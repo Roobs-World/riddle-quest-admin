@@ -7,7 +7,10 @@ const path = require("node:path");
 const test = require("node:test");
 const dotenv = require("dotenv");
 const {
+  EXPECTED_GAME_ID,
+  PRIMARY_JEST_ORIGIN,
   PROJECT_ID,
+  TRUSTED_CONSUMABLE_SKUS,
   validateDeployEnvironment,
   validateDeployEnvironmentFile,
   validateFacebookDeployEnvironment,
@@ -104,7 +107,10 @@ test("rejects unsafe origins, deletion URLs, and feature switches", () => {
 });
 
 const validEnvironment = () => ({
-  ...validFacebookEnvironment(),
+  JEST_GAME_ID: EXPECTED_GAME_ID,
+  JEST_GAME_ORIGIN: PRIMARY_JEST_ORIGIN,
+  JEST_PRODUCT_SKUS: TRUSTED_CONSUMABLE_SKUS.join(","),
+  JEST_SUBSCRIPTION_SKUS: "com.roobsworld.riddlequest.premium.monthly",
   SENTRY_DSN: "https://public@example.ingest.sentry.io/1",
 });
 
@@ -121,10 +127,10 @@ test("binds Firebase predeploy validation to the production project", () => {
   );
 });
 
-test("requires configuration of placeholders in the tracked environment example", () => {
+test("keeps the tracked environment example deploy-valid", () => {
   const examplePath = path.resolve(__dirname, "../.env.example");
   const environment = dotenv.parse(fs.readFileSync(examplePath));
-  assert.throws(() => validateDeployEnvironment(environment), /FACEBOOK_APP_ID/);
+  assert.doesNotThrow(() => validateDeployEnvironment(environment));
   assert.throws(() => validateFacebookDeployEnvironment(environment), /FACEBOOK_APP_ID/);
 });
 
@@ -160,6 +166,62 @@ test("documents an unambiguous production Functions deploy command", () => {
   );
 });
 
+test("requires the exact Jest game UUID", () => {
+  assert.throws(
+    () => validateDeployEnvironment({...validEnvironment(), JEST_GAME_ID: "riddle-quest"}),
+    /JEST_GAME_ID must equal/,
+  );
+});
+
+for (const [label, origin] of [
+  ["plaintext", "http://jest.com"],
+  ["localhost", "https://localhost:3000"],
+  ["untrusted", "https://example.com"],
+  ["non-origin URL", "https://jest.com/path"],
+]) {
+  test(`rejects a ${label} Jest origin`, () => {
+    assert.throws(
+      () => validateDeployEnvironment({...validEnvironment(), JEST_GAME_ORIGIN: origin}),
+      /JEST_GAME_ORIGIN/,
+    );
+  });
+}
+
+test("requires the primary Jest origin", () => {
+  assert.throws(
+    () => validateDeployEnvironment({
+      ...validEnvironment(),
+      JEST_GAME_ORIGIN: `https://${EXPECTED_GAME_ID}.builds.jest.com`,
+    }),
+    /must include https:\/\/jest\.com/,
+  );
+});
+
+for (const productSkus of [
+  TRUSTED_CONSUMABLE_SKUS.slice(0, -1).join(","),
+  [...TRUSTED_CONSUMABLE_SKUS, "untrusted.coinpack"].join(","),
+  [...TRUSTED_CONSUMABLE_SKUS, TRUSTED_CONSUMABLE_SKUS[0]].join(","),
+]) {
+  test("rejects incomplete, untrusted, or duplicated consumable configuration", () => {
+    assert.throws(
+      () => validateDeployEnvironment({...validEnvironment(), JEST_PRODUCT_SKUS: productSkus}),
+      /JEST_PRODUCT_SKUS/,
+    );
+  });
+}
+
+for (const subscriptionSkus of [
+  "",
+  "com.roobsworld.riddlequest.premium.weekly",
+  "com.roobsworld.riddlequest.premium.monthly,com.roobsworld.riddlequest.premium.monthly",
+]) {
+  test("rejects missing, untrusted, or duplicated subscription allowlists", () => {
+    assert.throws(
+      () => validateDeployEnvironment({...validEnvironment(), JEST_SUBSCRIPTION_SKUS: subscriptionSkus}),
+      /JEST_SUBSCRIPTION_SKUS/,
+    );
+  });
+}
 
 for (const sentryDsn of ["http://example.ingest.sentry.io/1", "not-a-url"]) {
   test("rejects insecure or malformed Sentry transport", () => {
@@ -173,7 +235,7 @@ for (const sentryDsn of ["http://example.ingest.sentry.io/1", "not-a-url"]) {
 test("allows Sentry to be deliberately disabled", () => {
   const environment = validEnvironment();
   delete environment.SENTRY_DSN;
-  assert.throws(() => validateDeployEnvironment(environment), /FACEBOOK_APP_ID/);
+  assert.doesNotThrow(() => validateDeployEnvironment(environment));
 });
 
 test("fails closed when the project-specific environment file is absent", () => {

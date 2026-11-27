@@ -5,15 +5,15 @@ import {jest} from "@jest/globals";
 const captureException = jest.fn();
 /** Flushes queued events routed through the handler wrappers. */
 const flushSentry = jest.fn<() => Promise<boolean>>().mockResolvedValue(true);
-/** Account-operation lease used by authenticated game callable tests. */
-const runWithAccountOperationLease = jest.fn(
+/** Account-operation lease used by authenticated Jest callable tests. */
+const runWithJestAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
 jest.mock("../shared/sentry", () => ({captureException, flushSentry}));
 jest.mock("../shared/accountDeletion", () => ({
-  isAccountDeletedError: (error: unknown) => error instanceof Error && error.message === "account-deleted",
-  runWithAccountOperationLease,
+  isJestAccountDeletedError: (error: unknown) => error instanceof Error && error.message === "account-deleted",
+  runWithJestAccountOperationLease,
 }));
 
 jest.mock("firebase-functions/v2/https", () => ({
@@ -45,7 +45,7 @@ describe("Sentry Firebase handler wrappers", () => {
       }) => request.data.value,
     );
     await expect(callable.run({data: {value: 7}} as never)).resolves.toBe(7);
-    expect(runWithAccountOperationLease).not.toHaveBeenCalled();
+    expect(runWithJestAccountOperationLease).not.toHaveBeenCalled();
     expect(captureException).not.toHaveBeenCalled();
     expect(flushSentry).not.toHaveBeenCalled();
   });
@@ -65,66 +65,66 @@ describe("Sentry Firebase handler wrappers", () => {
     expect(JSON.stringify(result)).not.toContain("piano");
     expect(await readProtectedContent(result)).toEqual({evaluation: {answer: "piano", locale: "en"}, hint: {index: 0, letter: "p"}});
     expect(handler).toHaveBeenCalledTimes(1);
-    expect(runWithAccountOperationLease).toHaveBeenCalledWith("owner", 60, expect.any(Function));
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledWith("owner", 60, expect.any(Function));
   });
 
   it("skips the mutation lease only for an explicitly declared read-only stream", async () => {
     /** Provides callable behavior. */
     const callable = onCallWithSentry("observer", {}, async () => "done", {
-      skipAccountOperationLease: request => request.acceptsStreaming === true,
+      skipJestAccountOperationLease: request => request.acceptsStreaming === true,
     });
     await callable.run({auth: {uid: "owner"}, data: {}, acceptsStreaming: true} as never);
-    expect(runWithAccountOperationLease).not.toHaveBeenCalled();
+    expect(runWithJestAccountOperationLease).not.toHaveBeenCalled();
     await callable.run({auth: {uid: "owner"}, data: {}, acceptsStreaming: false} as never);
-    expect(runWithAccountOperationLease).toHaveBeenCalledTimes(1);
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledTimes(1);
   });
 
   it("serializes an authenticated legacy Firebase callable by UID", async () => {
     /** Provides callable behavior. */
     const callable = onCallWithSentry("callable", {}, async () => "done");
     await expect(callable.run({auth: {uid: "firebase-uid"}, data: {}} as never)).resolves.toBe("done");
-    expect(runWithAccountOperationLease).toHaveBeenCalledWith("firebase-uid", 60, expect.any(Function));
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledWith("firebase-uid", 60, expect.any(Function));
   });
 
-  it("serializes every authenticated game callable with account deletion", async () => {
+  it("serializes every authenticated Jest callable with account deletion", async () => {
     /** Provides callable behavior. */
     const callable = onCallWithSentry("callable", {timeoutSeconds: 45}, async () => "done");
     await expect(
       callable.run({
-        auth: {uid: "provider-uid", token: {provider: "facebook"}},
+        auth: {uid: "jest-uid", token: {jestPlayerId: "jest-player"}},
         data: {},
       } as never),
     ).resolves.toBe("done");
-    expect(runWithAccountOperationLease).toHaveBeenCalledWith("provider-uid", 45, expect.any(Function));
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledWith("jest-uid", 45, expect.any(Function));
   });
 
-  it("serializes deterministic provider UIDs even when an older token lacks the provider claim", async () => {
+  it("serializes deterministic Jest UIDs even when an older token lacks the Jest claim", async () => {
     /** Provides uid behavior. */
-    const uid = `facebook_${"a".repeat(40)}`;
+    const uid = `jest_${"a".repeat(40)}`;
     /** Provides callable behavior. */
     const callable = onCallWithSentry("callable", {}, async () => "done");
     await expect(callable.run({auth: {uid}, data: {}} as never)).resolves.toBe("done");
-    expect(runWithAccountOperationLease).toHaveBeenCalledWith(uid, 60, expect.any(Function));
+    expect(runWithJestAccountOperationLease).toHaveBeenCalledWith(uid, 60, expect.any(Function));
   });
 
   it("keeps account deletion outside the shared operation lease", async () => {
     /** Provides uid behavior. */
-    const uid = `facebook_${"b".repeat(40)}`;
+    const uid = `jest_${"b".repeat(40)}`;
     /** Provides callable behavior. */
     const callable = onCallWithSentry("deleteAccount", {}, async () => "deleted", {
-      skipAccountOperationLease: true,
+      skipJestAccountOperationLease: true,
     });
     await expect(callable.run({auth: {uid}, data: {}} as never)).resolves.toBe("deleted");
-    expect(runWithAccountOperationLease).not.toHaveBeenCalled();
+    expect(runWithJestAccountOperationLease).not.toHaveBeenCalled();
   });
 
-  it("maps a permanent account deletion guard to a stable callable error", async () => {
-    runWithAccountOperationLease.mockRejectedValueOnce(new Error("account-deleted"));
+  it("maps a permanent Jest deletion guard to a stable callable error", async () => {
+    runWithJestAccountOperationLease.mockRejectedValueOnce(new Error("account-deleted"));
     /** Provides callable behavior. */
     const callable = onCallWithSentry("callable", {}, async () => "unreachable");
     await expect(
       callable.run({
-        auth: {uid: "provider-uid", token: {provider: "facebook"}},
+        auth: {uid: "jest-uid", token: {jestPlayerId: "jest-player"}},
         data: {},
       } as never),
     ).rejects.toMatchObject({code: "failed-precondition"});

@@ -1,5 +1,6 @@
 import {existsSync, readdirSync, readFileSync, statSync} from "node:fs";
 import {fileURLToPath, pathToFileURL} from "node:url";
+import {platformServerRoots, webApplications} from "./platform-layout.mjs";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const portalTargetHtmlPaths = [
@@ -32,11 +33,10 @@ const collectProductionFiles = (directory) => {
 
 collectProductionFiles(`${repositoryRoot}/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
-for (const target of ["facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+for (const target of webApplications) {
   collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/src`);
-  if (existsSync(`${repositoryRoot}/platforms/web/${target}/server`)) collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/server`);
 }
-collectProductionFiles(`${repositoryRoot}/platforms/native/android/server`);
+for (const server of platformServerRoots) collectProductionFiles(`${repositoryRoot}/${server}`);
 collectProductionFiles(`${repositoryRoot}/platforms/native/android/src`);
 for (const directory of ["src", "server", "api", "public", "supabase/functions"]) {
   collectProductionFiles(`${repositoryRoot}/notification-manager/${directory}`);

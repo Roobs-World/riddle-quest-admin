@@ -1,6 +1,6 @@
 import type {Database} from "firebase-admin/database";
 import type {Firestore} from "firebase-admin/firestore";
-import {getAccountDeletionRef, ACCOUNT_OPERATION_COLLECTION} from "../shared/accountDeletion";
+import {getJestAccountDeletionRef, JEST_ACCOUNT_OPERATION_COLLECTION} from "../shared/accountDeletion";
 import {refreshPresenceVisibility} from "./presenceVisibility";
 
 /** Explicit operator inventory identifies scope, never authorization. */
@@ -58,7 +58,7 @@ export function validatePresenceVisibilityPairs(pairs: unknown): asserts pairs i
 /** Returns irreversible deletion guards, whose active leases must finish before edge removal. */
 async function deletedOwners(db: Firestore, pair: PresenceVisibilityPair) {
   /** Guards are read from this exact project's authority. */
-  const refs = [pair.viewerUserId, pair.targetUserId].map((id) => getAccountDeletionRef(db, id));
+  const refs = [pair.viewerUserId, pair.targetUserId].map((id) => getJestAccountDeletionRef(db, id));
   /** A present guard permanently prevents any new mirror from acquiring that owner's lease. */
   const snapshots = await db.getAll(...refs);
   return snapshots.filter((snapshot) => snapshot.exists).map((snapshot) => snapshot.ref);
@@ -116,7 +116,7 @@ export async function reconcilePresenceVisibilityPage(
     if (deleted.length) {
       /** Existing leases never expire merely because the CLI's clock advanced. */
       const leases = await Promise.all(
-        deleted.map((owner) => owner.collection(ACCOUNT_OPERATION_COLLECTION).limit(1).get()),
+        deleted.map((owner) => owner.collection(JEST_ACCOUNT_OPERATION_COLLECTION).limit(1).get()),
       );
       if (leases.some((lease) => !lease.empty)) return {...result, busy: true};
       // With an irreversible guard and no older lease, a new writer cannot

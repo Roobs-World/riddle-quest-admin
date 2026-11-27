@@ -7,7 +7,7 @@ import type {ExistingRaceContentRecord} from "../../race/content/raceContentMigr
 /** Fixture mutations are restricted to one private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** Only this provider-owned account may publish live fixture seats. */
-const OWNER = `facebook_${"a".repeat(40)}`;
+const OWNER = `jest_${"a".repeat(40)}`;
 /** Real SDK implements query projection, snapshot paths and canonical commits. */
 let db: FirebaseFirestore.Firestore;
 /** Authored metadata supplies both category readiness and deterministic deck construction. */

@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getAccountDeletionRef} from "../shared/accountDeletion";
+import {getJestAccountDeletionRef} from "../shared/accountDeletion";
 import {raceProviderScope} from "../race/access/raceProviderScope";
 
 /** Resolves only the human opponent of an authenticated, retained live seat in the mutation transaction. */
@@ -43,7 +43,7 @@ export async function resolveLiveRaceSafetyTarget(transaction: FirebaseFirestore
   /** Canonical existence and deletion guards are read under the same transaction lock. */
   const [owner, opponent, ownerDeletion, opponentDeletion] = await Promise.all([
     transaction.get(db.doc(`users/${userId}`)), transaction.get(db.doc(`users/${rival.userId}`)),
-    transaction.get(getAccountDeletionRef(db, userId)), transaction.get(getAccountDeletionRef(db, rival.userId)),
+    transaction.get(getJestAccountDeletionRef(db, userId)), transaction.get(getJestAccountDeletionRef(db, rival.userId)),
   ]);
   if (!owner.exists || !opponent.exists || ownerDeletion.exists || opponentDeletion.exists)
     throw new HttpsError("failed-precondition", "Live safety account is unavailable.");

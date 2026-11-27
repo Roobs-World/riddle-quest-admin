@@ -20,13 +20,17 @@ export const updateAvatar = onCallWithSentry(
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
     }
-    if (!isAndroidAccountProvider(request.auth.token.firebase?.sign_in_provider)) {
-      throw new HttpsError("failed-precondition", "This account uses its platform profile photo.");
-    }
-    const account = await admin.firestore().collection("users").doc(request.auth.uid).get();
-    const profile = account.data();
-    if (!account.exists || profile?.userId !== request.auth.uid || !isAndroidAccountProvider(profile.androidProvider)) {
-      throw new HttpsError("permission-denied", "Android game account required.");
+    if (request.auth.token.jestRegistered !== true) {
+      if (!isAndroidAccountProvider(request.auth.token.firebase?.sign_in_provider)) {
+        throw new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo.");
+      }
+      /** A signed native provider alone cannot create a game account or authorize profile uploads. */
+      const account = await admin.firestore().collection("users").doc(request.auth.uid).get();
+      /** Canonical provisioning binds the accepted provider and account generation to this uid. */
+      const profile = account.data();
+      if (!account.exists || profile?.userId !== request.auth.uid || !isAndroidAccountProvider(profile.androidProvider)) {
+        throw new HttpsError("permission-denied", "Android game account required.");
+      }
     }
 
     /** Provides {image data url} behavior. */

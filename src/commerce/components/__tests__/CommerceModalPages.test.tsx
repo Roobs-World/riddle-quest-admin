@@ -18,17 +18,14 @@ it("offers the ordinary next action without advertising unavailable guest coin a
   expect(html).not.toContain("continue-balance");
   expect(html).toContain("loss-next-action");
 });
-import {ShopModalPage, SUBSCRIPTION_BENEFIT_KEYS} from "../ShopModalPage";
-import {tr} from "../../../localization/browser/i18n";
-import {PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../pricing/catalog";
-import {ShopSubscriptionContext} from "../../browser/ShopSubscriptionContext";
+import {ShopModalPage} from "../ShopModalPage";
 import {CONTINUE_COIN_COST, HINT_COIN_COST, SKIP_COIN_COST} from "../../browser/commerceCosts";
 import type {ProductSummary} from "../../../platform/contracts/hostServices";
 
 /** No-op callback shared by server-rendering tests. */
 const noop = () => undefined;
 
-/** Platform product fixtures covering consumable and subscription presentations. */
+/** Provider offers include supported one-time products and an unsupported subscription. */
 const products: ProductSummary[] = [
   {
     productId: "coins-100",
@@ -51,13 +48,12 @@ const products: ProductSummary[] = [
     trialEligible: true,
   },
   {
-    productId: "premium-active",
-    productType: "subscription",
-    name: "Premium Active",
-    description: "Active premium access",
+    productId: "no-ads",
+    productType: "durable",
+    name: "No Ads",
+    description: "Removes optional interstitial ads",
     coins: 0,
     displayPrice: "£2.99",
-    subscriptionStatus: "active",
   },
 ];
 
@@ -70,69 +66,19 @@ describe("commerce modal pages", () => {
     });
   });
 
-  it("renders an empty platform catalog and all product variants", () => {
-    /** Provides empty html behavior. */
+  it("renders supported one-time offers and hides subscription-only catalogs", () => {
     const emptyHtml = renderToString(<ShopModalPage balance={0} products={[]} onPurchase={noop} />);
-    /** Provides populated html behavior. */
+    const subscriptionHtml = renderToString(<ShopModalPage balance={0} products={[products[1]]} onPurchase={noop} />);
     const populatedHtml = renderToString(<ShopModalPage balance={1250} products={products} onPurchase={noop} />);
 
     expect(emptyHtml).toContain("No coin packs are available right now");
+    expect(subscriptionHtml).toContain("No coin packs are available right now");
     expect(populatedHtml).toContain("1,250");
     expect(populatedHtml).toContain("Popular");
-    expect(populatedHtml).not.toContain("START FREE TRIAL");
-    expect(populatedHtml).not.toContain("SUBSCRIBED");
-    expect(populatedHtml).not.toContain("Cancel subscription");
-    expect(populatedHtml).toContain("shop-subscription-card");
-  });
-
-  it("shows cached subscription details immediately while withholding checkout during ownership refresh", () => {
-    /** Subscription actions activate the platform shop refresh path. */
-    const subscriptionActions = {
-      products,
-      refresh: async () => undefined,
-      cancel: async () => "success" as const,
-    };
-    /** First render produced before the opening provider refresh can settle. */
-    const html = renderToString(
-      <ShopSubscriptionContext.Provider value={subscriptionActions}>
-        <ShopModalPage balance={1250} products={[products[1]]} onPurchase={noop} />
-      </ShopSubscriptionContext.Provider>,
-    );
-
-    expect(html).toContain("Premium Trial");
-    expect(html).toContain("Monthly premium access");
-    expect(html).toContain("£2.99 / month");
-    for (const key of SUBSCRIPTION_BENEFIT_KEYS)
-      expect(html).toContain(tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()}));
-    expect(html).not.toContain("START FREE TRIAL");
-    expect(html).not.toContain(">SUBSCRIBE<");
-    expect(html).toContain("shop-subscription-card");
-  });
-
-  it("explains exactly what a subscription offer includes, with price and billing period", () => {
-    /** Inactive offer only, so the price and period are rendered. */
-    const offerHtml = renderToString(<ShopModalPage balance={0} products={products.slice(1, 2)} onPurchase={noop} />);
-    /** Active plan keeps the same benefit summary. */
-    const activeHtml = renderToString(<ShopModalPage balance={0} products={products.slice(2, 3)} onPurchase={noop} />);
-
-    expect(SUBSCRIPTION_BENEFIT_KEYS).toHaveLength(4);
-    for (const html of [offerHtml, activeHtml]) {
-      expect(html).toContain("shop-subscription-benefits");
-      expect(html).toContain("What you get");
-      for (const key of SUBSCRIPTION_BENEFIT_KEYS)
-        expect(html).toContain(tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()}));
-      expect(html).toContain(`${PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()} coins added to your balance every 30 days`);
-    }
-    expect(offerHtml).toContain("£2.99 / month");
-    expect(offerHtml).toContain("Premium status on your Riddle Quest account");
-    expect(offerHtml).toContain("Renews automatically. Cancel anytime in Profile or Settings.");
-  });
-
-  it("does not attach subscription benefits to coin packs", () => {
-    /** Consumable-only catalog. */
-    const html = renderToString(<ShopModalPage balance={0} products={products.slice(0, 1)} onPurchase={noop} />);
-    expect(html).not.toContain("shop-subscription-benefits");
-    expect(html).not.toContain("What you get");
+    expect(populatedHtml).toContain("Coin Pouch");
+    expect(populatedHtml).toContain("No Ads");
+    expect(populatedHtml).toContain("Removes optional interstitial ads");
+    expect(populatedHtml).not.toContain("Premium Trial");
   });
 
   it("renders affordable and insufficient continue prompts", () => {

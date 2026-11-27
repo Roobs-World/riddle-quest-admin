@@ -10,7 +10,7 @@ jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNee
 /** Every fixture is restricted to its own canonical account in a private demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** One private identity owns all sessions, leases and economy assertions. */
-const OWNER = `facebook_${"e".repeat(40)}`;
+const OWNER = `jest_${"e".repeat(40)}`;
 /** Actual Admin SDK instance is shared by issuance, callable leases and transactions. */
 let db: FirebaseFirestore.Firestore;
 /** Only this fixture's account subtree and deletion lease subtree may be removed. */

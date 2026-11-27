@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": "सिक्के",
-    "LOADING_TEXT": "दुकान लोड हो रही है...",
     "NO_PACKS_AVAILABLE": "अभी कोई सिक्का पैक उपलब्ध नहीं है।",
     "PURCHASE_BUTTON": "खरीदें",
-    "PERIOD_MONTHLY": "महीना",
-    "PERIOD_WEEKLY": "सप्ताह",
-    "PERIOD_YEARLY": "वर्ष",
-    "START_TRIAL_BUTTON": "मुफ़्त ट्रायल शुरू करें",
-    "SUBSCRIBE_BUTTON": "सदस्यता लें",
-    "CANCEL_SUBSCRIPTION": "सदस्यता रद्द करें",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "नवीनीकरण रद्द कर दिया गया है। बिलिंग अवधि समाप्त होने तक प्रीमियम सक्रिय रहेगा।",
-    "SUBSCRIPTION_ACTIVE": "प्रीमियम सक्रिय",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "आपकी प्रीमियम सदस्यता सक्रिय है।",
-    "SUBSCRIPTION_BENEFITS_TITLE": "आपको क्या मिलता है",
-    "SUBSCRIPTION_BENEFIT_COINS": "हर 30 दिन में आपके बैलेंस में {coins} सिक्के जोड़े जाते हैं",
-    "SUBSCRIPTION_BENEFIT_STATUS": "आपके Riddle Quest खाते पर प्रीमियम स्थिति",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "Riddle Quest बनाने वाली टीम का समर्थन करें",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "अपने आप नवीनीकृत होता है। प्रोफ़ाइल या सेटिंग्स से कभी भी रद्द करें।",
     "TITLE": "सिक्का दुकान",
     "YOUR_BALANCE": "आपका बैलेंस",
     "BADGE_STARTER": "शुरुआती",
     "BADGE_POPULAR": "लोकप्रिय",
     "BADGE_BEST_VALUE": "सबसे किफ़ायती",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "इस सदस्यता को रद्द करना उपलब्ध नहीं है।",
     "PACK_BUYING_POWER": "अधिकतम {hints} संकेत या {continues} अतिरिक्त प्रयास।"
   }
 }

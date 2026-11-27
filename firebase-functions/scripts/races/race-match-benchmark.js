@@ -47,9 +47,9 @@ async function main(args = process.argv.slice(2)) {
   const {emptyRaceMatchProfile, recordRaceExposure} = require("../../lib/firebase-functions/src/race/matchmaking/raceMatchPerformance");
   const {DEFAULT_RACE_MATCH_POLICY} = require("../../lib/firebase-functions/src/race/matchmaking/raceMatchPolicy");
   const logger = require("firebase-functions").logger;
-  const player = `facebook_${"a".repeat(40)}`;
-  const rival = `facebook_${"b".repeat(40)}`;
-  const freshRival = `facebook_${"c".repeat(40)}`;
+  const player = `jest_${"a".repeat(40)}`;
+  const rival = `jest_${"b".repeat(40)}`;
+  const freshRival = `jest_${"c".repeat(40)}`;
   const nowMs = Date.now();
   const collections = ["raceChallenges", "raceMatchCandidates", "raceMatchOffers", "raceAttempts", "users", "jestAccountDeletionTombstones", "raceInviteLobbies"];
   const clear = async () => {await Promise.all(collections.map(name => db.recursiveDelete(db.collection(name)))); await db.doc("raceConfig/matchPolicy").delete();};

@@ -1,7 +1,7 @@
 import {HttpsError} from "firebase-functions/v2/https";
 import type {RetireLiveRaceJoin, RetireLiveRaceJoinResponse} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
-import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {requestDocumentId, type Firestore} from "../raceSetupService";
 import {liveJoinIntentRef, type LiveJoinIntent} from "../invitations/raceLiveJoinIntent";
@@ -24,8 +24,8 @@ export async function retireLiveRaceJoinForUser(userId: string, input: RetireLiv
   const ticketId = await db.runTransaction(async transaction => {
     /** Authenticated account and current intent are read together before any write. */
     const [snapshot, owner, deletion] = await Promise.all([transaction.get(ref), transaction.getAll(db.doc(`users/${userId}`), {fieldMask: ["username"]}).then(([profile]) => profile),
-      transaction.get(getAccountDeletionRef(db, userId)), options.authorize?.()]);
-    assertAccountActive(deletion);
+      transaction.get(getJestAccountDeletionRef(db, userId)), options.authorize?.()]);
+    assertJestAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
     /** Only a server-published receipt may select a ticket for background retirement. */
     const intent = snapshot.data() as LiveJoinIntent | undefined;

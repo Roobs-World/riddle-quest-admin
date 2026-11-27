@@ -128,29 +128,6 @@
   transform: translateY(3px);
   box-shadow: 0 2px 0 #916812;
 }
-.onboarding-registration-actions {
-  width: min(240px, 100%);
-  display: grid;
-  gap: 12px;
-}
-.onboarding-registration-actions .play-primary,
-.onboarding-registration-actions .play-secondary {
-  min-height: 48px;
-  border-radius: 18px;
-  font:
-    400 20px/1 "Poetsen One",
-    "Poppins",
-    sans-serif;
-}
-.onboarding-registration-actions .play-text-button {
-  margin-top: 2px;
-  color: #5d420b;
-  text-align: center;
-  font:
-    400 17px/1.2 "Poetsen One",
-    "Poppins",
-    sans-serif;
-}
 .onboarding-progress {
   position: absolute;
   top: 12px;
@@ -195,9 +172,6 @@
     gap: 8px;
     padding: 28px 20px 16px;
     border-radius: 32px;
-  }
-  .onboarding-card-registration {
-    align-content: center;
   }
   .onboarding-logo {
     width: min(260px, 76%);

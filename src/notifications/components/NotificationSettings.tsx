@@ -2,7 +2,7 @@ import {getCurrentLocale, useTranslator} from "../../localization/browser/i18n";
 import {useNotificationSettings} from "./NotificationSettingsContext";
 import {getHostedNotificationCopy} from "../copy/hostedNotificationCopy";
 
-/** Edits the registered account's preference for notifications on native devices. */
+/** Edits the registered account's manager-owned notification preference. */
 export function NotificationSettings({disabled = false}: {disabled?: boolean}) {
   const consent = useNotificationSettings();
   const tr = useTranslator();

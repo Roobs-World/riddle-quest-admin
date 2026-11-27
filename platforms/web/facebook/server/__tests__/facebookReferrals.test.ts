@@ -1,4 +1,3 @@
-import {ACCOUNT_DELETION_COLLECTION} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {
   FACEBOOK_REFERRAL_REWARD_COINS,
   FACEBOOK_REFERRAL_TOKEN_TTL_MS,
@@ -168,7 +167,7 @@ it("does not issue from a deleted or missing referrer account", async () => {
   /** Deletes d. */
   const deleted = database({
     [`users/${inviterUid}`]: {coins: 300},
-    [`${ACCOUNT_DELETION_COLLECTION}/${inviterUid}`]: {recreationBlocked: true},
+    [`jestAccountDeletionTombstones/${inviterUid}`]: {recreationBlocked: true},
   });
   await expect(issueFacebookReferralToken(inviterUid, 1, () => token, deleted.db)).rejects.toThrow("account-deleted");
 });
@@ -359,13 +358,13 @@ it("rejects unsettled rewards after invitee deletion and validates replay scope"
   const {fixture, now} = await issuedFixture();
   await bindFacebookReferralToken(inviteeUid, token, now + 1, fixture.db);
   fixture.documents.set(`users/${inviteeUid}`, {coins: 325, stats: {wins: 1, gamesPlayed: 1}});
-  fixture.documents.set(`${ACCOUNT_DELETION_COLLECTION}/${inviteeUid}`, {recreationBlocked: true});
+  fixture.documents.set(`jestAccountDeletionTombstones/${inviteeUid}`, {recreationBlocked: true});
   await expect(settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now + 2, fixture.db)).rejects.toThrow(
     "account-deleted",
   );
   expect(fixture.documents.get(`users/${inviteeUid}`)?.coins).toBe(325);
 
-  fixture.documents.delete(`${ACCOUNT_DELETION_COLLECTION}/${inviteeUid}`);
+  fixture.documents.delete(`jestAccountDeletionTombstones/${inviteeUid}`);
   await settleFacebookReferralAfterAuthoritativeWin(inviteeUid, now + 3, fixture.db);
   /** Provides actual settlement path behavior. */
   const actualSettlementPath = [...fixture.documents.keys()].find((path) =>

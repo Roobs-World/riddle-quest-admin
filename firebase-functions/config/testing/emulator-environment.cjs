@@ -7,6 +7,18 @@ if (!isDemoEmulatorTest) require("dotenv").config({path: __dirname + "/.env", ov
 process.env.JEST_WORKER_ID = process.env.JEST_WORKER_ID || "1";
 process.env.NODE_ENV = "test";
 
+// HTTP endpoint tests must be hermetic: do not depend on an operator's
+// production deploy environment to recognize the fixed Riddle Quest origin.
+if (!process.env.JEST_GAME_ID) {
+  process.env.JEST_GAME_ID = "019faa68-f3ec-755d-9ab5-c887fb426801";
+}
+
+// Unit tests that exercise the real purchase handler must opt in to the same
+// trusted SKU boundary required in deployed environments.
+if (!process.env.JEST_PRODUCT_SKUS) {
+  process.env.JEST_PRODUCT_SKUS = "com.roobsworld.riddlequest.coinpack1";
+}
+
 // Set up Firebase credentials for integration tests
 if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
   // Use the existing service account file for integration tests

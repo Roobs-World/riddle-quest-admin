@@ -1,29 +1,13 @@
 {
   "CoinShop": {
     "COINS_SUFFIX": "عملات معدنية",
-    "LOADING_TEXT": "جارٍ تحميل المتجر...",
     "NO_PACKS_AVAILABLE": "لا تتوفر حزم العملات المعدنية في الوقت الحالي.",
     "PURCHASE_BUTTON": "شراء",
-    "PERIOD_MONTHLY": "شهر",
-    "PERIOD_WEEKLY": "أسبوع",
-    "PERIOD_YEARLY": "سنة",
-    "START_TRIAL_BUTTON": "ابدأ التجربة المجانية",
-    "SUBSCRIBE_BUTTON": "اشترك",
-    "CANCEL_SUBSCRIPTION": "إلغاء الاشتراك",
-    "SUBSCRIPTION_CANCELLED_NOTICE": "تم إلغاء التجديد. تبقى المزايا المميزة نشطة حتى نهاية فترة الفوترة.",
-    "SUBSCRIPTION_ACTIVE": "الاشتراك المميز نشط",
-    "SUBSCRIPTION_ACTIVE_NOTICE": "اشتراكك المميز نشط.",
-    "SUBSCRIPTION_BENEFITS_TITLE": "ما الذي تحصل عليه",
-    "SUBSCRIPTION_BENEFIT_COINS": "{coins} عملة تُضاف إلى رصيدك كل 30 يومًا",
-    "SUBSCRIPTION_BENEFIT_STATUS": "حالة مميزة في حسابك على Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_SUPPORT": "ادعم الفريق الذي يقف وراء Riddle Quest",
-    "SUBSCRIPTION_BENEFIT_RENEWAL": "يتجدد تلقائيًا. يمكنك الإلغاء في أي وقت من الملف الشخصي أو الإعدادات.",
     "TITLE": "متجر العملات",
     "YOUR_BALANCE": "رصيدك",
     "BADGE_STARTER": "للمبتدئين",
     "BADGE_POPULAR": "شائع",
     "BADGE_BEST_VALUE": "أفضل قيمة",
-    "SUBSCRIPTION_CANCEL_UNAVAILABLE_NOTICE": "إلغاء هذا الاشتراك غير متاح.",
     "PACK_BUYING_POWER": "حتى {hints} تلميحًا أو {continues} محاولة إضافية."
   }
 }

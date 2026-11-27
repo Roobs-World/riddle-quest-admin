@@ -8,7 +8,8 @@ import {recordFacebookContextBoardRun} from "../../race/facebookContextBoard";
 import {joinFacebookContext, leaveFacebookContext, recordFacebookContextRun} from "../../race/facebookContextCallables";
 import {facebookTournamentWindow} from "../../race/facebookTournament";
 import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
-import {ACCOUNT_DELETION_COLLECTION, getAccountDeletionRef, recordAccountDeletion} from "../../../../../../firebase-functions/src/shared/accountDeletion";
+import {recordJestAccountDeletion} from "../../../../jest/server/jestAccountDeletion";
+import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../../../../../firebase-functions/src/profile/accountDeletion/raceAccountDeletion";
 import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebookReferrals";
@@ -24,7 +25,7 @@ const INVITER = `facebook_${"e".repeat(40)}`;
 /** Only private emulator fixture collections are recursively cleaned. */
 const COLLECTIONS = ["users", "liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues", "racePerformanceOutbox",
   "liveRacePushOutbox", "liveRaceSignals",
-  ACCOUNT_DELETION_COLLECTION, "localizedRiddles/en/riddles", "facebookTournaments", "facebookReferralTokens",
+  "jestAccountDeletionTombstones", "localizedRiddles/en/riddles", "facebookTournaments", "facebookReferralTokens",
   "facebookReferralBindings", "facebookReferralSettlements", "facebookReferralDailyCaps", "facebookContextCompetitions"];
 /** Restores the caller feature configuration after isolated tests. */
 const previousFeatures = process.env.FACEBOOK_DISABLED_FEATURES;
@@ -181,7 +182,7 @@ it.each(["missing", "left", "rejoined", "replaced", "expired"])("suppresses orig
   expect((await receipt.ref.get()).data()?.delivered).toBe(true);
 });
 
-it.each(["android", "reddit"])("rejects a Facebook selector from %s before publishing any new seat", async provider => {
+it.each(["jest", "reddit"])("rejects a Facebook selector from %s before publishing any new seat", async provider => {
   /** Cross-provider selection must fail before any owner, catalog or queue side effect. */
   await expect(joinLiveRaceForUser(`${provider}_${"c".repeat(40)}`, {locale: "en", categoryId: "history", requestId: "foreign-context-selector",
     facebookContextId: "durable-0"}, {db, nowMs: START})).rejects.toMatchObject({code: "permission-denied"});
@@ -308,13 +309,13 @@ it("holds an account lease until the context write drains and deletion removes t
   void delivery.catch(() => undefined);
   try {
     await ready;
-    await expect(recordAccountDeletion(PLAYERS[0])).rejects.toThrow("account-deletion-in-progress");
-    expect((await getAccountDeletionRef(db, PLAYERS[0]).get()).exists).toBe(true);
+    await expect(recordJestAccountDeletion(PLAYERS[0])).rejects.toThrow("account-deletion-in-progress");
+    expect((await getJestAccountDeletionRef(db, PLAYERS[0]).get()).exists).toBe(true);
   } finally {release();}
   await expect(delivery).rejects.toThrow("account-deleted");
   expect((await contextEntry(0).get()).exists).toBe(true);
   spy.mockRestore();
-  await recordAccountDeletion(PLAYERS[0]);
+  await recordJestAccountDeletion(PLAYERS[0]);
   await removeCrossUserRaceIdentitySnapshots(PLAYERS[0]);
   await removeUserFromFacebookContextCompetitions(PLAYERS[0], db);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
@@ -361,7 +362,7 @@ it.each([joinFacebookContext, leaveFacebookContext, recordFacebookContextRun])(
   "rejects a deleted owner at the actual context callable lease before recreating membership or scores", async handler => {
     /** Account/profile existence alone cannot override its permanent deletion guard. */
     const tickets = await pair();
-    await getAccountDeletionRef(db, PLAYERS[0]).set({recreationBlocked: true});
+    await getJestAccountDeletionRef(db, PLAYERS[0]).set({recreationBlocked: true});
     /** Each real callable receives exact Facebook identity and a valid operation payload. */
     const data = handler === leaveFacebookContext ? {contextId: "durable-0"} : handler === joinFacebookContext
       ? {contextId: "durable-0", contextType: "GROUP", locale: "en"} : {contextId: "durable-0", locale: "en", runId: tickets[0].ticketId};

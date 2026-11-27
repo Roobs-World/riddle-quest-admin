@@ -14,7 +14,7 @@ jest.mock("../gameplay/content/classicRiddleFallback", () => ({getPlayableClassi
 /** Only this private loopback demo emulator may hold the fixture account and sessions. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** A fixed private account owns each issued content binding and mutation lease. */
-const OWNER = `facebook_${"f".repeat(40)}`;
+const OWNER = `jest_${"f".repeat(40)}`;
 /** Real Admin SDK instance supplies every session issuance transaction. */
 let db: FirebaseFirestore.Firestore;
 /** Current session token is established through the normal token-only API. */

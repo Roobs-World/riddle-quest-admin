@@ -5,7 +5,7 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const require = createRequire(new URL("../firebase-functions/package.json", import.meta.url));
 const ts = require("typescript");
-const roots = ["firebase-functions/src", "platforms/native/android/server", ...["facebook", "reddit", "yahoo"].map(target => `platforms/web/${target}/server`)]
+const roots = ["firebase-functions/src", "platforms/native/android/server", ...["jest", "facebook", "reddit", "yahoo"].map(target => `platforms/web/${target}/server`)]
   .map(directory => new URL(`../${directory}/`, import.meta.url));
 const failures = [];
 

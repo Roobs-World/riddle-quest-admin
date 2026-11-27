@@ -83,6 +83,7 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   private readonly getLocale: () => RaceLocale;
   /** Stores backend. */
   private readonly backend: FacebookContextBackendPort;
+  readonly matchPlayer?: NativeSocialCapability["matchPlayer"];
 
   /** Creates a facebook context coordinator instance. */
   constructor(
@@ -93,6 +94,10 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     this.sdkSocial = sdkSocial;
     this.getLocale = getLocale;
     this.backend = backend;
+    const matchPlayer = sdkSocial.matchPlayer;
+    if (matchPlayer) {
+      this.matchPlayer = async tag => this.reconcileChoice(await matchPlayer.call(sdkSocial, tag));
+    }
   }
 
   /** Observes native changes for the entire authenticated session, including outside the race UI. */
@@ -175,14 +180,8 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     return this.reconcileChoice(await this.sdkSocial.chooseContext());
   }
 
-  /** Provides match player behavior. */
-  async matchPlayer(tag?: string): Promise<PlatformResult<ContextValue>> {
-    return this.reconcileChoice(await this.sdkSocial.matchPlayer(tag));
-  }
-
   /** Native events and chooser settlement share membership work without invalidating awaiting board consumers. */
   private async reconcileChoice(result: PlatformResult<ContextValue>): Promise<PlatformResult<ContextValue>> {
-    if (result.status !== "success") return this.synchronize(result);
     /** Event delivery may already own synchronization for the same SDK selection. */
     const notify = !this.reconciliation && this.currentContext().status !== "success";
     /** Starting reconciliation first lets listeners share it on hosts without native context events. */
@@ -190,6 +189,9 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     if (notify) for (const listener of this.contextListeners) listener();
     /** A native event already notified its consumers and must not be repeated by chooser settlement. */
     const current = await operation;
+    // A rejected or ineligible dialog says nothing about the actual native context.
+    // Reconcile that context independently and preserve the original action result.
+    if (result.status !== "success") return result;
     if (current.status !== "success") return current;
     return current.value.contextId === result.value.contextId && current.value.contextType === result.value.contextType
       ? current : {status: "unavailable", message: "facebook-context-not-synchronized"};
