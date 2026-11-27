@@ -52,7 +52,7 @@ import type {AttemptRecoveryCapability} from "../../platform/contracts/capabilit
 
 import {DecorativeSolarSystem} from "../../scenery/solar/components/DecorativeSolarSystem";
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "../../app/components/recovery/GameSurfaceRecovery";
-import {completionPresentationKey, getVisibleGameModal, isCompletionAdvancePending} from "../session/completion/completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "../session/completion/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../../settings/browser/playerPreferences";
 
 /** Provides game frame app behavior. */
@@ -142,9 +142,6 @@ export function GameFrameApp({
 } = {}) {
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
-  /** Presentation waits for the receipt while reducer ownership still protects the solved round. */
-  const visibleModal = getVisibleGameModal(state);
-  const victoryPending = state.modal === "victory" && visibleModal === null;
   const providerProfile = useProviderProfile();
   /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
   const shopCatalog = useContext(ShopSubscriptionContext);
@@ -177,7 +174,7 @@ export function GameFrameApp({
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
   const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, raceTournamentLocale, guidanceActive, setGuidanceActive} =
     useGameSurfaceCoordination({
-      session: {...state, modal: visibleModal},
+      session: state,
       raceFeatureEnabled,
       raceLocalePolicy,
       initialRaceChallengeId,
@@ -362,7 +359,7 @@ export function GameFrameApp({
       ref={shellRef}
       className={state.paused ? "game-app paused" : "game-app"}
       inert={interactionBlocked && online !== false ? true : undefined}
-      data-analytics-screen={raceOpen ? "multiplayer" : visibleModal ? `modal_${visibleModal}` : `game_${state.gameMode}`}
+      data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
     >
       {solarReady && <DecorativeSolarSystem enabled={!reducedMotion} paused={state.paused || raceOpen} />}
       <audio ref={musicRef} loop preload="none" aria-hidden="true">
@@ -463,11 +460,8 @@ export function GameFrameApp({
 
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
-      <div className="game-completion-status" role="status">
-        {victoryPending ? tr("Accessibility.LOADING") : ""}
-      </div>
       <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
-        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((visibleModal || terminalSurfaceRecovery || state.completionMilestones.some(entry => entry.confirmed)) && !raceOpen)}
+        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((state.modal || terminalSurfaceRecovery || state.completionMilestones.some(entry => entry.confirmed)) && !raceOpen)}
           onUnavailable={() => setFailedModalOwner(surfaceOwner)}
           recovery={<GameSurfaceRecovery
             onClose={() => {if (!recovery.isPending() && !stateRef.current.pendingCoinSpend) dispatch(stateRef.current.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
