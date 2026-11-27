@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Rozpocznij turniej w tej grupie",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Wybierz grupę i rozpocznij",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Rozpoczęcie publikuje tabelę wyników i Twój wynik wyścigu na czacie grupowym.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Turniej mógł już się rozpocząć. Sprawdź czat grupowy przed ponowną próbą.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Ten turniej grupowy używa innych ustawień wyścigu. Nie można tu zaktualizować Twojego wyniku.",
     "TITLE": "Wyścig do 10",
     "CLOSE": "Zamknij wyścig",
     "QUIT_TITLE": "Opuścić ten wyścig?",

@@ -70,8 +70,8 @@ describe("Facebook overlay capability", () => {
     expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
 
-  test("accepts documented v8 views without a destruction extension", async () => {
-    /** Meta's documented view lifecycle exposes show and dismiss, without a required destroy API. */
+  test("retains dismissal cleanup for older views without native destruction", async () => {
+    /** Older runtime views remain usable when only dismissal is available. */
     const documented: FacebookOverlayView = {
       showAsync: jest.fn(async () => undefined),
       dismissAsync: jest.fn(async () => undefined),
@@ -103,23 +103,24 @@ describe("Facebook overlay capability", () => {
     harness.value.overlayViews!.createProfileNameOverlayViewAsync = jest.fn(async () => {
       throw new Error("overlay-name-failed");
     });
-    await expect(capability.renderPlayer({playerId: "player-1", surface})).resolves.toEqual({
+    await expect(createFacebookOverlayCapability(harness.value)!.renderPlayer({playerId: "player-1", surface})).resolves.toEqual({
       status: "retryable-failure",
       message: "overlay-name-failed",
     });
     expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
   });
 
-  test("destroys both provider views even when dismissal fails", async () => {
+  test("destroys both provider views without waiting for a stalled dismissal", async () => {
     /** Isolated provider views used to exercise dismissal failures. */
     const harness = sdk();
-    harness.picture.dismissAsync = jest.fn(async () => {throw new Error("dismiss-failed");});
+    harness.picture.dismissAsync = jest.fn(() => new Promise<void>(() => undefined));
     /** Overlay initialization result whose cleanup is exercised. */
     const result = await createFacebookOverlayCapability(harness.value)!.renderPlayer({
       playerId: "player-1", surface: connectedSurface(),
     });
     if (result.status !== "success") throw new Error("overlay failed");
     await result.value();
+    expect(harness.picture.dismissAsync).not.toHaveBeenCalled();
     expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
     expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
@@ -204,7 +205,7 @@ describe("Facebook overlay capability", () => {
     const pending = createFacebookOverlayCapability(harness.value)!.renderPlayer({playerId: "player-1", surface: connectedSurface(), signal: controller.signal});
     await admitted; controller.abort();
     await expect(pending).resolves.toEqual({status: "cancelled"}); await pictureDone;
-    expect(harness.picture.dismissAsync).toHaveBeenCalledTimes(1); expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
+    expect(harness.picture.dismissAsync).not.toHaveBeenCalled(); expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
     ready(harness.name); await nameDone;
     expect(harness.name.showAsync).not.toHaveBeenCalled(); expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
     expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
@@ -232,7 +233,7 @@ describe("Facebook overlay capability", () => {
     reject(new Error("late-native-show")); await Promise.resolve(); await Promise.resolve();
     expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1); expect(harness.name.destroyAsync).toHaveBeenCalledTimes(1);
   });
-  test("native dismissal triggering cancellation cannot initiate duplicate cleanup", async () => {
+  test("native destruction triggering cancellation cannot initiate duplicate cleanup", async () => {
     /** Cleanup is registered before SDK invocation, containing synchronous reentry. */
     const harness = sdk(), controller = new AbortController();
     /** Observe the original picture's disposal after dismissal cancels its owner. */
@@ -240,11 +241,10 @@ describe("Facebook overlay capability", () => {
     /** Native cleanup acknowledgement is independent of local render settlement. */
     const done = new Promise<void>(resolve => {destroyed = resolve;});
     harness.value.overlayViews!.createProfileNameOverlayViewAsync = jest.fn(async () => {throw new Error("name-unavailable");});
-    harness.picture.dismissAsync = jest.fn(async () => {controller.abort();});
-    harness.picture.destroyAsync = jest.fn(async () => {destroyed();});
+    harness.picture.destroyAsync = jest.fn(async () => {controller.abort(); destroyed();});
     await expect(createFacebookOverlayCapability(harness.value)!.renderPlayer({playerId: "player-1", surface: connectedSurface(), signal: controller.signal})).resolves.toEqual({status: "cancelled"});
     await done;
-    expect(harness.picture.dismissAsync).toHaveBeenCalledTimes(1); expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
+    expect(harness.picture.dismissAsync).not.toHaveBeenCalled(); expect(harness.picture.destroyAsync).toHaveBeenCalledTimes(1);
   });
   test("a native show cancelling its scope cannot admit the next view's show", async () => {
     /** Native SDK calls may synchronously deliver lifecycle callbacks. */

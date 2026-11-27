@@ -18,6 +18,7 @@ const ACTION_LABELS = {
   "create-shortcut": "Settings.ADD_SHORTCUT_BUTTON",
   "follow-community": "Settings.FOLLOW_COMMUNITY_BUTTON",
   "join-community": "Settings.JOIN_COMMUNITY_BUTTON",
+  "subscribe-messenger-bot": "Settings.MESSENGER_UPDATES_BUTTON",
   "privacy-policy": "Settings.PRIVACY_BUTTON",
   "terms-of-use": "Settings.TERMS_BUTTON",
   quit: "Settings.QUIT_GAME_BUTTON",

@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "ابدأ بطولة في هذه المجموعة",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "اختر مجموعة وابدأ",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "عند البدء، تُنشر لوحة المتصدرين ونتيجتك في السباق في دردشة المجموعة.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "ربما بدأت البطولة بالفعل. تحقق من دردشة المجموعة قبل المحاولة مجددًا.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "تستخدم بطولة المجموعة هذه إعدادات سباق مختلفة. لا يمكن تحديث نتيجتك هنا.",
     "TITLE": "سباق إلى 10",
     "CLOSE": "إغلاق السباق",
     "QUIT_TITLE": "مغادرة هذا السباق؟",

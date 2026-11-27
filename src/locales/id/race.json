@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Mulai turnamen di grup ini",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Pilih grup dan mulai",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Saat dimulai, papan peringkat dan skor balapanmu diposting ke obrolan grup.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Turnamen mungkin sudah dimulai. Periksa obrolan grup sebelum mencoba lagi.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Turnamen grup ini memakai pengaturan balapan yang berbeda. Skormu tidak dapat diperbarui di sini.",
     "TITLE": "Balapan ke 10",
     "CLOSE": "Tutup balapan",
     "QUIT_TITLE": "Keluar dari balapan ini?",

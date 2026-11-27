@@ -4,20 +4,23 @@ import type {
 } from "../../../../../src/settings/contracts/playerSettingsActions";
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../fbinstant";
+import {createFacebookMessengerBotConsent} from "../notifications/FacebookMessengerBotConsent";
 
 /** Meta permits only one shortcut prompt attempt per game session, including dismissal. */
 const shortcutAttempted = new WeakSet<FacebookInstantSdk>();
 
 type NativeAction = {
   id: PlayerSettingsAction;
-  canRun?: () => Promise<boolean>;
+  canRun?: (signal?: AbortSignal) => Promise<boolean>;
   repeatable?: boolean;
-  invoke: () => Promise<void>;
+  invoke: (signal?: AbortSignal) => Promise<void>;
+  isComplete?: () => boolean;
 };
 
 export type FacebookPlayerSettingsActionsOptions = {
   sdk: FacebookInstantSdk;
   isActive: () => boolean;
+  messengerBotEnabled?: boolean;
   /** Rejects when current progress cannot be durably saved; quitting must then stop. */
   flushBeforeQuit: () => Promise<void>;
   reportFailure?: (failure: {action: PlayerSettingsAction; error: unknown}) => void;
@@ -25,11 +28,14 @@ export type FacebookPlayerSettingsActionsOptions = {
 
 /** Exposes only advertised, callable native actions; eligibility is checked before each prompt. */
 export function createFacebookPlayerSettingsActions({
-  sdk, isActive, flushBeforeQuit, reportFailure,
+  sdk, isActive, flushBeforeQuit, reportFailure, messengerBotEnabled = false,
 }: FacebookPlayerSettingsActionsOptions): PlayerSettingsActionsCapability | undefined {
   let supported: Set<string>;
   try {supported = new Set(sdk.getSupportedAPIs());} catch {return undefined;}
   const nativeActions: NativeAction[] = [];
+  const botConsent = createFacebookMessengerBotConsent({sdk, enabled: messengerBotEnabled, isActive});
+  if (botConsent) nativeActions.push({id: "subscribe-messenger-bot", canRun: botConsent.eligible,
+    invoke: botConsent.request, isComplete: botConsent.isSubscribed});
   const canCreateShortcut = typeof sdk.canCreateShortcutAsync === "function" ? sdk.canCreateShortcutAsync.bind(sdk) : undefined;
   const createShortcut = typeof sdk.createShortcutAsync === "function" ? sdk.createShortcutAsync.bind(sdk) : undefined;
   if (supported.has("canCreateShortcutAsync") && supported.has("createShortcutAsync") && canCreateShortcut && createShortcut) {
@@ -74,8 +80,8 @@ export function createFacebookPlayerSettingsActions({
     snapshot = {actions: nativeActions.filter(action => available.has(action.id) || action.id === pendingAction).map(action => action.id), pendingAction};
     listeners.forEach(listener => listener());
   };
-  const eligible = async (action: NativeAction): Promise<boolean> => {
-    try {return current() && !unsupported.has(action.id) && (!action.canRun || await action.canRun() === true) && current();} catch {return false;}
+  const eligible = async (action: NativeAction, signal?: AbortSignal): Promise<boolean> => {
+    try {return current() && !unsupported.has(action.id) && (!action.canRun || await action.canRun(signal) === true) && current();} catch {return false;}
   };
 
   return {
@@ -84,7 +90,7 @@ export function createFacebookPlayerSettingsActions({
     refresh: async () => {
       if (!current() || snapshot.pendingAction) return;
       const request = ++revision;
-      const eligibility = await Promise.all(nativeActions.map(eligible));
+      const eligibility = await Promise.all(nativeActions.map(action => eligible(action)));
       if (!current() || request !== revision || snapshot.pendingAction) return;
       nativeActions.forEach((action, index) => {if (eligibility[index]) available.add(action.id); else available.delete(action.id);});
       publish(null);
@@ -100,7 +106,7 @@ export function createFacebookPlayerSettingsActions({
       try {
         const result = await runFacebookSdkDialog(sdk, async (): Promise<PlatformResult<void>> => {
           if (signal?.aborted || !current()) return {status: "cancelled"};
-          const mayRun = await eligible(action);
+          const mayRun = await eligible(action, signal);
           if (signal?.aborted || !current()) return {status: "cancelled"};
           if (!mayRun) {
             available.delete(id);
@@ -115,7 +121,7 @@ export function createFacebookPlayerSettingsActions({
           }
           if (!current() || signal?.aborted) return {status: "cancelled"};
           try {
-            await action.invoke();
+            await action.invoke(signal);
             if (!current()) return {status: "cancelled"};
             if (id !== "quit" && !action.repeatable) available.delete(id);
             return signal?.aborted ? {status: "cancelled"} : {status: "success", value: undefined};
@@ -138,11 +144,13 @@ export function createFacebookPlayerSettingsActions({
         return outcome;
       } finally {
         if (shortcutAttempted.has(sdk)) available.delete("create-shortcut");
+        if (action.isComplete?.()) available.delete(id);
         publish(null);
       }
     },
     retire: () => {
       retired = true;
+      botConsent?.retire();
       ++revision;
       snapshot = {actions: [], pendingAction: null};
       listeners.forEach(listener => listener());

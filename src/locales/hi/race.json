@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "इस ग्रुप में टूर्नामेंट शुरू करें",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "ग्रुप चुनें और शुरू करें",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "शुरू करने पर ग्रुप चैट में लीडरबोर्ड और आपका रेस स्कोर पोस्ट होता है।",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "टूर्नामेंट शुरू हो चुका हो सकता है। दोबारा कोशिश करने से पहले ग्रुप चैट देखें।",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "इस ग्रुप टूर्नामेंट की रेस सेटिंग अलग है। आपका स्कोर यहाँ अपडेट नहीं किया जा सकता।",
     "TITLE": "10 तक रेस",
     "CLOSE": "रेस बंद करें",
     "QUIT_TITLE": "यह रेस छोड़ें?",

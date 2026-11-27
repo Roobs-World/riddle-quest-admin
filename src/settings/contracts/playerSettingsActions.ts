@@ -1,5 +1,5 @@
 /** Explicit player requests that a host can offer from Settings. */
-export type PlayerSettingsAction = "create-shortcut" | "follow-community" | "join-community" | "privacy-policy" | "terms-of-use" | "quit";
+export type PlayerSettingsAction = "create-shortcut" | "follow-community" | "join-community" | "subscribe-messenger-bot" | "privacy-policy" | "terms-of-use" | "quit";
 
 export type PlayerSettingsActionOutcome = "success" | "cancelled" | "unavailable" | "error" | "unsaved";
 

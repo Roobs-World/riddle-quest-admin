@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Начать турнир в этой группе",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Выбрать группу и начать",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "При запуске таблица лидеров и ваш результат гонки публикуются в групповом чате.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Возможно, турнир уже начался. Проверьте групповой чат перед повторной попыткой.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "В этом групповом турнире другие настройки гонки. Здесь нельзя обновить ваш результат.",
     "TITLE": "Гонка до 10",
     "CLOSE": "Закрыть гонку",
     "QUIT_TITLE": "Выйти из гонки?",

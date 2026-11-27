@@ -6,6 +6,10 @@ export interface FacebookPlayerData {
 
 /** Defines the contract for facebook instant player. */
 export interface FacebookInstantPlayer {
+  /** Messenger bot consent is separate from the game's A2U notification preference. */
+  canSubscribeBotAsync?(): Promise<boolean>;
+  isSubscribedBotAsync?(): Promise<boolean>;
+  subscribeBotAsync?(): Promise<void>;
   /** Native connections expose identifiers only under Zero Permissions. */
   getConnectedPlayersAsync?(): Promise<Array<{getID(): string}>>;
   /** Reads Meta's coarse age category without exposing a birth date. */
@@ -60,6 +64,10 @@ export interface FacebookAdInstance {
 
 /** Defines the contract for facebook overlay view. */
 export interface FacebookOverlayView {
+  /** Native overlay identity, unrelated to the player's identity. */
+  getID?(): string;
+  /** Meta-owned frame; game code may position it but never reads its contents. */
+  getIFrameElement?(): HTMLIFrameElement;
   /** Provides show async behavior. */
   showAsync(): Promise<void>;
   /** Provides dismiss async behavior. */
@@ -70,14 +78,34 @@ export interface FacebookOverlayView {
 
 /** Defines the contract for facebook overlay views. */
 export interface FacebookOverlayViews {
+  createOverlayViewAsync?(
+    filename: string, surface: HTMLElement, iframeStyle?: string, pathToCSS?: string,
+    initialData?: Record<string, unknown>,
+  ): Promise<FacebookOverlayView>;
+  createOverlayViewWithXMLStringAsync?(
+    xml: string, surface: HTMLElement, iframeStyle?: string, pathToCSS?: string,
+    initialData?: Record<string, unknown>, pathToOverlayFiles?: string,
+  ): Promise<FacebookOverlayView>;
+  createOverlayView?(
+    filename: string, pathToCSS?: string, initialData?: Record<string, unknown>,
+    onReady?: (view: FacebookOverlayView) => void,
+    onError?: (view: FacebookOverlayView, error: unknown) => void,
+  ): FacebookOverlayView;
+  createOverlayViewWithXMLString?(
+    xml: string, pathToCSS?: string, initialData?: Record<string, unknown>,
+    onReady?: (view: FacebookOverlayView) => void,
+    onError?: (view: FacebookOverlayView, error: unknown) => void, pathToOverlayFiles?: string,
+  ): FacebookOverlayView;
+  setCustomEventHandler?(handler: (event: string, overlayId: string) => void): void;
+  getOverlayViews?(): Map<string, FacebookOverlayView>;
   /** Creates profile picture overlay view async. */
-  createProfilePictureOverlayViewAsync(
+  createProfilePictureOverlayViewAsync?(
     surface: HTMLElement,
     imageStyle: string,
     iframeStyle: string,
   ): Promise<FacebookOverlayView>;
   /** Creates profile name overlay view async. */
-  createProfileNameOverlayViewAsync(
+  createProfileNameOverlayViewAsync?(
     surface: HTMLElement,
     textStyle: string,
     iframeStyle: string,

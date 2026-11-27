@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "このグループで大会を開始",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "グループを選んで開始",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "開始すると、ランキングとレースのスコアがグループチャットに投稿されます。",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "大会が開始された可能性があります。再試行する前にグループチャットを確認してください。",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "このグループ大会はレースの設定が異なるため、ここではスコアを更新できません。",
     "TITLE": "10問レース",
     "CLOSE": "10問レースを閉じる",
     "QUIT_TITLE": "このレースを終了しますか？",

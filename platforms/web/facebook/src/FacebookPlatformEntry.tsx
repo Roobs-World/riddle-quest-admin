@@ -477,6 +477,8 @@ export function FacebookPlatformEntry() {
         if (tournaments && configurationLoaded && ageCategory === "13_plus") {
           sessionScore = createFacebookSessionScore({
             sdk, isActive: isAdSessionActive, getLocale: getCurrentLocale,
+            privateTournamentsEnabled: import.meta.env.VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED === "true",
+            ...(contextCoordinator ? {onContextChange: (listener: () => void) => contextCoordinator.onContextChange(listener)} : {}),
             canPresent: () => document.visibilityState === "visible" && settingsActions?.getSnapshot().pendingAction !== "quit",
             synchronizeContext: async () => {
               const result = await contextCoordinator?.reconcileNativeContext();
@@ -602,6 +604,7 @@ export function FacebookPlatformEntry() {
           settingsActions = createFacebookPlayerSettingsActions({
             sdk,
             isActive: isAdSessionActive,
+            messengerBotEnabled: Boolean(notificationProvider) && import.meta.env.VITE_FACEBOOK_MESSENGER_BOT_ENABLED === "true",
             flushBeforeQuit: async () => {
               await playerPersistence.flush();
               try {await stopPresence?.();} catch (error) {

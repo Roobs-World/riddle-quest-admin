@@ -36,6 +36,7 @@ const isMain = process.argv[1] && fileURLToPath(import.meta.url) === process.arg
 if (isMain) {
   const root = fileURLToPath(new URL("../../../../", import.meta.url));
   const adapterPath = `${root}/platforms/web/facebook/src/FacebookOverlayCapability.ts`;
+  const factoryPath = `${root}/platforms/web/facebook/src/overlays/FacebookOverlayFactories.ts`;
   const excluded = new Set([
     adapterPath,
     `${root}/platforms/web/facebook/src/fbinstant.ts`,
@@ -48,7 +49,7 @@ if (isMain) {
   ].filter((path) => !excluded.has(path));
   const failures = auditFacebookProfileBoundary({
     sources: paths.map((path) => ({name: path.slice(root.length), source: readFileSync(path, "utf8")})),
-    adapterSource: readFileSync(adapterPath, "utf8"),
+    adapterSource: [adapterPath, factoryPath].map(path => readFileSync(path, "utf8")).join("\n"),
   });
   if (failures.length > 0) throw new Error(`Facebook profile-boundary audit failed:\n- ${failures.join("\n- ")}`);
   console.log("Facebook profile-boundary audit passed: names/photos remain inside provider overlays.");

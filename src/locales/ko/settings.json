@@ -1,5 +1,6 @@
 {
   "Settings": {
+    "MESSENGER_UPDATES_BUTTON": "Messenger 게임 소식",
     "ADD_SHORTCUT_BUTTON": "홈 화면에 추가",
     "FOLLOW_COMMUNITY_BUTTON": "페이지 팔로우",
     "JOIN_COMMUNITY_BUTTON": "그룹 가입",

@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Toernooi in deze groep starten",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Een groep kiezen en starten",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Bij de start worden een ranglijst en je racescore in de groepschat geplaatst.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Het toernooi is mogelijk al begonnen. Controleer de groepschat voordat je het opnieuw probeert.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Dit groepstoernooi gebruikt andere race-instellingen. Je score kan hier niet worden bijgewerkt.",
     "TITLE": "Race naar 10",
     "CLOSE": "Race sluiten",
     "QUIT_TITLE": "Deze race verlaten?",

@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Avvia un torneo in questo gruppo",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Scegli un gruppo e inizia",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "All’avvio, una classifica e il tuo punteggio vengono pubblicati nella chat di gruppo.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Il torneo potrebbe essere già iniziato. Controlla la chat di gruppo prima di riprovare.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Questo torneo di gruppo usa impostazioni di gara diverse. Il tuo punteggio non può essere aggiornato qui.",
     "TITLE": "Corsa a 10",
     "CLOSE": "Chiudi la corsa",
     "QUIT_TITLE": "Uscire da questa corsa?",

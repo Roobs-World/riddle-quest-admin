@@ -42,7 +42,8 @@ describe("Facebook session scoring", () => {
   it("offers only an explicit verified-race score and deduplicates an admitted result", async () => {
     const {score, post, sdk, reconcile} = fixture();
     score.record("run-1", receipt());
-    expect(score.getSnapshot()).toEqual({available: true, pending: false});
+    expect(score.getSnapshot()).toMatchObject({available: true, pending: false,
+      privateAvailable: false, chooseGroupAvailable: false});
     expect(post).not.toHaveBeenCalled();
     await expect(score.publish()).resolves.toMatchObject({status: "success"});
     expect(post).toHaveBeenCalledWith(240_000);
@@ -101,6 +102,7 @@ describe("Facebook session scoring", () => {
     expect((await pending).status).not.toBe("success");
     expect(post).not.toHaveBeenCalled();
     score.retire();
-    expect(score.getSnapshot()).toEqual({available: false, pending: false});
+    expect(score.getSnapshot()).toMatchObject({available: false, pending: false,
+      privateAvailable: false, chooseGroupAvailable: false});
   });
 });

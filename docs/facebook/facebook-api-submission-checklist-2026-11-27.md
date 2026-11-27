@@ -12,6 +12,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 - [Hosted rewarded continuation](evidence/facebook-rewarded-ad-setup-2026-11-27.md): one real version-9 video and successful continuation; not the new ad cadence, subscriber policy or new candidate.
 - [Payment configuration and deployment evidence](evidence/facebook-payments-catalog-2026-11-27.md): catalog exists; payout, approval, webhook readiness and checkout activation remain open.
 - [Expanded API build](evidence/facebook-expanded-api-build-2026-11-27.md): the first completed candidate unit built after session-score wiring, with 418 files, 4.48 MB total and 0.69 MB initial resources; hosted acceptance remains open.
+- [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md): 398 focused tests, the expanded local browser journey and backend preflight passed. The production build contains 420 files, 4.50 MB total and 0.70 MB initial resources.
 - [Earlier source coverage](evidence/facebook-api-coverage-2026-11-27.md): historical baseline, superseded by this checklist's broader scope for future work.
 
 | Code | What the evidence establishes |
@@ -21,7 +22,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 | G | Integration gap: no reachable implementation or complete meaningful workflow was found. |
 | H9 | Narrow historical hosted observation in version 9 only. Every changed flow still needs final-candidate acceptance. |
 
-None of these codes means the final submission requirement is complete. The [first expanded candidate build and verification](evidence/facebook-expanded-api-build-2026-11-27.md) passed after session-score wiring and lifecycle corrections; later additions require their own evidence. The owner explicitly authorized focused tests and browser verification on 27 November. All 316 focused tests and the local injected-SDK browser journey passed. No fresh hosted acceptance is implied by source inspection or local checks.
+None of these codes means the final submission requirement is complete. The [combined candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md) covers the later private-tournament, Messenger-consent and generic-overlay additions. The owner explicitly authorized focused tests and browser verification on 27 November. All 398 focused tests and the expanded local injected-SDK browser journey passed. No fresh hosted acceptance is implied by source inspection or local checks.
 
 ## Source owners used in the matrix
 
@@ -43,6 +44,7 @@ All Facebook browser paths below are beneath `platforms/web/facebook/src/`:
 | Commerce / recovery | [FacebookCommerceSession.ts](../../platforms/web/facebook/src/FacebookCommerceSession.ts), [FacebookCommerceCapability.ts](../../platforms/web/facebook/src/FacebookCommerceCapability.ts), [FacebookPurchaseRecovery.ts](../../platforms/web/facebook/src/FacebookPurchaseRecovery.ts) |
 | Profile overlays | [FacebookOverlayCapability.ts](../../platforms/web/facebook/src/FacebookOverlayCapability.ts) |
 | Notification consent | [FacebookCampaignNotifications.ts](../../platforms/web/facebook/src/FacebookCampaignNotifications.ts); delivery/content remain with the notification manager |
+| Messenger permission | [notifications/FacebookMessengerBotConsent.ts](../../platforms/web/facebook/src/notifications/FacebookMessengerBotConsent.ts), exposed through Settings actions; independent of manager consent |
 
 ## Provider and deployment prerequisites
 
@@ -55,7 +57,7 @@ All Facebook browser paths below are beneath `platforms/web/facebook/src/`:
 | A4 | Messenger Game Bot requires `pages_messaging` App Review and the `gamebot with Messenger` use case per the dashboard information panel. Bot Review is Not Submitted. SDK bot consent must remain distinct from existing `a2u-v1` manager consent. NEZP stored-content delivery requires a manager-authored plan, current-context recipient restriction, a dispatch consumer and trusted verification of returned content/app/recipient binding. A browser-supplied content ID alone cannot authorize campaign content. No documented Meta verification mechanism or manager approval workflow is established. |
 | A5 | Cross-Play Management is **Not Linked**. An actual same-game/same-business app association and truthful attestation are required; legacy ASID eligibility is a separate condition. No approved account-migration/linking path is established. |
 | A6 | No configured eligible second game destination or meaningful cross-promotion surface is established. Do not fabricate an app ID or count dormant `switchGameAsync` declarations as integration. |
-| A7 | Private tournaments require app allowlisting, player rollout, eligible Messenger group, compatible dashboard scoring settings and authoritative recovery. These are unverified; only a type declaration exists. |
+| A7 | Private tournaments require app allowlisting, player rollout, eligible Messenger group and compatible dashboard higher-is-better scoring settings. Conditional creation/recovery is wired to verified race receipts; `VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED` defaults off because these prerequisites remain unverified. |
 | A8 | Game Details shows a linked Riddle Quest App Page. Group association and per-player eligibility remain unverified; generic community failures must not be reported as success. |
 | A9 | Rooms requires a real current Messenger Rooms live match on a supported host. Discovery/join code exists; no actual eligible Room host or accepted join is evidenced. |
 
@@ -105,7 +107,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 19 | `FBInstant.postSessionScore` | W · Session score; fallback to asynchronous variant | A0; validated completed race receipt; outside native tournament | J08 |
+| 19 | `FBInstant.postSessionScore` | W · Session score; fallback when asynchronous variant is absent | A0; validated completed race receipt; general session or compatible private points tournament | J08 |
 | 20 | `FBInstant.postSessionScoreAsync` | W · Session score; preferred variant | A0; validated completed race receipt; native UI eligibility | J08 |
 | 21 | `FBInstant.setSessionData` | W · Host environment | A0; bounded non-identifying activity values | J02 |
 | 22 | `FBInstant.logEvent` | W · Analytics | A0; analytics capability/consent and account lifetime | J02 |
@@ -167,9 +169,9 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 46 | `FBInstant.player.canSubscribeBotAsync` | G · No current SDK caller | A4; bot integration/approval; manager-owned consent design | J12, J13 |
-| 47 | `FBInstant.player.isSubscribedBotAsync` | G · No current SDK caller | A4; authoritative consent reconciliation; not A2U equivalence | J12, J13 |
-| 48 | `FBInstant.player.subscribeBotAsync` | G · No current SDK subscription surface | A4; explicit player request and approved Messenger bot | J12, J13 |
+| 46 | `FBInstant.player.canSubscribeBotAsync` | C · Messenger permission; checked before each explicit prompt | A4; notification provider present and Messenger deployment flag enabled | J12 |
+| 47 | `FBInstant.player.isSubscribedBotAsync` | C · Messenger permission; restore and admitted-attempt reconciliation | A4; native status never substitutes for manager A2U consent | J12 |
+| 48 | `FBInstant.player.subscribeBotAsync` | C · Separate Messenger game updates Settings action | A4; explicit player request, approved bot and positive current eligibility | J12 |
 | 49 | `FBInstant.player.createNEZPNotificationContentAsync` | G · No manager-owned content-ID bridge | A4; manager content/scheduling ownership and accepted content contract | J12, J13 |
 
 ### Contexts
@@ -198,7 +200,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
 | 61 | `FBInstant.tournament.createAsync` | W · Tournament presentation | A0; official daily window/locale/score receipt | J07 |
-| 62 | `FBInstant.tournament.createPrivateAsync` | G · Type declaration only | A7; partner allowlist, player rollout, Messenger group and score settings | J13 |
+| 62 | `FBInstant.tournament.createPrivateAsync` | C · Session-score group action with explicit chat disclosure and uncertain-outcome recovery | A7; positive deployment flag, eligible group and verified race receipt | J08, J13 |
 | 63 | `FBInstant.tournament.getTournamentsAsync` | W · Native social listing | A0; eligible active native tournaments; validated metadata | J07 |
 | 64 | `FBInstant.tournament.joinAsync` | W · Native social join | A0; unexpired listed tournament; Meta participant eligibility | J07 |
 | 65 | `FBInstant.tournament.postScoreAsync` | W · Tournament presentation | A0; server-derived adjusted time and daily binding | J07 |
@@ -223,10 +225,10 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 72 | `FBInstant.overlayViews.createOverlayViewAsync` | G · No generic file-XML overlay use | A0; approved bundled XML surface and real feature | J13 |
-| 73 | `FBInstant.overlayViews.createOverlayViewWithXMLStringAsync` | G · No generic inline-XML overlay use | A0; safe XML/data binding and real feature | J13 |
-| 74 | `FBInstant.overlayViews.createOverlayView` | G · No callback file-XML overlay use | A0; alternative to asynchronous file factory | J13 |
-| 75 | `FBInstant.overlayViews.createOverlayViewWithXMLString` | G · No callback inline-XML overlay use | A0; alternative to asynchronous inline factory | J13 |
+| 72 | `FBInstant.overlayViews.createOverlayViewAsync` | W · Generic profile fallback from canonical bundled XML | A0; selected when convenience pair unavailable | J01, J14 |
+| 73 | `FBInstant.overlayViews.createOverlayViewWithXMLStringAsync` | W · Same profile XML, inline async alternative | A0; selected when earlier factories unavailable | J01, J14 |
+| 74 | `FBInstant.overlayViews.createOverlayView` | W · Callback file alternative, frame attached before readiness | A0; selected when async factories unavailable | J01, J14 |
+| 75 | `FBInstant.overlayViews.createOverlayViewWithXMLString` | W · Callback inline alternative with same lifecycle | A0; selected when earlier factories unavailable | J01, J14 |
 | 76 | `FBInstant.overlayViews.createProfilePictureOverlayViewAsync` | W · Overlay capability | A0; Meta-owned identity rendering | J01, J14 |
 | 77 | `FBInstant.overlayViews.createProfileNameOverlayViewAsync` | W · Overlay capability | A0; Meta-owned identity rendering | J01, J14 |
 
@@ -234,8 +236,8 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 78 | `FBInstant.overlayViews.setCustomEventHandler` | G · No custom overlay event routing | A0; a real generic overlay interaction contract | J13 |
-| 79 | `FBInstant.overlayViews.getOverlayViews` | G · No overlay inventory consumer | A0; meaningful lifecycle/debug consumer | J13 |
+| 78 | `FBInstant.overlayViews.setCustomEventHandler` | W · Scoped generic-profile photo failure and name-only fallback | A0; advertised handler, owned view and fixed event | J01, J14 |
+| 79 | `FBInstant.overlayViews.getOverlayViews` | W · Recovers only owned generic handles for teardown | A0; advertised inventory; never destroys unrelated surfaces | J01, J14 |
 
 ## Reviewer journeys for the exact candidate
 
@@ -243,7 +245,7 @@ Record the final source commit, archive SHA-256, Meta version/bundle, host/OS, a
 
 ### J01 — Startup, identity, save and profile
 
-Launch the exact selected candidate using a role account. Verify loading progresses, startup finishes, expected locale/fallback applies and no separate game password is required. Confirm the server accepts nonce-bound identity and gives the expected account. Open Profile and inspect Meta-rendered name/photo overlays. Complete a Classic puzzle, change a preference, close/relaunch and confirm both persist without duplicate rewards. Repeat with another authorized account to establish save/profile separation. Missing or expired identity, rejected age lookup and failed save must not activate privileged features or erase accepted progress. Save raw signatures/player IDs only in the permitted private evidence store, never this document.
+Launch the exact selected candidate using a role account. Verify loading progresses, startup finishes, expected locale/fallback applies and no separate game password is required. Confirm the server accepts nonce-bound identity and gives the expected account. Open Race to 10, then Activity or Tournaments, and inspect Meta-rendered name/photo overlays. Complete a Classic puzzle, change a preference, close/relaunch and confirm both persist without duplicate rewards. Repeat with another authorized account to establish save/profile separation. Missing or expired identity, rejected age lookup and failed save must not activate privileged features or erase accepted progress. Save raw signatures/player IDs only in the permitted private evidence store, never this document.
 
 ### J02 — Host environment, lifecycle, events and session metadata
 
@@ -271,7 +273,7 @@ For Rooms, the **Join room game** action appears only when a real current live m
 
 In **Play on Facebook**, inspect **Facebook tournaments**, refresh and choose **Join tournament** for an eligible listed tournament. Validate empty, expired, malformed and unsupported listings. The list supplies native navigation only; it must not grant coins or establish official game membership. After joining, verify native context reconciliation and strict interpretation of native tournament payload before entering the game's official tournament surface. Cancellation/eligibility rejection must recover without stale membership.
 
-Separately complete an official daily race, verify the server's locale/day/run binding and adjusted-time result, then exercise the existing native tournament create/share/score path. Confirm lower-is-better adjusted-time presentation and exact daily window; native standings cannot change the authoritative economy. Exercise tournament entry through an authorized shared link. Private tournament creation is still missing and is tracked in J13; public creation is not evidence for `createPrivateAsync`.
+Separately complete an official daily race, verify the server's locale/day/run binding and adjusted-time result, then exercise the existing native tournament create/share/score path. Confirm lower-is-better adjusted-time presentation and exact daily window; native standings cannot change the authoritative economy. Exercise tournament entry through an authorized shared link. Conditional private tournament creation has its separate prerequisite-dependent journey in J13; public creation is not evidence for `createPrivateAsync`.
 
 ### J08 — Explicit native session score
 
@@ -291,15 +293,15 @@ This journey is blocked until a real approved banner placement and explicit depl
 
 Blocked until A2 is satisfied. Open the Shop with an approved test-payment account and verify native catalog IDs/prices match all six coin packs plus the durable **Remove Interstitial Ads** product. Exercise native cancel, a signed successful test purchase, asynchronous V2 webhook arrival, lost client acknowledgement, replay/relaunch recovery and an authorized refund. Require the server grant before consumable consumption and never consume the durable. Confirm no duplicate grants, correct debt/entitlement reversal and ad eligibility refresh. An empty or unsigned rewarded-video-fallback receipt must not enter the signed purchase grant path. This is a separate pilot gap, not a successful one-time checkout.
 
-### J12 — Existing notification consent and missing bot/NEZP surfaces
+### J12 — Notification preference and separate Messenger permission
 
-Settings → **Notifications** exercises the current account registration/explicit Facebook consent path and manager handoff. With an authorized delivery test, the notification manager—not gameplay—owns content, scheduling and sending; device/host receivers own display and response. This acceptance does not cover any of the four player bot/NEZP SDK methods. Those require the missing manager-owned design plus A4 approval. No bot subscription, notification-content creation or real send is authorized merely by writing this checklist.
+Settings → **Notifications** exercises the current account registration/explicit Facebook consent path and manager handoff. With an authorized delivery test, the notification manager owns content, scheduling and sending; device/host receivers own display and response. Once A4 is approved and the conditional Messenger action enabled, verify **Messenger game updates** only probes on restore, prompts after an explicit request and positive eligibility, and reconciles an admitted result after cancellation/rejection. Confirm this does not alter the master notification preference or send anything. The [consent evidence](evidence/facebook-messenger-consent-2026-11-27.md) distinguishes the three implemented permission methods from the remaining NEZP content bridge. No real subscription, content creation or send is authorized merely by this checklist.
 
 ### J13 — Unmatched APIs and prerequisite-dependent gaps
 
-The following remain open, individually: four legacy/associated-app identity methods; `switchGameAsync`; `tournament.createPrivateAsync`; all four player bot/NEZP methods; four generic overlay factory variants; `setCustomEventHandler`; and `getOverlayViews`. Do not relabel an absence as host incompatibility without an authoritative app/host check.
+The remaining source/workflow gaps are four legacy/associated-app identity methods, `switchGameAsync`, and `createNEZPNotificationContentAsync`. Private tournaments, Messenger permission and generic overlays now have reachable conditional/fallback implementations; their provider prerequisites and final-candidate acceptance are still open. Do not relabel an absence as host incompatibility without an authoritative app/host check.
 
-For each, first establish the real product destination, current provider contract and prerequisites. Then implement a reachable, consent-aware feature with cancellation, stale-owner and error behavior; record a separate reviewer journey and source/artifact evidence. Generic overlay factory variants are alternatives: a rich native identity/choice surface can select one supported factory and document equivalent fallback handling without constructing four duplicate overlays. Current profile convenience overlays do not prove generic factory/custom-event/inventory integration. Cross-play and private-tournament setup must not invent an associated app, attestation, allowed score or grant.
+For unresolved workflows, establish the real product destination, current provider contract and prerequisites before implementation. Generic overlay variants select one supported profile path; verify each fallback, scoped photo-error recovery and cleanup without extracting names/photos. For private tournaments after A7 approval, complete a verified race, use the explicit group action with consenting testers, verify the disclosed chat post, and inspect recovery from an uncertain response without blind duplicate creation. Cross-play and private setup must not invent an associated app, attestation, allowed score or grant.
 
 ### J14 — Cross-cutting unavailable, cancellation and retirement matrix
 
@@ -317,7 +319,7 @@ The 79-row count covers SDK entry points, not methods on returned objects. Verif
 | ConnectedPlayer / ContextPlayer | Validated IDs stay within the Facebook boundary; UI exposes counts, not extracted names/photos. |
 | Tournament | ID/end-time/title/context/payload use validated for its flow. Type/getter coverage must be checked individually where only declarations exist. |
 | LiveMatch | Validate match/context IDs and re-read the current match before a switch; Room lookup alone is not hosted co-play acceptance. |
-| OverlayView | Current profile views use show/dismiss/destroy and stale-owner cleanup. Generic updates, initial-data/status/error/iframe inspection and custom events require their own meaningful consumer/evidence; do not infer them from profile display. |
+| OverlayView | Profile views use show, direct destroy (legacy dismissal fallback), owned IDs/iframes and stale-owner cleanup. Generic photo events replace the failed view once. No profile content is read back. Other returned-object methods still require a meaningful consumer before being counted. |
 
 ## APIs outside the viable current v8 scope
 
@@ -329,7 +331,7 @@ The rewarded-video IAP fallback pilot is also not completed: it requires separat
 
 - [ ] Resolve every G entry with a real reachable integration or current app/host/contract evidence establishing why it cannot be enabled. Preserve missing prerequisites explicitly; they are not completion evidence.
 - [ ] Reinspect the final source after concurrent integration work, including session-score wiring, teardown, locale keys, dialog ownership, optional banners and cross-target boundaries.
-- [ ] Complete the final Facebook build and required static/backend packaging checks. Record the exact commands/results and any limitations. Tests/browser harnesses remain unrun unless the user explicitly requests them.
+- [ ] Complete the final Facebook build and required static/backend packaging checks. Record the exact commands/results and any limitations. Repeat the owner-authorized focused tests and browser journey for the final source changes.
 - [ ] Prepare a clean immutable archive from the agreed release source; record commit, SHA-256, byte count, contents and matching backend revisions/configuration. A package from version 9 or an earlier dirty source does not qualify.
 - [ ] Reconcile the requested `facebook` development branch with the uploader's `main` branch gate before any authorized upload. Do not bypass the existing release-authority check silently.
 - [ ] Obtain explicit authorization for the new Facebook upload/review/publication actions as required; previous release evidence does not authorize a different payload or action.

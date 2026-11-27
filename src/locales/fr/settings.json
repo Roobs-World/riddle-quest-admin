@@ -1,5 +1,6 @@
 {
   "Settings": {
+    "MESSENGER_UPDATES_BUTTON": "Actualités du jeu sur Messenger",
     "ADD_SHORTCUT_BUTTON": "Ajouter à l’écran d’accueil",
     "FOLLOW_COMMUNITY_BUTTON": "Suivre notre page",
     "JOIN_COMMUNITY_BUTTON": "Rejoindre notre groupe",

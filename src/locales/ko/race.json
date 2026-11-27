@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "이 그룹에서 토너먼트 시작",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "그룹을 선택하고 시작",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "시작하면 순위표와 레이스 점수가 그룹 채팅에 게시됩니다.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "토너먼트가 시작되었을 수 있습니다. 다시 시도하기 전에 그룹 채팅을 확인하세요.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "이 그룹 토너먼트는 레이스 설정이 달라 여기서 점수를 업데이트할 수 없습니다.",
     "TITLE": "10문제 레이스",
     "CLOSE": "레이스 닫기",
     "QUIT_TITLE": "이 레이스를 종료할까요?",

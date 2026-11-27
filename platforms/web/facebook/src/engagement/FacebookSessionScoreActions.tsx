@@ -18,23 +18,33 @@ function AvailableSessionScoreAction({capability}: {capability: FacebookSessionS
     const current = new AbortController();
     surface.current = current;
     setFailed(false);
-    capability.refresh();
+    void capability.refresh();
     return () => {current.abort(); if (surface.current === current) surface.current = null;};
   }, [capability, locale]);
-  const request = async () => {
+  const request = async (action: "score" | "group" | "choose") => {
     const current = surface.current;
     if (!current || snapshot.pending) return;
     setFailed(false);
-    const result = await capability.publish(current.signal);
+    const result = action === "score" ? await capability.publish(current.signal) :
+      await capability.startPrivateTournament({chooseGroup: action === "choose", signal: current.signal});
     if (surface.current !== current || current.signal.aborted) return;
     setFailed(result.status !== "success" && result.status !== "cancelled");
   };
-  if (!snapshot.available && !snapshot.pending && !failed) return null;
+  if (!snapshot.available && !snapshot.privateAvailable && !snapshot.chooseGroupAvailable && !snapshot.pending && !failed && !snapshot.privateOutcome) return null;
   return <div className="race-hub-social-actions">
-    {snapshot.available && <button type="button" disabled={snapshot.pending} aria-busy={snapshot.pending} onClick={() => void request()}>
+    {snapshot.available && <button type="button" disabled={snapshot.pending} aria-busy={snapshot.pending} onClick={() => void request("score")}>
       {tr("RaceTo10.FACEBOOK_SHARE_SESSION_SCORE")}
     </button>}
-    {failed && <p className="race-error" role="status">{tr("RaceTo10.ERROR_GENERIC")}</p>}
+    {snapshot.privateAvailable && <button type="button" disabled={snapshot.pending} aria-busy={snapshot.pending} onClick={() => void request("group")}>
+      {tr("RaceTo10.FACEBOOK_START_GROUP_TOURNAMENT")}
+    </button>}
+    {snapshot.chooseGroupAvailable && <button type="button" disabled={snapshot.pending} aria-busy={snapshot.pending} onClick={() => void request("choose")}>
+      {tr("RaceTo10.FACEBOOK_CHOOSE_GROUP_TOURNAMENT")}
+    </button>}
+    {(snapshot.privateAvailable || snapshot.chooseGroupAvailable) && <p>{tr("RaceTo10.FACEBOOK_GROUP_TOURNAMENT_NOTICE")}</p>}
+    {snapshot.privateOutcome === "uncertain" ? <p className="race-error" role="status">{tr("RaceTo10.FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN")}</p> :
+      snapshot.privateOutcome === "incompatible" ? <p className="race-error" role="status">{tr("RaceTo10.FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE")}</p> :
+        failed && <p className="race-error" role="status">{tr("RaceTo10.ERROR_GENERIC")}</p>}
   </div>;
 }
 

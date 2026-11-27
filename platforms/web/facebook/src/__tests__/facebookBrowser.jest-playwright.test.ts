@@ -10,6 +10,7 @@ import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests
 import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
 import {withProtectedFacebookFixtures} from "./protectedFixtures.jest-playwright.support.ts";
+import {installExpandedOptionalApis, verifyGenericProfileOverlay} from "./expandedOptionalApis.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -62,6 +63,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         ...process.env,
         FACEBOOK_BUILD_OUT_DIR: distDirectory,
         VITE_FACEBOOK_AGE_CATEGORY: "13_plus",
+        VITE_FACEBOOK_MESSENGER_BOT_ENABLED: "true",
+        VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED: "false",
         VITE_NOTIFICATION_SERVICE_URL: "",
       },
       stdio: "inherit",
@@ -559,6 +562,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           },
         };
       });
+      await installExpandedOptionalApis(successPage);
       /** Current multiplayer journey crosses the authenticated Facebook live transport. */
       const verifyMultiplayer = await installLiveMultiplayerJourney(successPage, "Facebook");
       /** This variant proves context surfaces operate without an advertised or callable native matcher. */
@@ -701,6 +705,21 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator(".game-bottom-navigation button").first().click();
       const settings = successPage.locator(".modal-settings");
       await settings.waitFor();
+      const messenger = settings.getByRole("button", {name: "Actualités du jeu sur Messenger", exact: true});
+      await messenger.waitFor();
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("bot:status:false"))).toBe(true);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("bot:subscribe"))).toBe(false);
+      const notificationsBeforeBot = await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"));
+      const masterNotificationBeforeBot = await settings.getByRole("button", {name: /^Notifications\b/}).getAttribute("aria-pressed");
+      expect(notificationPreferences).toEqual([]);
+      await successPage.screenshot({path: path.join(evidenceDirectory, "settings-messenger-eligible-mobile.png")});
+      await messenger.evaluate((button: HTMLElement) => {button.click(); button.click();});
+      await messenger.waitFor({state: "detached"});
+      expect(await successPage.evaluate(() => window.__facebookEvents.filter(event => event === "bot:subscribe"))).toHaveLength(1);
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("bot:status:true"))).toBe(true);
+      expect(await successPage.evaluate(() => localStorage.getItem("riddleQuest:notificationsEnabled"))).toBe(notificationsBeforeBot);
+      expect(await settings.getByRole("button", {name: /^Notifications\b/}).getAttribute("aria-pressed")).toBe(masterNotificationBeforeBot);
+      expect(notificationPreferences).toEqual([]);
       const haptics = settings.getByRole("button", {name: /^Vibrations?\b/});
       expect(await haptics.getAttribute("aria-pressed")).toBe("false");
       await haptics.click();
@@ -875,6 +894,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         }
         await verifyTournamentLiveResult(successPage, tournaments);
       }
+      await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
     } finally {
       await browser.close();
       try {

@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Bắt đầu giải đấu trong nhóm này",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Chọn nhóm và bắt đầu",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Khi bắt đầu, bảng xếp hạng và điểm cuộc đua của bạn sẽ được đăng vào cuộc trò chuyện nhóm.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Giải đấu có thể đã bắt đầu. Hãy kiểm tra cuộc trò chuyện nhóm trước khi thử lại.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Giải đấu nhóm này dùng cài đặt cuộc đua khác. Không thể cập nhật điểm của bạn tại đây.",
     "TITLE": "Đua đến 10",
     "CLOSE": "Đóng cuộc đua",
     "QUIT_TITLE": "Thoát cuộc đua này?",

@@ -9,5 +9,7 @@ interface ImportMetaEnv {
   readonly VITE_FACEBOOK_REWARDED_PLACEMENT_ID?: string;
   readonly VITE_FACEBOOK_BANNER_PLACEMENT_ID?: string;
   readonly VITE_FACEBOOK_BANNER_ENABLED?: string;
+  readonly VITE_FACEBOOK_MESSENGER_BOT_ENABLED?: string;
+  readonly VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED?: string;
   readonly VITE_YAHOO_OAUTH_START_URL?: string;
 }

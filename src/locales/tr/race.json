@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Bu grupta turnuva başlat",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Bir grup seç ve başlat",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Başlatıldığında liderlik tablosu ve yarış puanın grup sohbetinde paylaşılır.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Turnuva başlamış olabilir. Tekrar denemeden önce grup sohbetini kontrol et.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Bu grup turnuvası farklı yarış ayarları kullanıyor. Puanın burada güncellenemez.",
     "TITLE": "10’a Yarış",
     "CLOSE": "Yarışı kapat",
     "QUIT_TITLE": "Bu yarıştan çıkılsın mı?",

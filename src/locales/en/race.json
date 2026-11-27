@@ -1,5 +1,10 @@
 {
   "RaceTo10": {
+    "FACEBOOK_START_GROUP_TOURNAMENT": "Start tournament in this group",
+    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Choose a group and start",
+    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Starting posts a leaderboard and your race score to the group chat.",
+    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "The tournament may have started. Check the group chat before trying again.",
+    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "This group tournament uses different race settings. Your score cannot be updated here.",
     "TITLE": "Race to 10",
     "CLOSE": "Close Race to 10",
     "QUIT_TITLE": "Quit this race?",
