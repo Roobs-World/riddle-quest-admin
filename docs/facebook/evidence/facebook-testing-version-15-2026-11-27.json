@@ -1,0 +1,56 @@
+{
+  "recordedAt": "2026-11-27T14:47:31.747983+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "66de0e9da202b5889da5bbf1dd54a98b03bb6bc0",
+  "archiveSha256": "5803b051ff965b97b7ea1e8669d816172983a7c7a1ae8ab8a44ba9a630cbf824",
+  "archiveBytes": 2865675,
+  "version": 15,
+  "bundleId": "30470981679157112",
+  "status": "Testing",
+  "processingComplete": true,
+  "providerDownloadSha256": "5803b051ff965b97b7ea1e8669d816172983a7c7a1ae8ab8a44ba9a630cbf824",
+  "sdk": "8.0 [Network Enabled Zero Permissions]",
+  "productionUnchanged": {
+    "version": 9,
+    "bundleId": "29168977262783270"
+  },
+  "evidence": "Authenticated Meta Web Hosting row, Testing confirmation and independent provider download hash and byte count match.",
+  "archiveEntries": 422,
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "bannerSetup": {
+    "propertyId": "957348766757902",
+    "adSpaceId": "1831460568074149",
+    "placementId": "1748953042991569_1831460981407441",
+    "placementName": "Riddle Quest Menu Banner",
+    "format": "Banner",
+    "placementStatus": "Ready to publish",
+    "clientFlagEnabled": true,
+    "artifactFlagAndIdVerified": true,
+    "nativeImpressionVerified": false
+  },
+  "hostedSmoke": {
+    "startup": "Passed after slow initial startup and dismissing the Riddle Quest welcome: restored coconut puzzle with 920 coins.",
+    "settings": "Opened normally, but no banner layout or recovery overlay was instantiated and no native banner appeared.",
+    "fallback": "Closing Settings restored enabled Settings, Multiplayer and first answer cell; balance remained 920.",
+    "diagnosticLimits": "No direct SDK support list or banner request/result trace captured. The exact failed admission prerequisite is not independently established. No native no-fill, banner impression or hide success is claimed.",
+    "externalSideEffects": "Created one dedicated Meta ad space and Banner placement for testing; ordinary game launch, welcome dismissal and Settings open/close. No invitation, message, purchase, account deletion, notification opt-in, production promotion or review submission."
+  },
+  "localVerification": {
+    "focusedTests": 20,
+    "focusedSuites": 2,
+    "focusedSeconds": 0.257,
+    "browserSuites": 1,
+    "browserIntegratedTests": 1,
+    "browserSeconds": 33.923,
+    "artifactFiles": 420,
+    "artifactMiB": 4.51,
+    "initialMiB": 0.71,
+    "canonicalPreflight": "passed",
+    "qwordlyArchiveMatches": 0
+  },
+  "limitations": "Local external-boundary fixtures prove banner layout, native-dialog serialization, gameplay hiding and no-fill recovery. The desktop host did not instantiate the banner adapter. Real banner display/hide acceptance, mobile, two-account co-play, approvals and the remaining submission gates remain open."
+}
