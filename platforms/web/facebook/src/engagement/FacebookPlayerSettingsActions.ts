@@ -76,6 +76,7 @@ export function createFacebookPlayerSettingsActions({
   if (nativeActions.length === 0) return undefined;
 
   let retired = false;
+  const eligibilityLifetime = new AbortController();
   let revision = 0;
   const current = () => !retired && isActive();
   const report = (action: FacebookPlayerSettingsAction, error: unknown) => {
@@ -93,7 +94,28 @@ export function createFacebookPlayerSettingsActions({
     listeners.forEach(listener => listener());
   };
   const eligible = async (action: NativeAction, signal?: AbortSignal): Promise<boolean> => {
-    try {return current() && !unsupported.has(action.id) && (!action.canRun || await action.canRun(signal) === true) && current();} catch {return false;}
+    if (!current() || signal?.aborted || unsupported.has(action.id)) return false;
+    const canRun = action.canRun;
+    if (!canRun) return true;
+    return new Promise<boolean>(resolve => {
+      let settled = false;
+      const deadline = Date.now() + 8_000;
+      let timeout: ReturnType<typeof setTimeout>;
+      const settle = (value: boolean) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timeout);
+        signal?.removeEventListener("abort", cancel);
+        eligibilityLifetime.signal.removeEventListener("abort", cancel);
+        resolve(value && Date.now() < deadline && current() && !signal?.aborted);
+      };
+      const cancel = () => settle(false);
+      timeout = setTimeout(cancel, 8_000);
+      signal?.addEventListener("abort", cancel, {once: true});
+      eligibilityLifetime.signal.addEventListener("abort", cancel, {once: true});
+      if (signal?.aborted || eligibilityLifetime.signal.aborted) {cancel(); return;}
+      try {Promise.resolve(canRun(signal)).then(value => settle(value === true), cancel);} catch {cancel();}
+    });
   };
 
   return {
@@ -162,6 +184,7 @@ export function createFacebookPlayerSettingsActions({
     },
     retire: () => {
       retired = true;
+      eligibilityLifetime.abort();
       botConsent?.retire();
       ++revision;
       snapshot = {actions: [], pendingAction: null};

@@ -172,7 +172,7 @@ export function FacebookPlatformEntry() {
     let active = true;
     let nativeSessionIsActive = () => active && deletionGateRef.current.isOpen();
     const removeBrowserStateGuard = installBrowserPlayerStateMutationGuard(
-      () => active && deletionGateRef.current.isOpen(),
+      () => nativeSessionIsActive(),
     );
     /** Disconnects native analytics when this authenticated session retires. */
     let stopAnalytics: (() => void) | undefined;
@@ -209,7 +209,7 @@ export function FacebookPlatformEntry() {
         const bootstrap = new FacebookPlatformBootstrap(undefined, configuredAudience, () => nativeSessionIsActive());
         /** Provides result behavior. */
         const result = await bootstrap.initialize((progress) => {
-          if (active) setStartup({status: "loading", progress});
+          if (nativeSessionIsActive()) setStartup({status: "loading", progress});
         });
         if (result.status !== "success") {
           throw new Error(result.status === "cancelled" ? "facebook-startup-cancelled" : result.message);
@@ -224,8 +224,8 @@ export function FacebookPlatformEntry() {
         const {auth} = await import("../../../../src/platform/firebase/browserClient");
         const accountOwner = auth.currentUser;
         if (!accountOwner || accountOwner.uid !== userId) throw new Error("facebook-authentication-owner-changed");
-        const isAdSessionActive = () => active && deletionGateRef.current.isOpen() && auth.currentUser === accountOwner;
-        nativeSessionIsActive = isAdSessionActive;
+        const isAccountSessionActive = () => active && deletionGateRef.current.isOpen() && auth.currentUser === accountOwner;
+        nativeSessionIsActive = isAccountSessionActive;
         /** Provides ads behavior. */
         let ads = undefined;
         /** Latest verified ad-removal entitlement passed to the ad adapter. */
@@ -272,6 +272,7 @@ export function FacebookPlatformEntry() {
           } = await import("./firebaseClient");
           /** Provides client configuration behavior. */
           const clientConfiguration = (await getFacebookClientConfiguration()).data;
+          if (!isAccountSessionActive()) return;
           configurationLoaded = true;
           removeInterstitialAds = clientConfiguration.removeInterstitialAds;
           if (ageCategory === "13_plus" && clientConfiguration.commerceEnabled && facebookPaymentsAvailable(sdk)) {
@@ -279,18 +280,20 @@ export function FacebookPlatformEntry() {
             const commerce = new FacebookCommerceSession({
               sdk,
               payments: sdk.payments,
-              isActive: () => active && deletionGateRef.current.isOpen(),
+              isActive: isAccountSessionActive,
               runBackground: operation => deletionGateRef.current.run(operation),
               grant: async input => (await grantFacebookPurchase(input)).data,
               readConfiguration: async () => (await getFacebookClientConfiguration()).data,
               onProducts: products => {
-                if (active && deletionGateRef.current.isOpen()) {
+                if (isAccountSessionActive()) {
                   setCommercePresentation({products, purchase: commerce.requestPurchase});
                 }
               },
-              onEntitlement: value => {removeInterstitialAds = value;},
-              reportFailure: error => captureBrowserException(error, {component: "facebook_commerce", operation: "recovery"}),
-              refreshProfile: () => hostServices.loadProfile(userId),
+              onEntitlement: value => {if (isAccountSessionActive()) removeInterstitialAds = value;},
+              reportFailure: error => {
+                if (isAccountSessionActive()) captureBrowserException(error, {component: "facebook_commerce", operation: "recovery"});
+              },
+              refreshProfile: () => isAccountSessionActive() ? hostServices.loadProfile(userId) : Promise.resolve(null),
             });
             commerceSession = commerce;
             commerce.start();
@@ -299,10 +302,12 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && clientConfiguration.notificationsEnabled) {
             try {
               const {createFacebookCampaignNotifications} = await import("./FacebookCampaignNotifications");
-              const notifications = await createFacebookCampaignNotifications(userId, deletionGateRef.current, () => active);
+              const notifications = await createFacebookCampaignNotifications(userId, deletionGateRef.current, isAccountSessionActive);
+              if (!isAccountSessionActive()) return;
               notificationProvider = createNotificationProvider({platform: "facebook", hosted: () => notifications}) ?? undefined;
               sessionNotifications = notificationProvider;
             } catch (error) {
+              if (!isAccountSessionActive()) return;
               captureBrowserException(error, {component: "facebook_notifications", operation: "initialize_preference"});
             }
           }
@@ -312,7 +317,7 @@ export function FacebookPlatformEntry() {
           if (matchmakingEnabled) {
             contextBoardApi = {list: listFacebookContextBoard, record: recordFacebookContextRun};
           }
-          if (!isAdSessionActive()) return;
+          if (!isAccountSessionActive()) return;
           if (
             ageCategory === "13_plus" &&
             (sdk.getSupportedAPIs().includes("getInterstitialAdAsync") ||
@@ -324,19 +329,19 @@ export function FacebookPlatformEntry() {
               uid: accountOwner.uid,
               getIdToken: () => accountOwner.getIdToken(),
               getAppCheckToken: async () => (await import("./FacebookFirebaseAppCheck")).getFacebookAppCheckToken(),
-              isActive: isAdSessionActive,
+              isActive: isAccountSessionActive,
             });
             subscriptionEntitlement = entitlement;
             subscriptionEntitlementRef.current = entitlement;
             const adConfiguration = createFacebookAdConfiguration({
               initial: clientConfiguration,
-              isActive: isAdSessionActive,
+              isActive: isAccountSessionActive,
               read: async () => {
                 const [configuration, hasActiveSubscription] = await Promise.all([
                   getFacebookClientConfiguration().then(result => result.data),
                   entitlement.read(),
                 ]);
-                if (isAdSessionActive()) removeInterstitialAds = configuration.removeInterstitialAds;
+                if (isAccountSessionActive()) removeInterstitialAds = configuration.removeInterstitialAds;
                 return {...configuration, hasActiveSubscription};
               },
               onChange: () => {setAdPolicyVersion(version => version + 1); banner?.refresh();},
@@ -344,7 +349,7 @@ export function FacebookPlatformEntry() {
             });
             unsubscribeAdsResume = session.capabilities.lifecycle?.onResume?.(() => {void adConfiguration.refresh();});
             banner = createFacebookBanner({
-              sdk, isActive: isAdSessionActive,
+              sdk, isActive: isAccountSessionActive,
               enabled: import.meta.env.VITE_FACEBOOK_BANNER_ENABLED === "true",
               placementId: import.meta.env.VITE_FACEBOOK_BANNER_PLACEMENT_ID || "",
               allowsBanner: () => adConfiguration.allows("interstitial"),
@@ -356,7 +361,7 @@ export function FacebookPlatformEntry() {
             bannerRef.current = banner ?? null;
             ads = createFacebookAdsCapability({
               sdk,
-              isActive: isAdSessionActive,
+              isActive: isAccountSessionActive,
               placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: () => adConfiguration.allows("rewarded"),
@@ -366,12 +371,12 @@ export function FacebookPlatformEntry() {
             });
             void adConfiguration.refresh();
             attemptRecovery = createFacebookRewardedContinue({ads,
-              isActive: isAdSessionActive,
+              isActive: isAccountSessionActive,
               claim: input => deletionGateRef.current.run(async () => (await grantFacebookRewardedContinue(input)).data),
             });
             const sessionAds = ads;
             const currentLevelInterstitial = createFacebookLevelInterstitial({
-              isActive: isAdSessionActive,
+              isActive: isAccountSessionActive,
               show: async isCurrent => {
                 const result = await sessionAds?.showInterstitial("result", () => isCurrent() && document.visibilityState === "visible");
                 if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
@@ -394,7 +399,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && clientConfiguration.tournamentsEnabled) {
             /** Native standings remain an optional presentation of the official server board. */
             const presentation = createFacebookTournamentPresentation({sdk, enabled: true, ageCategory,
-              isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+              isActive: isAccountSessionActive, getLocale: getCurrentLocale,
               list: async locale => (await listFacebookTournament({locale})).data,
               reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
             tournaments = {
@@ -415,6 +420,7 @@ export function FacebookPlatformEntry() {
             };
           }
         } catch (configurationError) {
+          if (!isAccountSessionActive()) return;
           captureBrowserException(configurationError, {
             component: "facebook_ads",
             operation: "load_configuration",
@@ -430,7 +436,7 @@ export function FacebookPlatformEntry() {
         /** Outbound referrals use Meta's native dialog and the canonical Facebook token issuer. */
         const referralSharing = createFacebookReferralSharing({
           sdk, enabled: configurationLoaded, referralsEnabled, ageCategory,
-          isActive: isAdSessionActive,
+          isActive: isAccountSessionActive,
           reportFailure: (error) => captureBrowserException(error, {component: "facebook_referral", operation: "native_share"}),
         });
         /** Untrusted entry data can select a destination but cannot supply race results. */
@@ -446,7 +452,7 @@ export function FacebookPlatformEntry() {
           ...storedPreferences,
           ...(typeof account?.notificationsEnabled === "boolean" ? {notificationsEnabled: account.notificationsEnabled} : {}),
         };
-        if (!active) return;
+        if (!isAccountSessionActive()) return;
         /** Provides preferences behavior. */
         const preferences = {...restoredPreferences, ...applyPlayerPreferences(restoredPreferences)};
         preferencesRef.current = preferences;
@@ -469,7 +475,7 @@ export function FacebookPlatformEntry() {
             ? new FacebookContextCoordinator(session.capabilities.nativeSocial, getCurrentLocale)
             : undefined;
         if (contextCoordinator) {
-          unsubscribeContext = contextCoordinator.startObserving(() => active && deletionGateRef.current.isOpen());
+          unsubscribeContext = contextCoordinator.startObserving(isAccountSessionActive);
           /** Provides context result behavior. */
           const contextResult = await contextCoordinator.synchronizeCurrent();
           if (contextResult.status === "retryable-failure") {
@@ -481,7 +487,7 @@ export function FacebookPlatformEntry() {
         }
         if (contextCoordinator && configurationLoaded && ageCategory === "13_plus") {
           nativeSocial = createFacebookNativeSocial({
-            sdk, isActive: isAdSessionActive,
+            sdk, isActive: isAccountSessionActive,
             synchronizeContext: async () => {
               const result = await contextCoordinator.reconcileNativeContext();
               if (result.status === "retryable-failure" || result.status === "terminal-failure") {
@@ -493,7 +499,7 @@ export function FacebookPlatformEntry() {
         }
         if (tournaments && configurationLoaded && ageCategory === "13_plus") {
           sessionScore = createFacebookSessionScore({
-            sdk, isActive: isAdSessionActive, getLocale: getCurrentLocale,
+            sdk, isActive: isAccountSessionActive, getLocale: getCurrentLocale,
             privateTournamentsEnabled: import.meta.env.VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED === "true",
             ...(contextCoordinator ? {onContextChange: (listener: () => void) => contextCoordinator.onContextChange(listener)} : {}),
             canPresent: () => document.visibilityState === "visible" && settingsActions?.getSnapshot().pendingAction !== "quit",
@@ -523,7 +529,7 @@ export function FacebookPlatformEntry() {
           baseCapabilities.matchmaking = createFacebookContextMatchmaking(baseCapabilities.matchmaking, contextCoordinator, getCurrentLocale);
         /** Native friend invitations remain independent of referral reward configuration. */
         const shareChallenge = createFacebookLiveRaceSharing({sdk, enabled: matchmakingEnabled, ageCategory,
-          isActive: () => active && deletionGateRef.current.isOpen(),
+          isActive: isAccountSessionActive,
           reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "native_invite"})});
         if (baseCapabilities.matchmaking?.live && shareChallenge) {
           baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
@@ -534,7 +540,7 @@ export function FacebookPlatformEntry() {
           const chooseChallenge = createFacebookContextChallenges({sdk, coordinator: contextCoordinator,
             live: baseCapabilities.matchmaking.live, join: originalLiveJoin,
             template: import.meta.env.VITE_FACEBOOK_CONTEXT_CHALLENGE_TEMPLATE, enabled: matchmakingEnabled, ageCategory,
-            isActive: () => active && deletionGateRef.current.isOpen(), getLocale: getCurrentLocale,
+            isActive: isAccountSessionActive, getLocale: getCurrentLocale,
             reportFailure: error => captureBrowserException(error, {component: "facebook_multiplayer", operation: "context_invite"})});
           if (chooseChallenge) baseCapabilities.matchmaking = {...baseCapabilities.matchmaking,
             live: {...baseCapabilities.matchmaking.live, chooseChallenge}};
@@ -563,7 +569,7 @@ export function FacebookPlatformEntry() {
                 ...(tournaments ? {tournaments} : {}),
               },
             };
-        if (!active) return;
+        if (!isAccountSessionActive()) return;
         setPresenceAvailable(presenceCapabilityEnabled);
         setPresenceEnabled(presenceCapabilityEnabled && preferences.presenceEnabled === true);
         if (presenceCapabilityEnabled) {
@@ -603,7 +609,7 @@ export function FacebookPlatformEntry() {
         }
         /** Provides player data behavior. */
         const playerData = await session.storage.readPlayerData();
-        if (!active) return;
+        if (!isAccountSessionActive()) return;
         /** Pause drains the checkpoint owner belonging to this provider session. */
         const playerPersistence = new PlayerProjectionPersistence(
           session.storage,
@@ -613,14 +619,14 @@ export function FacebookPlatformEntry() {
         );
         playerPersistenceRef.current = playerPersistence;
         if (configurationLoaded && ageCategory === "13_plus") {
-          haptics = createFacebookHaptics({sdk, isActive: isAdSessionActive, lifecycle: session.capabilities.lifecycle});
+          haptics = createFacebookHaptics({sdk, isActive: isAccountSessionActive, lifecycle: session.capabilities.lifecycle});
           hapticsRef.current = haptics ?? null;
-          hostEnvironment = createFacebookHostEnvironment({sdk, isActive: isAdSessionActive});
+          hostEnvironment = createFacebookHostEnvironment({sdk, isActive: isAccountSessionActive});
           hostEnvironmentRef.current = hostEnvironment;
           hostEnvironment.setActivity("online");
           settingsActions = createFacebookPlayerSettingsActions({
             sdk,
-            isActive: isAdSessionActive,
+            isActive: isAccountSessionActive,
             messengerBotEnabled: Boolean(notificationProvider) && import.meta.env.VITE_FACEBOOK_MESSENGER_BOT_ENABLED === "true",
             flushBeforeQuit: async () => {
               await playerPersistence.flush();
@@ -643,15 +649,15 @@ export function FacebookPlatformEntry() {
               }),
           }),
         );
-        if (active) {
+        if (isAccountSessionActive()) {
           if (ageCategory === "13_plus" && configurationLoaded) {
-            stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
+            stopAnalytics = installFacebookAnalytics(sdk, isAccountSessionActive);
           }
           setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, haptics, nativeSocial, banner, sessionScore, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
-        if (active) setStartup({status: "error"});
+        if (nativeSessionIsActive()) setStartup({status: "error"});
       }
     })();
     return () => {

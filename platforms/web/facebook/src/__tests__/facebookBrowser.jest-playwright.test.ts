@@ -11,6 +11,7 @@ import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
 import {withProtectedFacebookFixtures} from "./protectedFixtures.jest-playwright.support.ts";
 import {installExpandedOptionalApis, verifyGenericProfileOverlay} from "./expandedOptionalApis.jest-playwright.support.ts";
+import {verifyCommerceOwnership} from "./commerceOwnership.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -932,6 +933,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await verifyTournamentLiveResult(successPage, tournaments);
       }
       await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
+      await verifyCommerceOwnership(successPage, origin);
     } finally {
       await browser.close();
       try {

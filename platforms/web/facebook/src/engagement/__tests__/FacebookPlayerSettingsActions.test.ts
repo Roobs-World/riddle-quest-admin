@@ -104,6 +104,244 @@ describe("Facebook player Settings actions", () => {
     expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
   });
 
+  it("releases native action admission when Settings closes during an unsettled eligibility check", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<boolean>();
+    const started = deferred<void>();
+    setup.canFollowOfficialPageAsync.mockImplementationOnce(() => {started.resolve(); return eligibility.promise;});
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await started.promise;
+      panel.abort();
+      await jest.advanceTimersByTimeAsync(0);
+      const next = await runFacebookSdkDialog(setup.sdk, async () => {
+        await setup.joinOfficialGroupAsync();
+        return {status: "success", value: undefined};
+      });
+      expect({outcome, pendingAction: actions.getSnapshot().pendingAction,
+        nextStatus: next.status, nextNativeOpened: setup.joinOfficialGroupAsync.mock.calls.length > 0}).toEqual({
+        outcome: "cancelled", pendingAction: null, nextStatus: "success", nextNativeOpened: true,
+      });
+    } finally {
+      eligibility.resolve(true);
+      await pending;
+      jest.useRealTimers();
+    }
+    expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+    expect(actions.getSnapshot().actions).toContainEqual({id: "follow-community", labelKey: "Settings.FOLLOW_COMMUNITY_BUTTON"});
+  });
+
+  it("bounds a stalled eligibility check and allows a fresh retry without a late prompt", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<boolean>();
+    const started = deferred<void>();
+    setup.canFollowOfficialPageAsync.mockImplementationOnce(() => {started.resolve(); return eligibility.promise;});
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community").then(result => {outcome = result; return result;});
+    try {
+      await started.promise;
+      await jest.advanceTimersByTimeAsync(7_999);
+      expect(outcome).toBe("pending");
+      await jest.advanceTimersByTimeAsync(1);
+      expect({outcome, pendingAction: actions.getSnapshot().pendingAction}).toEqual({outcome: "unavailable", pendingAction: null});
+      await expect(runFacebookSdkDialog(setup.sdk, async () => ({status: "success", value: undefined}))).resolves.toEqual({status: "success", value: undefined});
+      eligibility.resolve(true);
+      await pending;
+      expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+      await actions.refresh();
+      await expect(actions.run("follow-community")).resolves.toBe("success");
+      expect(setup.followOfficialPageAsync).toHaveBeenCalledTimes(1);
+    } finally {
+      eligibility.resolve(true);
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it("retires unsettled shortcut preparation without consuming the replacement account's prompt", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<boolean>();
+    const started = deferred<void>();
+    setup.canCreateShortcutAsync.mockImplementationOnce(() => {started.resolve(); return eligibility.promise;});
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("create-shortcut").then(result => {outcome = result; return result;});
+    try {
+      await started.promise;
+      actions.retire();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(outcome).toBe("cancelled");
+      expect(actions.getSnapshot()).toEqual({actions: [], pendingAction: null});
+      const replacement = requireActions(setup.options);
+      await replacement.refresh();
+      await expect(replacement.run("create-shortcut")).resolves.toBe("success");
+      eligibility.resolve(true);
+      await pending;
+      expect(setup.createShortcutAsync).toHaveBeenCalledTimes(1);
+    } finally {
+      eligibility.resolve(true);
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it("ignores a late eligibility rejection after cancellation and keeps the action retryable", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<void>();
+    const started = deferred<void>();
+    setup.canFollowOfficialPageAsync.mockImplementationOnce(() => {
+      started.resolve();
+      return eligibility.promise.then(() => {throw new Error("Late provider eligibility failure");});
+    });
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await started.promise;
+      panel.abort();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(outcome).toBe("cancelled");
+      eligibility.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+      expect(setup.reportFailure).not.toHaveBeenCalled();
+      await expect(actions.run("follow-community")).resolves.toBe("success");
+      expect(setup.followOfficialPageAsync).toHaveBeenCalledTimes(1);
+    } finally {
+      eligibility.resolve();
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it.each(["panel closes", "account retires"])("keeps an admitted native prompt exclusive when %s beyond the eligibility deadline", async reason => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const opened = deferred<void>();
+    const dismissed = deferred<void>();
+    setup.followOfficialPageAsync.mockImplementationOnce(() => {opened.resolve(); return dismissed.promise;});
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await opened.promise;
+      if (reason === "panel closes") panel.abort();
+      else actions.retire();
+      await jest.advanceTimersByTimeAsync(60_000);
+      expect(outcome).toBe("pending");
+      const blocked = await runFacebookSdkDialog(setup.sdk, async () => {
+        await setup.joinOfficialGroupAsync();
+        return {status: "success", value: undefined};
+      });
+      expect(blocked.status).toBe("unavailable");
+      expect(setup.joinOfficialGroupAsync).not.toHaveBeenCalled();
+      dismissed.resolve();
+      await expect(pending).resolves.toBe("cancelled");
+      await expect(runFacebookSdkDialog(setup.sdk, async () => ({status: "success", value: undefined}))).resolves.toEqual({status: "success", value: undefined});
+    } finally {
+      dismissed.resolve();
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it("bounds initial eligibility probes without losing healthy actions or later recovery", async () => {
+    const setup = fixture();
+    const eligibility = deferred<boolean>();
+    setup.canFollowOfficialPageAsync.mockReturnValueOnce(eligibility.promise);
+    const actions = requireActions(setup.options);
+    let refreshed = false;
+    jest.useFakeTimers();
+    const pending = actions.refresh().then(() => {refreshed = true;});
+    try {
+      await jest.advanceTimersByTimeAsync(8_000);
+      expect(refreshed).toBe(true);
+      expect(actions.getSnapshot().actions.map(action => action.id)).toEqual(["create-shortcut", "join-community", "quit"]);
+      eligibility.resolve(true);
+      await pending;
+      expect(actions.getSnapshot().actions.map(action => action.id)).toEqual(["create-shortcut", "join-community", "quit"]);
+      await actions.refresh();
+      expect(actions.getSnapshot().actions.map(action => action.id)).toEqual(["create-shortcut", "follow-community", "join-community", "quit"]);
+      expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+    } finally {
+      eligibility.resolve(true);
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it("rejects late eligibility even when a throttled timer has not run", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<boolean>();
+    const started = deferred<void>();
+    setup.canFollowOfficialPageAsync.mockImplementationOnce(() => {started.resolve(); return eligibility.promise;});
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community");
+    try {
+      await started.promise;
+      jest.setSystemTime(Date.now() + 8_001);
+      eligibility.resolve(true);
+      await expect(pending).resolves.toBe("unavailable");
+      expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      eligibility.resolve(true);
+      await pending;
+      jest.useRealTimers();
+    }
+  });
+
+  it("waits for native surface cleanup before releasing a cancelled action's dialog ownership", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const hiding = deferred<void>();
+    const hidden = deferred<void>();
+    const stop = registerFacebookSdkDialogGuard(setup.sdk, {
+      beforeOpen: () => {hiding.resolve(); return hidden.promise;}, afterClose: () => undefined,
+    });
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const pending = actions.run("follow-community", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await hiding.promise;
+      panel.abort();
+      await jest.advanceTimersByTimeAsync(60_000);
+      expect(outcome).toBe("pending");
+      expect(setup.canFollowOfficialPageAsync).toHaveBeenCalledTimes(1);
+      const blocked = await runFacebookSdkDialog(setup.sdk, async () => ({status: "success", value: undefined}));
+      expect(blocked.status).toBe("unavailable");
+      hidden.resolve();
+      await expect(pending).resolves.toBe("cancelled");
+      expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+    } finally {
+      hidden.resolve();
+      await pending;
+      stop();
+      jest.useRealTimers();
+    }
+    await expect(runFacebookSdkDialog(setup.sdk, async () => ({status: "success", value: undefined}))).resolves.toEqual({status: "success", value: undefined});
+  });
+
   it("requires independently advertised and callable APIs before probing or displaying actions", async () => {
     const unsupported = fixture([]);
     expect(createFacebookPlayerSettingsActions(unsupported.options)).toBeUndefined();
