@@ -1,21 +1,34 @@
-# Review Riddle Quest Testing version 12
+# Review Riddle Quest Testing version 13
 
-This handoff is for developer-role testing of Riddle Quest on 27 November 2026. Version 12 is in **Testing**. Review completeness remains unproven. No review submission, Production promotion, or publication is recorded for this candidate.
+This handoff is for developer-role testing of Riddle Quest on 27 November 2026. Version 13 is in **Testing**. Review completeness remains unproven. No review submission, Production promotion, or publication is recorded for this candidate.
 
 Use the [API submission checklist](facebook-api-submission-checklist-2026-11-27.md) as the authoritative record of coverage, prerequisites, and acceptance journeys. The [September handoff](facebook-review-draft-2026-09-19.md) is historical and does not describe this candidate's current configuration.
 
 ## Select the exact candidate
 
 1. Open Meta's Web Hosting page for Riddle Quest, app `1748953042991569`, with an authorized developer-role account.
-2. Confirm that the Testing row is version **12**, bundle `29781063778191740`, with processing complete.
+2. Confirm that the Testing row is version **13**, bundle `29536858815945546`, with processing complete.
 3. Confirm that its SDK selector is **8.0 [Network Enabled Zero Permissions]**.
 4. Launch that Testing candidate. Do not select Production as a substitute.
 
-The uploaded source is `8e3b7d2ef942ea387e7370c23ff4f1c1448fa108` on `facebook`. The archive SHA-256 is `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`, with 2,864,259 bytes, 422 ZIP entries, and 420 runtime files. Meta's downloaded archive matched the recorded hash and byte count. See the [exact version 12 acceptance record](evidence/facebook-testing-version-12-2026-11-27.json).
+The uploaded source is `738d32a5b2628397d6ba365698d8c9abbd821358` on `facebook`. The archive SHA-256 is `4f0f61b92bc08c9170bc6c4ec5dae0982cfc57e525511158b8969fba8e96c1cf`, with 2,865,505 bytes, 422 ZIP entries, and 420 runtime files. The archive was uploaded once, finished processing as Standby, and was explicitly assigned to Testing. Meta's downloaded archive matched the recorded hash and byte count, and the local acceptance receipt was recorded. See the [exact version 13 acceptance record](evidence/facebook-testing-version-13-2026-11-27.json).
 
 Production remains version 9, bundle `29168977262783270`. The permission-specific query reports BASIC standard access for developer-role testing, with advanced access absent. This does not establish public availability or product-review approval. See the [role-access follow-up](evidence/facebook-role-access-followup-2026-11-27.json).
 
-## Reproduce the recorded desktop checks
+## Reproduce the version 13 desktop check
+
+1. Launch the exact Testing candidate and allow startup to finish. The recorded desktop launch was slow but restored the Classic coconut puzzle with 920 coins. Select **Let's Play** if the welcome dialog appears.
+2. Reach an eligible Classic loss state. The recorded check used five incorrect seven-letter guesses without spending coins.
+3. Select **Watch an ad for another attempt**. Allow the real native video to reach completion. In the recorded check its progress reached 100; the completed end card's X control was labelled **Skip ad**.
+4. Close the completed end card. Confirm that the loss dialog disappears, seven answer cells become editable, **Multiplayer** is enabled and the balance remains 920 coins. The continuation did not award coins.
+
+This was a real developer-role desktop session without SDK replacement, network fixtures or runtime patches. The [native version 13 evidence](evidence/facebook-native-subscription-version-13-2026-11-27.md) records the observed outcome. The reviewed code requires fresh subscription eligibility before acquisition and display, so the successful native video implies those gates succeeded for this nonsubscriber. A direct nested-frame GET/status/header trace was not captured. No live subscriber account or subscription-field mutation was tested; do not describe this observation as native subscriber acceptance.
+
+Version 13 adds the [client subscription ad gate](facebook-ad-eligibility.md) to compensate for the legacy configuration endpoint's omission. The correction passed 122 focused tests across seven suites, shared TypeScript checking, the integrated injected-SDK browser journey in 30.907 seconds, and `pnpm preflight:facebook-upload`. The artifact audit covered 420 files, 4.51 MB total and 0.71 MB initial resources, with no Jest gaming-platform SDK, native modules or credential leakage. Controlled subscriber fixtures proved suppression, retry recovery and a subscription change during held native loading; those local results are separate from the nonsubscriber host check. See the [local correction evidence](evidence/facebook-subscription-ad-gate-2026-11-27.md). Firebase backend source, configuration and provider server modules were not changed or deployed.
+
+## Retained version 12 desktop regression checks
+
+The following observations are historical **H12** evidence for source `8e3b7d2ef942ea387e7370c23ff4f1c1448fa108`, bundle `29781063778191740`, archive SHA-256 `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`. They are useful regression procedures for version 13, but have not all been repeated on it. See the [version 12 acceptance record](evidence/facebook-testing-version-12-2026-11-27.json).
 
 1. Allow Facebook startup and account restoration to finish. The recorded session restored the account's saved Classic loss state without a separate game password.
 2. In an eligible Classic loss state, select the rewarded-video action for another attempt. Allow the native video to finish, then close its completed end card.
@@ -33,21 +46,21 @@ Production remains version 9, bundle `29168977262783270`. The permission-specifi
 14. Open **Race to 10**, then **Play on Facebook**. The recorded session showed **Friends who play** as 0 and an empty **Facebook tournaments** list. **Choose friends** returned **Service temporarily unavailable** and disappeared; **Refresh** did not restore it. No raw SDK error code was captured, so this establishes failure and action retirement only.
 15. Use the separate **Play with friends** action. Close its native context chooser without selecting anyone. The recorded cancellation restored enabled **Play with friends** and **Start PvP** controls. Closing the lobby returned to gameplay with **Multiplayer** enabled.
 
-These observations used the real desktop Meta host without SDK replacement or native-result fixtures. They establish the specific startup, save, ad, display, legal-link, and social outcomes recorded above. They do not establish every failure path, entitlement rule, session cap, or mobile-host behavior. Empty counts and listings do not establish matches with other players, tournament joining, or Rooms.
+These version 12 observations used the real desktop Meta host without SDK replacement or native-result fixtures. They establish the specific startup, save, ad, display, legal-link, and social outcomes recorded above. They do not establish every failure path, entitlement rule, session cap, or mobile-host behavior. Empty counts and listings do not establish matches with other players, tournament joining, or Rooms.
 
 The earlier native follow-up ended with 885 coins after normal gameplay. One subsequent Classic win awarded its ordinary 35 coins, bringing the balance to 920. Sharing and context cancellation added no rewards. See the [initial client review](evidence/facebook-client-review-2026-11-27.md), [first native follow-up](evidence/facebook-native-followup-version-12-2026-11-27.md), and [host and social follow-up](evidence/facebook-host-social-followup-version-12-2026-11-27.md).
 
-The candidate also passed 136 focused tests across nine suites, shared typecheck, the combined local browser journey, and `pnpm preflight:facebook-upload`. The artifact audit found no Jest gaming-platform SDK, native modules, or credential leakage. Jest unit-test tooling is unrelated to the gaming-platform SDK. Local fixture results do not establish native host support.
+The version 12 candidate also passed 136 focused tests across nine suites, shared typecheck, the combined local browser journey, and `pnpm preflight:facebook-upload`. The artifact audit found no Jest gaming-platform SDK, native modules, or credential leakage. Jest unit-test tooling is unrelated to the gaming-platform SDK. Local fixture results do not establish native host support.
 
 ## Continue the outstanding reviewer journeys
 
-Record each result against version 12, the actual host, and the account's eligibility. Keep unsupported, cancelled, failed, and completed results separate. Use the checklist's full J01–J14 procedures for failure paths and account retirement.
+Record each new result against version 13, the actual host, and the account's eligibility. Keep unsupported, cancelled, failed, and completed results separate. Use the checklist's full J01–J14 procedures for failure paths and account retirement.
 
 1. Check save failure, interrupted reward delivery, and duplicate-reward prevention. The accepted preference save-and-quit check does not establish these failure paths.
 2. Verify follow-page and join-group eligibility and cancellation independently. Successful shortcut creation remains separate from the recorded cancellation.
 3. With consenting testers on eligible hosts, complete context creation, matchmaking, and the authorized recipient side of social journeys. Counts are not an online-player directory. The recorded **Choose friends** failure and separate **Play with friends** cancellation do not establish successful context membership or co-play.
-4. With consenting testers and an eligible tournament, join from the native list. Confirm that the game opens the matching official board only after validating the fresh native tournament data. Tournament routing and cancellation passed locally; native version 12 acceptance remains open.
-5. Check ad failure and cancellation paths, authoritative subscription suppression, durable interstitial removal, cooldowns, and session caps on eligible hosts. One completed rewarded video and one interstitial do not establish these cases.
+4. With consenting testers and an eligible tournament, join from the native list. Confirm that the game opens the matching official board only after validating the fresh native tournament data. Tournament routing and cancellation passed locally; native version 13 acceptance remains open.
+5. Check ad failure and cancellation paths, authoritative subscription suppression, durable interstitial removal, cooldowns, and session caps on eligible hosts. The completed version 13 rewarded video and historical version 12 interstitial do not establish these cases.
 6. Repeat applicable journeys on a supported native mobile host. Check pause and resume, dialogs, available profile overlays, and optional haptics or session-score actions. A resized desktop browser is not mobile-host evidence.
 7. Use separate authorized accounts to check save isolation, retired operations, and account cleanup. Verify the server-owned outcomes separately. No account-deletion or purchase-recovery acceptance is claimed here.
 
@@ -88,6 +101,6 @@ The connector reports App Review as UNSUBMITTED while its requirements report a 
 
 [Read-only deployment metadata](evidence/facebook-deployed-authority-2026-11-27.md) confirms 32 selected functions are active on `nodejs22`, with latest-revision traffic and the Riddle Quest Facebook app binding. No function was invoked or Firebase setting changed. This does not establish source-commit correspondence, every shared endpoint, account entitlements, signed receipts, idempotency, callback delivery, or notification dispatch. Full backend acceptance remains open.
 
-The subsequent [deployed source comparison](evidence/facebook-deployed-source-comparison-2026-11-27.md) found that all three downloaded representatives differ from the protected baseline. The active configuration source lacks subscription-based ad suppression, and version 12 relies on its returned ad booleans. No live subscriber harm was observed; durable interstitial removal remains present. Treat subscription suppression as an acceptance blocker. The preserved Firebase backend has not been repaired or redeployed.
+The subsequent [deployed source comparison](evidence/facebook-deployed-source-comparison-2026-11-27.md) found that all three downloaded representatives differ from the protected baseline. The active configuration source lacks subscription-based ad suppression, and version 12 relied on its returned ad booleans. Version 13 independently reads the authenticated account's existing server-owned subscription field and combines it with those configuration flags. Local subscriber tests and the native nonsubscriber rewarded path passed; live subscriber acceptance remains open. No live subscriber harm was observed, and durable interstitial removal remains present. This is a client correction: the preserved Firebase backend has not been repaired or redeployed.
 
 Before submission, complete the applicable native journeys, verify deployed server behavior without changing the preserved Firebase backend, resolve the missing product and provider prerequisites, and confirm current legal, age, support, and retention disclosures. Production promotion, review submission, and publication each remain separate authorized actions.

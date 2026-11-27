@@ -1,6 +1,6 @@
 # Facebook ad eligibility
 
-Facebook ads require both the existing configuration authority and a current read of the player's server-owned subscription status. The [deployed source comparison](evidence/facebook-deployed-source-comparison-2026-11-27.md) found that Testing version 12's configuration endpoint omits subscription suppression even though the protected local source contains it. The client correction is separate from that immutable version-12 evidence; its build and native acceptance must be recorded before claiming the blocker is resolved.
+Facebook ads require both the existing configuration authority and a current read of the player's server-owned subscription status. The [deployed source comparison](evidence/facebook-deployed-source-comparison-2026-11-27.md) found that Testing version 12's configuration endpoint omits subscription suppression even though the protected local source contains it. The client correction ships in [Testing version 13](evidence/facebook-testing-version-13-2026-11-27.json), separately from the immutable version-12 evidence. Its real nonsubscriber path passed; live subscriber and full backend acceptance remain open.
 
 ## Authority and transport
 
@@ -29,4 +29,4 @@ Eligibility refresh is optional background work at startup and on resume. A fail
 
 Focused tests must establish subscriber suppression despite permissive legacy server flags, fail-closed unknown states, retry recovery, late responses, account replacement/deletion, durable-removal behavior and banner lifecycle. Local fixtures prove those controlled cases, not real Firestore/App Check acceptance.
 
-The next exact Facebook test upload must verify the authenticated masked GET on the native host and retain the archive identity. No live subscription-field mutation or backend repair is authorized by this document. Successful reads for a nonsubscriber do not establish native subscriber behavior on an account that has not been tested.
+Testing version 13 retained its exact archive identity and [completed a real rewarded continuation](evidence/facebook-native-subscription-version-13-2026-11-27.md). Successful native display establishes that the reviewed client's fresh eligibility gates admitted this nonsubscriber; the nested request was not captured directly. The wire contract and subscriber cases passed with local fixtures. No live subscription-field mutation or backend repair is authorized by this document. Successful reads for a nonsubscriber do not establish native subscriber behavior on an account that has not been tested.

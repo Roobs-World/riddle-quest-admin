@@ -31,6 +31,6 @@ The exact browser command was:
 PORTAL_BROWSER_TESTS=1 pnpm exec jest --config jest.config.cjs --runInBand --runTestsByPath platforms/web/facebook/src/__tests__/facebookBrowser.jest-playwright.test.ts
 ```
 
-Two intermediate browser runs exposed fixture assumptions about repeated onboarding and restored progress. The final scenario reuses the subscribed loss session and drives the injected SDK's resume callback; it does not weaken the display or economy assertions. No production change was needed for those fixture failures. Historical screenshots overwritten by the harness were restored.
+Intermediate browser runs exposed fixture assumptions about repeated onboarding and restored progress. The final scenario reuses the subscribed loss session and drives the injected SDK's resume callback; it does not weaken the display or economy assertions. No production change was needed for those fixture failures. Historical screenshots overwritten by the harness were restored.
 
-Local logs are `/tmp/facebook-subscription-transport-final.log` and `/tmp/facebook-subscription-browser-final.log`. Exact uploaded-candidate acceptance must be recorded separately before claiming native-host acceptance. Controlled local subscriber fixtures do not establish behavior on an untested live subscriber account.
+Local logs are `/tmp/facebook-subscription-transport-final.log` and `/tmp/facebook-subscription-browser-final.log`. The [exact version 13 acceptance](facebook-testing-version-13-2026-11-27.json) and [native nonsubscriber continuation](facebook-native-subscription-version-13-2026-11-27.md) are recorded separately. Controlled local subscriber fixtures do not establish behavior on an untested live subscriber account.

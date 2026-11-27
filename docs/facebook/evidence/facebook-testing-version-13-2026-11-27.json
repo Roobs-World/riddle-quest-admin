@@ -1,0 +1,44 @@
+{
+  "recordedAt": "2026-11-27T13:57:23.656437+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "738d32a5b2628397d6ba365698d8c9abbd821358",
+  "archiveSha256": "4f0f61b92bc08c9170bc6c4ec5dae0982cfc57e525511158b8969fba8e96c1cf",
+  "archiveBytes": 2865505,
+  "archiveEntries": 422,
+  "version": 13,
+  "bundleId": "29536858815945546",
+  "status": "Testing",
+  "processingComplete": true,
+  "providerDownloadSha256": "4f0f61b92bc08c9170bc6c4ec5dae0982cfc57e525511158b8969fba8e96c1cf",
+  "sdk": "8.0 [Network Enabled Zero Permissions]",
+  "productionUnchanged": {
+    "version": 9,
+    "bundleId": "29168977262783270"
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "evidence": "Authenticated Meta Web Hosting row, Testing confirmation, independently downloaded archive SHA-256 and byte-count match; exact-artifact acceptance recorded",
+  "hostedSmoke": {
+    "startup": "passed after a slow loader: restored saved Classic coconut puzzle with 920 coins; welcome dismissed through Let\u2019s Play",
+    "rewardedAd": "passed: real native video displayed after an explicit loss-screen action, progress reached 100, completed end card closed",
+    "continuation": "passed: loss modal dismissed, seven editable answer cells restored, Multiplayer enabled, balance remained 920 coins",
+    "entitlementAcceptance": "inferred from the exact reviewed artifact admitting real native acquisition/display only after successful fresh combined entitlement reads; direct nested-frame GET, headers and response status were not captured",
+    "diagnosticChanges": "No SDK monkey-patching, runtime fixtures, subscription-field mutation or application state injection. Network observation was disabled after the check.",
+    "externalSideEffects": "Five ordinary wrong guesses and one completed rewarded ad with its normal continuation; no invitation, message, purchase, account deletion, notification opt-in, production promotion or review submission"
+  },
+  "localVerification": {
+    "focusedTests": 122,
+    "focusedSuites": 7,
+    "browserSuites": 1,
+    "browserJourneys": 1,
+    "browserSeconds": 30.907,
+    "artifactFiles": 420,
+    "artifactMiB": 4.51,
+    "initialMiB": 0.71,
+    "canonicalPreflight": "passed"
+  },
+  "limitations": "Live nonsubscriber desktop path only. Subscriber and failure cases use local fixtures; native mobile, two-account co-play, direct network trace and remaining checklist journeys remain open."
+}
