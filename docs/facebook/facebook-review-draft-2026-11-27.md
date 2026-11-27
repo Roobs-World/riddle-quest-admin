@@ -17,10 +17,10 @@ Production remains version 9, bundle `29168977262783270`. The permission-specifi
 
 ## Reproduce the version 15 desktop check
 
-1. Launch the exact Testing candidate and allow startup to finish. The recorded launch was slow, then displayed the Riddle Quest welcome screen. Select **Let's Play**.
-2. Confirm that the Classic coconut puzzle and 920 coins are restored.
+1. Launch the exact Testing candidate and allow startup to finish. Select **Let's Play** if the Riddle Quest welcome screen appears. The original recorded launch was slow and displayed that welcome; later relaunches restored play directly.
+2. Confirm the expected account's saved Classic progress and balance. The latest recorded state for this test account is the **kettle puzzle and 1,035 coins**. Coconut and 920 coins were the starting state before the later three-win ad check; do not reset progress to reproduce those historical values.
 3. Open **Settings**. In the recorded desktop check, no native banner appeared; the banner layout and banner recovery element counts were both zero.
-4. Close Settings. Confirm that **Settings**, **Multiplayer** and the first answer cell are enabled, with the balance still 920 coins.
+4. Close Settings. Confirm that **Settings**, **Multiplayer** and the first answer cell are enabled, with the balance unchanged from step 2.
 
 The [native version 15 banner evidence](evidence/facebook-native-banner-version-15-2026-11-27.md) establishes narrow **H15** startup and graceful inactive-banner fallback. A subsequent read-only IGDebug SDK Info check advertised `hideBannerAdAsync` but omitted `loadBannerAdAsync`, directly failing the existing paired-method guard. No banner request/result, no-fill response, served impression or successful native hiding was observed. J10 still requires a host advertising both methods and satisfying the other gates; native banner acceptance remains open. See the [49-name capability record](evidence/facebook-native-sdk-capabilities-version-15-2026-11-27.json).
 
@@ -32,7 +32,18 @@ Local banner/configuration verification passed 20 tests across two suites in 0.2
 
 The [version 15 Settings and save evidence](evidence/facebook-native-settings-version-15-2026-11-27.md) records real native Privacy/Terms confirmations followed by **Go back**, with controls restored. Reduced motion **On** persisted across Quit/relaunch; its original **Off** state was restored and persisted across a second Quit/relaunch. The final coconut puzzle and balance remained 920 coins. Host Collapse/Expand changed the rendered display mode **normal → expanded → normal**, with usable controls.
 
-One initial relaunch navigation timed out while the Games landing remained visible. Relaunching from the exact candidate row succeeded but briefly showed a service-unavailable message before recovering without another reload. The second relaunch restored the game normally. The underlying service cause was not captured; do not describe startup as uniformly error-free or infer cross-device saves from this same-account check. These additional H15 results do not recertify native ads, commerce, social sends, subscriber rules or mobile behavior.
+One initial relaunch navigation timed out while the Games landing remained visible. Relaunching from the exact candidate row succeeded but briefly showed a service-unavailable message before recovering without another reload. The second relaunch restored the game normally. The underlying service cause was not captured; do not describe startup as uniformly error-free or infer cross-device saves from this same-account check. These Settings checks do not establish commerce, social sends, subscriber rules or mobile behavior.
+
+## Version 15 native social and ad follow-up
+
+The [current-candidate social and ad evidence](evidence/facebook-native-social-ads-version-15-2026-11-27.md) adds the following H15 observations:
+
+1. Profile Invite and the separate Play with friends context chooser opened native surfaces and cancelled without selecting recipients. Controls returned. Play on Facebook showed zero friends and no listed tournaments; Choose friends failed visibly and remained hidden after Refresh. No accepted context, Room or tournament join is established.
+2. A native rewarded video completed to 100; closing its completed end card restored seven editable answer cells with **920 coins unchanged**. Fresh subscription-gate success is inferred through the reviewed client; no direct entitlement request trace or live subscriber acceptance is claimed.
+3. Three unique Classic wins earned ordinary rewards of **35, 25 and 55 coins**. A native interstitial appeared on the third held result. Close ad returned to the result with Next Level and Share enabled. The completed-result Share composer also cancelled without publishing.
+4. Quit/relaunch restored the next kettle puzzle with **1,035 coins**, without a duplicate reward. Reduced motion remained Off and gameplay controls were enabled.
+
+One initial guess submission refreshed the current puzzle; its request-level cause was not captured. A later apparent input stall was traced to the Meta IGDebug panel covering the controls; closing it immediately restored editing. Neither observation justifies a speculative source fix. These checks used the real desktop host without SDK/network fixtures. No Firebase source, configuration or deployment changed, and no new upload or provider setting was needed. Ad failure variants, caps, live subscriber suppression, mobile behavior, social delivery, purchases and native banners remain open.
 
 ## Retained version 14 desktop check
 
@@ -51,7 +62,7 @@ Version 14 adds the [Settings preparation and checkout ownership corrections](ev
 
 ## Retained version 13 desktop check
 
-The following **H13** observations belong to source `738d32a5b2628397d6ba365698d8c9abbd821358`, bundle `29536858815945546`, archive SHA-256 `4f0f61b92bc08c9170bc6c4ec5dae0982cfc57e525511158b8969fba8e96c1cf`. See the [version 13 acceptance record](evidence/facebook-testing-version-13-2026-11-27.json). The rewarded journey has not been repeated on version 15.
+The following **H13** observations belong to source `738d32a5b2628397d6ba365698d8c9abbd821358`, bundle `29536858815945546`, archive SHA-256 `4f0f61b92bc08c9170bc6c4ec5dae0982cfc57e525511158b8969fba8e96c1cf`. See the [version 13 acceptance record](evidence/facebook-testing-version-13-2026-11-27.json). The separate version-15 follow-up above now repeats the rewarded nonsubscriber path; this H13 record retains its historical scope.
 
 1. Launch the exact Testing candidate and allow startup to finish. The recorded desktop launch was slow but restored the Classic coconut puzzle with 920 coins. Select **Let's Play** if the welcome dialog appears.
 2. Reach an eligible Classic loss state. The recorded check used five incorrect seven-letter guesses without spending coins.

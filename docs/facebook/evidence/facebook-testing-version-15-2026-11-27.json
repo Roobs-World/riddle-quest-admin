@@ -63,5 +63,22 @@
     "finalState": "Coconut puzzle, 920 coins, Reduced motion Off, enabled Settings and first answer cell.",
     "newUpload": false,
     "firebaseChanged": false
+  },
+  "hostedSocialAndAds": {
+    "evidence": "facebook-native-social-ads-version-15-2026-11-27.md",
+    "socialCancellation": "Native Profile Invite, result Share and Play with friends chooser cancelled without selecting recipients or sending; controls restored.",
+    "socialDiscovery": "Zero friends, empty tournament listing, no Room join offered. Choose friends failed visibly and stayed hidden after Refresh; no raw SDK rejection code captured.",
+    "rewarded": "Native playback reached 100; closing the completed end card restored seven editable cells without changing the 920-coin balance.",
+    "interstitial": "Displayed on third held unique Classic win; Close ad restored enabled Next Level and Share.",
+    "ordinaryWinRewards": [
+      35,
+      25,
+      55
+    ],
+    "finalBalance": 1035,
+    "savedProgress": "Quit/relaunch restored the kettle puzzle and 1,035 coins without a duplicate reward; Reduced motion Off was retained.",
+    "diagnosticLimits": "Initial guess refresh cause unproven. Later input obstruction was Meta IGDebug panel; closing restored editing. No direct entitlement request trace, live subscriber check, social send or supported mobile-host acceptance.",
+    "newUpload": false,
+    "firebaseCodeOrConfigurationChanged": false
   }
 }
