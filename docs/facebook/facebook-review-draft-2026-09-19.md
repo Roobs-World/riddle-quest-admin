@@ -1,5 +1,7 @@
 # Riddle Quest — Facebook review preparation
 
+Historical handoff. Use the [27 November reviewer handoff for Riddle Quest Testing version 12](facebook-review-draft-2026-11-27.md) for current candidate instructions, evidence, and remaining prerequisites. The September configuration and release claims below are retained as history.
+
 **Status: preparation in progress; not ready for final submission.**
 
 For the latest local build, checks, unpublished ZIP and portal access status, see the [27 September readiness record](evidence/facebook-review-readiness-2026-09-27.md). The artifact and status details below describe the 19 September handoff and should not be treated as current portal readback.

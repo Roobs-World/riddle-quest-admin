@@ -16,6 +16,8 @@ The scope remains every possible applicable API integration. An absent adapter, 
 - [Earlier testing uploads and hosted smoke checks](evidence/facebook-client-testing-2026-11-27.md): version 11's desktop picker correction and native chooser cancellation passed. Version 10 records earlier startup, legal-link cancellation and social discovery. Their archive identities remain recorded; both are now Standby. Firebase remains unchanged by explicit owner instruction.
 - [Exact version 12 acceptance record](evidence/facebook-testing-version-12-2026-11-27.json): Testing bundle `29781063778191740`, SHA-256 `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`, 2,864,259 bytes. Production remains version 9.
 - [Client integration review](evidence/facebook-client-review-2026-11-27.md): version 12 includes tournament routing, Settings ownership and bounded ad-preparation corrections. All 136 focused tests and the combined browser journey passed. Exact-host startup, a completed real rewarded video/continuation and privacy-link cancellation passed.
+- [Native version 12 follow-up](evidence/facebook-native-followup-version-12-2026-11-27.md): Reduced motion survived native quit/relaunch and was restored; shortcut and invitation cancellation returned control; a real interstitial displayed on a held qualifying result and returned to gameplay. These are desktop developer-role observations, not full J01–J14 acceptance.
+- [Current reviewer handoff](facebook-review-draft-2026-11-27.md): exact version 12 steps, enabled behavior and remaining prerequisites; the September draft is historical.
 - [Earlier source coverage](evidence/facebook-api-coverage-2026-11-27.md): historical baseline, superseded by this checklist's broader scope for future work.
 
 | Code | What the evidence establishes |
@@ -57,7 +59,7 @@ All Facebook browser paths below are beneath `platforms/web/facebook/src/`:
 | A0 | Current SDK v8 host support, callable methods, signed account/age gates and active adapter lifetime. The dashboard SDK selector is **8.0 [Network Enabled Zero Permissions]**. Production remains version **9**, bundle **29168977262783270**; Testing is version **12**, bundle **29781063778191740**, containing the expansion and reviewed corrections. Debug Mode is enabled. Zero Permission Access is rejected/not live in connector privileges, so role-account desktop testing does not prove public capability access. |
 | A1 | Product review: Business Verification **Verified**, In App Ads **Approved**. Approved Partner Program, Policy, Quality, In App Purchases, Bot and App Property each **Not Submitted**. Policy/Quality submission controls are disabled. General App Review says UNSUBMITTED while requirements claim a previous review is in progress; resolve this discrepancy without treating either response as product approval. |
 | A2 | Seven catalog products exist. A valid payout account, IAP approval, V2 payment callback/signed-event acceptance and consistent deployed checkout configuration remain outstanding. Recorded deployed commerce is disabled; webhook-ready configuration is absent. No purchase/refund acceptance is claimed. |
-| A3 | Existing rewarded/interstitial IDs are configured; one version-9 rewarded flow was observed. Monetisation Manager has two ad spaces containing exactly those two placements; no banner placement exists. Banner requires its own approved placement and `VITE_FACEBOOK_BANNER_ENABLED=true` plus `VITE_FACEBOOK_BANNER_PLACEMENT_ID`. Respect authoritative subscription/ad-free eligibility and the banner service deadline. |
+| A3 | Existing rewarded/interstitial IDs are configured; both native formats displayed and returned control on exact version 12's desktop developer-role host. Monetisation Manager has two ad spaces containing exactly those two placements; no banner placement exists. Banner requires its own approved placement and `VITE_FACEBOOK_BANNER_ENABLED=true` plus `VITE_FACEBOOK_BANNER_PLACEMENT_ID`. Respect authoritative subscription/ad-free eligibility and the banner service deadline. |
 | A4 | Messenger Game Bot requires `pages_messaging` App Review and the `gamebot with Messenger` use case per the dashboard information panel. Bot Review is Not Submitted. SDK bot consent must remain distinct from existing `a2u-v1` manager consent. NEZP stored-content delivery requires a manager-authored plan, current-context recipient restriction, a dispatch consumer and trusted verification of returned content/app/recipient binding. A browser-supplied content ID alone cannot authorize campaign content. No documented Meta verification mechanism or manager approval workflow is established. |
 | A5 | Cross-Play Management is **Not Linked**. An actual same-game/same-business app association and truthful attestation are required; legacy ASID eligibility is a separate condition. No approved account-migration/linking path is established. |
 | A6 | No configured eligible second game destination or meaningful cross-promotion surface is established. Do not fabricate an app ID or count dormant `switchGameAsync` declarations as integration. |
@@ -92,7 +94,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 10 | `FBInstant.quit` | W · Settings actions | A0; all accepted saves flushed | J04 |
+| 10 | `FBInstant.quit` | W/H12 · Settings actions; native exit and preference relaunch round trip | A0; all accepted saves flushed | J04 |
 | 11 | `FBInstant.onPause` | W · Lifecycle | A0; registered lifecycle adapter | J02, J09, J10 |
 | 12 | `FBInstant.onResume` | W · Lifecycle, optional host signal | A0; browser fallback where absent | J02, J09, J10 |
 | 13 | `FBInstant.onContextChange` | W · Contexts/coordinator | A0; active account and locale owner | J06, J07 |
@@ -103,7 +105,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 16 | `FBInstant.inviteAsync` | W · Referral sharing, live-race sharing | A0; sharing rollout and audience gates | J03 |
+| 16 | `FBInstant.inviteAsync` | W/H12 · Referral sharing, live-race sharing; general invite opened and cancelled without sending | A0; sharing rollout and audience gates | J03 |
 | 17 | `FBInstant.shareAsync` | W · Referral sharing, live-race sharing | A0; sharing rollout; valid image/data | J03 |
 | 18 | `FBInstant.updateAsync` | W · Context challenges | A0; configured race_context_challenge template; selected context | J06 |
 
@@ -120,9 +122,9 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 23 | `FBInstant.canCreateShortcutAsync` | W · Settings actions | A0; eligible home-screen host/player | J04 |
-| 24 | `FBInstant.createShortcutAsync` | W · Settings actions | A0; positive eligibility; one attempt per SDK session | J04 |
-| 25 | `FBInstant.openExternalLinkAsync` | W · Settings actions | A0; fixed privacy/terms HTTPS destinations | J04 |
+| 23 | `FBInstant.canCreateShortcutAsync` | W/H12 · Settings actions; eligible shortcut action shown | A0; eligible home-screen host/player | J04 |
+| 24 | `FBInstant.createShortcutAsync` | W/H12 · Settings actions; native prompt cancelled and action retired for session | A0; positive eligibility; one attempt per SDK session | J04 |
+| 25 | `FBInstant.openExternalLinkAsync` | W/H12 · Settings actions; fixed privacy destination prompt cancelled | A0; fixed privacy/terms HTTPS destinations | J04 |
 | 26 | `FBInstant.performHapticFeedbackAsync` | W · Haptics | A0; saved opt-in; supported device; no reduced-motion/pause suppression | J05 |
 | 27 | `FBInstant.switchGameAsync` | G · No cross-game adapter/destination | A6; real eligible game owned/configured by this business | J13; future explicit cross-promotion journey |
 
@@ -130,7 +132,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 28 | `FBInstant.getInterstitialAdAsync` | W · Ads capability, level interstitial policy | A0, A3; configured approved interstitial placement; authoritative eligibility | J09 |
+| 28 | `FBInstant.getInterstitialAdAsync` | W/H12 · Ads capability; real interstitial displayed on held qualifying Classic result | A0, A3; configured approved interstitial placement; authoritative eligibility | J09 |
 | 29 | `FBInstant.getRewardedVideoAsync` | W/H12 · Ads capability, real rewarded completion and continuation | A0, A3; configured rewarded placement; eligible server session | J09 |
 | 30 | `FBInstant.loadBannerAdAsync` | C · Banner, entry and reserved layout | A0, A3; explicit true flag and separate approved banner placement; before 31 March 2027 | J10 |
 | 31 | `FBInstant.hideBannerAdAsync` | C · Banner and dialog guard | A0, A3; paired callable support; serialized native ownership | J10 |
@@ -317,7 +319,7 @@ The 79-row count covers SDK entry points, not methods on returned objects. Verif
 
 | Object | Needed evidence |
 | --- | --- |
-| AdInstance | `getPlacementID` must exactly match the configured placement before loading and again before showing. Invalid/missing/throwing getters fail closed; current-owner and entitlement checks follow both reads. Actual Meta `loadAsync`/`showAsync` acceptance remains required. |
+| AdInstance | `getPlacementID` must exactly match the configured placement before loading and again before showing. Invalid/missing/throwing getters fail closed; current-owner and entitlement checks follow both reads. Actual Meta rewarded and interstitial display/recovery passed on version 12 desktop; remaining failure, entitlement and host variants still need their own acceptance. |
 | SignedPlayerInfo | Server-verified player ID/signature bound to the issued nonce. |
 | SignedASID / SignedAssociatedAppASID | Still part of the missing migration/association authority; no identity merge based only on a browser-returned ID. |
 | ConnectedPlayer / ContextPlayer | Validated IDs stay within the Facebook boundary; UI exposes counts, not extracted names/photos. |
