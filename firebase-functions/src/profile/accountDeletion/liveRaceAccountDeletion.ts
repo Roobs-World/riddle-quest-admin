@@ -1,7 +1,7 @@
 import {publishLiveRaceSignals} from "../../race/live/raceLiveSignals";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId, stripUndefined} from "../../race/raceSetupService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 import {DELETED_LIVE_RACE_USER_ID} from "../../race/privacy/raceLivePrivacy";
@@ -151,7 +151,7 @@ export async function removeLiveRaceIdentitySnapshots(userId: string): Promise<v
   /** Firestore client used for transactional identity cleanup. */
   const db = admin.firestore();
   await db.runTransaction(async tx => {
-    if (!(await tx.get(getJestAccountDeletionRef(db, userId))).exists)
+    if (!(await tx.get(getAccountDeletionRef(db, userId))).exists)
       throw new HttpsError("failed-precondition", "Live cleanup requires an account deletion guard.");
   });
   while (true) {

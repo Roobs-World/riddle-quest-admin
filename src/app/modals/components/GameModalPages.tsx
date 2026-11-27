@@ -108,8 +108,7 @@ export function GameModalPages({
       {state.modal === "profile" && (
         <ProfileModalPage
           profile={profile}
-          platformRegistered={state.user?.platformRegistered}
-          onClose={onClose}
+          accountManagement={state.user?.accountManagement}
           onOpenModal={onOpenModal}
           onUpdateAvatar={onUpdateAvatar}
           onDeleteAccount={onDeleteAccount}
@@ -120,7 +119,6 @@ export function GameModalPages({
         <SettingsModalPage
           locale={state.locale}
           muted={state.muted}
-          platformRegistered={state.user?.platformRegistered}
           onOpenModal={onOpenModal}
           onToggleMute={onToggleMute}
         />

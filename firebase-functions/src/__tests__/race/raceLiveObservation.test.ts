@@ -6,7 +6,7 @@ import {updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
 
 /** Fixed authoritative clock and provider subjects. */
-const NOW = 1_800_000_000_000, OWNER = `jest_${"a".repeat(40)}`, RIVAL = `jest_${"b".repeat(40)}`;
+const NOW = 1_800_000_000_000, OWNER = `facebook_${"a".repeat(40)}`, RIVAL = `facebook_${"b".repeat(40)}`;
 /** Seat identifiers. */
 const ticketId = "a".repeat(64), rivalId = "b".repeat(64);
 

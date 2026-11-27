@@ -232,7 +232,7 @@ describe("play host message handlers", () => {
 
     expect(harness.setFrameReady).toHaveBeenCalledTimes(2);
     expect(harness.sendInit).toHaveBeenCalledTimes(2);
-    expect(harness.loadedUserIdRef.current).toBe("jest-guest");
+    expect(harness.loadedUserIdRef.current).toBe("guest-player");
     expect(harness.loadAndPostRiddle).toHaveBeenCalledWith({gameMode: "classic", locale: "en", classicIndex: 1});
     expect(harness.onPlayable).toHaveBeenCalledTimes(1);
   });
@@ -545,10 +545,10 @@ describe("play host message handlers", () => {
     await harness.handlers.reportRival({
       type: "game:reportRival",
       requestId: "report-message-1",
-      payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "spam"},
+      payload: {targetUserId: "facebook_1111111111111111111111111111111111111111", category: "spam"},
     });
     expect(reportRival).toHaveBeenCalledWith({
-      targetUserId: "jest_1111111111111111111111111111111111111111",
+      targetUserId: "facebook_1111111111111111111111111111111111111111",
       category: "spam",
       requestId: "report-message-1",
     });
@@ -606,7 +606,7 @@ describe("play host message handlers", () => {
       "host-account-capability-unavailable");
   });
 
-  it("deletes a Facebook account through explicit account permissions without a Jest upgrade", async () => {
+  it("deletes a Facebook account through explicit account permissions without a platform upgrade", async () => {
     /** Isolated game services for account-operation regression checks. */
     const services = createFakeHostServices();
     /** Records whether deletion preparation starts. */

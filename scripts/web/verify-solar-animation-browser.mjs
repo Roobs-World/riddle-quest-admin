@@ -50,9 +50,9 @@ window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(
 configureBrowserErrorReporter((error,context)=>{window.probe.errors.push({...context,error:String(error)});});
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:new URL(location.href).searchParams.has('reduced'),onboardingComplete:true});
 window.setMotion=setPlayerReducedMotion;window.applyMotion=value=>applyPlayerPreferences({reducedMotion:value,onboardingComplete:true});window.probe.preferenceWrites=[];subscribeToPlayerPreferenceChanges(change=>window.probe.preferenceWrites.push(change));
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
-for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
-for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 const pendingIdle=new Map(),retainedIdle=new Map();let nextIdle=0;
 window.pendingIdle=()=>pendingIdle.size;
 window.replayIdle=()=>{for(const callback of retainedIdle.values())callback({didTimeout:false,timeRemaining:()=>5});};
@@ -71,7 +71,7 @@ if(new URL(location.href).searchParams.has('timer')){
 window.pause=paused=>dispatchLocalBridge(HOST_TO_GAME_EVENT,{type:paused?'host:pause':'host:resume',payload:{}});
 const source=createFakeHostServices();
 const services={...source,submitGuess:async input=>{window.probe.guesses++;return source.submitGuess(input);},completeGame:async input=>{
- window.probe.completions++;const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('jest-guest'))?.coins;return result;}};
+ window.probe.completions++;const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('guest-player'))?.coins;return result;}};
 const params=new URL(location.href).searchParams;
 function ProviderRace({onClose}){return <section className='race-screen' data-testid='provider-race'><button onClick={onClose}>Return to puzzle</button></section>;}
 const session=createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:params.has('custom'),raceLocalePolicy:'all',onPlayerDataChange:update=>window.probe.saves.push(update)});

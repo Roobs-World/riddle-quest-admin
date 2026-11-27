@@ -4,7 +4,7 @@ import {z} from "zod";
 import {facebookFirebaseUid, MAX_FACEBOOK_ACCOUNT_GENERATION} from "./facebookSecurity";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 import type {FacebookNotificationAttempt, FacebookNotificationOperation} from "./facebookNotificationTransport";
-import {getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 
 /** Original attempts may be admitted for five minutes; callers must never refresh their issuance. */
 const ADMISSION_MS = 300_000;
@@ -84,8 +84,8 @@ export function createFacebookNotificationDispatchLedger(
   }
   /** Raw Meta identity is retained only by the existing canonical provider link. */
   const providerRef = db.collection("providerIdentities").doc(hash(`${appId}\0${actor.playerId}`));
-  /** Deletion guards are shared account infrastructure, not a Jest notification API. */
-  const deletionRef = getJestAccountDeletionRef(db, actor.uid);
+  /** Shared account deletion guards also protect Facebook notification dispatch. */
+  const deletionRef = getAccountDeletionRef(db, actor.uid);
   /** Existing recursive account deletion removes these private subcollections. */
   const userRef = db.collection("users").doc(actor.uid);
   /** Five-slot state is private and never expires based only on time. */

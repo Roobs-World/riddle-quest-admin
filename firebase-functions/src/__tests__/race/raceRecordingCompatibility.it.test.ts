@@ -9,11 +9,11 @@ import {parseChallengeRecord, type RaceChallengeRecord} from "../../race/raceSet
 import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Canonical fixtures only touch a private loopback demo emulator. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Actual SDK provides original archives, locked eligibility reads and accepted publication/attempt writes. */
 let db: FirebaseFirestore.Firestore;
 /** Named authoritative source identities make every dependent mutation inspectable. */
-const RUN = "recording-source", CHALLENGE = "recording-challenge", DECK = "recording-deck", INVITE = `jest-invite-${createHash("sha256").update(A).digest("hex")}-${"d".repeat(32)}`;
+const RUN = "recording-source", CHALLENGE = "recording-challenge", DECK = "recording-deck", INVITE = `race-invite-${createHash("sha256").update(A).digest("hex")}-${"d".repeat(32)}`;
 /** The dedicated demo owns all these collections; profiles remain bounded to two fixture accounts. */
 const clear = async () => {
   for (const collection of ["raceRuns", "raceChallenges", "raceDecks", "raceStartRequests", "raceAttempts", "raceInviteLobbies", "raceMatchCandidates", "racePerformanceOutbox", "raceSettlementOutbox"]) await db.recursiveDelete(db.collection(collection));

@@ -64,7 +64,7 @@ type HostedRoute =
       hosted: WebGameMode;
     };
 /**
- * Hosted-first root, matching the Jest Web Target: the device connects to its
+ * Hosted-first root, matching the shared hosted game: the device connects to its
  * Global Game Account on launch and plays server-issued riddles. The
  * self-contained game remains available as the offline surface.
  */

@@ -82,6 +82,7 @@ export function createFacebookAdsCapability({
         return {status: "unavailable", message: "facebook-interstitial-clock-invalid"};
       }
       if (
+        !isActive() ||
         interstitialsDisabled ||
         hasAdFreeEntitlement() ||
         !interstitialAvailable ||
@@ -98,10 +99,11 @@ export function createFacebookAdsCapability({
       let impressionDisplayed = false;
       return runFacebookSdkDialog(sdk, async () => {
         try {
+          if (!isActive()) return {status: "unavailable", message: "facebook-ad-session-retired"};
           /** Provides ad behavior. */
           const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
           await ad.loadAsync();
-          if (hasAdFreeEntitlement()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+          if (!isActive() || hasAdFreeEntitlement()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           await ad.showAsync();
           if (isActive()) trackEvent("ad_completed", {ad_format: "interstitial", placement});
           impressionDisplayed = true;
@@ -123,13 +125,14 @@ export function createFacebookAdsCapability({
     },
     /** Provides show rewarded behavior. */
     async showRewarded(placement) {
-      if (!rewardedAvailable || showingRewarded || showingInterstitial || placement !== "continue") {
+      if (!isActive() || !rewardedAvailable || showingRewarded || showingInterstitial || placement !== "continue") {
         return {status: "unavailable", message: "facebook-rewarded-unavailable"};
       }
       showingRewarded = true;
       if (isActive()) trackEvent("ad_requested", {ad_format: "rewarded", placement});
       return runFacebookSdkDialog(sdk, async () => {
         try {
+          if (!isActive()) return {status: "unavailable", message: "facebook-ad-session-retired"};
           /** Provides started at ms behavior. */
           const startedAtMs = now();
           if (!Number.isSafeInteger(startedAtMs) || startedAtMs < 0) {
@@ -138,6 +141,7 @@ export function createFacebookAdsCapability({
           /** Provides ad behavior. */
           const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
           await ad.loadAsync();
+          if (!isActive()) return {status: "unavailable", message: "facebook-ad-session-retired"};
           await ad.showAsync();
           if (isActive()) trackEvent("ad_completed", {ad_format: "rewarded", placement});
           /** Provides completed at ms behavior. */

@@ -1,5 +1,5 @@
 import {RACE_TARGET_CORRECT} from "../../../../src/races/contracts/index.js";
-import {runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isRedditFeatureEnabled} from "./redditFeatureFlags";
 import {finishRedditLiveRaceReferralDelivery, needsRedditLiveRaceReferral} from "./redditLiveRaceReferralDelivery";
 import {validateRedditLiveRaceReferralSource} from "./redditLiveRaceReferralDelivery";
@@ -36,7 +36,7 @@ export async function finishRedditLiveRaceDelivery(db: Firestore, eventRef: Fire
   if (isRedditFeatureEnabled("tournaments")) {
     // Deletion waits for this lease before sweeping board entries. A late worker
     // cannot recreate deleted identity or tournament rows after that sweep.
-    await runWithJestAccountOperationLease(userId, 120, async () => {
+    await runWithAccountOperationLease(userId, 120, async () => {
       /** Source validation selects only an opaque owned ticket and its exact content locale. */
       const input = await db.runTransaction(async transaction => {
         /** A re-read receipt prevents a deleted or acknowledged delivery from being reconstructed. */

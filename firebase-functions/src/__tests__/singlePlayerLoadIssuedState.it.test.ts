@@ -19,7 +19,7 @@ jest.mock("../riddles/riddleSupply", () => ({triggerClassicRiddleGenerationIfNee
 /** Fixture writes are restricted to a private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** This account and its hashed receipts are the only canonical fixture records removed. */
-const OWNER = `jest_${"e".repeat(40)}`;
+const OWNER = `facebook_${"e".repeat(40)}`;
 /** Real SDK provides canonical snapshots, commits and retries. */
 let db: FirebaseFirestore.Firestore;
 /** Both targets share the same regional entitlement calendar. */

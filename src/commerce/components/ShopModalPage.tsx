@@ -34,7 +34,7 @@ function shopProductCopy(product: ProductSummary, tr: ReturnType<typeof useTrans
 /**
  * Localized subscription benefits, limited to what the game actually provides.
  *
- * The verified Jest entitlement records Premium status on the account
+ * The verified provider entitlement records Premium status on the account
  * (`hasActiveSubscription`) and the server grants
  * `PREMIUM_SUBSCRIPTION_MONTHLY_COINS` every 30 days while it stays active.
  * Add a benefit here only after its server-authoritative grant exists.

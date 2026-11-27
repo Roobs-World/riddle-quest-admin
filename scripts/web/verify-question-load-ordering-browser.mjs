@@ -27,13 +27,13 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
-for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
-for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 window.probe={outbound:[],inbound:[],reads:[],errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
-const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('jest-guest');
+const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('guest-player');
 const held=new Map();window.release=(index,fail=false)=>{const entry=held.get(index);held.delete(index);if(fail)entry.reject(new Error('Obsolete fixture question failed'));else entry.resolve(index===2?next:{...next,index:3,riddleId:'classic-order-3',sessionToken:'00000000-0000-4000-8000-000000000003'});};
 window.request=(index,requestId='load-order-'+index)=>window.dispatchEvent(new CustomEvent('riddle-quest:game-to-host',{detail:{type:'game:loadRiddle',requestId,payload:{gameMode:'classic',locale:'en',classicIndex:index}}}));
 const services={...source,loadRiddle:input=>{window.probe.reads.push(input);if(input.classicIndex===2||input.classicIndex===3)return new Promise((resolve,reject)=>held.set(input.classicIndex,{resolve,reject}));return Promise.resolve(first);}};

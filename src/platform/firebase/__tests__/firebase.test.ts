@@ -11,10 +11,6 @@ const mockHttpsCallable = jest.fn((_functions: unknown, name: string) =>
 const mockInitializeApp = jest.fn(() => ({name: "firebase-app"}));
 /** Provides mock get auth behavior. */
 const mockGetAuth = jest.fn(() => ({name: "auth"}));
-/** Per-frame authentication avoids another Jest player replacing this tab. */
-const mockInitializeAuth = jest.fn(() => ({name: "frame-auth"}));
-/** Controlled in-memory auth persistence isolates restricted browser storage. */
-const mockInMemoryPersistence = {type: "NONE"};
 /** Provides mock get firestore behavior. */
 const mockGetFirestore = jest.fn(() => ({name: "firestore"}));
 /** Provides mock get functions behavior. */
@@ -23,8 +19,6 @@ const mockGetFunctions = jest.fn((_app?: unknown, region?: string) => ({name: "f
 jest.mock("firebase/app", () => ({initializeApp: (...args: unknown[]) => mockInitializeApp(...args)}));
 jest.mock("firebase/auth", () => ({
   getAuth: (...args: unknown[]) => mockGetAuth(...args),
-  initializeAuth: (...args: unknown[]) => mockInitializeAuth(...args),
-  inMemoryPersistence: mockInMemoryPersistence,
 }));
 jest.mock("firebase/firestore/lite", () => ({
   doc: (...args: unknown[]) => mockDoc(...(args as [unknown, string, string])),
@@ -48,7 +42,7 @@ describe("Firebase browser adapter", () => {
     /** SDK callable captures the command before any authenticated provider response. */
     const index = mockHttpsCallable.mock.calls.findIndex(call => call[1] === "retireLiveRaceJoin");
     /** Original account is a precondition carried intact through lazy module loading. */
-    const input = {requestId: "original-owned-join", expectedOwnerId: "jest_original_account"};
+    const input = {requestId: "original-owned-join", expectedOwnerId: "facebook_original_account"};
     /** Native SDK envelope remains the only mocked boundary. */
     const sdk = mockHttpsCallable.mock.results[index].value;
     sdk.mockResolvedValueOnce({data: {status}});
@@ -70,8 +64,8 @@ describe("Firebase browser adapter", () => {
 
   it("initializes Firebase once and declares every callable endpoint", () => {
     expect(firebaseApp).toEqual({name: "firebase-app"});
-    expect(auth).toEqual({name: "frame-auth"});
-    expect(mockInitializeAuth).toHaveBeenCalledWith(firebaseApp, {persistence: mockInMemoryPersistence});
+    expect(auth).toEqual({name: "auth"});
+    expect(mockGetAuth).toHaveBeenCalledWith(firebaseApp);
     expect(mockInitializeApp).toHaveBeenCalledWith(
       expect.objectContaining({
         apiKey: "missing-api-key",
@@ -95,7 +89,6 @@ describe("Firebase browser adapter", () => {
       "getLeaderboard",
       "updateUsername",
       "updateAvatar",
-      "syncJestAvatar",
       "deleteAccount",
       "setPresenceConsent",
       "listRaceCategories",
@@ -168,27 +161,15 @@ describe("Firebase environment variants", () => {
     jest.dontMock("../../../app/testing/mocks/firebaseEnvironmentMock");
   });
 
-  it("binds Jest authentication to this frame instead of shared persisted browser identity", async () => {
-    mockInitializeAuth.mockClear();
-    mockGetAuth.mockClear();
-    /** Loaded browser Firebase module exercises session persistence configuration. */
-    const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "jest"});
-    expect(module.auth).toEqual({name: "frame-auth"});
-    expect(mockInitializeAuth).toHaveBeenCalledWith(module.firebaseApp, {persistence: mockInMemoryPersistence});
-    expect(mockGetAuth).not.toHaveBeenCalled();
-  });
-
   it("retains the existing authentication initialization for other target assemblies", async () => {
-    mockInitializeAuth.mockClear();
     mockGetAuth.mockClear();
     /** Loaded browser Firebase module exercises session persistence configuration. */
     const module = await loadWithEnvironment({...completeEnvironment, platformTarget: "facebook"});
     expect(module.auth).toEqual({name: "auth"});
     expect(mockGetAuth).toHaveBeenCalledWith(module.firebaseApp);
-    expect(mockInitializeAuth).not.toHaveBeenCalled();
   });
 
-  it.each(["jest", "facebook"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
+  it.each(["facebook"])("routes %s gameplay beside Firestore without rerouting account or commerce calls", async platformTarget => {
     mockGetFunctions.mockClear();
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget});
@@ -230,7 +211,7 @@ describe("Firebase environment variants", () => {
     expect(mockGetFunctions).toHaveBeenCalledWith(expect.anything(), "europe-west1");
   });
 
-  it.each(["jest", "facebook"])("can roll %s solo back to the existing US endpoints without moving multiplayer", async platformTarget => {
+  it.each(["facebook"])("can roll %s solo back to the existing US endpoints without moving multiplayer", async platformTarget => {
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "us-central1"});
     /** A rollback must cover every session action together. */
@@ -243,7 +224,7 @@ describe("Firebase environment variants", () => {
     }
   });
 
-  it.each(["jest", "facebook"])("applies the optional solo region to gameplay only (%s)", async platformTarget => {
+  it.each(["facebook"])("applies the optional solo region to gameplay only (%s)", async platformTarget => {
     mockHttpsCallable.mockClear();
     await loadWithEnvironment({...completeEnvironment, platformTarget, gameplayRegion: "europe-west1"});
     /** Every session action must use one selected region; other capabilities keep their own endpoints. */

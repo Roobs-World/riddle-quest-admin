@@ -7,9 +7,9 @@
         "$sessionId": {
           ".read": false,
           ".write": "auth != null && auth.uid === $userId && (!newData.exists() || (root.child('presenceConsent').child($userId).val() === true && (newData.child('platform').val() !== 'facebook' || root.child('featureGates').child('facebookPresence').val() === true)))",
-          ".validate": "!newData.exists() || (newData.hasChildren(['platform', 'state', 'updatedAt']) && ((newData.child('platform').val() === 'facebook' && auth.token.provider === 'facebook' && $userId.matches(/^facebook_[0-9a-f]{40}$/)) || (newData.child('platform').val() === 'jest' && auth.token.jestPlayerId != null && $userId.matches(/^jest_[0-9a-f]{40}$/))))",
+          ".validate": "!newData.exists() || (newData.hasChildren(['platform', 'state', 'updatedAt']) && newData.child('platform').val() === 'facebook' && auth.token.provider === 'facebook' && $userId.matches(/^facebook_[0-9a-f]{40}$/))",
           "platform": {
-            ".validate": "newData.val() === 'jest' || newData.val() === 'facebook'"
+            ".validate": "newData.val() === 'facebook'"
           },
           "state": {
             ".validate": "newData.val() === 'online' || newData.val() === 'playing' || newData.val() === 'racing'"

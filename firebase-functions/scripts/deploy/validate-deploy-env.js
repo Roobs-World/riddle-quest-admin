@@ -6,25 +6,7 @@ const path = require("node:path");
 const dotenv = require("dotenv");
 
 const PROJECT_ID = "riddle-quest-ec2b2";
-const EXPECTED_GAME_ID = "019faa68-f3ec-755d-9ab5-c887fb426801";
 const DEPLOY_ENV_PATH = path.resolve(__dirname, `../../.env.${PROJECT_ID}`);
-const PRIMARY_JEST_ORIGIN = "https://jest.com";
-const TRUSTED_JEST_ORIGINS = new Set([
-  PRIMARY_JEST_ORIGIN,
-  `https://${EXPECTED_GAME_ID}.builds.jest.com`,
-]);
-const TRUSTED_CONSUMABLE_SKUS = Object.freeze([
-  "com.roobsworld.riddlequest.coinpack1",
-  "com.roobsworld.riddlequest.coinpack2",
-  "com.roobsworld.riddlequest.coinpack3",
-  "com.roobsworld.riddlequest.coinpack4",
-  "com.roobsworld.riddlequest.coinpack5",
-  "com.roobsworld.riddlequest.coinpack6",
-]);
-const TRUSTED_SUBSCRIPTION_SKUS = new Set([
-  "com.roobsworld.riddlequest.premium.monthly",
-  "com.roobsworld.riddlequest.premium.yearly",
-]);
 const FACEBOOK_FEATURES = new Set([
   "identity", "commerce", "rewarded_ads", "interstitials", "referrals",
   "notifications", "matchmaking", "tournaments", "presence",
@@ -45,56 +27,6 @@ function parseRequiredList(environment, name, errors) {
     errors.push(`${name} must not contain duplicate values.`);
   }
   return nonEmptyValues;
-}
-
-function validateOrigins(environment, errors) {
-  const origins = parseRequiredList(environment, "JEST_GAME_ORIGIN", errors);
-  for (const origin of origins) {
-    let parsed;
-    try {
-      parsed = new URL(origin);
-    } catch {
-      errors.push(`JEST_GAME_ORIGIN contains an invalid URL: ${origin}`);
-      continue;
-    }
-    const hostname = parsed.hostname.toLowerCase().replace(/\.$/, "");
-    if (parsed.protocol !== "https:") {
-      errors.push(`JEST_GAME_ORIGIN must use HTTPS: ${origin}`);
-    }
-    if (
-      hostname === "localhost" ||
-      hostname.endsWith(".localhost") ||
-      hostname === "127.0.0.1" ||
-      hostname === "::1" ||
-      hostname === "[::1]"
-    ) {
-      errors.push(`JEST_GAME_ORIGIN must not contain a localhost origin: ${origin}`);
-    }
-    if (parsed.origin !== origin || !TRUSTED_JEST_ORIGINS.has(origin)) {
-      errors.push(`JEST_GAME_ORIGIN contains an untrusted Jest origin: ${origin}`);
-    }
-  }
-  if (!origins.includes(PRIMARY_JEST_ORIGIN)) {
-    errors.push(`JEST_GAME_ORIGIN must include ${PRIMARY_JEST_ORIGIN}.`);
-  }
-}
-
-function validateConsumables(environment, errors) {
-  const configured = parseRequiredList(environment, "JEST_PRODUCT_SKUS", errors);
-  const trusted = new Set(TRUSTED_CONSUMABLE_SKUS);
-  const missing = TRUSTED_CONSUMABLE_SKUS.filter((sku) => !configured.includes(sku));
-  const untrusted = configured.filter((sku) => !trusted.has(sku));
-  if (configured.length !== TRUSTED_CONSUMABLE_SKUS.length || missing.length > 0 || untrusted.length > 0) {
-    errors.push("JEST_PRODUCT_SKUS must contain exactly the six trusted consumable SKUs.");
-  }
-}
-
-function validateSubscriptions(environment, errors) {
-  const configured = parseRequiredList(environment, "JEST_SUBSCRIPTION_SKUS", errors);
-  const untrusted = configured.filter((sku) => !TRUSTED_SUBSCRIPTION_SKUS.has(sku));
-  if (untrusted.length > 0) {
-    errors.push(`JEST_SUBSCRIPTION_SKUS contains an untrusted SKU: ${untrusted.join(", ")}`);
-  }
 }
 
 function validateSentry(environment, errors) {
@@ -199,12 +131,7 @@ function validateRedditDeployEnvironment(environment) {
 
 function validateDeployEnvironment(environment) {
   const errors = [];
-  if (environment.JEST_GAME_ID?.trim() !== EXPECTED_GAME_ID) {
-    errors.push(`JEST_GAME_ID must equal ${EXPECTED_GAME_ID}.`);
-  }
-  validateOrigins(environment, errors);
-  validateConsumables(environment, errors);
-  validateSubscriptions(environment, errors);
+  validateFacebookDeployEnvironment(environment);
   validateSentry(environment, errors);
   if (errors.length > 0) {
     throw new Error(`Deployment environment validation failed:\n- ${errors.join("\n- ")}`);
@@ -246,11 +173,7 @@ if (require.main === module) {
 
 module.exports = {
   DEPLOY_ENV_PATH,
-  EXPECTED_GAME_ID,
   PROJECT_ID,
-  PRIMARY_JEST_ORIGIN,
-  TRUSTED_CONSUMABLE_SKUS,
-  TRUSTED_SUBSCRIPTION_SKUS,
   validateDeployEnvironment,
   validateDeployEnvironmentFile,
   validateFacebookDeployEnvironment,

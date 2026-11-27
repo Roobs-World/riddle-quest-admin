@@ -111,8 +111,8 @@ export interface FacebookInstantProduct {
   title: string;
   /** Stores product id. */
   productID: string;
-  /** Stores description. */
-  description: string;
+  /** Optional product copy supplied by the Meta catalog. */
+  description?: string;
   /** Stores image uri. */
   imageURI?: string | null;
   /** Stores price. */

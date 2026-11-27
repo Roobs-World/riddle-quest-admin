@@ -8,7 +8,7 @@ import react, {reactCompilerPreset} from "@vitejs/plugin-react";
 import babel from "@rolldown/plugin-babel";
 import {chromium} from "@playwright/test";
 
-// Supplementary component regression: this is not hosted Jest E2E evidence.
+// Supplementary component regression: this is not hosted Facebook E2E evidence.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const output = path.resolve(process.env.LIVE_PROFILE_REPORT_DIR ?? path.join(root, "artifacts/live-profile-refresh"));
 await mkdir(output, {recursive: true});
@@ -27,9 +27,9 @@ import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts")
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root, "src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey} from ${JSON.stringify(path.join(root, "src/onboarding/browser/guidanceConfig.ts"))};
 applyPlayerPreferences({onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
-for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
-localStorage.setItem(createGuidanceStorageKey('tooltipSeen:achievementEarned','jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');
+localStorage.setItem(createGuidanceStorageKey('tooltipSeen:achievementEarned','guest-player'),'seen');
 const base=createFakeHostServices({dailyCompleted:true});
 let profile; base.auth.subscribe(snapshot=>{profile=snapshot.profile;});
 window.profileReads=0;window.completedEvents=0;
@@ -41,8 +41,8 @@ const run={runId:'fixture-finish',role:'creator',status:'completed',serverNowMs:
 const terminal={ticketId:'a'.repeat(64),phase:'result',serverNowMs:Date.now(),searchEndsAtMs:startsAtMs-1000,startsAtMs,player:{displayName:'Fixture player',avatarUrl:null,bot:false,correctCount:10},opponent:{displayName:'Idle rival',avatarUrl:null,bot:false,correctCount:0},run,result:'win',rewardCoins:50,newCoins:350};
 const transport={join:async()=>terminal,update:async()=>terminal};
 function Surface(props){const [started,setStarted]=React.useState(false);return started?<LiveRaceGame transport={transport} locale='en' categoryId='science' ownerId={props.ownerId} coins={props.coins} onCompleted={props.onLiveResult} onClose={()=>setStarted(false)}/>:<section role='dialog'><output data-testid='lobby-coins'>{props.coins}</output><button onClick={()=>setStarted(true)}>Fixture Start</button><button onClick={props.onClose}>Fixture Exit</button></section>;}
-import {createNotificationOperationGate} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/notifications/operationGate.ts"))};
-const gate=new URLSearchParams(location.search).get('gate')==='1'?createNotificationOperationGate():undefined;
+import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root, "src/accounts/browser/deletion/LocalAccountDeletionGate.ts"))};
+const gate=new URLSearchParams(location.search).get('gate')==='1'?new LocalAccountDeletionGate():undefined;
 const session=createHostedPlaySession({hostServices:services,accountDeletionServiceGate:gate,raceAvailable:true,initialRaceLobby:true});
 function FixtureApp(){const [restored,setRestored]=React.useState(profile);return <><button onClick={()=>setRestored({...profile})}>Fixture Restore Profile</button><PlayHostApp session={{...session,initialPlayerData:{profile:restored}}} raceSurface={Surface} onPlayable={()=>window.playable=true}/></>;}
 createRoot(document.getElementById('root')).render(<React.StrictMode><FixtureApp/></React.StrictMode>);
@@ -104,7 +104,7 @@ try {
     report.push({mode,viewport,pass:true});await context.close();
   }
 
-  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Jest E2E", report}, null, 2));
+  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Facebook E2E", report}, null, 2));
   console.log(`PASS: ${report.length} live-result balance/profile return cases`);
 } finally {
   await browser?.close();

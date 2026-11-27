@@ -16,7 +16,7 @@ import nl from "../../../../../src/locales/nl/race.json";
 import pl from "../../../../../src/locales/pl/race.json";
 import vi from "../../../../../src/locales/vi/race.json";
 
-/** Existing translated race copy shared with the Jest game. */
+/** Existing translated race copy shared with the shared game. */
 const dictionaries = {en, es, pt, fr, de, ja, ko, hi, ru, tr, ar, id, it, nl, pl, vi} satisfies Record<YouTubeLocale, typeof en>;
 /** Keys use the existing web translations, including category names. */
 export type RaceCopyKey = keyof typeof en.RaceTo10;

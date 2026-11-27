@@ -3,7 +3,6 @@ import {AnalyticsConsentControls} from "../../observability/analytics/AnalyticsC
 import {useContext, useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale} from "../../content/catalog/bundledContent";
 import {youtubeText} from "../../localization/copy/localGameCopy";
-import {isJestWebTarget} from "../../platform/browser/webTargetEnvironment";
 import {ProfileSubscriptionContext} from "../../accounts/browser/ProfileSubscriptionContext";
 import type {GameModal} from "../../gameplay/session/gameSession";
 import {LANGUAGE_OPTIONS, useTranslator, type Locale} from "../../localization/browser/i18n";
@@ -20,8 +19,6 @@ export type SettingsModalPageProps = {
   locale: string;
   /** Stores muted. */
   muted: boolean;
-  /** Keeps account-linked notifications disabled for platform guests. */
-  platformRegistered?: boolean;
   /** Stores on open modal. */
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Stores on toggle mute. */
@@ -32,7 +29,6 @@ export type SettingsModalPageProps = {
 export function SettingsModalPage({
   locale,
   muted,
-  platformRegistered,
   onOpenModal,
   onToggleMute,
 }: SettingsModalPageProps) {
@@ -61,9 +57,9 @@ export function SettingsModalPage({
         <span>{youtubeText(accessibilityLocale, "reducedMotion")}</span>
         <strong>{reducedMotion ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
-      <NotificationSettings disabled={platformRegistered === false} />
+      <NotificationSettings />
       <AnalyticsConsentControls />
-      {!isJestWebTarget && <label className="settings-row">
+      <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>
         <select value={locale} onChange={changeLocale}>
           {LANGUAGE_OPTIONS.map((language) => (
@@ -72,7 +68,7 @@ export function SettingsModalPage({
             </option>
           ))}
         </select>
-      </label>}
+      </label>
       <button className="settings-row" onClick={() => onOpenModal("instructions")}>
         <span>{tr("Settings.HELP_BUTTON")}</span>
         <strong aria-hidden="true">›</strong>

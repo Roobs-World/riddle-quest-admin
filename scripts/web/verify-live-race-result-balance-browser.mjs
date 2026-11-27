@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 
-// Supplementary component regression: this is not hosted Jest E2E evidence.
+// Supplementary component regression: this is not hosted Facebook E2E evidence.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "artifacts/live-result-balance"));
 await mkdir(output, {recursive: true});
@@ -22,7 +22,7 @@ import {createHostedPlaySession} from ${JSON.stringify(path.join(root, "src/app/
 import {createFakeHostServices} from ${JSON.stringify(path.join(root, "src/gameplay/fixtures/fakeServices.ts"))};
 import {LiveRaceGame} from ${JSON.stringify(path.join(root, "src/races/components/live/LiveRaceGame.tsx"))};
 import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts"))};
-localStorage.setItem('riddleQuest:onboarding:jest-guest','seen');
+localStorage.setItem('riddleQuest:onboarding:guest-player','seen');
 const base=createFakeHostServices({dailyCompleted:true});
 let profile; base.auth.subscribe(snapshot=>{profile=snapshot.profile;});
 window.profileReads=0;window.completedEvents=0;
@@ -79,7 +79,7 @@ try {
     report.push({mode,viewport,pass:true});await context.close();
   }
 
-  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Jest E2E", report}, null, 2));
+  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Facebook E2E", report}, null, 2));
   console.log(`PASS: ${report.length} live-result balance return cases`);
 } finally {
   await browser?.close();

@@ -43,7 +43,7 @@ const source={...rawSource,spendCoins:input=>{
  paidReceipts.set(input.requestId,{fingerprint,receipt});
  return receipt;
 }};
-const uid=attempts===6?'jest-guest':'reddit-guest';
+const uid=attempts===6?'guest-player':'reddit-guest';
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');

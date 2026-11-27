@@ -75,7 +75,7 @@ it("assigns one stable player-level experiment arm and isolates unenrolled pools
   expect(JSON.stringify(selected.experiment)).not.toContain(configuration.salt);
   expect(JSON.stringify(selected.experiment)).not.toContain(identity.userId);
   expect(selectRaceMatchConfiguration(configuration, {...identity, locale: "fr"}).experiment).toBeUndefined();
-  expect(selectRaceMatchConfiguration(configuration, {userId: `jest_${"a".repeat(40)}`, provider: "jest", locale: "en"}).experiment).toBeUndefined();
+  expect(selectRaceMatchConfiguration(configuration, {userId: `facebook_${"a".repeat(40)}`, provider: "facebook", locale: "en"}).experiment).toBeUndefined();
   expect(() => selectRaceMatchConfiguration(configuration)).toThrow();
   expect(() => selectRaceMatchConfiguration(configuration, {...identity, userId: "forged"})).toThrow();
   /** A bounded synthetic population exercises both disjoint assignment intervals. */

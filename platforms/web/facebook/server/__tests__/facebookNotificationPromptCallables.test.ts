@@ -58,7 +58,7 @@ describe("Facebook notification prompt callables", () => {
       code: "unauthenticated",
     });
     await expect(
-      call(claimFacebookNotificationPermissionPrompt, {}, {uid, token: {provider: "jest"}}),
+      call(claimFacebookNotificationPermissionPrompt, {}, {uid, token: {provider: "reddit"}}),
     ).rejects.toMatchObject({code: "unauthenticated"});
     await expect(
       call(

@@ -34,7 +34,7 @@ const USERNAME_COPY: Readonly<Record<UsernameNotice, ProfileCopyKey>> = {
   tooShort: "usernameTooShort",
   failed: "usernameFailed",
 };
-/** Hosted profile matching the Jest Web Target: stats, achievements, username, leaderboards and account deletion. */
+/** Hosted profile matching the shared hosted game: stats, achievements, username, leaderboards and account deletion. */
 export function HostedProfileScreen({locale, services, accountUid, onBack, onDeleted}: HostedProfileScreenProps) {
   /** Server-confirmed profile. */
   const {profile} = useAuthSnapshot(services);

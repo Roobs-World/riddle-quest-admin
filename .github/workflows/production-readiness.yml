@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   workspace-node24:
-    name: Jest and Facebook workspace (Node 24)
+    name: Facebook workspace (Node 24)
     if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -40,11 +40,11 @@ jobs:
       - run: pnpm audit --audit-level high
       - run: pnpm check:security
       - run: pnpm check:monetization
-      - run: pnpm check:types:jest-facebook
+      - run: pnpm check:types:shared
       - run: pnpm --dir firebase-functions lint
       - run: pnpm check:facebook-secrets
       - run: pnpm check:facebook-copy
-      - run: pnpm build:jest-facebook
+      - run: pnpm build:facebook
       - run: git diff --exit-code -- firebase-functions/package.json
 
   functions-node22:
@@ -72,7 +72,7 @@ jobs:
       - run: pnpm --dir firebase-functions build
 
   artifact-integrity:
-    name: Jest and Facebook artifact integrity
+    name: Facebook artifact integrity
     if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     needs: [workspace-node24, functions-node22]
     runs-on: ubuntu-24.04
@@ -91,9 +91,8 @@ jobs:
       - run: corepack enable
       - run: corepack prepare pnpm@12.21.0 --activate
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build:jest-facebook
-      - run: pnpm --filter riddle-quest validate:w3c platforms/web/jest/build/dist/index.html platforms/web/facebook/build/dist/index.html
-      - run: pnpm --filter riddle-quest preflight:jest-upload
+      - run: pnpm build:facebook
+      - run: pnpm --filter riddle-quest validate:w3c platforms/web/facebook/build/dist/index.html
       - name: Package the audited Facebook build
         run: node platforms/web/facebook/scripts/prepare-facebook-draft.mjs
       - run: pnpm check:facebook-progress

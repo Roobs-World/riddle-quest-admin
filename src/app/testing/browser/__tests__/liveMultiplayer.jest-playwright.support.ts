@@ -53,7 +53,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
   await page.route(target === "Reddit" ? "**/api/game/race.live.retire" : "**/retireLiveRaceJoin", route => {
     /** Actual shipped adapters may select only their original join and verified account precondition. */
     const raw = route.request().postDataJSON(), input = RetireLiveRaceJoinSchema.parse(target === "Reddit" ? raw : raw.data);
-    expect(input).toEqual({requestId: joins.at(-1)?.requestId, expectedOwnerId: target === "Facebook" ? "jest-guest" : "reddit-account"});
+    expect(input).toEqual({requestId: joins.at(-1)?.requestId, expectedOwnerId: target === "Facebook" ? "guest-player" : "reddit-account"});
     retirements.push(input);
     requestUrls.push(route.request().url()); return reply(route, {status: "retired"});
   });
@@ -90,7 +90,7 @@ export async function installLiveMultiplayerJourney(page: Page, target: "Faceboo
       const raw = request.postDataJSON();
       /** Only this account's original join may confirm the observed retirement. */
       const input = target === "Reddit" ? raw : raw.data;
-      return input.requestId === expectedRequestId && input.expectedOwnerId === (target === "Facebook" ? "jest-guest" : "reddit-account");
+      return input.requestId === expectedRequestId && input.expectedOwnerId === (target === "Facebook" ? "guest-player" : "reddit-account");
     });
   };
   return async (locale: string) => {

@@ -4,10 +4,10 @@ import {webApplications, platformServerRoots} from "./platform-layout.mjs";
 
 const root = process.cwd();
 const arguments_ = process.argv.slice(2);
-if (arguments_.length > 1 || arguments_.some(argument => argument !== "--jest-facebook")) {
-  throw new Error("E2E coverage audit accepts only --jest-facebook or the default full scope.");
+if (arguments_.length > 1 || arguments_.some(argument => argument !== "--facebook")) {
+  throw new Error("E2E coverage audit accepts only --facebook or the default full scope.");
 }
-const jestFacebook = arguments_.includes("--jest-facebook");
+const facebookOnly = arguments_.includes("--facebook");
 // These native-only suites remain subject to the default full-platform audit.
 const nativeIntegrationSuites = new Set([
   "platforms/native/android/server/__tests__/androidNotifications.it.test.ts",
@@ -40,7 +40,7 @@ const emulatorConfig = (await Promise.all([...emulatorConfigurations]
   .map(name => readFile(path.join(root, "firebase-functions", name), "utf8")))).join("\n");
 const workflow = await readFile(path.join(root, ".github/workflows/production-readiness.yml"), "utf8");
 
-const browserRoots = ["src", ...(jestFacebook ? ["jest", "facebook"] : webApplications)
+const browserRoots = ["src", ...(facebookOnly ? ["facebook"] : webApplications)
   .map(target => `platforms/web/${target}/src`)];
 const browserSuites = (await Promise.all(browserRoots.map(directory => collect(path.join(root, directory),
   name => name.endsWith(".jest-playwright.test.ts"))))).flat();
@@ -48,7 +48,7 @@ const integrationSuites = (await Promise.all(["firebase-functions/src", ...platf
   .map(directory => collect(path.join(root, directory), name => name.endsWith(".it.test.ts"))))).flat();
 
 const missingBrowserSuites = browserSuites.filter((file) => !projectScripts.includes(path.basename(file)));
-const selectedIntegrationSuites = integrationSuites.filter(file => !jestFacebook ||
+const selectedIntegrationSuites = integrationSuites.filter(file => !facebookOnly ||
   !nativeIntegrationSuites.has(path.relative(root, file).split(path.sep).join("/")));
 const missingIntegrationSuites = selectedIntegrationSuites.filter((file) => !emulatorConfig.includes(path.basename(file)));
 const failures = [];
@@ -66,13 +66,13 @@ if (missingIntegrationSuites.length > 0) {
 if (!String(rootPackage.scripts?.["test:e2e"] ?? "").includes("test:e2e:local")) {
   failures.push("The root test:e2e interface must invoke test:e2e:local.");
 }
-if (!/^\s*- run: pnpm test:e2e(?::jest-facebook)?\s*$/mu.test(workflow)) {
+if (!/^\s*- run: pnpm test:e2e(?::facebook)?\s*$/mu.test(workflow)) {
   failures.push("Production readiness must invoke a canonical test:e2e interface.");
 }
-if (workflow.includes("pnpm test:e2e:jest-facebook")) {
-  const scoped = String(rootPackage.scripts?.["test:e2e:jest-facebook"] ?? "");
-  if (!scoped.includes("check:e2e-coverage") || !scoped.includes("test:race:rules") || !scoped.includes("pnpm test:e2e:jest-facebook:web")) {
-    failures.push("Jest/Facebook E2E must retain coverage auditing, backend rules, and the scoped browser interface.");
+if (workflow.includes("pnpm test:e2e:facebook")) {
+  const scoped = String(rootPackage.scripts?.["test:e2e:facebook"] ?? "");
+  if (!scoped.includes("check:e2e-coverage") || !scoped.includes("test:race:rules") || !scoped.includes("pnpm test:e2e:facebook:web")) {
+    failures.push("Facebook E2E must retain coverage auditing, backend rules, and the scoped browser interface.");
   }
 }
 if (/pnpm .*test:(?:race:rules|[^\s]+:playwright|mobile-soak)/u.test(workflow)) {
@@ -85,6 +85,6 @@ if (failures.length > 0) {
   process.exitCode = 1;
 } else {
   console.log(
-    `E2E coverage audit passed (${jestFacebook ? "Jest/Facebook" : "full"}): ${browserSuites.length} Playwright suites and ${selectedIntegrationSuites.length} emulator suites have canonical entry points.`,
+    `E2E coverage audit passed (${facebookOnly ? "Facebook" : "full"}): ${browserSuites.length} Playwright suites and ${selectedIntegrationSuites.length} emulator suites have canonical entry points.`,
   );
 }

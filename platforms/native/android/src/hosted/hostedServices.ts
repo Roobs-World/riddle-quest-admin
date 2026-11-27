@@ -16,7 +16,7 @@ export const createAndroidHostAuth = (client: HostedFirebaseClient): HostAuth =>
  * Creates the shared hosted play services for Android.
  *
  * @remarks
- * This is the same implementation the Jest Web Target runs: issued Classic
+ * This is the same implementation the shared hosted game runs: issued Classic
  * buffers, Daily preloads, authority-delivery deadlines and profile refreshes
  * all behave identically; only auth persistence and transport differ. The
  * locale is read lazily because the services are created before the device

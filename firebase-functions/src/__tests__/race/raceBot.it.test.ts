@@ -10,7 +10,7 @@ import {startRaceRunForUser, readyRaceRunForUser, resumeRaceRunForUser, submitRa
 import {listRaceBotLeaderboardEntries} from "../../race/settlement/raceBotLeaderboard";
 
 /** Isolated provider owners used only in the local Firestore emulator. */
-const PLAYER = `jest_${"1".repeat(40)}`, CREATOR = `jest_${"2".repeat(40)}`;
+const PLAYER = `facebook_${"1".repeat(40)}`, CREATOR = `facebook_${"2".repeat(40)}`;
 /** Stable authoritative clock makes deadline and offer expiry tests instant. */
 const NOW = 1800000000000;
 /** Emulator-only storage; never use production fixtures for destructive cleanup. */
@@ -166,7 +166,7 @@ it("prefers a published human recording and creates no fallback offer for that s
 it("does not conceal corrupt matchmaking projections with a fallback", async () => {
   /** Captured expected corrupt-projection diagnostics. */
   const logging = jest.spyOn(logger, "warn").mockImplementation(() => {});
-  await db.doc("raceMatchCandidates/broken").set({provider: "jest", locale: "en", status: "active", rulesVersion: "race10_v1",
+  await db.doc("raceMatchCandidates/broken").set({provider: "facebook", locale: "en", status: "active", rulesVersion: "race10_v1",
     performanceBucket: 11, selectionKey: "a".repeat(64), expiresAtMs: NOW + 100000});
   try {
     await expect(findRecordedRaceMatch(PLAYER, {locale: "en", requestId: "corrupt-search-0001"}, {db, nowMs: NOW})).rejects.toMatchObject({code: "unavailable"});

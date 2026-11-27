@@ -46,7 +46,7 @@ test("allows target-local edges, target-to-shared edges, and the real shop adapt
       import "@sentry/browser";
     `,
     "facebook/local.ts": "export {};\n",
-    "jest/entry.ts": `
+    "facebook/secondary.ts": `
       import "../shared";
       import "firebase/auth";
       import "@sentry/browser";
@@ -77,7 +77,7 @@ test("excludes __tests__, src/test, and *.test.* files from the production graph
   await withSourceFixture({
     "__tests__/shared.ts": "import '../youtube/missing';\n",
     "facebook/__tests__/entry.ts": "import '../../reddit/missing';\n",
-    "main.test.ts": "import './jest/missing';\n",
+    "main.test.ts": "import './netflix/missing';\n",
     "main.ts": "import './shared';\n",
     "shared.ts": "export {};\n",
     "test/helper.ts": "import '../facebook/missing';\n",
@@ -90,16 +90,16 @@ test("excludes __tests__, src/test, and *.test.* files from the production graph
 
 test("rejects shared-to-target imports across every supported TypeScript module syntax", async () => {
   await withSourceFixture({
-    "a-static.ts": "import './jest/value';\n",
+    "a-static.ts": "import './netflix/value';\n",
     "b-reexport.ts": "export {value} from './facebook/value';\n",
     "c-export-type.ts": "export type {Value} from './reddit/value';\n",
     "d-dynamic.ts": "void import('./youtube/value');\n",
     "e-require.ts": "require('./facebook/value');\n",
     "f-import-type.ts": "import type {Value} from './reddit/value';\n",
     "g-type-expression.ts": "type Value = import('./youtube/value').Value;\n",
-    "h-import-equals.ts": "import Value = require('./jest/value');\n",
+    "h-import-equals.ts": "import Value = require('./netflix/value');\n",
     "facebook/value.ts": "export const value = true;\n",
-    "jest/value.ts": "export = class Value {};\n",
+    "netflix/value.ts": "export = class Value {};\n",
     "reddit/value.ts": "export interface Value {}\n",
     "youtube/value.ts": "export interface Value {}\n",
   }, async (sourceDirectory) => {
@@ -111,14 +111,14 @@ test("rejects shared-to-target imports across every supported TypeScript module 
     assert.deepEqual(
       error.violations.map(({specifier}) => specifier),
       [
-        "./jest/value",
+        "./netflix/value",
         "./facebook/value",
         "./reddit/value",
         "./youtube/value",
         "./facebook/value",
         "./reddit/value",
         "./youtube/value",
-        "./jest/value",
+        "./netflix/value",
       ],
     );
   });
@@ -127,7 +127,7 @@ test("rejects shared-to-target imports across every supported TypeScript module 
 test("rejects imports between different target owners", async () => {
   await withSourceFixture({
     "facebook/reexport.ts": "export {value} from '../reddit/value';\n",
-    "jest/dynamic.ts": "void import('../youtube/value');\n",
+    "netflix/dynamic.ts": "void import('../youtube/value');\n",
     "reddit/type.ts": "import type {Value} from '../facebook/value';\n",
     "reddit/value.ts": "export const value = true;\n",
     "facebook/value.ts": "export interface Value {}\n",
@@ -139,7 +139,7 @@ test("rejects imports between different target owners", async () => {
       "CROSS_TARGET_IMPORT",
       "CROSS_TARGET_IMPORT",
     ]);
-    assert.deepEqual(error.violations.map(({owner}) => owner), ["facebook", "jest", "reddit"]);
+    assert.deepEqual(error.violations.map(({owner}) => owner), ["facebook", "netflix", "reddit"]);
   });
 });
 

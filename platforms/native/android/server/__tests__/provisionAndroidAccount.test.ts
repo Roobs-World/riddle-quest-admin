@@ -84,7 +84,7 @@ jest.mock("../../../../../firebase-functions/src/shared/firebaseAdmin", () => ({
 }));
 jest.mock("../../../../../firebase-functions/src/shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../../../../../firebase-functions/src/shared/accountDeletion")>("../../../../../firebase-functions/src/shared/accountDeletion"),
-  runWithJestAccountOperationLease: async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) =>
+  runWithAccountOperationLease: async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) =>
     operation(),
 }));
 jest.mock("firebase-functions/v2/https", () => {

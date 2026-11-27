@@ -2,7 +2,7 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_WIN_COINS} from "../../../../src/races/contracts/index.js";
 import {createHash} from "node:crypto";
 import {admin} from "../../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import type {Firestore} from "../raceSetupService";
 import type {parseRacePerformanceEvent} from "./raceDeliveryRecords";
 import type {LiveMatch, LiveTicket} from "../live/raceLiveState";
@@ -29,7 +29,7 @@ export async function validateLiveRaceReferralSource(transaction: FirebaseFirest
   const [ticketSnapshot, matchSnapshot, owner, deletion] = await Promise.all([
     transaction.get(db.doc(`liveRaceTickets/${receipt.liveTicketId}`)),
     transaction.get(db.doc(`liveRaceMatches/${receipt.liveMatchId}`)),
-    transaction.get(db.doc(`users/${receipt.userId}`)), transaction.get(getJestAccountDeletionRef(db, receipt.userId)),
+    transaction.get(db.doc(`users/${receipt.userId}`)), transaction.get(getAccountDeletionRef(db, receipt.userId)),
   ]);
   if (!ticketSnapshot.exists || !matchSnapshot.exists || !owner.exists || deletion.exists) return false;
   /** Both source records must retain an unexpired server timestamp. */

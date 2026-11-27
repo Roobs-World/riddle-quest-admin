@@ -34,9 +34,7 @@
         "src/progression/economy/rewardRules.ts",
         "src/progression/rewards/__tests__/**",
         "src/progression/rewards/localCompletionRewards.ts",
-        "src/races/contracts/**",
-        "platforms/web/jest/src/referrals/__tests__/referralCampaigns.test.ts",
-        "platforms/web/jest/src/referrals/referralCampaigns.ts"
+        "src/races/contracts/**"
       ]
     },
     "local-game": {
@@ -305,78 +303,6 @@
         "lines": 100
       },
       "src/accounts/browser/avatarImage.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/JestSdkPlatform.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/MockJestPlatform.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/entryIntent.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/milestone.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/sharing/screenshots.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/notifications/copy.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/notifications/engagement.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/notifications/useJestNotifications.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/purchases.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/useJestProductCatalog.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/useJestPurchase.ts": {
-        "statements": 100,
-        "branches": 100,
-        "functions": 100,
-        "lines": 100
-      },
-      "platforms/web/jest/src/startup.ts": {
         "statements": 100,
         "branches": 100,
         "functions": 100,

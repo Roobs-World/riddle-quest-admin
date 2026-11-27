@@ -16,27 +16,21 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root, "src/app/styles/game.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root, "src/races/components/recorded/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root, "src/races/testing/browser/fakeRaceServices.ts"))};
-import {ReferralSharingProvider} from ${JSON.stringify(path.join(root, "src/sharing/components/ReferralSharingCapability.tsx"))};
-import {useJestSharing} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/sharing/useJestSharing.ts"))};
 import {createFacebookLiveRaceSharing} from ${JSON.stringify(path.join(root, "platforms/web/facebook/src/FacebookLiveRaceSharing.ts"))};
-import {parseEntryIntent,resolveRaceChallengeId} from ${JSON.stringify(path.join(root, "platforms/web/jest/src/entryIntent.ts"))};
 import {facebookLaunchFromEntryData} from ${JSON.stringify(path.join(root, "platforms/web/facebook/src/referrals.ts"))};
-const params=new URLSearchParams(location.search), user=params.get('user') || 'Alice', target=params.get('target'), isFacebook=target.startsWith('facebook');
+const params=new URLSearchParams(location.search), user=params.get('user') || 'Alice', target=params.get('target');
 window.inviteCalls=[];window.commands=[];window.outcome='success';
 const services=createFakeRaceServices();
 const call=async(action,input)=>{window.commands.push({action,input});const response=await fetch('/live/'+action,{method:'POST',body:JSON.stringify({user,...input})});if(!response.ok)throw new Error('Transport unavailable');return response.json();};
 const matchmaking={find:async()=>({status:'cancelled'}),live:{join:input=>call('join',input),update:input=>call('update',input),challenge:input=>call('challenge',input),sendChallenge:input=>call('sendChallenge',input),inbox:()=>call('inbox',{})}};
-const platform={setScreenshotProvider:()=>{},shareReferral:async input=>{window.inviteCalls.push({target:'jest',input});return {status:window.outcome,value:undefined};}};
 const nativeInvite=async input=>{window.inviteCalls.push({target:'facebook',input});if(window.outcome!=='success')throw {code:window.outcome==='cancelled'?'USER_INPUT':'NETWORK_ERROR'};};
 const sdk={getSupportedAPIs:()=>target==='facebook-unsupported'?[]:target==='facebook-share'?['shareAsync']:['inviteAsync','shareAsync'],shareAsync:nativeInvite,inviteAsync:nativeInvite};
 // Facebook referral rewards are deliberately absent: multiplayer alone enables native friend challenges.
-if(isFacebook)matchmaking.live.shareChallenge=createFacebookLiveRaceSharing({sdk,enabled:true,ageCategory:'13_plus',isActive:()=>true,renderImage:()=> 'data:image/png;base64,YQ=='});
-const session={player:{playerId:user,registered:false},profile:{username:user},entryIntent:{}};
+matchmaking.live.shareChallenge=createFacebookLiveRaceSharing({sdk,enabled:true,ageCategory:'13_plus',isActive:()=>true,renderImage:()=> 'data:image/png;base64,YQ=='});
 const entry=params.has('challenge')?JSON.parse(params.get('challenge')):{};
-const challengeId=isFacebook?facebookLaunchFromEntryData(entry).initialRaceChallengeId:resolveRaceChallengeId(parseEntryIntent(entry));
+const challengeId=facebookLaunchFromEntryData(entry).initialRaceChallengeId;
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
-const activity=async operation=>operation();const track=()=>{};const backend={};const sharingEnabled=()=>true;
-function App(){const jest=useJestSharing({locale:'en',session,platform,backend,sharingEnabled,withPlatformActivity:activity,withBackgroundPlatformActivity:activity,trackFunnel:track});const capability=isFacebook?undefined:jest;return <ReferralSharingProvider capability={capability}><RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} /></ReferralSharingProvider>;}
+function App(){return <RaceTo10Game locale='en' coins={100} ownerId={user} challengeId={challengeId} matchmaking={matchmaking} postToHost={postToHost} onClose={()=>{}} />;}
 createRoot(document.getElementById('root')).render(<React.StrictMode><App /></React.StrictMode>);
 `;
 await writeFile(path.join(scratch, "main.tsx"), source);
@@ -64,8 +58,9 @@ try {
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   const base = `http://127.0.0.1:${server.address().port}`;
   browser = await chromium.launch({headless: true, ...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH ? {executablePath: process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH} : {})});
-  for (const target of (process.env.LIVE_RACE_TARGETS?.split(",") ?? ["jest", "facebook", "facebook-share"])) {
-    authority = await createLiveRaceEmulator({provider: target === "jest" ? "jest" : "facebook"});
+  for (const target of (process.env.LIVE_RACE_TARGETS?.split(",") ?? ["facebook", "facebook-share"])) {
+    assert.ok(["facebook", "facebook-share"].includes(target), "Unsupported invitation fixture target");
+    authority = await createLiveRaceEmulator({provider: "facebook"});
     for (const viewport of [{width: 1280, height: 900}, {width: 390, height: 844}]) {
       await authority.reset();
       const contexts = await Promise.all(["Alice", "Bob"].map(() => browser.newContext({viewport})));
@@ -98,20 +93,19 @@ try {
       await a.getByRole("button", {name: "Challenge a friend", exact: true}).click();
       await a.waitForFunction(() => window.inviteCalls.length === 3 && !document.querySelector(".live-race-invite-share button").disabled);
       const calls = await a.evaluate(() => window.inviteCalls);
-      const entry = target === "jest" ? calls[2].input.entryPayload : calls[2].input.data;
+      const entry = calls[2].input.data;
       assert.match(entry.challengeId, /^live_[a-f0-9]{64}$/);
-      assert.ok(calls.every(call => (target === "jest" ? call.input.entryPayload : call.input.data).challengeId === entry.challengeId));
-      if (target === "jest") {assert.equal(entry.challengeDestination, "multiplayer");assert.match(calls[2].input.reference, /^rq_r10_v1_[0-9a-f]{16}$/);}
-      else if (target === "facebook-share") {assert.equal(calls[2].input.intent, "CHALLENGE");assert.equal(calls[2].input.switchContext, false);}
+      assert.ok(calls.every(call => call.input.data.challengeId === entry.challengeId));
+      if (target === "facebook-share") {assert.equal(calls[2].input.intent, "CHALLENGE");assert.equal(calls[2].input.switchContext, false);}
       else {assert.equal(calls[2].input.dialogTitle, "Challenge a friend");assert.ok(calls[2].input.text.default);}
-      if (target !== "jest") assert.deepEqual(Object.keys(entry), ["challengeId"]);
+      assert.deepEqual(Object.keys(entry), ["challengeId"]);
       await a.screenshot({path: path.join(output, `${target}-reserved-${viewport.width}.png`), fullPage: true});
       await a.goto(`${base}/?target=${target}&user=Alice&challenge=${encodeURIComponent(JSON.stringify(entry))}`);
       await a.locator(".friend-lobby-seat[data-occupied=true] strong").waitFor();
-      assert.equal(await a.evaluate(() => window.commands.find(command => command.action === "join").input.challengeId), originalChallengeId, "Creator opening their own SMS link resumes the original private seat");
+      assert.equal(await a.evaluate(() => window.commands.find(command => command.action === "join").input.challengeId), originalChallengeId, "Creator opening their own invitation link resumes the original private seat");
       await b.goto(`${base}/?target=${target}&user=Bob&challenge=${encodeURIComponent(JSON.stringify(entry))}`);
       await b.locator(".live-race-search-wheel[data-phase=countdown]").waitFor();
-      assert.equal(await b.getByRole("button", {name: "Accept challenge", exact: true}).count(), 0, "Opening a validated SMS link enters its private lobby directly");
+      assert.equal(await b.getByRole("button", {name: "Accept challenge", exact: true}).count(), 0, "Opening a validated invitation link enters its private lobby directly");
       await a.locator(".friend-lobby-seat[data-occupied=true]").nth(1).waitFor();
       assert.equal(await a.locator(".friend-lobby-seat strong").nth(1).innerText(), "Bob");
       assert.equal(await b.locator(".friend-lobby-seat strong").nth(1).innerText(), "Alice");
@@ -124,7 +118,7 @@ try {
       assert.equal(await a.locator(".live-race-invite-share").count(), 0);
       assert.deepEqual(errors, []);
       await Promise.all(contexts.map(context => context.close()));
-      console.log(`${target} ${viewport.width}px: sender reload, native challenge payload, dismissal/failure retry, SMS-link entry into the original private lobby and shared gameplay passed.`);
+      console.log(`${target} ${viewport.width}px: sender reload, native challenge payload, dismissal/failure retry, invitation-link entry into the original private lobby and shared gameplay passed.`);
       await authority.reset();
       const direct = await Promise.all(["Alice", "Bob"].map(() => browser.newContext({viewport})));
       const sender = await direct[0].newPage(), recipient = await direct[1].newPage();

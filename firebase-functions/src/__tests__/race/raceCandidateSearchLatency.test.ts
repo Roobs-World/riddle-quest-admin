@@ -24,7 +24,7 @@ it("finishes a sparse indexed search within its deadline with bounded concurrent
     /** Matches the production lookup's fifteen-second work budget. */
     const started = Date.now();
     /** Rejection is captured before advancing timers to avoid unhandled promise reports. */
-    const result = searchRaceCandidates(db, "jest_owner", "jest", {locale: "en", requestId: "sparse-search"},
+    const result = searchRaceCandidates(db, "facebook_owner", "facebook", {locale: "en", requestId: "sparse-search"},
       profile, "sparse-search", started, undefined, () => {
         if (Date.now() - started >= 15000) throw new HttpsError("deadline-exceeded", "Search deadline exhausted.");
       }).then(value => ({value}), error => ({error}));

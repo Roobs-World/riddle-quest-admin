@@ -6,7 +6,6 @@ const repositoryRoot = path.resolve(functionsRoot, "..");
 const stagedRoot = path.join(functionsRoot, ".build-source");
 const serverRoots = [
   "platforms/native/android/server",
-  "platforms/web/jest/server",
   "platforms/web/facebook/server",
   "platforms/web/reddit/server",
   "platforms/web/yahoo/server",
@@ -15,8 +14,6 @@ const sharedSourceRoots = [
   "src",
   "platforms/web/facebook/src/commerce/facebookCatalog.ts",
   "platforms/web/reddit/src/shared/redditCatalog.ts",
-  "platforms/web/jest/src/referrals/referralCampaigns.ts",
-  "platforms/web/jest/src/notifications/managerProtocol.ts",
 ];
 
 /** Recreates the repository-relative source graph inside the Functions archive boundary. */

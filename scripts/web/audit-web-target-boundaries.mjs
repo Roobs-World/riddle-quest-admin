@@ -4,7 +4,7 @@ import {fileURLToPath} from "node:url";
 import ts from "typescript";
 
 const defaultSourceDirectory = fileURLToPath(new URL("../../src", import.meta.url));
-const targetOwners = new Set(["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]);
+const targetOwners = new Set(["facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]);
 const repositoryDirectory = fileURLToPath(new URL("../../", import.meta.url));
 const sharedOwner = "shared";
 const externalOwner = "external";

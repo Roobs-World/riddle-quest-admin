@@ -27,7 +27,7 @@ import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settin
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
-const variant=new URL(location.href).searchParams.get('variant')??'classicReplaced',uid='jest-guest',scope=pendingPlayScope(uid,1,'en');
+const variant=new URL(location.href).searchParams.get('variant')??'classicReplaced',uid='guest-player',scope=pendingPlayScope(uid,1,'en');
 const daily=variant.startsWith('daily')||variant==='foreignMode'||variant==='completedDailyFallback',pending=variant==='queued'||variant==='paid',replaced=variant.endsWith('Replaced')||pending;
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');

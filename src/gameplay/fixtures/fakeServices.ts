@@ -56,7 +56,7 @@ const fakeRiddles: Array<
 
 /** Creates fake user. */
 const createFakeUser = (): BridgeUser => ({
-  uid: "jest-guest",
+  uid: "guest-player",
   displayName: "Guest Solver",
   email: undefined,
   photoURL: undefined,
@@ -78,7 +78,7 @@ const createFakeProfile = (): BridgeProfile => ({
 
 /** Provides leaderboard rows behavior. */
 const leaderboardRows: BridgeLeaderboardEntry[] = [
-  {userId: "jest-guest", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, multiplayerWins: 3, bestStreak: 2},
+  {userId: "guest-player", username: "Guest Solver", level: 3, xp: 420, totalWins: 5, multiplayerWins: 3, bestStreak: 2},
   {
     userId: "mira",
     username: "Mira",

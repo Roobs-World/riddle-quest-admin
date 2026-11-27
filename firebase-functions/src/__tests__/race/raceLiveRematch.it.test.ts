@@ -4,7 +4,7 @@ import {getFirestore, Timestamp, FieldValue} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
 import {listLiveRaceChallengesForUser} from "../../race/invitations/raceLiveChallengeNotifications";
-import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
+import {getAccountDeletionRef, ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {LIVE_RACE_HISTORY_MS, LIVE_RACE_INVITE_MS, LiveRaceViewSchema, LiveRaceChallengeSchema} from "../../../../src/races/contracts/index.js";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
@@ -28,7 +28,7 @@ async function clear() {
   if (!PROJECT.startsWith("demo-") || !/^127\.0\.0\.1:\d+$/.test(process.env.FIRESTORE_EMULATOR_HOST ?? ""))
     throw new Error("Owned loopback demo emulator required");
   for (const name of ["users", "localizedRiddles", "liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues",
-    "liveRacePushOutbox", "liveRaceSignals", "racePerformanceOutbox", "providerIdentities", "redditGatewayNonces", "redditRequestRates", JEST_ACCOUNT_DELETION_COLLECTION])
+    "liveRacePushOutbox", "liveRaceSignals", "racePerformanceOutbox", "providerIdentities", "redditGatewayNonces", "redditRequestRates", ACCOUNT_DELETION_COLLECTION])
     await db.recursiveDelete(db.collection(name));
   await db.doc("raceConfig/rollout").delete();
 }
@@ -71,7 +71,7 @@ async function completed(provider: RaceProviderScope, suffix = "source", supplie
 const rematch = (userId: string, source: string, nowMs = NOW + 10_000, requestId = "private-rematch-001") =>
   joinLiveRaceForUser(userId, {locale: "en", categoryId: "history", requestId, rematchOfTicketId: source}, {db, nowMs});
 
-it.each(["facebook", "reddit", "jest", "android"] as const)("reserves %s rematch only for the prior human and recovers concurrent retries once", async provider => {
+it.each(["facebook", "reddit", "facebook", "android"] as const)("reserves %s rematch only for the prior human and recovers concurrent retries once", async provider => {
   /** Either terminal seat may ask its actual rival for a new race. */
   const {ids, a} = await completed(provider);
   /** Concurrent tabs converge on the existing active private lobby even with different request IDs. */
@@ -80,7 +80,7 @@ it.each(["facebook", "reddit", "jest", "android"] as const)("reserves %s rematch
   /** Only the public opaque handle leaves the creator's transport. */
   const lobby = outcomes[0];
   expect(lobby).toMatchObject({phase: "searching", opponent: null, run: null, rewardCoins: 0, challengeId: `live_${lobby.ticketId}`});
-  expect(JSON.stringify(lobby)).not.toMatch(/facebook_|reddit_|jest_|inviteRecipientId|rematchOfTicketId|answer/);
+  expect(JSON.stringify(lobby)).not.toMatch(/facebook_|reddit_|inviteRecipientId|rematchOfTicketId|answer/);
   expect((await db.doc(`liveRaceTickets/${lobby.ticketId}`).get()).data()).toMatchObject({
     privateChallenge: true, inviteRecipientId: ids[1], rematchOfTicketId: a.ticketId,
   });
@@ -101,7 +101,7 @@ it.each(["facebook", "reddit", "jest", "android"] as const)("reserves %s rematch
   expect((await db.doc(`users/${ids[1]}`).get()).data()?.coins).toBe(125);
 });
 
-it.each(["facebook", "reddit", "jest", "android"] as const)("lets the losing %s seat rematch and revalidates safety before acceptance", async provider => {
+it.each(["facebook", "reddit", "facebook", "android"] as const)("lets the losing %s seat rematch and revalidates safety before acceptance", async provider => {
   /** Authority fixture for this independent rematch gate. */
   const {ids, b} = await completed(provider);
   /** Original loser becomes the new creator; no winner-only privilege is introduced. */
@@ -146,7 +146,7 @@ it.each(["blocked", "reverse-blocked", "owner-deleted", "peer-deleted", "peer-mi
     /** Mutate one independent authority gate at a time. */
     if (mode === "blocked") await db.doc(`users/${ids[0]}/blockedRivals/${ids[1]}`).set({blocked: true});
     if (mode === "reverse-blocked") await db.doc(`users/${ids[1]}/blockedRivals/${ids[0]}`).set({blocked: true});
-    if (mode === "owner-deleted" || mode === "peer-deleted") await getJestAccountDeletionRef(db, ids[mode === "owner-deleted" ? 0 : 1]).set({deletedAt: Timestamp.fromMillis(NOW)});
+    if (mode === "owner-deleted" || mode === "peer-deleted") await getAccountDeletionRef(db, ids[mode === "owner-deleted" ? 0 : 1]).set({deletedAt: Timestamp.fromMillis(NOW)});
     if (mode === "peer-missing") await db.doc(`users/${ids[1]}`).delete();
     if (mode === "expired") await db.doc(`liveRaceTickets/${a.ticketId}`).update({createdAtMs: NOW - LIVE_RACE_HISTORY_MS});
     if (mode === "future") await db.doc(`liveRaceTickets/${a.ticketId}`).update({createdAtMs: NOW + 20_000});
@@ -256,7 +256,7 @@ it("uses the real signed Reddit join/inbox/preview boundaries with strict public
     await send("gameplay.race.live.join", {...input, requestId: "reddit-forbidden-context", facebookContextId: "foreign-thread"});
     expect(status).toBe(403); expect(body).toEqual({error: "live-race-request-failed", code: "permission-denied"});
     await send("gameplay.race.live.inbox", {userId: ids[0]}, subjects[1]); expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
-    await getJestAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 10_000});
+    await getAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 10_000});
     await send("gameplay.race.live.inbox", {}, subjects[1]); expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
     expect((await db.collection("liveRacePushOutbox").get()).size).toBe(0);
   } finally {

@@ -64,7 +64,7 @@ it("keeps reconciliation idle until enabled and recovers an expired worker lease
 it.each([
   {player: "legacy-player", creator: CREATOR},
   {player: PLAYER, creator: "legacy-creator"},
-  {player: `jest_${"c".repeat(40)}`, creator: CREATOR},
+  {player: `facebook_${"c".repeat(40)}`, creator: CREATOR},
   {player: `reddit_${"c".repeat(64)}`, creator: CREATOR},
 ])("prevents direct acceptance from crossing recognized provider and legacy namespaces: %j", async identities => {
   /** Existing legacy fixtures remain readable, but cannot impersonate a recognized provider pool. */
@@ -174,7 +174,7 @@ it("removes orphan, corrupt and private projections while repairing valid query 
 });
 
 it.each([{categoryId: "unsupported"}, {performanceBucket: 99}, {selectionKey: "a".repeat(64)},
-  {matchPolicyVersion: 99}, {creatorId: PLAYER, provider: "jest"}, {canonicalRiddleIds: ["duplicate", "duplicate"]},
+  {matchPolicyVersion: 99}, {creatorId: PLAYER, provider: "facebook"}, {canonicalRiddleIds: ["duplicate", "duplicate"]},
   {expiresAt: Timestamp.fromMillis(1)}, {challengeId: "wrong-document"}, {extra: "unsupported"}])("rejects malformed candidate projection %j before ranking", async corruptFields => {
     await db.doc("raceChallenges/valid").set(challenge("valid"));
     await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
@@ -308,13 +308,13 @@ it.each(["abandon", "ready-expiry", "worker-expiry"])("records %s without reward
 });
 
 it("keeps private invitations out of public discovery even when their lobby has disappeared", async () => {
-  await db.doc("raceChallenges/jest-invite-legacy").set(challenge("jest-invite-legacy"));
+  await db.doc("raceChallenges/race-invite-legacy").set(challenge("race-invite-legacy"));
   await db.doc("raceChallenges/private").set({...challenge("private"), scope: "invitation"});
   await db.doc("raceChallenges/opaque-private").set(challenge("opaque-private"));
   await db.doc("raceInviteLobbies/opaque-private").set({creatorId: CREATOR});
   await migrateRaceArchitecturePage(db, {collection: "challenges", dryRun: false}, NOW);
   expect((await db.collection("raceMatchCandidates").get()).empty).toBe(true);
-  for (const id of ["jest-invite-legacy", "private", "opaque-private"]) {
+  for (const id of ["race-invite-legacy", "private", "opaque-private"]) {
     expect((await db.doc(`raceChallenges/${id}`).get()).data()?.scope).toBe("invitation");
   }
 });

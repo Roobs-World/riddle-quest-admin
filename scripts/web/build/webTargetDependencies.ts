@@ -35,7 +35,7 @@ export function assertTargetDependency(target: string, id: string): void {
   }
   /** Provides name behavior. */
   const name = runtimePackage(id);
-  if ((target === "jest" || target === "facebook") && (name === "@firebase/messaging" || name === "@firebase/messaging-compat" ||
+  if (target === "facebook" && (name === "@firebase/messaging" || name === "@firebase/messaging-compat" ||
       /\/node_modules\/firebase\/(?:compat\/)?messaging(?:\/|\?|$)/u.test(portable))) {
     throw new Error(`${target} must enroll push devices on the separate notification page; Firebase Messaging cannot enter the game artifact: ${id}`);
   }

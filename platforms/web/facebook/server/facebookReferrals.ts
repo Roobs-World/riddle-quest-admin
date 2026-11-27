@@ -1,7 +1,7 @@
 import {createHash, randomBytes} from "node:crypto";
 import type {Firestore} from "firebase-admin/firestore";
 import {admin} from "../../../../firebase-functions/src/shared/firebaseAdmin";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isFacebookFirebaseUid} from "./facebookSecurity";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
 
@@ -193,11 +193,11 @@ export async function issueFacebookReferralToken(
   /** Provides r ref. */
   const userRef = db.collection("users").doc(inviterUid);
   /** Provides deletion ref behavior. */
-  const deletionRef = getJestAccountDeletionRef(db, inviterUid);
+  const deletionRef = getAccountDeletionRef(db, inviterUid);
   await db.runTransaction(async (transaction) => {
     /** Provides [user, deletion] behavior. */
     const [user, deletion] = await Promise.all([transaction.get(userRef), transaction.get(deletionRef)]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (!user.exists) throw new Error("facebook-referrer-not-found");
     transaction.create(tokenRef, {
       provider: "facebook",
@@ -228,7 +228,7 @@ export async function bindFacebookReferralToken(
   /** Provides invitee ref behavior. */
   const inviteeRef = db.collection("users").doc(inviteeUid);
   /** Provides deletion ref behavior. */
-  const deletionRef = getJestAccountDeletionRef(db, inviteeUid);
+  const deletionRef = getAccountDeletionRef(db, inviteeUid);
   return db.runTransaction(async (transaction) => {
     /** Provides [token snapshot, binding, invitee, deletion] behavior. */
     const [tokenSnapshot, binding, invitee, deletion] = await Promise.all([
@@ -237,7 +237,7 @@ export async function bindFacebookReferralToken(
       transaction.get(inviteeRef),
       transaction.get(deletionRef),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (!tokenSnapshot.exists) {
       if (!binding.exists) throw new Error("facebook-referral-token-not-found");
       /** A permanent matching receipt makes a completed bind retryable after TTL deletion. */
@@ -273,9 +273,9 @@ export async function bindFacebookReferralToken(
     /** Provides [inviter, inviter deletion] behavior. */
     const [inviter, inviterDeletion] = await Promise.all([
       transaction.get(db.collection("users").doc(inviterUid)),
-      transaction.get(getJestAccountDeletionRef(db, inviterUid)),
+      transaction.get(getAccountDeletionRef(db, inviterUid)),
     ]);
-    assertJestAccountActive(inviterDeletion);
+    assertAccountActive(inviterDeletion);
     if (!inviter.exists) throw new Error("facebook-referrer-not-found");
     if (!invitee.exists) throw new Error("facebook-invitee-not-found");
     /** Provides r. */
@@ -342,7 +342,7 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
   /** Sets tlement ref. */
   const settlementRef = db.collection("facebookReferralSettlements").doc(hash("settlement", inviteeUid));
   /** Provides invitee deletion ref behavior. */
-  const inviteeDeletionRef = getJestAccountDeletionRef(db, inviteeUid);
+  const inviteeDeletionRef = getAccountDeletionRef(db, inviteeUid);
   return db.runTransaction(async (transaction) => {
     /** Provides [binding, settlement, invitee deletion] behavior. */
     const [binding, settlement, inviteeDeletion] = await Promise.all([
@@ -386,7 +386,7 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
         ...(settledCompletionReceiptId !== undefined ? {completionReceiptId: settledCompletionReceiptId} : {}),
       };
     }
-    assertJestAccountActive(inviteeDeletion);
+    assertAccountActive(inviteeDeletion);
     if (!binding.exists) return {alreadySettled: false, inviteeCoins: 0, inviterCoins: 0};
     /** Provides binding data behavior. */
     const bindingData = binding.data()!;
@@ -404,7 +404,7 @@ export async function settleFacebookReferralAfterAuthoritativeWin(
     /** Provides cap ref behavior. */
     const capRef = db.collection("facebookReferralDailyCaps").doc(hash("cap", `${inviterUid}\0${utcDay(now)}`));
     /** Provides inviter deletion ref behavior. */
-    const inviterDeletionRef = getJestAccountDeletionRef(db, inviterUid);
+    const inviterDeletionRef = getAccountDeletionRef(db, inviterUid);
     /** Provides [invitee, inviter, cap, inviter deletion] behavior. */
     const [invitee, inviter, cap, inviterDeletion] = await Promise.all([
       transaction.get(inviteeRef),

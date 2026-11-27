@@ -18,7 +18,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
 /** Parses facebook catalog. */
-export function parseFacebookCatalog(value: unknown): Array<FacebookInstantProduct & {priceAmount: number}> {
+export function parseFacebookCatalog(value: unknown): Array<FacebookInstantProduct & {description: string; priceAmount: number}> {
   if (!Array.isArray(value) || value.length !== Object.keys(FACEBOOK_PRODUCTS).length) {
     throw new Error("facebook-catalog-invalid");
   }
@@ -34,14 +34,15 @@ export function parseFacebookCatalog(value: unknown): Array<FacebookInstantProdu
           ? Number(item.priceAmount)
           : Number.NaN;
     /** Provides keys behavior. */
-    const keys = ["title", "productID", "description", "price", "priceCurrencyCode", "priceAmount"];
+    const keys = ["title", "productID", "price", "priceCurrencyCode", "priceAmount"];
     if (
       !keys.every((key) => Object.hasOwn(item, key)) ||
-      Object.keys(item).some((key) => ![...keys, "imageURI"].includes(key)) ||
+      Object.keys(item).some((key) => ![...keys, "description", "imageURI"].includes(key)) ||
       !bounded(item.title, 512) ||
       !bounded(item.productID, 256) ||
       !Object.hasOwn(FACEBOOK_PRODUCTS, item.productID) ||
-      !bounded(item.description, 2_048) ||
+      (item.description !== undefined && (typeof item.description !== "string" ||
+        new TextEncoder().encode(item.description).length > 2_048)) ||
       (item.imageURI != null && item.imageURI !== "" && !bounded(item.imageURI, 2_048)) ||
       !bounded(item.price, 128) ||
       !bounded(item.priceCurrencyCode, 16) ||
@@ -59,7 +60,7 @@ export function parseFacebookCatalog(value: unknown): Array<FacebookInstantProdu
     return {
       title: item.title,
       productID: item.productID,
-      description: item.description,
+      description: item.description ?? "",
       price: item.price,
       priceCurrencyCode: item.priceCurrencyCode,
       priceAmount,

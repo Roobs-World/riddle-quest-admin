@@ -3,7 +3,7 @@ import {randomBytes} from "node:crypto";
 import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {
   AndroidReferralIdentitySchema,
   AndroidReferralProfileSchema,
@@ -55,9 +55,9 @@ export async function readAndroidReferralOwner(
   const [user, durable, deleted] = await Promise.all([
     tx.get(db.doc(`users/${identity.uid}`)),
     tx.get(db.doc(`androidReferralIdentities/${identity.subjectHash}`)),
-    tx.get(getJestAccountDeletionRef(db, identity.uid)),
+    tx.get(getAccountDeletionRef(db, identity.uid)),
   ]);
-  assertJestAccountActive(deleted);
+  assertAccountActive(deleted);
   /** Validated canonical Android account state used for referral eligibility. */
   const profile = AndroidReferralProfileSchema.parse(user.data()),
     record = AndroidReferralIdentitySchema.parse(durable.data());
@@ -308,7 +308,7 @@ export async function settleAndroidReferralAfterPlay(
     const [inviter, inviterIdentity, inviterDeleted, cap] = await Promise.all([
       pending.inviterUid ? tx.get(db.doc(`users/${pending.inviterUid}`)) : null,
       pending.inviterSubjectHash ? tx.get(db.doc(`androidReferralIdentities/${pending.inviterSubjectHash}`)) : null,
-      pending.inviterUid ? tx.get(getJestAccountDeletionRef(db, pending.inviterUid)) : null,
+      pending.inviterUid ? tx.get(getAccountDeletionRef(db, pending.inviterUid)) : null,
       capRef ? tx.get(capRef) : null,
     ]);
     /** Validated server-owned rate or reward count for this bounded window. */

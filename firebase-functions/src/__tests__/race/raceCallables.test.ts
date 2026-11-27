@@ -27,14 +27,14 @@ const mockGetRaceEntryForUser = jest.fn();
 const mockCancelRaceInviteForUser = jest.fn();
 jest.mock("../../race/invitations/raceInvitation", () => ({getRaceEntryForUser: mockGetRaceEntryForUser, cancelRaceInviteForUser: mockCancelRaceInviteForUser}));
 jest.mock("../../race/matchmaking/raceMatchmaking", () => ({findRecordedRaceMatch: mockFindRecordedRaceMatch}));
-/** Provides mock run with jest account operation lease behavior. */
-const mockRunWithJestAccountOperationLease = jest.fn(
+/** Provides mock run with account operation lease behavior. */
+const mockRunWithAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
 jest.mock("../../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../../shared/accountDeletion")>("../../shared/accountDeletion"),
-  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+  runWithAccountOperationLease: mockRunWithAccountOperationLease,
 }));
 
 jest.mock("firebase-functions/v2/https", () => {

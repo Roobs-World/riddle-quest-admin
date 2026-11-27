@@ -26,6 +26,7 @@ import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletio
 import {
   applyPlayerPreferences,
   clearBrowserPlayerState,
+  installBrowserPlayerStateMutationGuard,
   subscribeToPlayerPreferenceChanges,
 } from "../../../../src/settings/browser/playerPreferences";
 import {settleFacebookPause, settleFacebookPresenceResume} from "./settleFacebookPause";
@@ -135,6 +136,9 @@ export function FacebookPlatformEntry() {
   useEffect(() => {
     /** Provides active behavior. */
     let active = true;
+    const removeBrowserStateGuard = installBrowserPlayerStateMutationGuard(
+      () => active && deletionGateRef.current.isOpen(),
+    );
     /** Disconnects native analytics when this authenticated session retires. */
     let stopAnalytics: (() => void) | undefined;
     /** Provides unsubscribe pause behavior. */
@@ -492,6 +496,7 @@ export function FacebookPlatformEntry() {
     })();
     return () => {
       active = false;
+      removeBrowserStateGuard();
       stopAnalytics?.();
       unsubscribePause?.();
       unsubscribeResume?.();

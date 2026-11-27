@@ -1,6 +1,6 @@
 import {withRaceDeliveryReceipt} from "../delivery/raceDeliveryFailures";
 import {HttpsError} from "firebase-functions/v2/https";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {admin} from "../../shared/firebaseAdmin";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, racePerformanceSample, recordRacePerformance, recordRaceCompletion} from "../matchmaking/raceMatchPerformance";
 import {parseRunRecord, type Firestore} from "../raceSetupService";
@@ -66,7 +66,7 @@ export async function deliverRacePerformance(runId: string, db: Firestore = admi
       }
       /** Provides [source, owner, deletion] behavior. */
       const [source, owner, deletion] = await Promise.all([transaction.get(db.doc(`raceRuns/${runId}`)),
-        transaction.get(db.doc(`users/${userId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
+        transaction.get(db.doc(`users/${userId}`)), transaction.get(getAccountDeletionRef(db, userId))]);
       /** Absent legacy retention remains supported; an explicit expired source cannot authorize effects. */
       const sourceExpiry = source.data()?.expiresAt;
       if (!source.exists || sourceExpiry instanceof admin.firestore.Timestamp && sourceExpiry.toMillis() <= nowMs || !owner.exists || deletion.exists) {

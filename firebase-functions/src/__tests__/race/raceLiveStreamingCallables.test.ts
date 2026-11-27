@@ -9,7 +9,7 @@ jest.mock("../../race/live/raceLiveService", () => ({updateLiveRaceForUser: mock
 jest.mock("../../race/access/raceRollout", () => ({assertRaceAccess: mockAccess}));
 jest.mock("../../shared/firebaseAdmin", () => ({admin: {firestore: () => ({name: "server-db"})}}));
 jest.mock("../../shared/sentry", () => ({captureException: jest.fn(), flushSentry: jest.fn()}));
-jest.mock("../../shared/accountDeletion", () => ({runWithJestAccountOperationLease: mockLease, isJestAccountDeletedError: () => false}));
+jest.mock("../../shared/accountDeletion", () => ({runWithAccountOperationLease: mockLease, isAccountDeletedError: () => false}));
 jest.mock("firebase-functions/v2/https", () => ({...jest.requireActual("firebase-functions/v2/https"),
   onCall: jest.fn((_options, handler) => handler)}));
 import {updateLiveRace} from "../../race/api/raceLiveCallables";

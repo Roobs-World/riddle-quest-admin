@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
-import type {BridgeProfile, HostToGameMessage} from "../../platform/bridge/messages";
+import type {BridgeProfile, BridgeUser, HostToGameMessage} from "../../platform/bridge/messages";
 import {restoreProfileWhileServerLoads} from "../browser/playerState/playerData";
 import {createRequestId} from "../../gameplay/session/requestIds";
 import type {AuthSnapshot, HostServices} from "../../platform/contracts/hostServices";
@@ -10,8 +10,8 @@ type HostAuthSessionOptions = Readonly<{
   services: Pick<HostServices, "auth">;
   /** Profile restored from target persistence while the server profile loads. */
   initialProfile?: BridgeProfile | null;
-  /** Registration state, absent when the target has no account-upgrade flow. */
-  platformRegistered?: boolean;
+  /** Explicit account controls approved by the active platform. */
+  accountManagement?: BridgeUser["accountManagement"];
   /** Persists authoritative profile changes through the active target adapter. */
   onProfileChange?: (profile: BridgeProfile) => void;
   /** Delivers authentication state to the embedded game. */
@@ -22,7 +22,7 @@ type HostAuthSessionOptions = Readonly<{
 export type HostAuthSession = Readonly<{
   /** Latest user and authoritative or temporarily restored profile. */
   snapshot: AuthSnapshot;
-  /** User projected with the active target's registration state. */
+  /** User projected with the active target's account permissions. */
   bridgeUser: AuthSnapshot["user"];
   /** Applies an authoritative balance when one was returned. */
   applyCoinBalance: (coins?: number, ownerId?: string) => void;
@@ -38,7 +38,7 @@ export type HostAuthSession = Readonly<{
 export function useHostAuthSession({
   services,
   initialProfile,
-  platformRegistered,
+  accountManagement,
   onProfileChange,
   postToGame,
 }: HostAuthSessionOptions): HostAuthSession {
@@ -70,10 +70,10 @@ export function useHostAuthSession({
     const selected = accountVisit;
     return (ownerId?: string) => () => ownerId !== undefined && currentAccount.current === selected && selected.auth === auth && selected.uid === ownerId;
   }, [auth, accountVisit]);
-  /** User representation enriched only with target registration state. */
+  /** User representation enriched only with target account permissions. */
   const bridgeUser = useMemo(
-    () => (snapshot.user ? {...snapshot.user, platformRegistered} : null),
-    [platformRegistered, snapshot.user],
+    () => (snapshot.user ? {...snapshot.user, accountManagement} : null),
+    [accountManagement, snapshot.user],
   );
 
   useEffect(() => {

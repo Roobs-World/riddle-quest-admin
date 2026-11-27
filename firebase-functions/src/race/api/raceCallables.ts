@@ -55,11 +55,11 @@ import {findRecordedRaceMatch} from "../matchmaking/raceMatchmaking";
 import {onCallWithSentry} from "../../shared/sentryHandlers";
 
 /** Keeps browser multiplayer beside eur3 while retaining existing regional clients. */
-const jestWebCallableOptions = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
+const hostedWebCallableOptions = {...browserCallableSecurityOptions, region: ["us-central1", "europe-west1"]};
 
 /** Interactive race requests scale to zero between use. */
 export const raceInteractiveCallableOptions = {
-  ...jestWebCallableOptions,
+  ...hostedWebCallableOptions,
   minInstances: 0,
 };
 
@@ -70,19 +70,19 @@ export const raceDiscoveryCallableOptions = {
 
 /** Hint requests share the request-only capacity policy. */
 export const raceHintCallableOptions = {
-  ...jestWebCallableOptions,
+  ...hostedWebCallableOptions,
   minInstances: 0,
 };
 
 /** Race starts share the request-only capacity policy. */
 export const raceStartCallableOptions = {
-  ...jestWebCallableOptions,
+  ...hostedWebCallableOptions,
   minInstances: 0,
 };
 
 /** Abandon requests share the request-only capacity policy. */
 export const raceAbandonCallableOptions = {
-  ...jestWebCallableOptions,
+  ...hostedWebCallableOptions,
   minInstances: 0,
 };
 
@@ -105,7 +105,7 @@ const requireRaceUser = async (request: CallableRequest<unknown>): Promise<strin
 /** Returns whether the authenticated player can access multiplayer. */
 export const getRaceAccess = onCallWithSentry(
   "getRaceAccess",
-  jestWebCallableOptions,
+  hostedWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = requireUserId(request);
@@ -268,7 +268,7 @@ export const abandonRaceRun = onCallWithSentry(
 /** Publishes a verified completed creator run as a multiplayer challenge. */
 export const publishRaceChallenge = onCallWithSentry(
   "publishRaceChallenge",
-  jestWebCallableOptions,
+  hostedWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Provides r id. */
     const userId = await requireRaceUser(request);
@@ -280,10 +280,10 @@ export const publishRaceChallenge = onCallWithSentry(
   },
 );
 
-/** Creates the server-owned two-seat lobby carried by a Jest referral link. */
+/** Creates the server-owned two-seat lobby carried by a provider invitation link. */
 export const reserveRaceInvite = onCallWithSentry(
   "reserveRaceInvite",
-  jestWebCallableOptions,
+  hostedWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Authenticated internal user issuing the invite. */
     const userId = await requireRaceUser(request);
@@ -298,7 +298,7 @@ export const reserveRaceInvite = onCallWithSentry(
 /** Returns the answer-safe public preview of a multiplayer challenge. */
 export const getRaceChallenge = onCallWithSentry(
   "getRaceChallenge",
-  jestWebCallableOptions,
+  hostedWebCallableOptions,
   async (request: CallableRequest<unknown>) => {
     /** Authenticated internal user opening the challenge. */
     const userId = await requireRaceUser(request);
@@ -341,7 +341,7 @@ export const listRaceInbox = onCallWithSentry(
 );
 
 /** Typed challenge lifecycle without provider-specific client interpretation. */
-export const getRaceEntry = onCallWithSentry("getRaceEntry", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const getRaceEntry = onCallWithSentry("getRaceEntry", hostedWebCallableOptions, async (request: CallableRequest<unknown>) => {
   /** Authenticated player opening or recovering an invitation. */
   const userId = await requireRaceUser(request);
   /** Answer-free direct-link intent. */
@@ -351,7 +351,7 @@ export const getRaceEntry = onCallWithSentry("getRaceEntry", jestWebCallableOpti
   return validateCallableResponse(RaceEntryResponseSchema, response, "getRaceEntry");
 });
 /** Creator-only cancellation never acts on reusable public challenges. */
-export const cancelRaceInvite = onCallWithSentry("cancelRaceInvite", jestWebCallableOptions, async (request: CallableRequest<unknown>) => {
+export const cancelRaceInvite = onCallWithSentry("cancelRaceInvite", hostedWebCallableOptions, async (request: CallableRequest<unknown>) => {
   /** Authenticated invitation owner. */
   const userId = await requireRaceUser(request);
   /** Idempotent cancellation intent. */

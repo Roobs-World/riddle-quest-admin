@@ -1,3 +1,4 @@
+import {ACCOUNT_DELETION_COLLECTION} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {
   facebookCommerceReceiptId,
   grantVerifiedFacebookPurchase,
@@ -331,7 +332,7 @@ it.each(
 
 it("rejects missing users, invalid UIDs, and receipt/product conflicts", async () => {
   await expect(grantVerifiedFacebookPurchase(database({}).db, purchase())).rejects.toThrow("facebook-user-not-found");
-  await expect(grantVerifiedFacebookPurchase(database({}).db, {...purchase(), uid: "jest_bad"})).rejects.toThrow(
+  await expect(grantVerifiedFacebookPurchase(database({}).db, {...purchase(), uid: "other_bad"})).rejects.toThrow(
     "invalid-facebook-uid",
   );
   /** Provides fixture behavior. */
@@ -510,7 +511,7 @@ it("fails closed when account deletion has committed before a grant", async () =
   /** Provides fixture behavior. */
   const fixture = database({
     [`users/${uid}`]: {coins: 300},
-    [`jestAccountDeletionTombstones/${uid}`]: {recreationBlocked: true},
+    [`${ACCOUNT_DELETION_COLLECTION}/${uid}`]: {recreationBlocked: true},
   });
   await expect(grantVerifiedFacebookPurchase(fixture.db, purchase())).rejects.toThrow("account-deleted");
   expect(fixture.documents.get(`users/${uid}`)?.coins).toBe(300);

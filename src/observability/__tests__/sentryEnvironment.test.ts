@@ -7,7 +7,7 @@ const mockConfigureBrowserErrorReporter = jest.fn();
 /** Provides mock capture browser exception behavior. */
 const mockCaptureBrowserException = jest.fn();
 /** Mutable build settings exercise disabled and unsupported target gates before loading. */
-const mockEnvironment = {platformTarget: "jest", production: true, sentryDsn: "https://public@example.test/1",
+const mockEnvironment = {platformTarget: "facebook", production: true, sentryDsn: "https://public@example.test/1",
   sentryEnvironment: undefined, sentryRelease: undefined};
 
 jest.mock("../../platform/firebase/browserEnvironment", () => ({firebaseEnvironment: mockEnvironment}));
@@ -35,7 +35,7 @@ describe("browser Sentry environment adapter", () => {
     jest.clearAllMocks();
     mockIsBrowserTelemetryRuntimeAllowed.mockReturnValue(true);
     mockInitializeBrowserSentry.mockReturnValue(true);
-    Object.assign(mockEnvironment, {platformTarget: "jest", production: true, sentryDsn: "https://public@example.test/1"});
+    Object.assign(mockEnvironment, {platformTarget: "facebook", production: true, sentryDsn: "https://public@example.test/1"});
     Object.defineProperty(globalThis, "window", {configurable: true, value: new EventTarget()});
   });
   afterEach(() => {
@@ -57,7 +57,7 @@ describe("browser Sentry environment adapter", () => {
       environment: undefined,
       production: true,
       release: undefined,
-      runtime: "jest",
+      runtime: "facebook",
     });
     expect(mockConfigureBrowserErrorReporter).toHaveBeenCalledWith(expect.any(Function));
   });

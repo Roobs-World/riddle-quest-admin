@@ -11,11 +11,11 @@ import {parseChallengeRecord, resolveChallengeRiddles, type RaceChallengeRecord}
 import type {RaceRunRecord} from "../../race/runs/raceEngine";
 
 /** Canonical fixtures only touch a private loopback demo emulator. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Actual SDK provides original archives, locked eligibility reads and accepted publication/attempt writes. */
 let db: FirebaseFirestore.Firestore;
 /** Named authoritative source identities make every dependent mutation inspectable. */
-const RUN = "recording-source", CHALLENGE = "recording-challenge", DECK = "recording-deck", INVITE = `jest-invite-${createHash("sha256").update(A).digest("hex")}-${"d".repeat(32)}`;
+const RUN = "recording-source", CHALLENGE = "recording-challenge", DECK = "recording-deck", INVITE = `race-invite-${createHash("sha256").update(A).digest("hex")}-${"d".repeat(32)}`;
 /** The dedicated demo owns all these collections; profiles remain bounded to two fixture accounts. */
 const clear = async () => {
   for (const collection of ["raceRuns", "raceChallenges", "raceDecks", "raceStartRequests", "raceAttempts", "raceInviteRequests", "raceInviteLobbies", "raceMatchCandidates", "racePerformanceOutbox", "raceSettlementOutbox"]) await db.recursiveDelete(db.collection(collection));
@@ -215,7 +215,7 @@ it.each(recoveryCases)("admits a repaired recording without preserving a rejecte
   expect(await getRaceEntryForUser(B, id, "en", {db, nowMs: NOW})).toMatchObject({status: "unavailable", reason: "invalid"});
   await seed(modern, "piano", 14, "en", privateInvite);
   /** A second fixture identity competes through the same real transaction interface. */
-  const other = `jest_${"c".repeat(40)}`, responses = await Promise.all([B, other].map(owner => getRaceEntryForUser(owner, id, "en", {db, nowMs: NOW+1})));
+  const other = `facebook_${"c".repeat(40)}`, responses = await Promise.all([B, other].map(owner => getRaceEntryForUser(owner, id, "en", {db, nowMs: NOW+1})));
   expect(responses.filter(response => response.status === "ready")).toHaveLength(privateInvite ? 1 : 2);
   if (privateInvite) {
     expect(responses.filter(response => response.status === "unavailable" && response.reason === "claimed")).toHaveLength(1);
@@ -263,7 +263,7 @@ it.each([false, true])("propagates unavailable legacy archive reads before a sea
 });
 /** Legacy claim must use the same canonical creator identity that authorized its reservation. */
 it.each([true, false])("rejects a recording whose creator no longer matches its reservation, modern=%s", async modern => {
-  await seed(modern, "piano", 14, "en", true);await db.doc(`raceChallenges/${INVITE}`).update({creatorId: `jest_${"c".repeat(40)}`});
+  await seed(modern, "piano", 14, "en", true);await db.doc(`raceChallenges/${INVITE}`).update({creatorId: `facebook_${"c".repeat(40)}`});
   /** The original exclusive identity cannot be silently rebound to a different creator. */
   const before = await state(INVITE);
   expect(await getRaceEntryForUser(B, INVITE, "en", {db, nowMs: NOW})).toMatchObject({status: "unavailable", reason: "invalid"});

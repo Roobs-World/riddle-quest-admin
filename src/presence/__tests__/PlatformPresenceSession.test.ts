@@ -19,14 +19,14 @@ describe("platform presence session", () => {
     /** Provides transport behavior. */
     const transport = createTransport();
     /** Provides session behavior. */
-    const session = new PlatformPresenceSession(transport.port, {sessionId: "session-1", platform: "jest"}, () => 10);
+    const session = new PlatformPresenceSession(transport.port, {sessionId: "session-1", platform: "facebook"}, () => 10);
     await session.start(false);
     expect(transport.port.register).not.toHaveBeenCalled();
     await session.start(true);
     expect(transport.port.armDisconnectRemoval).toHaveBeenCalledWith("session-1");
     expect(transport.port.register).toHaveBeenCalledWith({
       sessionId: "session-1",
-      platform: "jest",
+      platform: "facebook",
       state: "online",
       updatedAtMs: 10,
     });
@@ -62,7 +62,7 @@ describe("platform presence session", () => {
     /** Provides transport behavior. */
     const transport = createTransport();
     /** Provides session behavior. */
-    const session = new PlatformPresenceSession(transport.port, {sessionId: "session-1", platform: "jest"});
+    const session = new PlatformPresenceSession(transport.port, {sessionId: "session-1", platform: "facebook"});
     await session.start(true);
     await session.start(true);
     await session.stop();

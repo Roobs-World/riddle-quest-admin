@@ -58,7 +58,7 @@ it("rejects malformed successful payloads at the shared contract seam", async ()
 });
 
 it("preserves default platform behavior while explicitly enabling live safety on the owning target", () => {
-  /** Jest's existing adapter remains unchanged by default. */
+  /** The shared adapter remains unchanged by default. */
   const ordinary = createFirebaseRaceMatchmaking();
   expect(ordinary.live?.blockOpponent).toBeUndefined();
   expect(ordinary.live?.reportOpponent).toBeUndefined();

@@ -4,7 +4,7 @@ import {type YouTubeLocale} from "../../../../../src/gameplay/local/types";
  *
  * @remarks
  * Every string reuses the web translation of the same key in `src/locales`, so
- * Android and the Jest Web Target read identically.
+ * Android and the shared hosted game read identically.
  */
 export type ProfileCopyKey =
   | "profileTitle"

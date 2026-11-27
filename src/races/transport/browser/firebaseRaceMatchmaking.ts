@@ -35,7 +35,7 @@ export function createFirebaseRaceMatchmaking(
       },
     } : {}),
     ...(options.liveHistory ? {
-      /** Lazy strict history remains outside startup and the default Jest surface. */
+      /** Lazy strict history remains outside startup. */
       async history(locale: import("../../contracts/index").RaceLocale) {
         /** One owning-target callable and shared public schema load together. */
         const [{listLiveRaceHistory}, {ListLiveRaceHistoryResponseSchema}] = await Promise.all([import("../../../platform/firebase/browserClient"), import("../../contracts/index")]);

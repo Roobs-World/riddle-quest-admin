@@ -4,8 +4,7 @@ import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../../../../../fire
 import {deliverRacePerformance} from "../../../../../../firebase-functions/src/race/settlement/racePerformanceDelivery";
 import {facebookTournamentWindow} from "../../race/facebookTournament";
 import type {RaceRunRecord} from "../../../../../../firebase-functions/src/race/runs/raceEngine";
-import {recordJestAccountDeletion} from "../../../../jest/server/jestAccountDeletion";
-import {getJestAccountDeletionRef} from "../../../../../../firebase-functions/src/shared/accountDeletion";
+import {ACCOUNT_DELETION_COLLECTION, getAccountDeletionRef, recordAccountDeletion} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../../../../../firebase-functions/src/profile/accountDeletion/raceAccountDeletion";
 import {replayRaceDelivery} from "../../../../../../firebase-functions/src/race/delivery/raceDeliveryRecovery";
 import {issueFacebookReferralToken, bindFacebookReferralToken} from "../../facebookReferrals";
@@ -20,7 +19,7 @@ const PLAYERS = [`facebook_${"a".repeat(40)}`, `facebook_${"b".repeat(40)}`];
 const INVITER = `facebook_${"e".repeat(40)}`;
 /** Only private emulator fixture collections are recursively cleaned. */
 const COLLECTIONS = ["users", "liveRaceTickets", "liveRaceMatches", "liveRacePlayers", "liveRaceQueues", "racePerformanceOutbox",
-  "jestAccountDeletionTombstones", "localizedRiddles/en/riddles", "facebookTournaments", "facebookReferralTokens",
+  ACCOUNT_DELETION_COLLECTION, "localizedRiddles/en/riddles", "facebookTournaments", "facebookReferralTokens",
   "facebookReferralBindings", "facebookReferralSettlements", "facebookReferralDailyCaps"];
 /** Restores the caller feature configuration after isolated tests. */
 const previousFeatures = process.env.FACEBOOK_DISABLED_FEATURES;
@@ -239,13 +238,13 @@ it("holds an account lease until the official write drains and deletion removes 
   void delivery.catch(() => undefined);
   try {
     await ready;
-    await expect(recordJestAccountDeletion(PLAYERS[0])).rejects.toThrow("account-deletion-in-progress");
-    expect((await getJestAccountDeletionRef(db, PLAYERS[0]).get()).exists).toBe(true);
+    await expect(recordAccountDeletion(PLAYERS[0])).rejects.toThrow("account-deletion-in-progress");
+    expect((await getAccountDeletionRef(db, PLAYERS[0]).get()).exists).toBe(true);
   } finally {release();}
   await expect(delivery).rejects.toThrow("account-deleted");
   expect((await entry(PLAYERS[0]).get()).exists).toBe(true);
   spy.mockRestore();
-  await recordJestAccountDeletion(PLAYERS[0]);
+  await recordAccountDeletion(PLAYERS[0]);
   await removeCrossUserRaceIdentitySnapshots(PLAYERS[0]);
   expect((await entry(PLAYERS[0]).get()).exists).toBe(false);
   await deliverRacePerformance(receipt.id, db, START + 18000);

@@ -27,7 +27,7 @@ export const confirmLiveGuessReceipt = onCallWithSentry("confirmLiveGuessReceipt
   const input = validateCallableRequest(LiveGuessReceiptQuerySchema, request.data, "confirmLiveGuessReceipt");
   return validateCallableResponse(LiveGuessReceiptResultSchema,
     await confirmLiveGuessReceiptForUser(owner(request), input), "confirmLiveGuessReceipt");
-}, {skipJestAccountOperationLease: true});
+}, {skipAccountOperationLease: true});
 /** Retained results are private, language-bound observations and never settle a match. */
 export const listLiveRaceHistory = onCallWithSentry("listLiveRaceHistory", options, async request => {
   /** Strict bounded input carries no account or opponent identifier. */
@@ -75,7 +75,7 @@ export const updateLiveRace = onCallWithSentry("updateLiveRace", interactiveOpti
   }
   return validateCallableResponse(LiveRaceViewSchema,
     await updateLiveRaceForUser(userId, input, {authorize: () => assertRaceAccess(userId)}), "updateLiveRace");
-}, {skipJestAccountOperationLease: request => request.acceptsStreaming === true});
+}, {skipAccountOperationLease: request => request.acceptsStreaming === true});
 
 /** Validates incoming SDK entry data without reserving the recipient seat. */
 export const getLiveRaceChallenge = onCallWithSentry("getLiveRaceChallenge", options, async request => {

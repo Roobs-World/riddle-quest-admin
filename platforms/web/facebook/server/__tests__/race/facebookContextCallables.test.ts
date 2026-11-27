@@ -107,7 +107,7 @@ describe("Facebook context callables", () => {
 
   it("requires Facebook claims and independently honors the matchmaking switch", async () => {
     await expect(call(joinFacebookContext, {}, null)).rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call(joinFacebookContext, {}, {uid, token: {provider: "jest"}})).rejects.toMatchObject({
+    await expect(call(joinFacebookContext, {}, {uid, token: {provider: "reddit"}})).rejects.toMatchObject({
       code: "unauthenticated",
     });
     mockEnabled.mockReturnValue(false);

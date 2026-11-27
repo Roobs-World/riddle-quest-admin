@@ -2,7 +2,7 @@ import {Timestamp, type DocumentSnapshot, type Firestore} from "firebase-admin/f
 import {defineSecret} from "firebase-functions/params";
 import {onRequest} from "firebase-functions/v2/https";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
-import {getJestAccountDeletionRef, isJestAccountDeletedError, runWithJestAccountOperationLease} from "../../../../../firebase-functions/src/shared/accountDeletion";
+import {getAccountDeletionRef, isAccountDeletedError, runWithAccountOperationLease} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {bridgeAuthorized, notificationBridgeSecret, pushDigest} from "../../../../../firebase-functions/src/notifications/notificationBridge";
 import {isFacebookFeatureEnabled} from "../facebookFeatureFlags";
 import {createFacebookNotificationTransport} from "../facebookNotificationTransport";
@@ -43,7 +43,7 @@ async function dispatch(db: Firestore, input: FacebookDispatch): Promise<Outcome
   if (previous.exists) return previousOutcome(previous);
   if (!eligible(initial, input)) return "skipped";
 
-  return runWithJestAccountOperationLease(identity.uid, 30, async () => {
+  return runWithAccountOperationLease(identity.uid, 30, async () => {
     let duplicate: Outcome | "conflict" | undefined;
     let claimed = false;
     let admissionError = false;
@@ -58,7 +58,7 @@ async function dispatch(db: Firestore, input: FacebookDispatch): Promise<Outcome
       authorizeAttempt: async () => {
         const admission = await db.runTransaction(async tx => {
           const [current, account, deleted, existing] = await Promise.all([tx.get(provider), tx.get(user),
-            tx.get(getJestAccountDeletionRef(db, identity.uid)), tx.get(receipt)]);
+            tx.get(getAccountDeletionRef(db, identity.uid)), tx.get(receipt)]);
           if (existing.exists) return {prior: previousOutcome(existing)};
           if (!eligible(current, input) || facebookRouteIdentity(current)?.uid !== identity.uid ||
               account.get("notificationsEnabled") !== true || deleted.exists) return {allowed: false};
@@ -102,7 +102,7 @@ export const dispatchFacebookManagerNotification = onRequest({region: "europe-we
     if (outcome === "conflict") response.status(409).json({error: "notification-dispatch-conflict"});
     else response.json({outcome});
   } catch (error) {
-    if (isJestAccountDeletedError(error)) response.json({outcome: "skipped"});
+    if (isAccountDeletedError(error)) response.json({outcome: "skipped"});
     else response.status(503).json({error: "notification-dispatch-unavailable"});
   }
 });

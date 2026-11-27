@@ -34,7 +34,7 @@ const scenario=new URLSearchParams(location.search).get('scenario'),[kind,outcom
 window.probe={posts:[],operations:[],notices:[],reads:[],errors:[],unhandled:[],activity:0,retired:false};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 for(const uid of ['Alice','Bob']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const key of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+key,uid),'seen');}
-const fixture=createFakeHostServices(),fixtureProfile=await fixture.loadProfile('jest-guest'),original=await fixture.loadRiddle({gameMode:'classic',locale:'en'}),replacement={...original,text:'What has a face and hands but no arms?',sessionToken:'00000000-0000-4000-8000-000000000099',index:2};
+const fixture=createFakeHostServices(),fixtureProfile=await fixture.loadProfile('guest-player'),original=await fixture.loadRiddle({gameMode:'classic',locale:'en'}),replacement={...original,text:'What has a face and hands but no arms?',sessionToken:'00000000-0000-4000-8000-000000000099',index:2};
 const dailyError=()=>Object.assign(new Error('Daily completed'),{code:'daily-completed'});
 let release,fail,initialReads=0;const held=new Promise((resolve,reject)=>{release=()=>resolve(original);fail=()=>reject(outcome==='daily-result'?dailyError():new Error('Retired transport unavailable'));});
 function load(input){const epoch=document.querySelector('[data-epoch]')?.dataset.epoch;window.probe.reads.push({epoch,...input});

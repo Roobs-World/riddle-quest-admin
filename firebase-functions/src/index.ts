@@ -3,7 +3,7 @@
  * Firebase Functions entrypoint for Riddle Quest.
  *
  * This module initializes the Firebase Admin SDK once and re-exports the
- * minimal Jest trust boundary plus authoritative gameplay functions
+ * Facebook trust boundary plus authoritative gameplay functions
  * submodules. Each submodule owns its own request/response validation and
  * environment variable access; this file is intentionally kept small and
  * declarative.
@@ -20,7 +20,7 @@ import {getHint, spendCoins, skipRiddle} from "./gameplay/callables/gameLogic";
 import {grantFacebookRewardedContinue} from "../../platforms/web/facebook/server/facebookRewardedContinueCallable";
 import {getCurrentDailyChallenge, getCurrentClassicRiddle} from "./daily/dailyChallenge";
 import {getClassicRiddleBuffer} from "./daily/classicRiddleBuffer";
-import {deleteAccount, getPlayerProfile, syncJestAvatar, updateAvatar, updateUsername} from "./profile/index";
+import {deleteAccount, getPlayerProfile, updateAvatar, updateUsername} from "./profile/index";
 import {completeGame} from "./gameplay/callables/completeGameCallable";
 import {submitSinglePlayerGuess} from "./gameplay/callables/submitSinglePlayerGuessCallable";
 import {dailyChallengeScheduler} from "./daily/dailyScheduler";
@@ -45,13 +45,6 @@ import {
   readyRaceRun,
   submitRaceGuess,
 } from "./race/api/raceCallables";
-import {
-  exchangeJestIdentity,
-  grantJestPurchase,
-  retryJestAccountDeletion,
-  syncJestSubscriptions,
-  verifyJestReferrals,
-} from "../../platforms/web/jest/server/jestEndpoints";
 import {exchangeFacebookIdentity, issueFacebookIdentityNonce} from "../../platforms/web/facebook/server/facebookEndpoints";
 import {grantFacebookPurchase, facebookPaymentWebhook} from "../../platforms/web/facebook/server/facebookPayments";
 import {createAndroidReferral, bindAndroidReferralEntry, getAndroidReferralStatus} from "../../platforms/native/android/server/androidReferralCallables";
@@ -99,7 +92,6 @@ export {
   getPlayerProfile,
   updateUsername,
   updateAvatar,
-  syncJestAvatar,
   deleteAccount,
   completeGame,
   submitSinglePlayerGuess,
@@ -123,11 +115,6 @@ export {
   findRaceMatch,
   getRaceOutcome,
   recordRaceAnalytics,
-  exchangeJestIdentity,
-  grantJestPurchase,
-  retryJestAccountDeletion,
-  syncJestSubscriptions,
-  verifyJestReferrals,
   provisionAndroidAccount,
   setAndroidPushSubscription,
   dispatchAndroidNotification,
@@ -180,7 +167,6 @@ export {replenishClassicSupplyOnDemand, retryClassicSupplyOnDemand} from "./ridd
 export {joinLiveRace, retireLiveRaceJoin, updateLiveRace, confirmLiveGuessReceipt, getLiveRaceChallenge, sendLiveRaceChallenge, listLiveRaceChallenges, listLiveRaceHistory} from "./race/api/raceLiveCallables";
 export {deliverLiveRaceChallengePush} from "./race/notifications/raceLivePushJobs";
 export {setNotificationPreference} from "./notifications/notificationPreferences";
-export {getJestNotificationPlan} from "../../platforms/web/jest/server/notifications/managerPlan";
 export {dispatchFacebookManagerNotification} from "../../platforms/web/facebook/server/notifications/managerDispatch";
 export {syncFacebookManagerRegistration} from "../../platforms/web/facebook/server/notifications/managerRegistrationSync";
 

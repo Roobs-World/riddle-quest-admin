@@ -5,7 +5,6 @@ import {
   verifyFacebookDeletionRequest,
   verifyFacebookSignedPlayer,
 } from "../facebookSecurity";
-import {jestFirebaseUid} from "../../../jest/server/jestSecurity";
 
 /** Provides app secret behavior. */
 const appSecret = "0123456789abcdef0123456789abcdef";
@@ -89,7 +88,7 @@ describe("Facebook signed-player security", () => {
     async (token) => expect(verifyFacebookSignedPlayer(token, options)).rejects.toThrow(),
   );
 
-  it("derives stable, provider-separated Facebook UIDs without changing Jest's golden UID", () => {
+  it("derives stable, generation-separated Facebook UIDs", () => {
     /** Provides first behavior. */
     const first = facebookFirebaseUid(payload.player_id, uidSecret);
     expect(first).toMatch(/^facebook_[0-9a-f]{40}$/);
@@ -98,8 +97,6 @@ describe("Facebook signed-player security", () => {
     expect(facebookFirebaseUid(payload.player_id, uidSecret, 2)).not.toBe(first);
     expect(isFacebookFirebaseUid(first)).toBe(true);
     expect(isFacebookFirebaseUid(`facebook_${"A".repeat(40)}`)).toBe(false);
-    expect(jestFirebaseUid("p1")).toBe("jest_19a97ec6b48b59dbb40220e4b6223f4a47e35532");
-    expect(first).not.toBe(jestFirebaseUid(payload.player_id));
   });
 
   it("rejects invalid identity inputs and undersized UID secrets", () => {

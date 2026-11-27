@@ -25,7 +25,7 @@ window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.checkpointWork={updates:0,projections:0,fingerprints:0};window.probe={saves:[],guesses:0,completions:0,errors:[],unhandled:[]};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 const service=createFakeHostServices();const services={...service,submitGuess:async input=>{window.probe.guesses++;return service.submitGuess(input);},completeGame:async input=>{window.probe.completions++;return service.completeGame(input);}};
 const hosted=createHostedPlaySession({hostServices:services,economyAvailable:false,raceAvailable:false,onPlayerDataChange:update=>window.probe.saves.push(update)});
 window.pause=value=>dispatchLocalBridge(HOST_TO_GAME_EVENT,{type:value?'host:pause':'host:resume',payload:{}});

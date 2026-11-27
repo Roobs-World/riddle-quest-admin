@@ -2,7 +2,7 @@ import {createHash, timingSafeEqual} from "node:crypto";
 import {Timestamp} from "firebase-admin/firestore";
 import {onRequest} from "firebase-functions/v2/https";
 import {admin} from "../../../../../firebase-functions/src/shared/firebaseAdmin";
-import {runWithJestAccountOperationLease} from "../../../../../firebase-functions/src/shared/accountDeletion";
+import {runWithAccountOperationLease} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {sendAndroidPush} from "../androidNotifications";
 import {AndroidDispatch, type AndroidDispatchResult} from "../notificationManagerProtocol";
 import {notificationManagerBridgeSecret} from "./androidNotificationBridge";
@@ -43,7 +43,7 @@ export const dispatchAndroidNotification = onRequest({region: "europe-west1", mi
     if (admission.kind === "finished") {response.json({outcome: admission.outcome} satisfies AndroidDispatchResult); return;}
     let outcome: AndroidDispatchResult["outcome"] = "uncertain";
     try {
-      const sent = await runWithJestAccountOperationLease(admission.uid, 30, () => sendAndroidPush(db, input.tokenHash, admission.uid, {
+      const sent = await runWithAccountOperationLease(admission.uid, 30, () => sendAndroidPush(db, input.tokenHash, admission.uid, {
         version: "1", kind: "campaign", notificationId: input.notificationId, registrationRevision: String(input.revision),
         title: input.title, body: input.body, ...(input.imageUrl ? {imageUrl: input.imageUrl} : {}), expiresAtMs: String(input.expiresAtMs),
       }, "campaign", input.expiresAtMs - Date.now(), input.revision));

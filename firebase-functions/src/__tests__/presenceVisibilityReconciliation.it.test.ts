@@ -51,9 +51,9 @@ afterAll(async () => {
 });
 
 /** Seed actual rivalry and an old-style grant independently of current blocking. */
-async function seed(provider = "facebook") {
+async function seed(provider = "facebook", viewer = "a", target = "b") {
   /** Canonical platform identities exercise existing rules unchanged. */
-  const pair = {viewerUserId: `${provider}_${"a".repeat(40)}`, targetUserId: `${provider}_${"b".repeat(40)}`};
+  const pair = {viewerUserId: `${provider}_${viewer.repeat(40)}`, targetUserId: `${provider}_${target.repeat(40)}`};
   await db
     .doc(`users/${pair.viewerUserId}/knownRivals/${pair.targetUserId}`)
     .set({targetUserId: pair.targetUserId, source: "completed_race"});
@@ -85,7 +85,7 @@ it("preview inventories legacy bits without writing RTDB, source authority or op
   });
 });
 
-it.each(["facebook", "jest"])(
+it.each(["facebook"])(
   "converts consenting %s grants and revokes a preexisting legacy bit for a blocked rival",
   async (provider) => {
     /** Synthetic server-owned relationship defines the scope under test. */
@@ -148,9 +148,9 @@ it.each(["viewer", "target"])(
 );
 
 it("returns the exact completed prefix when a later owner is busy, then resumes without touching that prefix", async () => {
-  /** Distinct native identities preserve provider isolation while sharing the global authority. */
+  /** Distinct platform identities preserve account isolation while sharing the global authority. */
   const first = await seed("facebook"),
-    second = await seed("jest");
+    second = await seed("facebook", "c", "d");
   /** The second edge cannot be removed until its existing writer actually finishes. */
   const guard = db.doc(`jestAccountDeletionTombstones/${second.targetUserId}`),
     lease = guard.collection("activeOperations").doc("running");

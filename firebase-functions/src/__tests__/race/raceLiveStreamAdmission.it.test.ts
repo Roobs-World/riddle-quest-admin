@@ -4,8 +4,8 @@ import {DocumentReference, getFirestore, Timestamp} from "firebase-admin/firesto
 import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
 import {streamLiveRaceChanges} from "../../race/live/raceLiveStream";
 
-/** Deterministic Jest account that owns every stream admission in this fixture. */
-const OWNER = `jest_${"d".repeat(40)}`;
+/** Deterministic Facebook account that owns every stream admission in this fixture. */
+const OWNER = `facebook_${"d".repeat(40)}`;
 /** Isolated Firebase app, emulator database and owned ticket used by these cases. */
 let app: ReturnType<typeof initializeApp>, db: FirebaseFirestore.Firestore, ticketId: string;
 /** Private account ledger path used to inspect concurrent connection leases. */

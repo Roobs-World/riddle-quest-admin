@@ -2,7 +2,7 @@ import {createHash} from "node:crypto";
 import type {DocumentReference, Firestore, Transaction} from "firebase-admin/firestore";
 import {resolveFacebookProduct} from "../src/commerce/facebookCatalog.js";
 import {isFacebookFeatureEnabled} from "./facebookFeatureFlags";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {facebookPaymentTokenSchema} from "./facebookPaymentContracts";
 
 /** Renders the provider interface. */
@@ -283,7 +283,7 @@ export async function grantVerifiedFacebookPurchase(
   /** Provides receipt ref behavior. */
   const receiptRef = db.collection("facebookCommerceReceipts").doc(receiptId);
   /** Provides deletion ref behavior. */
-  const deletionRef = getJestAccountDeletionRef(db, input.uid);
+  const deletionRef = getAccountDeletionRef(db, input.uid);
 
   return db.runTransaction(async (transaction) => {
     /** Provides [receipt, deletion, state] behavior. */
@@ -292,7 +292,7 @@ export async function grantVerifiedFacebookPurchase(
       transaction.get(deletionRef),
       readCommerceState(transaction, userRef, accountRef),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (authorization) await authorizePaymentGrant(transaction, authorization, input, receiptId);
     /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
@@ -472,9 +472,9 @@ export async function refundVerifiedFacebookPurchaseReceipt(
     /** Provides state behavior. */
     const [state, deletion] = await Promise.all([
       readCommerceState(transaction, userRef, accountRef),
-      transaction.get(getJestAccountDeletionRef(db, uid)),
+      transaction.get(getAccountDeletionRef(db, uid)),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     /** Provides current coins behavior. */
     const currentCoins = userCoins(state.user);
     if (priorRefund.exists) {

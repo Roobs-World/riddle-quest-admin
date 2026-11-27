@@ -1,4 +1,4 @@
-// Supporting compiled UI checks only; hosted Jest verification is recorded separately.
+// Supporting compiled UI checks only; hosted Facebook verification is recorded separately.
 import assert from 'node:assert/strict';
 import {mkdtemp,mkdir,writeFile,readFile,rm} from 'node:fs/promises';
 import {createServer} from 'node:http';

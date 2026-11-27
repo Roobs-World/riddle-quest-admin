@@ -15,13 +15,13 @@ import {HttpsError, onCall, onRequest} from "firebase-functions/v2/https";
 import type {ScheduleFunction, ScheduleOptions, ScheduledEvent} from "firebase-functions/v2/scheduler";
 import {onSchedule} from "firebase-functions/v2/scheduler";
 import {BROWSER_CALLABLE_TIMEOUT_SECONDS} from "./callableSecurity";
-import {isJestAccountDeletedError, runWithJestAccountOperationLease} from "./accountDeletion";
+import {isAccountDeletedError, runWithAccountOperationLease} from "./accountDeletion";
 import {captureException, flushSentry} from "./sentry";
 
 /**
  * Browsers cache a CORS preflight for only five seconds without this header,
  * so every guess spaced further apart paid an extra OPTIONS round trip.
- * Matches the Jest and Facebook identity endpoints.
+ * Matches the Facebook identity endpoint.
  */
 const CALLABLE_PREFLIGHT_MAX_AGE_SECONDS = "3600";
 
@@ -44,7 +44,7 @@ function withCachedPreflight<Callable extends object>(callable: Callable): Calla
 /** Internal controls that are never forwarded to the Firebase runtime. */
 interface CallableBoundaryOptions {
   /** Deletion and explicitly declared pure observers do not acquire the mutation lease. */
-  skipJestAccountOperationLease?: boolean | ((request: CallableRequest<unknown>) => boolean);
+  skipAccountOperationLease?: boolean | ((request: CallableRequest<unknown>) => boolean);
 }
 
 /**
@@ -105,15 +105,15 @@ export function onCallWithSentry<T = unknown, Result = unknown, Stream = unknown
           {operation: functionName, direction: "chunk", requestId}) as Stream),
       } satisfies CallableResponse<Stream> : response;
       const invoke = () => invokeWithSentry(functionName, handler, [decodedRequest, protectedResponse]);
-      const skipLease = typeof boundaryOptions.skipJestAccountOperationLease === "function"
-        ? boundaryOptions.skipJestAccountOperationLease(decodedRequest) : boundaryOptions.skipJestAccountOperationLease;
+      const skipLease = typeof boundaryOptions.skipAccountOperationLease === "function"
+        ? boundaryOptions.skipAccountOperationLease(decodedRequest) : boundaryOptions.skipAccountOperationLease;
       const timeoutSeconds = typeof options.timeoutSeconds === "number" ? options.timeoutSeconds : BROWSER_CALLABLE_TIMEOUT_SECONDS;
       const result = skipLease || !decodedRequest.auth ? await invoke()
-        : await runWithJestAccountOperationLease(decodedRequest.auth.uid, timeoutSeconds, invoke);
+        : await runWithAccountOperationLease(decodedRequest.auth.uid, timeoutSeconds, invoke);
       if (requestId) return await protectPayload(result, {operation: functionName, direction: "response", requestId}) as Result;
       return negotiation.protected ? await protectContent(result) as Result : result;
     } catch (error) {
-      const failure = isJestAccountDeletedError(error)
+      const failure = isAccountDeletedError(error)
         ? new HttpsError("failed-precondition", "This account was permanently deleted.") : error;
       if (!requestId) throw failure;
       const callableFailure = failure instanceof HttpsError ? failure : new HttpsError("internal", "INTERNAL");

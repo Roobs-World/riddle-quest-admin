@@ -42,7 +42,7 @@ const definitions = listHtml5DistributionDefinitions();
 for (const {target, artifact} of definitions) await verifyZip(artifact, target);
 await verifyYouTubeZip();
 await verifyZip("build-gamesnacks.zip", "gamesnacks");
-for (const directory of ["jest", "facebook", "netflix", "yahoo"]) {
+for (const directory of ["facebook", "netflix", "yahoo"]) {
   await requireFile(path.join(getWebBuildPaths(directory).outputDirectory, "index.html"));
 }
 await requireFile(path.join(getWebBuildPaths("reddit").buildDirectory, "devvit/client/game.html"));

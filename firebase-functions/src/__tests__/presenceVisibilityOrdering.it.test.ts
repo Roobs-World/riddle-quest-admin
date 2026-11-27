@@ -12,8 +12,8 @@ import {
 import {get, ref} from "firebase/database";
 import {deletePresenceForUser, refreshPresenceVisibility} from "../presence/presenceVisibility";
 import {blockKnownRival} from "../social/socialSafety";
-import {recordJestAccountDeletion} from "../../../platforms/web/jest/server/jestAccountDeletion";
-import {JestAccountDeletionBusyError} from "../shared/accountDeletion";
+import {recordAccountDeletion} from "../shared/accountDeletion";
+import {AccountDeletionBusyError} from "../shared/accountDeletion";
 
 /** Destructive fixtures are confined to a private demo and loopback emulators. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
@@ -98,8 +98,6 @@ function pauseVisibilityWrite(viewer: string, target: string) {
 it.each([
   ["facebook", "viewer"],
   ["facebook", "target"],
-  ["jest", "viewer"],
-  ["jest", "target"],
 ])(
   "keeps %s presence unreadable after the %s confirms a block despite an older grant finishing last",
   async (provider, blocker) => {
@@ -145,7 +143,7 @@ it.each([
   15_000,
 );
 
-it.each(["facebook", "jest"])("preserves a newer %s unblock when an older denial arrives last", async (provider) => {
+it.each(["facebook"])("preserves a newer %s unblock when an older denial arrives last", async (provider) => {
   /** Server-owned rivalry remains eligible after explicit unblocking. */
   const viewer = `${provider}_${"a".repeat(40)}`,
     target = `${provider}_${"b".repeat(40)}`;
@@ -218,12 +216,12 @@ it.each(["viewer", "target"])(
       stale = refreshPresenceVisibility(viewer, target, db, barrier.delayed);
     try {
       await barrier.paused;
-      await expect(recordJestAccountDeletion(deleted)).rejects.toBeInstanceOf(JestAccountDeletionBusyError);
+      await expect(recordAccountDeletion(deleted)).rejects.toBeInstanceOf(AccountDeletionBusyError);
     } finally {
       barrier.resume();
     }
     await stale;
-    await recordJestAccountDeletion(deleted);
+    await recordAccountDeletion(deleted);
     await deletePresenceForUser(deleted, database);
     await db.recursiveDelete(db.doc(`users/${deleted}`));
     await expect(refreshPresenceVisibility(viewer, target, db, database)).resolves.toBe(false);

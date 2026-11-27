@@ -4,10 +4,10 @@ import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {RACE_RULES, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import type {LiveMatch} from "../../race/live/raceLiveState";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Renders the a interface. */
-const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
+const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`;
 /** Renders the now interface. */
 const NOW = 1_800_000_000_000;
 /** Provides db behavior. */
@@ -16,7 +16,7 @@ let db: FirebaseFirestore.Firestore;
 async function clear() {
   for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "localizedRiddles/en/riddles", "localizedRiddles/fr/riddles"])
     await db.recursiveDelete(db.collection(path));
-  await Promise.all([A, B, C].map(user => getJestAccountDeletionRef(db, user).delete()));
+  await Promise.all([A, B, C].map(user => getAccountDeletionRef(db, user).delete()));
 }
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Local Firestore emulator required");

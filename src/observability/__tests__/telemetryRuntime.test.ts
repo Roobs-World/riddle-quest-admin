@@ -5,21 +5,21 @@ describe("browser telemetry runtime policy", () => {
     expect(
       shouldEnableBrowserTelemetry({
         production: true,
-        hostname: "019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+        hostname: "apps.facebook.com",
         trustedTestHarness: false,
       }),
     ).toBe(true);
     expect(
       shouldEnableBrowserTelemetry({
         production: false,
-        hostname: "019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+        hostname: "apps.facebook.com",
         trustedTestHarness: false,
       }),
     ).toBe(false);
     expect(
       shouldEnableBrowserTelemetry({
         production: true,
-        hostname: "019faa68-f3ec-755d-9ab5-c887fb426801.builds.jest.com",
+        hostname: "apps.facebook.com",
         trustedTestHarness: true,
       }),
     ).toBe(false);

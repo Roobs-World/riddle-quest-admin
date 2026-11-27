@@ -232,7 +232,7 @@ describe("FacebookPlatformBootstrap", () => {
     expect(reported).toEqual([30, 70, 100]);
     expect(result.value.platform).toBe("facebook");
     expect(result.value.capabilities.lifecycle).toBeDefined();
-    expect(result.value.capabilities.accountUpgrade).toBeUndefined();
+    expect(result.value.capabilities.accountManagement).toEqual({username: true, avatar: false, deletion: true});
     expect(result.value.capabilities.commerce).toBeUndefined();
     expect(result.value.capabilities.ads).toBeUndefined();
     expect(result.value.capabilities.notifications).toBeUndefined();

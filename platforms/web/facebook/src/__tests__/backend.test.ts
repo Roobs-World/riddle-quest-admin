@@ -87,7 +87,7 @@ describe("Facebook backend transport", () => {
       {...valid, appCheckToken: "token with spaces"},
       {...valid, appCheckExpiresInMs: 3_599_999},
       {...valid, appCheckExpiresInMs: Number.NaN},
-      {...valid, uid: `jest_${"a".repeat(40)}`},
+      {...valid, uid: `reddit_${"a".repeat(40)}`},
       {...valid, extra: true},
     ])
       expect(() => parseFacebookIdentityCredentials(invalid)).toThrow("credential response");

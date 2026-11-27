@@ -415,7 +415,7 @@ it("rejects non-Facebook identities before touching Firestore", async () => {
   await expect(
     joinFacebookContextCompetition(
       {
-        userId: "jest_attacker",
+        userId: "other_attacker",
         contextId: "group-1",
         contextType: "GROUP",
         locale: "en",
@@ -479,6 +479,6 @@ it("removes deleted members, re-elects the host, and deletes empty contexts", as
 it("ignores non-Facebook deletion identities without querying context state", async () => {
   /** Provides fixture behavior. */
   const fixture = database();
-  await removeUserFromFacebookContextCompetitions("jest_user", fixture.db);
+  await removeUserFromFacebookContextCompetitions("other_user", fixture.db);
   expect(fixture.documents.size).toBe(0);
 });

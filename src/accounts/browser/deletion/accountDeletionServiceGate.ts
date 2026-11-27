@@ -1,6 +1,6 @@
 import type {HostServices} from "../../../platform/contracts/hostServices";
 
-/** Cross-tab operation boundary supplied by the Jest shell. */
+/** Cross-tab operation boundary supplied by the active platform shell. */
 export type AccountDeletionServiceGate = {
   /** Synchronous admission check for consuming a previously issued local question. */
   isOpen?: () => boolean;

@@ -218,7 +218,7 @@ describe("bridge protocol", () => {
       GameToHostMessageSchema.safeParse({
         type: "game:reportRival",
         requestId: "report-rival-1",
-        payload: {targetUserId: "jest_1111111111111111111111111111111111111111", category: "cheating"},
+        payload: {targetUserId: "facebook_1111111111111111111111111111111111111111", category: "cheating"},
       }).success,
     ).toBe(true);
     for (const payload of [

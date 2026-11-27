@@ -27,13 +27,13 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
-for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
-for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 window.probe={outbound:[],inbound:[],reads:[],errors:[],unhandled:[]};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
-const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('jest-guest');
+const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),profile=await source.loadProfile('guest-player');
 window.ready=(requestId)=>{const message=window.probe.outbound.find(x=>x.type==='game:ready');window.dispatchEvent(new CustomEvent('riddle-quest:game-to-host',{detail:{...message,requestId:requestId??message.requestId}}));};
 window.reply=scenario=>{const message=structuredClone(window.probe.inbound.find(x=>x.type==='host:riddleLoaded'));if(scenario==='mode-fallback'){const init=structuredClone(window.probe.inbound.find(x=>x.type==='host:init'));init.payload.gameMode='challenge';window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:init}));message.requestId='load-daily-fallback';}if(scenario==='profile-refresh')message.payload.profile={...message.payload.profile,coins:777};if(scenario==='reconcile')message.requestId='reconcile-repeat';if(scenario==='updated-hint')message.payload.riddle.revealedHints=[{index:1,letter:'I'}];if(scenario==='accepted-progress')message.payload.riddle={...message.payload.riddle,attemptsUsed:1,acceptedGuesses:[{attempt:1,feedback:Array.from({length:5},()=>({letter:'q',status:'red'}))}]};if(scenario==='new-session')message.payload.riddle=next;window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:message}));};
 const scenario=new URL(location.href).searchParams.get('scenario');

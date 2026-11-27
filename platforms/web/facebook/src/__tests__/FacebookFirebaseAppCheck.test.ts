@@ -35,7 +35,7 @@ jest.mock("../../../../../src/platform/firebase/browserClient", () => ({firebase
 
 describe("Facebook Firebase App Check adapter", () => {
   /** Loads adapter. */
-  const loadAdapter = async (platformTarget: "facebook" | "jest" = "facebook") => {
+  const loadAdapter = async (platformTarget: "facebook" | "reddit" = "facebook") => {
     jest.doMock("../../../../../src/app/testing/mocks/firebaseEnvironmentMock", () => ({
       firebaseEnvironment: {platformTarget},
     }));
@@ -81,7 +81,7 @@ describe("Facebook Firebase App Check adapter", () => {
 
   it("rejects accidental use outside the Facebook Web Target", async () => {
     /** Provides adapter behavior. */
-    const adapter = await loadAdapter("jest");
+    const adapter = await loadAdapter("reddit");
     await expect(adapter.initializeFacebookAppCheck(async () => ({token: "x", expireTimeMillis: 1}))).rejects.toThrow(
       "only initialize in the Facebook Web Target",
     );

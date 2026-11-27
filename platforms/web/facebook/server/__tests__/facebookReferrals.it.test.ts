@@ -1,3 +1,4 @@
+import {ACCOUNT_DELETION_COLLECTION} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {
@@ -25,7 +26,7 @@ beforeAll(async () => {
       "facebookReferralBindings",
       "facebookReferralDailyCaps",
       "facebookReferralSettlements",
-      "jestAccountDeletionTombstones",
+      ACCOUNT_DELETION_COLLECTION,
     ].map((collection) => db.recursiveDelete(db.collection(collection))),
   );
   /** Provides batch behavior. */
@@ -60,7 +61,7 @@ afterAll(async () => {
       "facebookReferralBindings",
       "facebookReferralDailyCaps",
       "facebookReferralSettlements",
-      "jestAccountDeletionTombstones",
+      ACCOUNT_DELETION_COLLECTION,
     ].map((collection) => db.recursiveDelete(db.collection(collection))),
   );
 });

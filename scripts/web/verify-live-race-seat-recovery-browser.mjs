@@ -102,7 +102,7 @@ try {
   assert.equal(await a.locator('.live-race-reward').innerText(),'+50 coins');assert.deepEqual(await authority.balances(),[225,125]);
   const match=(await fixtureDb.collection('liveRaceMatches').get()).docs[0].data();
   assert.equal(match.rewardCoins,50);assert.equal(match.newCoins,225);
-  const users=['Alice','Bob'].map((_,i)=>fixtureDb.doc('users/jest_'+(i?'b':'a').repeat(40)));
+  const users=['Alice','Bob'].map((_,i)=>fixtureDb.doc('users/facebook_'+(i?'b':'a').repeat(40)));
   const profiles=(await fixtureDb.getAll(...users)).map(doc=>doc.data());
   assert.deepEqual(profiles.map(profile=>(profile.unlockedAchievements??[]).map(badge=>badge.achievementId).sort()),
     [['race_clean_run','race_debut','race_first_win'],['race_debut']]);

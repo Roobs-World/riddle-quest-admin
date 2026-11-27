@@ -51,20 +51,16 @@ export function createHostAuthorityModules(
   economyAvailable = true,
   raceAvailable = Boolean(capabilities?.matchmaking || capabilities?.tournaments || capabilities?.contextBoard),
 ): HostAuthorityModules {
-  /** Provides authenticated behavior. */
-  const authenticated = capabilities?.accountUpgrade?.state === "complete";
-  /** Target-owned account permissions independent of guest registration. */
+  /** Target-owned account permissions. */
   const permissions = capabilities?.accountManagement;
-  /** Only expose operations approved for this target or registered Jest session. */
-  const account = authenticated
-    ? services
-    : permissions
-      ? {
-          ...(permissions.username ? {updateUsername: services.updateUsername} : {}),
-          ...(permissions.avatar ? {updateAvatar: services.updateAvatar} : {}),
-          ...(permissions.deletion ? {deleteAccount: services.deleteAccount} : {}),
-        }
-      : undefined;
+  /** Only expose operations explicitly approved for this target. */
+  const account = permissions
+    ? {
+        ...(permissions.username ? {updateUsername: services.updateUsername} : {}),
+        ...(permissions.avatar ? {updateAvatar: services.updateAvatar} : {}),
+        ...(permissions.deletion ? {deleteAccount: services.deleteAccount} : {}),
+      }
+    : undefined;
   return {
     identity: services,
     gameplay: services,

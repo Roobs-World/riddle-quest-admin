@@ -9,11 +9,10 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
 export async function auditPlatformMonetization() {
-  const [policySource, jestPurchases, jestCheckout, jestRecovery, facebookEntry, facebookBootstrap, facebookCommerce,
+  const [policySource, facebookRecovery, facebookEntry, facebookBootstrap, facebookCommerce,
     redditConfigSource, redditProductsSource, redditClient, youtubeAudit, standaloneAudit, yahooEntry, yahooApp] = await Promise.all([
     read("config/platform-monetization.json"),
-    read("platforms/web/jest/src/purchases.ts"), read("platforms/web/jest/src/purchaseCheckout.ts"),
-    read("platforms/web/jest/src/purchaseReconciliation.ts"), read("platforms/web/facebook/src/FacebookPlatformEntry.tsx"),
+    read("platforms/web/facebook/src/FacebookPurchaseRecovery.ts"), read("platforms/web/facebook/src/FacebookPlatformEntry.tsx"),
     read("platforms/web/facebook/src/FacebookPlatformBootstrap.ts"),
     read("platforms/web/facebook/src/FacebookCommerceCapability.ts"), read("platforms/web/reddit/devvit.json"),
     read("platforms/web/reddit/products.json"), read("platforms/web/reddit/src/RedditPlatformBootstrap.ts"),
@@ -33,15 +32,15 @@ export async function auditPlatformMonetization() {
     if (![platform, iap, ads, gate].every((value) => typeof value === "string" && value.trim())) failures.push(`${platform || "Unknown platform"} has an incomplete monetization policy.`);
   }
   const grantsBeforeCompletion = (source) => {
-    const grant = /await\s+backend\.grantPurchase\s*\(/u.exec(source);
-    const completion = /await\s+platform\.completePurchase\s*\(/u.exec(source);
+    const grant = /await\s+this\.grant\s*\(/u.exec(source);
+    const completion = /await\s+this\.payments\.consumePurchaseAsync\s*\(/u.exec(source);
     return grant !== null && completion !== null && grant.index < completion.index;
   };
-  if (!/getIncompletePurchases/u.test(jestPurchases) ||
-      !/import\("\.\/purchaseCheckout"\)/u.test(jestPurchases) || !/return checkoutConsumable\(/u.test(jestPurchases) ||
-      !/import\("\.\/purchaseReconciliation"\)/u.test(jestPurchases) || !/return reconcileJestPurchases\(/u.test(jestPurchases) ||
-      !/getIncompletePurchases/u.test(jestRecovery) || !grantsBeforeCompletion(jestCheckout) || !grantsBeforeCompletion(jestRecovery))
-    failures.push("Jest purchase grant/recovery ordering is missing.");
+  if (!/getPurchasesAsync/u.test(facebookRecovery) || !grantsBeforeCompletion(facebookRecovery) ||
+      !/if \(result\.consume\) await this\.payments\.consumePurchaseAsync/u.test(facebookRecovery) ||
+      !/new FacebookPurchaseRecovery\(payments, grant\)/u.test(facebookCommerce) ||
+      !/this\.recovery\.complete\(purchase\)/u.test(facebookCommerce))
+    failures.push("Facebook checkout and recovery must share signed server grants before consumable receipt completion.");
   if (!/createFacebookAdsCapability/u.test(facebookEntry) || !/VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID/u.test(facebookEntry) || !/VITE_FACEBOOK_REWARDED_PLACEMENT_ID/u.test(facebookEntry)) failures.push("Facebook ad capability or placement boundary is missing.");
   if (!/commerce:\s*false/u.test(facebookBootstrap)) failures.push("Facebook commerce must remain unavailable before authentication.");
   if (!/new FacebookCommerceSession/u.test(facebookEntry) || !/clientConfiguration\.commerceEnabled/u.test(facebookEntry)) failures.push("Facebook payments must use the authenticated server-gated adapter.");

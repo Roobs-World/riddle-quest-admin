@@ -320,7 +320,7 @@ try {
    assert.deepEqual(await authority.balances(),rivalWins?[125,225]:[200,125]);
    const adminRequire=createRequire(path.resolve(root,'firebase-functions/package.json'));
    const db=adminRequire('firebase-admin/firestore').getFirestore();
-   const profiles=await db.getAll(...['a','b'].map(character=>db.doc(`users/jest_${character.repeat(40)}`)));
+   const profiles=await db.getAll(...['a','b'].map(character=>db.doc(`users/facebook_${character.repeat(40)}`)));
    const achievements=profiles.map(profile=>profile.data().unlockedAchievements.map(entry=>entry.achievementId).sort());
    assert.deepEqual(achievements,rivalWins?
     [['race_debut'],['race_clean_run','race_debut','race_first_win']]:

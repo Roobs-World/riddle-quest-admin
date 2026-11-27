@@ -13,8 +13,8 @@ const mockGetIssuedAuthoritativeSession = jest.fn();
 const mockCompleteAuthoritativeGame = jest.fn();
 /** Provides mock recover pending authoritative completion behavior. */
 const mockRecoverPendingAuthoritativeCompletion = jest.fn().mockResolvedValue(false);
-/** Provides mock run with jest account operation lease behavior. */
-const mockRunWithJestAccountOperationLease = jest.fn(
+/** Provides mock run with account operation lease behavior. */
+const mockRunWithAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
@@ -79,7 +79,7 @@ jest.mock("../gameplay/sessions/singlePlayerTerminalRecovery", () => ({
 
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
-  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+  runWithAccountOperationLease: mockRunWithAccountOperationLease,
 }));
 
 // Define types for mocked Firestore objects to improve type checking

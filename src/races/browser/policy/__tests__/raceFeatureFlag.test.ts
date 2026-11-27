@@ -3,7 +3,7 @@ import {isRaceHarness, isRaceTo10Enabled} from "../raceFeatureFlag";
 describe("Race to 10 feature flag", () => {
   it("defaults off, including for generic development harnesses", () => {
     expect(isRaceTo10Enabled()).toBe(false);
-    expect(isRaceTo10Enabled({search: "?harness=jest"})).toBe(false);
+    expect(isRaceTo10Enabled({search: "?harness=facebook"})).toBe(false);
     expect(isRaceTo10Enabled({search: "?harness=dev"})).toBe(false);
     expect(isRaceHarness()).toBe(false);
   });

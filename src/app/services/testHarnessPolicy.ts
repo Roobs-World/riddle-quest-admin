@@ -2,8 +2,6 @@
 type TestHarnessWindow = Window & {
   /** Stores riddle quest browser test. */
   __RIDDLE_QUEST_BROWSER_TEST__?: boolean;
-  /** Stores riddle quest jest auth test. */
-  __RIDDLE_QUEST_JEST_AUTH_TEST__?: unknown;
 };
 
 /** Indicates whether has trusted test harness marker. */
@@ -12,12 +10,12 @@ export const hasTrustedTestHarnessMarker = (): boolean => {
   /** Provides marked window behavior. */
   const markedWindow = window as TestHarnessWindow;
   return (
-    markedWindow.__RIDDLE_QUEST_BROWSER_TEST__ === true || markedWindow.__RIDDLE_QUEST_JEST_AUTH_TEST__ !== undefined
+    markedWindow.__RIDDLE_QUEST_BROWSER_TEST__ === true
   );
 };
 
 /** Defines the test harness names value. */
-const TEST_HARNESS_NAMES = new Set(["jest", "jest-auth", "race", "race-auth", "dev"]);
+const TEST_HARNESS_NAMES = new Set(["facebook", "race", "race-auth", "dev"]);
 
 /** Indicates whether should use fake host services. */
 export const shouldUseFakeHostServices = ({

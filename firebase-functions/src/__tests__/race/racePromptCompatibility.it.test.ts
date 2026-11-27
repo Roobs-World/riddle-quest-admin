@@ -7,7 +7,7 @@ import {toRaceRunView} from "../../race/runs/raceEngine";
 import type {LiveMatch} from "../../race/live/raceLiveState";
 
 /** Every fixture mutation is confined to a dedicated private loopback demo emulator. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Actual SDK queries and transaction commits exercise the catalog-to-match boundary. */
 let db: FirebaseFirestore.Firestore;
 /** Authored pools make an unaffected category and both competitive difficulty bands available. */

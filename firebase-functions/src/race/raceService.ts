@@ -67,7 +67,7 @@ import {raceProviderScope} from "./access/raceProviderScope";
 import {projectRaceMatchCandidate} from "./matchmaking/raceMatchCandidates";
 import {raceDeckContentVersion, raceRecordingFingerprint, assertRacePreparedRecording} from "./runs/raceDeckSnapshot";
 import {emptyRaceMatchProfile, RaceMatchProfileSchema, raceDifficultyAdjustedMs, recordRaceExposure} from "./matchmaking/raceMatchPerformance";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../shared/accountDeletion";
 export {readyRaceRunForUser} from "./runs/raceRunLifecycle";
 import {settleRaceRun} from "./settlement/raceSettlement";
 import {projectRaceRunResponse} from "./runs/raceRunResponse";
@@ -167,8 +167,8 @@ async function prepareRaceRunForUser(
       return db.runTransaction(async transaction => {
         /** Recheck the receipt, consumed offer, original run and account together before creating an alias. */
         const [receipt, currentOffer, source, deletion] = await Promise.all([transaction.get(startRequestRef), transaction.get(botOfferRef),
-          transaction.get(db.doc(`raceRuns/${offer.acceptedRunId}`)), transaction.get(getJestAccountDeletionRef(db, userId))]);
-        assertJestAccountActive(deletion);
+          transaction.get(db.doc(`raceRuns/${offer.acceptedRunId}`)), transaction.get(getAccountDeletionRef(db, userId))]);
+        assertAccountActive(deletion);
         if (!source.exists || !currentOffer.exists) throw new HttpsError("not-found", "Race to 10 run not found.");
         /** The offer may resume only its original immutable owner-bound run. */
         const original = parseRunRecord(source.data(), source.id);
@@ -295,11 +295,11 @@ async function prepareRaceRunForUser(
       transaction.get(startRequestRef),
       input.challengeId ? transaction.get(db.doc(`raceChallenges/${input.challengeId}`)) : Promise.resolve(null),
       transaction.get(matchProfileRef),
-      transaction.get(getJestAccountDeletionRef(db, userId)),
+      transaction.get(getAccountDeletionRef(db, userId)),
       input.offerId ? transaction.get(db.doc(`raceMatchOffers/${input.offerId}`)) : Promise.resolve(null),
       botOfferRef ? transaction.get(botOfferRef) : Promise.resolve(null),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (duplicateStart.exists) {
       if (!assertRaceRequestReplay(duplicateStart.data(), userId, commandBinding)) {
         /** A concurrent historical receipt must be checked against its actual original run. */
@@ -569,7 +569,7 @@ export async function publishRaceChallengeForUser(
   if (input.reservedChallengeId) {
     /** Hash binding a reserved invitation to the authenticated creator. */
     const ownerHash = createHash("sha256").update(userId).digest("hex");
-    if (!input.reservedChallengeId.startsWith(`jest-invite-${ownerHash}-`)) {
+    if (!input.reservedChallengeId.startsWith(`race-invite-${ownerHash}-`)) {
       throw new HttpsError("permission-denied", "This invitation belongs to another player.");
     }
   }
@@ -618,7 +618,7 @@ export async function publishRaceChallengeForUser(
         if (bound) throw new HttpsError("data-loss", "Stored race request is invalid.");
         rejectRaceRequestReuse();
       }
-      if (!bound && Boolean(input.reservedChallengeId) !== cached.data.challengeId.startsWith("jest-invite-")) rejectRaceRequestReuse();
+      if (!bound && Boolean(input.reservedChallengeId) !== cached.data.challengeId.startsWith("race-invite-")) rejectRaceRequestReuse();
       if (input.reservedChallengeId && input.reservedChallengeId !== cached.data.challengeId) rejectRaceRequestReuse();
       if (runSnapshot.data()?.publishedChallengeId !== cached.data.challengeId)
         throw new HttpsError("data-loss", "Stored race request is invalid.");

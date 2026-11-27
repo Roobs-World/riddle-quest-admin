@@ -4,10 +4,10 @@ import type {AnalyticsConsent} from "./AnalyticsConsentContext";
 import type {GoogleAnalyticsConsentProps} from "./GoogleAnalyticsConsent";
 import {trackEvent} from "./eventsRuntime";
 
-/** Defaults collection to enabled for this target and restores explicit opt-outs. */
+/** Starts collection only after an explicit saved opt-in for this target. */
 export default function GoogleAnalyticsConsentRuntime({platform, measurementId, available, isCurrent, lifetimeSignal, publish}: Omit<GoogleAnalyticsConsentProps, "children"> & {publish(consent: AnalyticsConsent | null): void}) {
   const storageKey = `riddleQuest:googleAnalyticsConsent:${platform}:v1`;
-  const [enabled, setEnabled] = useState(() => readBrowserStorage("local", storageKey) !== "denied");
+  const [enabled, setEnabled] = useState(() => readBrowserStorage("local", storageKey) === "granted");
   const decision = useRef(enabled);
   const stop = useRef<() => void>(() => {});
   const initialization = useRef<AbortController | null>(null);
@@ -33,7 +33,7 @@ export default function GoogleAnalyticsConsentRuntime({platform, measurementId, 
         stop.current = () => {};
       }
       if (event.key !== storageKey && event.key !== null) return;
-      const next = readBrowserStorage("local", storageKey) !== "denied";
+      const next = readBrowserStorage("local", storageKey) === "granted";
       decision.current = next;
       if (!next) {
         initialization.current?.abort();

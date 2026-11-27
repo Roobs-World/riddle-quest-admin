@@ -3,11 +3,11 @@ import {getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_WAIT_MS, RACE_RULES, type LiveRaceView} from "../../../../src/races/contracts/index.js";
 import type {LiveMatch} from "../../race/live/raceLiveState";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {listRaceBotLeaderboardEntries} from "../../race/settlement/raceBotLeaderboard";
 
 /** Renders the a interface. */
-const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
+const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`;
 /** Renders the now interface. */
 const NOW = 1_800_000_000_000;
 /** Authoritative instant at which an unanswered public search receives its bot opponent. */
@@ -18,7 +18,7 @@ let db: FirebaseFirestore.Firestore;
 async function clear() {
   for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "raceBotLeaderboard", "users", "localizedRiddles/en/riddles", "localizedRiddles/fr/riddles"])
     await db.recursiveDelete(db.collection(path));
-  await Promise.all([A, B, C].map(user => getJestAccountDeletionRef(db, user).delete()));
+  await Promise.all([A, B, C].map(user => getAccountDeletionRef(db, user).delete()));
 }
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Local Firestore emulator required");
@@ -298,7 +298,7 @@ it("rejects another account's ticket and excludes blocked or cancelled players",
 
 it("keeps provider, language and category pools separate while pairing eligible waiting players", async () => {
   /** Additional identities cannot move themselves between authenticated provider namespaces. */
-  const foreign = `facebook_${"d".repeat(40)}`, eligible = `jest_${"e".repeat(40)}`;
+  const foreign = `facebook_${"d".repeat(40)}`, eligible = `facebook_${"e".repeat(40)}`;
   /** Equivalent catalogs are available so the test isolates matchmaking scope. */
   const content = await db.collection("localizedRiddles/en/riddles").get();
   /** Fixture content and two more owned profiles are prepared atomically. */
@@ -326,7 +326,7 @@ it.each(["block", "delete"] as const)("settles an active %s privacy boundary wit
   const {a, b} = await pair();
   await answer(A, a, NOW + 7000, "before-privacy-boundary");
   if (boundary === "block") await db.doc(`users/${A}/blockedRivals/${B}`).set({blocked: true});
-  else await getJestAccountDeletionRef(db, B).set({deleted: true});
+  else await getAccountDeletionRef(db, B).set({deleted: true});
   /** The remaining browser sees an anonymous rival and a no-reward draw. */
   const result = await update(A, a, NOW + 8000);
   expect(result).toMatchObject({phase: "result", result: "tie", rewardCoins: 0,

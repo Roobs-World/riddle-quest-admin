@@ -10,8 +10,8 @@
 const mockLoggerInfo = jest.fn();
 /** Provides mock logger error behavior. */
 const mockLoggerError = jest.fn();
-/** Provides mock run with jest account operation lease behavior. */
-const mockRunWithJestAccountOperationLease = jest.fn(
+/** Provides mock run with account operation lease behavior. */
+const mockRunWithAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 
@@ -21,7 +21,7 @@ jest.mock("firebase-functions", () => ({
 
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
-  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+  runWithAccountOperationLease: mockRunWithAccountOperationLease,
 }));
 
 // â”€â”€ firebase-admin mock â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

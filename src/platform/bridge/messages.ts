@@ -86,7 +86,7 @@ export const BridgeUserSchema = z.object({
   email: z.string().email().optional(),
   photoURL: z.string().url().optional(),
   isAnonymous: z.boolean(),
-  platformRegistered: z.boolean().optional(),
+  accountManagement: z.object({username: z.boolean(), avatar: z.boolean(), deletion: z.boolean()}).optional(),
   /** Provider account lifecycle that scopes local pending play. */
   accountGeneration: z.number().int().positive().optional(),
 });

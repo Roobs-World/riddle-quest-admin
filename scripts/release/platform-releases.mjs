@@ -127,15 +127,6 @@ export async function runPlatformRelease(
     log("Dry run: no build, upload, package, or publish action was performed.");
     return {target, status: "planned", boundary: plan.boundary};
   }
-  if (
-    target === "jest" &&
-    (environment.JEST_UPLOAD_IS_ACTIVE !== undefined || environment.JEST_CONFIRM_ACTIVATION !== undefined)
-  ) {
-    throw new Error(
-      "release:jest has an activation-without-publication contract; remove JEST_UPLOAD_IS_ACTIVE and " +
-      "JEST_CONFIRM_ACTIVATION instead of overriding the committed release policy",
-    );
-  }
   await commandRunner({...definition.command, cwd: repositoryDirectory, environment});
   log(`Release handoff ready for ${plan.title}. ${plan.handoff}`);
   return {target, status: "handoff-ready", boundary: plan.boundary};

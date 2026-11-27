@@ -61,6 +61,6 @@ try{
   await page.screenshot({path:path.join(output,`${scenario}-${width}.png`)});
   report.push({scenario,width,pass:true});await page.close();
  }
- await writeFile(path.join(output,'report.json'),JSON.stringify({scope:'Supporting real-component harness; not hosted Jest E2E',report},null,2));
+ await writeFile(path.join(output,'report.json'),JSON.stringify({scope:'Supporting real-component harness; not hosted Facebook E2E',report},null,2));
  console.log(`PASS ${report.length} owned leave confirmation/retry cases`);
 }finally{await browser?.close();if(server)await new Promise(resolve=>server.close(resolve));await rm(scratch,{recursive:true,force:true});}

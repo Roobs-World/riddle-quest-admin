@@ -2,12 +2,6 @@
   "schemaVersion": 1,
   "platforms": [
     {
-      "platform": "Jest",
-      "iap": "Implemented and server-authoritative",
-      "ads": "Unavailable \u2014 no approved Jest ad API",
-      "gate": "Verify live purchase recovery and activation evidence"
-    },
-    {
       "platform": "Facebook",
       "iap": "Facebook Payments with signed receipts, webhook ownership verification and idempotent server grants",
       "ads": "Facebook Audience Network rewarded video and interstitials through FBInstant",

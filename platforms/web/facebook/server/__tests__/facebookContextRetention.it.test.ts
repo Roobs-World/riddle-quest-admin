@@ -100,13 +100,13 @@ it("bounds pages, reports invalid rows, and leaves other provider/user records u
   /** Two healthy boards prove one-row page continuation is required. */
   const first = await board("first");
   await board("second");
-  await db.doc("users/jest-fixture").set({coins: 900});
+  await db.doc("users/other-fixture").set({coins: 900});
   await expect(purgeExpiredFacebookContextPage(db, expiry, false, 1)).resolves.toMatchObject({scanned: 1, ready: 1, complete: false});
   expect((await db.collection("facebookContextCompetitions").get()).size).toBe(2);
   await first.update({locale: "invalid-locale"});
   await expect(purgeExpiredFacebookContextPage(db, expiry, true, 20)).resolves.toMatchObject({scanned: 2, ready: 1, invalid: 1, complete: false});
   expect((await first.get()).exists).toBe(true);
-  expect((await db.doc("users/jest-fixture").get()).data()).toEqual({coins: 900});
+  expect((await db.doc("users/other-fixture").get()).data()).toEqual({coins: 900});
   await expect(purgeExpiredFacebookContextPage(db, expiry, true, 21)).rejects.toThrow("invalid-facebook-context-retention-limit");
 });
 

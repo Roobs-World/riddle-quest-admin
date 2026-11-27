@@ -33,10 +33,10 @@ describe("browser Sentry lifecycle", () => {
   });
 
   it("stays disabled outside production or without a DSN", () => {
-    expect(initializeBrowserSentry({production: false, dsn: "https://public@example.test/1", runtime: "jest"})).toBe(
+    expect(initializeBrowserSentry({production: false, dsn: "https://public@example.test/1", runtime: "facebook"})).toBe(
       false,
     );
-    expect(initializeBrowserSentry({production: true, runtime: "jest"})).toBe(false);
+    expect(initializeBrowserSentry({production: true, runtime: "facebook"})).toBe(false);
     captureBrowserException(new Error("ignored"));
     expect(init).not.toHaveBeenCalled();
     expect(captureException).not.toHaveBeenCalled();
@@ -91,7 +91,7 @@ describe("browser Sentry lifecycle", () => {
   });
 
   it("captures exceptions with redacted context", () => {
-    initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "jest"});
+    initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "facebook"});
     /** Provides error behavior. */
     const error = new Error("failed");
     captureBrowserException(error, {userId: "player", operation: "startup"});
@@ -105,7 +105,7 @@ describe("browser Sentry lifecycle", () => {
   it.each(["initial-throttle", "throttled", "fetch-status-error"])(
     "preserves bounded App Check %s diagnostics through the privacy hook",
     (suffix) => {
-      initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "jest"});
+      initializeBrowserSentry({production: true, dsn: "https://public@example.test/1", runtime: "facebook"});
       /** Simulates SDK metadata containing both safe diagnostics and private data. */
       const originalException = Object.assign(new Error("private response"), {
         code: `appCheck/${suffix}`,
@@ -114,12 +114,12 @@ describe("browser Sentry lifecycle", () => {
       /** Event shared by manual and automatic Sentry captures. */
       const event = {
         exception: {values: [{type: "FirebaseError", value: originalException.message}]},
-        extra: {component: "jest_startup"},
+        extra: {component: "facebook_startup"},
         breadcrumbs: [{message: "private response"}],
       };
       expect(init.mock.calls[0][0].beforeSend(event, {originalException})).toEqual({
         exception: {values: [{type: "FirebaseError", value: "[REDACTED_MESSAGE]"}]},
-        extra: {component: "jest_startup", appCheckErrorCode: `appCheck/${suffix}`, appCheckHttpStatus: 403},
+        extra: {component: "facebook_startup", appCheckErrorCode: `appCheck/${suffix}`, appCheckHttpStatus: 403},
       });
       expect(event.exception.values[0].value).toBe("private response");
     },

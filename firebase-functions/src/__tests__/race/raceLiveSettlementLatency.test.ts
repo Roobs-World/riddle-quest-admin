@@ -3,12 +3,12 @@ import {cloneLiveRaceFixture} from "./raceLiveFixtureClone";
 import {applyRaceGuess} from "../../race/runs/raceEngine";
 import {updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {liveRun, type LiveMatch, type LiveTicket} from "../../race/live/raceLiveState";
-import {JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
+import {ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 
 /** Fixed authoritative observation clock for every provider. */
 const NOW = 1_800_000_000_000;
 
-it.each(["jest", "reddit", "facebook"].flatMap(provider => [
+it.each(["facebook", "reddit", "facebook"].flatMap(provider => [
   {provider, winner: 0 as const, retryDeletion: false, sourceReadFails: false},
   {provider, winner: 1 as const, retryDeletion: false, sourceReadFails: false},
   {provider, winner: 0 as const, retryDeletion: true, sourceReadFails: false},
@@ -83,7 +83,7 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
         if (firstInvocation && retryDeletion) {
           await operation(transaction);
           documents.clear(); initialDocuments.forEach((value, path) => documents.set(path, cloneLiveRaceFixture(value)));
-          documents.set(`${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`, {recreationBlocked: true});
+          documents.set(`${ACCOUNT_DELETION_COLLECTION}/${RIVAL}`, {recreationBlocked: true});
           writes.length = 0;
         }
         firstInvocation = false;
@@ -102,8 +102,8 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
       return;
     }
     expect(await result).toMatchObject({value: {phase: "result", result: winner === 0 ? "win" : "loss", rewardCoins: winner === 0 ? 50 : 0}});
-    expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
-    expect(reads.filter(path => path === `${JEST_ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
+    expect(reads.filter(path => path === `${ACCOUNT_DELETION_COLLECTION}/${OWNER}`)).toHaveLength(retryDeletion ? 2 : 1);
+    expect(reads.filter(path => path === `${ACCOUNT_DELETION_COLLECTION}/${RIVAL}`)).toHaveLength(retryDeletion ? 2 : 1);
     expect(reads).toHaveLength((provider === "facebook" && winner === 1 ? 9 : 8) * (retryDeletion ? 2 : 1));
     expect(reads.includes(`liveRaceTickets/${ticketIds[1]}`)).toBe(provider === "facebook" && winner === 1);
     expect(Date.now() - NOW).toBe(800 * (retryDeletion ? 2 : 1));
@@ -115,7 +115,7 @@ it.each(["jest", "reddit", "facebook"].flatMap(provider => [
     } else expect(writes).toContain(`users/${RIVAL}`);
     /** Provider delivery keeps only the accepted winner and its original destination. */
     const deliveries = [...documents.entries()].filter(([path]) => path.startsWith("racePerformanceOutbox/"));
-    expect(deliveries).toHaveLength(provider === "jest" || retryDeletion && winner === 1 ? 0 : 1);
+    expect(deliveries).toHaveLength(provider === "facebook" || retryDeletion && winner === 1 ? 0 : 1);
     if (deliveries.length) {
       expect(deliveries[0]![1]).toMatchObject({userId: users[winner], liveTicketId: ticketIds[winner], source: `${provider}_live`});
       if (provider === "facebook") expect(deliveries[0]![1]).toMatchObject({facebookContext: {

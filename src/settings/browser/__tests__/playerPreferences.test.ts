@@ -261,7 +261,7 @@ it("preserves only requested deletion recovery markers until final cleanup", () 
   expect(sessionStorage.length).toBe(0);
 });
 
-it("blocks stale Jest callbacks from recreating browser state after deletion", () => {
+it("blocks stale platform callbacks from recreating browser state after deletion", () => {
   /** Provides mutation allowed behavior. */
   let mutationAllowed = true;
   /** Removes guard. */

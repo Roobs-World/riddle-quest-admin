@@ -29,9 +29,6 @@ async function verifyReceipts(directory, provider) {
   if (provider === "facebook") await assertFacebookHandoffsSettled(directory);
   for (const name of names.filter(name => name.endsWith(".json"))) {
     const record = JSON.parse(await readFile(path.join(directory, name), "utf8"));
-    if (provider === "jest" && /(?:upload-attempt|unresolved-upload)/u.test(name) && record.state !== "accepted") {
-      throw new Error("Reconcile the Jest upload before relocating its release state");
-    }
     if (provider === "reddit" && /^upload-/u.test(name) && !["accepted", "reconciled-absent"].includes(record.status)) {
       throw new Error("Reconcile the Reddit upload before relocating its release state");
     }
@@ -51,7 +48,7 @@ async function verifyReceipts(directory, provider) {
 for (const [target, facts] of Object.entries(webBuildFacts)) await add(`builds/${target}`, facts.outputDirectory);
 for (const target of Object.keys(webBuildFacts)) await add(`dist-${target}`, `${getWebBuildPaths(target).buildDirectory}/legacy/dist-${target}`);
 const artifacts = new Map([
-  ["build.zip", "jest"], ["build-facebook.zip", "facebook"], ["build-youtube.zip", "youtube"],
+  ["build-facebook.zip", "facebook"], ["build-youtube.zip", "youtube"],
   ["build-youtube.manifest.json", "youtube"], ["build-youtube.test-report.json", "youtube"],
   ["build-gamesnacks.zip", "gamesnacks"], ["build-gamesnacks.zip.manifest.json", "gamesnacks"],
   ["build-html5.zip", "netflix"], ["build-html5.zip.source.json", "netflix"], ["build-html5.sha256", "netflix"],
@@ -64,11 +61,8 @@ for (const [filename, target] of artifacts) await add(filename, `${getWebBuildPa
 for (const [source, target, name] of [
   [".facebook-upload-receipts", "facebook", ".facebook-upload-receipts"],
   ["platforms/web/facebook/.facebook-upload-receipts", "facebook", ".facebook-upload-receipts"],
-  [".jest-upload-receipts", "jest", ".jest-upload-receipts"],
-  ["platforms/web/jest/.jest-upload-receipts", "jest", ".jest-upload-receipts"],
   [".facebook-setup-receipts", "facebook", ".facebook-setup-receipts"],
   ["platforms/web/facebook/.facebook-setup-receipts", "facebook", ".facebook-setup-receipts"],
-  [".jest-release-workspaces", "jest", ".jest-release-workspaces"],
   ["platforms/web/reddit/.reddit-release-receipts", "reddit", ".reddit-release-receipts"],
 ]) {
   if (name.includes("receipts") && !name.includes("setup")) await verifyReceipts(path.join(root, source), target);

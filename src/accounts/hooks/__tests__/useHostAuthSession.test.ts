@@ -98,7 +98,7 @@ it("keeps one auth subscription when parent renders replace the commerce/service
   const loadProfile: HostServices["loadProfile"] = async () => null;
   for (let render = 0; render < 5; render += 1) {
     effectIndex = 0; refIndex = 0;
-    useHostAuthSession({services: {auth, loadProfile}, platformRegistered: false, postToGame});
+    useHostAuthSession({services: {auth, loadProfile}, accountManagement: {username: false, avatar: false, deletion: false}, postToGame});
   }
   expect(subscribe).toHaveBeenCalledTimes(1);
   expect(unsubscribe).not.toHaveBeenCalled();
@@ -106,7 +106,7 @@ it("keeps one auth subscription when parent renders replace the commerce/service
   /** A genuinely different identity provider must still replace the listener. */
   const replacement = jest.fn(() => jest.fn());
   effectIndex = 0; refIndex = 0;
-  useHostAuthSession({services: {auth: {subscribe: replacement}, loadProfile}, platformRegistered: false, postToGame});
+  useHostAuthSession({services: {auth: {subscribe: replacement}, loadProfile}, accountManagement: {username: false, avatar: false, deletion: false}, postToGame});
   expect(unsubscribe).toHaveBeenCalledTimes(1);
   expect(replacement).toHaveBeenCalledTimes(1);
 });

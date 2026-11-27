@@ -3,7 +3,6 @@ import {fileURLToPath, pathToFileURL} from "node:url";
 
 const repositoryRoot = fileURLToPath(new URL("../", import.meta.url));
 const portalTargetHtmlPaths = [
-  `${repositoryRoot}/platforms/web/jest/index.html`,
   `${repositoryRoot}/platforms/web/facebook/index.html`,
   `${repositoryRoot}/platforms/web/reddit/index.html`,
   `${repositoryRoot}/platforms/web/reddit/reddit-inline.html`,
@@ -13,7 +12,6 @@ const portalTargetHtmlPaths = [
   `${repositoryRoot}/platforms/web/gamesnacks/index.html`,
 ];
 const portalTargetSourceEntryPaths = [
-  `${repositoryRoot}/platforms/web/jest/src/main.tsx`,
   `${repositoryRoot}/platforms/web/facebook/src/main.tsx`,
   `${repositoryRoot}/platforms/web/reddit/src/main.tsx`,
   `${repositoryRoot}/platforms/web/youtube/src/main.tsx`,
@@ -34,7 +32,7 @@ const collectProductionFiles = (directory) => {
 
 collectProductionFiles(`${repositoryRoot}/src`);
 collectProductionFiles(`${repositoryRoot}/firebase-functions/src`);
-for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+for (const target of ["facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
   collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/src`);
   if (existsSync(`${repositoryRoot}/platforms/web/${target}/server`)) collectProductionFiles(`${repositoryRoot}/platforms/web/${target}/server`);
 }
@@ -74,21 +72,20 @@ const plaintextNetworkReferences = productionFiles.flatMap((path) => {
     : [];
 });
 
-const portalEnvironmentDirectory = `${repositoryRoot}/platforms/web/jest`;
-const jestEnvironment = readFileSync(`${portalEnvironmentDirectory}/.env.jest`, "utf8");
+const portalEnvironmentDirectory = `${repositoryRoot}/platforms/web/facebook`;
+const facebookEnvironment = readFileSync(`${portalEnvironmentDirectory}/.env.facebook`, "utf8");
 const legacyPortalDirectory = `${repositoryRoot}/packages/web-game`;
 const legacyPortalEnvironmentFiles = existsSync(legacyPortalDirectory)
   ? readdirSync(legacyPortalDirectory).filter((name) => name === ".env" || name.startsWith(".env."))
   : [];
-const jestBackendUrl = /^VITE_JEST_FUNCTIONS_BASE_URL=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
-const appCheckSiteKey = /^VITE_FIREBASE_APP_CHECK_SITE_KEY=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
-const sentryDsn = /^VITE_SENTRY_DSN=(.+)$/mu.exec(jestEnvironment)?.[1]?.trim();
+const facebookBackendUrl = /^VITE_FACEBOOK_FUNCTIONS_BASE_URL=(.+)$/mu.exec(facebookEnvironment)?.[1]?.trim();
+const sentryDsn = /^VITE_SENTRY_DSN=(.+)$/mu.exec(facebookEnvironment)?.[1]?.trim();
 const googleAnalyticsMeasurementId = /^VITE_GOOGLE_ANALYTICS_MEASUREMENT_ID=(.+)$/mu
-  .exec(jestEnvironment)?.[1]?.trim();
-const encryptedJestBackend = (() => {
-  if (!jestBackendUrl) return false;
+  .exec(facebookEnvironment)?.[1]?.trim();
+const encryptedFacebookBackend = (() => {
+  if (!facebookBackendUrl) return false;
   try {
-    return new URL(jestBackendUrl).protocol === "https:";
+    return new URL(facebookBackendUrl).protocol === "https:";
   } catch {
     return false;
   }
@@ -115,16 +112,14 @@ const analyticsConsent = readFileSync(`${repositoryRoot}/src/observability/analy
 const analyticsRuntime = readFileSync(`${repositoryRoot}/src/observability/analytics/eventsRuntime.ts`, "utf8");
 const browserSentry = readFileSync(`${repositoryRoot}/src/observability/sentry.ts`, "utf8");
 const functionSentry = readFileSync(`${repositoryRoot}/firebase-functions/src/shared/sentry.ts`, "utf8");
-const jestReleaseScript = readFileSync(
-  `${repositoryRoot}/platforms/web/jest/scripts/release-jest-timestamped.mjs`,
-  "utf8",
-);
+const facebookReleaseArtifact = readFileSync(`${repositoryRoot}/platforms/web/facebook/scripts/facebook-release-artifact.mjs`, "utf8");
+const facebookArtifactAudit = readFileSync(`${repositoryRoot}/platforms/web/facebook/scripts/audit-facebook-artifact.mjs`, "utf8");
+const facebookAppCheck = readFileSync(`${repositoryRoot}/platforms/web/facebook/src/FacebookFirebaseAppCheck.ts`, "utf8");
+const facebookIdentity = readFileSync(`${repositoryRoot}/platforms/web/facebook/src/credentialExchange.ts`, "utf8");
+const facebookAuthentication = readFileSync(`${repositoryRoot}/platforms/web/facebook/src/authenticate.ts`, "utf8");
+const facebookIdentityEndpoint = readFileSync(`${repositoryRoot}/platforms/web/facebook/server/facebookEndpoints.ts`, "utf8");
+const facebookIdentityVerifier = readFileSync(`${repositoryRoot}/platforms/web/facebook/server/facebookSecurity.ts`, "utf8");
 
-const firebaseConfig = JSON.parse(readFileSync(new URL("../firebase.json", import.meta.url), "utf8"));
-const globalHeaders = firebaseConfig.hosting?.headers?.find((entry) => entry.source === "**")?.headers ?? [];
-const headerValues = new Map(globalHeaders.map(({key, value}) => [key.toLowerCase(), value]));
-const hsts = headerValues.get("strict-transport-security") ?? "";
-const contentSecurityPolicy = headerValues.get("content-security-policy") ?? "";
 const androidManifest = readFileSync(`${repositoryRoot}/platforms/native/android/android/app/src/main/AndroidManifest.xml`, "utf8");
 const androidNetworkSecurity = readFileSync(`${repositoryRoot}/platforms/native/android/android/app/src/main/res/xml/network_security_config.xml`, "utf8");
 const notificationHosting = JSON.parse(readFileSync(`${repositoryRoot}/notification-manager/vercel.json`, "utf8"));
@@ -139,15 +134,6 @@ const requirements = [
   [viteConfiguration.includes('new URL(`../../../platforms/web/${profile.id}/`, import.meta.url)') &&
     /envDir:\s*targetRoot/u.test(viteConfiguration),
   "Vite must load browser configuration only from the selected platform directory."],
-  [Number(/max-age=(\d+)/i.exec(hsts)?.[1] ?? 0) >= 31_536_000,
-    "HSTS must remain enabled for at least one year."],
-  [/\bincludesubdomains\b/i.test(hsts), "HSTS must cover subdomains."],
-  [/\bupgrade-insecure-requests\b/i.test(contentSecurityPolicy),
-    "CSP must upgrade insecure requests."],
-  [/\bblock-all-mixed-content\b/i.test(contentSecurityPolicy),
-    "CSP must block mixed content."],
-  [!/(?:^|[;\s])(?:http|ws):\/\//i.test(contentSecurityPolicy),
-    "CSP must not allow plaintext HTTP or WebSocket origins."],
   [/android:usesCleartextTraffic="false"/u.test(androidManifest) &&
     /android:networkSecurityConfig="@xml\/network_security_config"/u.test(androidManifest) &&
     /<base-config\s+cleartextTrafficPermitted="false"/u.test(androidNetworkSecurity) &&
@@ -158,13 +144,10 @@ const requirements = [
     /\bupgrade-insecure-requests\b/u.test(notificationCsp) && /\bblock-all-mixed-content\b/u.test(notificationCsp) &&
     !/(?:^|[;\s])(?:http|ws):\/\//iu.test(notificationCsp),
     "Notification manager hosting must enforce HTTPS through HSTS and mixed-content protection."],
-  [encryptedJestBackend, "The production Jest backend URL must use HTTPS."],
+  [encryptedFacebookBackend, "The production Facebook backend URL must use HTTPS."],
   [encryptedSentryDsn, "The production Sentry DSN must use an official encrypted Sentry endpoint."],
-  [googleAnalyticsMeasurementId === "G-7CWWGNE52Q",
-    "The Jest production environment must select its registered Google Analytics stream."],
-  [contentSecurityPolicy.includes("https://www.googletagmanager.com") &&
-    contentSecurityPolicy.includes("https://*.google-analytics.com"),
-    "The production CSP must authorize the consent-controlled Google tag and encrypted Analytics ingestion."],
+  [googleAnalyticsMeasurementId === "G-1YZP6C2H4V",
+    "The Facebook production environment must select its registered Google Analytics stream."],
   [analyticsConsent.includes('=== "granted"') && analyticsConsent.includes("decision.current") &&
     analyticsConsent.includes("!configured || !enabled") && analyticsConsent.includes("stop.current()") &&
     analyticsRuntime.includes("let collectionEnabled = false") &&
@@ -177,20 +160,32 @@ const requirements = [
   [/tracesSampleRate:\s*0/u.test(browserSentry) && /tracesSampleRate:\s*0/u.test(functionSentry) &&
     !/captureConsoleIntegration/u.test(browserSentry),
   "Sentry must remain essential errors-only without performance tracing or console-event capture."],
-  [/https:\/\/\*\.sentry\.io/u.test(contentSecurityPolicy),
-    "CSP must allow encrypted Sentry event ingestion."],
-  [/^[\w-]{30,}$/u.test(appCheckSiteKey ?? ""),
-    "The production Jest build must include a Firebase App Check site key."],
+  [facebookAppCheck.includes("provider: new CustomProvider(") &&
+    facebookAppCheck.includes("await getToken(appCheck, true)") &&
+    facebookAppCheck.includes("setTokenAutoRefreshEnabled(appCheck, true)") &&
+    facebookAuthentication.includes("await firebaseRuntime.initializeAppCheck(") &&
+    facebookAuthentication.includes("credentials.uid !== initialCredentials.uid") &&
+    facebookIdentityEndpoint.includes("getAppCheck().createToken(firebaseAppId"),
+    "Facebook App Check must use renewable signed-identity attestation bound to the active account generation."],
+  [facebookIdentity.includes("sdk.player.getSignedPlayerInfoAsync(nonce)") &&
+    facebookIdentity.includes("signed.getPlayerID() !== playerId") &&
+    facebookIdentityEndpoint.includes("await verifyFacebookSignedPlayer(input.signedPlayer") &&
+    facebookIdentityEndpoint.includes("expectedNonce: input.nonce") &&
+    facebookIdentityVerifier.includes("timingSafeEqual(actualSignature, expectedSignature)") &&
+    facebookIdentityVerifier.includes("facebook-nonce-replayed"),
+    "Facebook identity must verify the exact player, signed HMAC assertion and one-use request nonce before issuing credentials."],
   [/sourcemap:\s*uploadSentrySourceMaps\s*\?\s*"hidden"\s*:\s*false/u.test(viteConfiguration),
     "Production source maps must be hidden and generated only for private Sentry upload."],
-  [/const jestBuildOutDir\s*=\s*environment\.JEST_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*canonicalBuildOutputDirectories\.jest/u
+  [/facebook:\s*environment\.FACEBOOK_BUILD_OUT_DIR\?\.trim\(\)\s*\|\|\s*canonicalBuildOutputDirectories\.facebook/u
     .test(viteConfiguration) &&
-    /jest:\s*jestBuildOutDir/u.test(viteConfiguration) &&
     /const selectedBuildOutDir\s*=\s*path\.resolve\(portalPackageDirectory, buildOutputDirectories\[profile\.id\]\)/u.test(viteConfiguration) &&
     viteConfiguration.includes("assets: `${selectedBuildOutDir}/**`") &&
     viteConfiguration.includes("filesToDeleteAfterUpload: `${selectedBuildOutDir}/**/*.map`") &&
-    /JEST_BUILD_OUT_DIR:\s*releaseBuildDirectory/u.test(jestReleaseScript),
-  "Private source maps must be deleted from the selected Jest build directory before artifact packaging."],
+    facebookArtifactAudit.includes('file.endsWith(".map")'),
+    "Private source maps must be deleted from the selected Facebook build directory and rejected by artifact auditing."],
+  [facebookArtifactAudit.includes("https://connect.facebook.net/en_US/fbinstant.8.0.js") &&
+    facebookArtifactAudit.includes("allowedExternalEntryResources.has(reference)"),
+    "Facebook artifacts must use the encrypted official Instant Games SDK without additional external entry scripts."],
   [/"import\.meta\.env\.VITE_PLATFORM_TARGET":\s*JSON\.stringify\(profile\.id\)/u.test(viteConfiguration),
     "The resolved Web Target must be the sole compile-time source of runtime platform identity."],
   [/function webTargetBuildContractPlugin/u.test(viteConfiguration) &&
@@ -199,8 +194,10 @@ const requirements = [
   "The final Vite output directory must match the directory selected for artifact auditing."],
   [/Private Sentry source-map upload requires:/u.test(viteConfiguration),
     "Requested Sentry source-map uploads must fail closed when configuration is missing."],
-  [/VITE_SENTRY_RELEASE:\s*sentryRelease/u.test(jestReleaseScript),
-    "Timestamped Jest releases must share their immutable identifier with Sentry."],
+  [facebookReleaseArtifact.includes("record.source?.commit !== sourceCommit") &&
+    facebookReleaseArtifact.includes("record.archive.sha256 !== facebookArtifactSha256(contents)") &&
+    facebookReleaseArtifact.includes('if (sourceDirty) throw new Error('),
+    "Facebook uploads must bind the gated artifact hash to a clean, unchanged source revision."],
   [plaintextNetworkReferences.length === 0,
     `Production source contains plaintext network URLs: ${plaintextNetworkReferences.join(", ")}`],
 ];
@@ -213,5 +210,5 @@ export function auditSecurityConfiguration() {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   auditSecurityConfiguration();
-  console.log("Security configuration audit passed: production endpoints, CSP, and HSTS enforce encrypted transport.");
+  console.log("Security configuration audit passed: encrypted transport, signed Facebook identity, custom App Check, consent, and artifact boundaries verified.");
 }

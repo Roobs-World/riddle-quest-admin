@@ -7,8 +7,8 @@ export async function installCompletedMockGameTour(page: Page): Promise<void> {
     localStorage.setItem(tourKey, "seen");
     localStorage.setItem(coinKey, "seen");
   }, {
-    tourKey: createTooltipTourStorageKey("gameTour", "jest-guest"),
-    coinKey: createGuidanceStorageKey("tooltipSeen:gameCoins", "jest-guest"),
+    tourKey: createTooltipTourStorageKey("gameTour", "guest-player"),
+    coinKey: createGuidanceStorageKey("tooltipSeen:gameCoins", "guest-player"),
   });
 }
 

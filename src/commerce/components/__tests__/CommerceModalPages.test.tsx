@@ -86,7 +86,7 @@ describe("commerce modal pages", () => {
   });
 
   it("shows cached subscription details immediately while withholding checkout during ownership refresh", () => {
-    /** Subscription actions activate the Jest shop refresh path. */
+    /** Subscription actions activate the platform shop refresh path. */
     const subscriptionActions = {
       products,
       refresh: async () => undefined,

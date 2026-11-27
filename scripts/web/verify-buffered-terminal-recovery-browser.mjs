@@ -29,7 +29,7 @@ import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from 
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
-const params=new URL(location.href).searchParams,uid='jest-guest',scope=pendingPlayScope(uid,1,'en'),queued=!params.has('draftOnly'),rejected=params.has('rejected'),replacement=params.has('replacement'),acceptedDuringReconcile=params.has('acceptedDuringReconcile');
+const params=new URL(location.href).searchParams,uid='guest-player',scope=pendingPlayScope(uid,1,'en'),queued=!params.has('draftOnly'),rejected=params.has('rejected'),replacement=params.has('replacement'),acceptedDuringReconcile=params.has('acceptedDuringReconcile');
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');
@@ -130,7 +130,7 @@ window.profile=()=>source.loadProfile(uid);
     await page.waitForFunction(()=>window.probe.inbound.some(x=>x.type==='host:operationResult'&&x.requestId==='retained-next-guess'&&x.payload.operation==='guess'&&x.payload.ok));
     await page.waitForFunction(()=>window.readJournal()?.queue.length===0);
     metric('acknowledged successor leaves no replayable delivery',await page.evaluate(()=>{const j=window.readJournal();return[j?.queue,j?.successors,j?.coinAction??null,j?.skipPreview??null];}),[[],[],null,null]);
-    metric('settled journal retains only the matching successor draft',await page.evaluate(()=>{const j=window.readJournal();return[j?.scope,j?.riddle.riddleId,j?.riddle.sessionToken,j?.riddle.gameMode,j?.riddle.index,j?.confirmedClassicIndex,j?.draft,j?.draftActiveSlotIndex];}),await page.evaluate(()=>['jest-guest:1:en',window.probe.next.riddleId,window.probe.next.sessionToken,'classic',2,2,['C','L','','',''],2]));
+    metric('settled journal retains only the matching successor draft',await page.evaluate(()=>{const j=window.readJournal();return[j?.scope,j?.riddle.riddleId,j?.riddle.sessionToken,j?.riddle.gameMode,j?.riddle.index,j?.confirmedClassicIndex,j?.draft,j?.draftActiveSlotIndex];}),await page.evaluate(()=>['guest-player:1:en',window.probe.next.riddleId,window.probe.next.sessionToken,'classic',2,2,['C','L','','',''],2]));
     metric('settled checkpoint contains the acknowledged wrong row exactly once',await page.evaluate(()=>{const j=window.readJournal();return[j?.base.guesses,j?.base.engineSnapshot?.attemptsUsed,j?.base.currentLetters,j?.base.activeSlotIndex,j?.base.engineSnapshot?.gameOver,j?.base.lastOutcome];}),[[{guess:['z','z','z','z','z'],feedback:['red','red','red','red','red']}],1,['C','L','','',''],2,false,null]);
    }
    }

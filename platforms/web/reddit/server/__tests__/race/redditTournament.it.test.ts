@@ -9,7 +9,7 @@ import {createHmac} from "node:crypto";
 import {redditGameplay} from "../../redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../redditEndpoints";
 import {canonicalRedditGatewayAssertion, hashRedditGatewayPayload, redditFirebaseUid} from "../../redditSecurity";
-import {recordJestAccountDeletion} from "../../../../jest/server/jestAccountDeletion";
+import {recordAccountDeletion} from "../../../../../../firebase-functions/src/shared/accountDeletion";
 import {removeCrossUserRaceIdentitySnapshots} from "../../../../../../firebase-functions/src/profile/accountDeletion/raceAccountDeletion";
 
 /** Defines the project id value. */
@@ -272,7 +272,7 @@ it("leases the signed HTTP recorder until deletion can sweep its committed board
       })))) as typeof db.runTransaction);
     pending = redditGameplay(request("http_lease_before_" + "n".repeat(32)) as never, response as never);
     await Promise.race([ready, pending.then(() => {throw new Error(`recorder-ended-before-entry:${status}`);})]);
-    await expect(recordJestAccountDeletion(uid)).rejects.toThrow("account-deletion-in-progress");
+    await expect(recordAccountDeletion(uid)).rejects.toThrow("account-deletion-in-progress");
     release(); await pending;
     expect(status).toBe(200); expect(body).toMatchObject({ok: true, result: {runId: value.runId, rewardsEnabled: false}});
     expect(Object.keys(Reflect.get(body as object, "result")).sort()).toEqual([
@@ -280,7 +280,7 @@ it("leases the signed HTTP recorder until deletion can sweep its committed board
     ]);
     expect((await entryRef.get()).exists).toBe(true);
     jest.restoreAllMocks(); jest.useRealTimers();
-    await recordJestAccountDeletion(uid); await removeCrossUserRaceIdentitySnapshots(uid);
+    await recordAccountDeletion(uid); await removeCrossUserRaceIdentitySnapshots(uid);
     expect((await entryRef.get()).exists).toBe(false);
     setEmulatorSystemTime(START + 60000);
     await redditGameplay(request("http_lease_after_" + "n".repeat(32)) as never, response as never);

@@ -1,5 +1,4 @@
 import {LANGUAGE_OPTIONS, detectDeviceLanguage, setLocale, type Locale} from "../../localization/browser/i18n";
-import {isJestWebTarget} from "../../platform/browser/webTargetEnvironment";
 import {trackEvent} from "../../observability/analytics/events";
 import {
   readBrowserStorage,
@@ -25,7 +24,7 @@ export type PlayerPreferences = {
 /** A user-initiated preference change that should be persisted by the active platform adapter. */
 export type PlayerPreferenceChange = Partial<Required<PlayerPreferences>>;
 
-/** App-owned browser keys for preferences shared by hosted and Jest play. */
+/** App-owned browser keys for hosted game preferences. */
 export const PLAYER_PREFERENCE_STORAGE_KEYS = {
   locale: "appLanguage",
   soundEnabled: "riddleQuest:soundEnabled",
@@ -49,7 +48,7 @@ const notificationSubscribers = new Set<() => void>();
 let notificationsEnabledOverride: boolean | undefined;
 /** Platform onboarding value that takes precedence over browser fallback state. */
 let onboardingCompleteOverride: boolean | undefined;
-/** Jest installs this dynamically so stale tabs cannot recreate deleted browser state. */
+/** The active platform can prevent stale tabs from recreating deleted browser state. */
 let browserPlayerStateMutationGuard: (() => boolean) | undefined;
 
 /** Browser storage areas used by app-owned player state. */
@@ -82,7 +81,7 @@ export const safeBrowserStorageRemove = (area: BrowserStorageArea, key: string):
   removeBrowserStorage(area, key);
 };
 
-/** Installs a Jest-runtime-only guard around app-owned browser-state mutations. */
+/** Installs a target-owned guard around app-owned browser-state mutations. */
 export function installBrowserPlayerStateMutationGuard(guard: () => boolean): () => void {
   /** Provides previous guard behavior. */
   const previousGuard = browserPlayerStateMutationGuard;
@@ -129,7 +128,7 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   const storedLocale = parseLocale(safeBrowserStorageGet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale));
   /** Provides locale behavior. */
   const locale =
-    isJestWebTarget ? "en" : parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
+    parseLocale(preferences.locale) ?? storedLocale ?? detectDeviceLanguage(globalThis.navigator?.language);
   /** Stores d sound enabled. */
   const storedSoundEnabled = readStoredBoolean(PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled);
   /** Provides muted behavior. */
@@ -188,7 +187,7 @@ export function subscribeToPlayerNotifications(subscriber: () => void): () => vo
 /** Persists and applies a locale selected by the player. */
 export function setPlayerLocale(locale: Locale): void {
   /** Platform persistence and the rendered locale must use the same target policy. */
-  const nextLocale = isJestWebTarget ? "en" : locale;
+  const nextLocale = locale;
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, nextLocale);
   setLocale(nextLocale);
   emitPreferenceChange({locale: nextLocale});

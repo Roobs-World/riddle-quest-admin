@@ -1,4 +1,4 @@
-// Supporting compiled-source regressions; actual hosted Jest checks are separate.
+// Supporting compiled-source regressions; actual hosted Facebook checks are separate.
 import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';

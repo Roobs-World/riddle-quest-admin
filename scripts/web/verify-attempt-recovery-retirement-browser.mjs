@@ -32,7 +32,7 @@ window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',mu
 const [kind,outcome]=new URLSearchParams(location.search).get('scenario').split(':');
 window.probe={requests:[],actions:[],errors:[],unhandled:[],oldDone:false,newDone:false};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
-const fixture=createFakeHostServices(),profile=await fixture.loadProfile('jest-guest'),riddle={...await fixture.loadRiddle({gameMode:'classic',locale:'en'}),attemptsUsed:5,awaitingContinue:true};
+const fixture=createFakeHostServices(),profile=await fixture.loadProfile('guest-player'),riddle={...await fixture.loadRiddle({gameMode:'classic',locale:'en'}),attemptsUsed:5,awaitingContinue:true};
 const initial=gameSessionReducer(gameSessionReducer(createInitialGameSession(),{type:'hostInit',user:{uid:'Alice',isAnonymous:true,accountGeneration:1},profile,locale:'en',gameMode:'classic',products:[]}),{type:'loadRiddle',riddle});
 let resolveOld,rejectOld,resolveNew;const oldWork=new Promise((resolve,reject)=>{resolveOld=resolve;rejectOld=reject;}),newWork=new Promise(resolve=>resolveNew=resolve);
 function adapter(provider){return {request:input=>{window.probe.requests.push({provider,...input});return window.probe.requests.length===1?oldWork:newWork;}};}

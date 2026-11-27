@@ -1,5 +1,5 @@
 import {initializeApp} from "firebase/app";
-import {getAuth, initializeAuth, inMemoryPersistence} from "firebase/auth";
+import {getAuth} from "firebase/auth";
 import {getFunctions} from "firebase/functions";
 import {z} from "zod";
 import {createGameFunctionsClient} from "./gameFunctions";
@@ -39,11 +39,7 @@ const firebaseConfig = {
 export const firebaseApp = initializeApp(firebaseConfig);
 
 /** Provides auth behavior. */
-// Jest signs each SDK player into Firebase on every launch. Keep that identity
-// inside its frame so another tab cannot replace its authority or saved profile.
-export const auth = firebaseEnvironment.platformTarget === "jest"
-  ? initializeAuth(firebaseApp, {persistence: inMemoryPersistence})
-  : getAuth(firebaseApp);
+export const auth = getAuth(firebaseApp);
 /** Provides functions behavior. */
 const functions = getFunctions(firebaseApp, functionsRegion);
 const getPlayerProfile = encryptedHttpsCallable<Record<string, never>, unknown>(functions, "getPlayerProfile");
@@ -84,8 +80,6 @@ export const getLeaderboard = gameFunctions.getLeaderboard;
 export const updateUsername = gameFunctions.updateUsername;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
 export const updateAvatar = gameFunctions.updateAvatar;
-/** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
-export const syncJestAvatar = gameFunctions.syncJestAvatar;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */
 export const deleteAccount = gameFunctions.deleteAccount;
 /** Shared callable bound to this target's Firebase regions; see `src/platform/firebase/gameFunctions.ts`. */

@@ -4,7 +4,7 @@ import {JoinLiveRaceSchema, RetireLiveRaceJoinSchema, RetireLiveRaceJoinResponse
 const join = {locale: "en", categoryId: "history", requestId: "original-join-request"};
 it("preserves legacy joins and validates the modern account precondition", () => {
   expect(JoinLiveRaceSchema.parse(join)).toEqual(join);
-  expect(JoinLiveRaceSchema.parse({...join, retirementAware: true, expectedOwnerId: "jest_owner"})).toEqual({...join, retirementAware: true, expectedOwnerId: "jest_owner"});
+  expect(JoinLiveRaceSchema.parse({...join, retirementAware: true, expectedOwnerId: "facebook_owner"})).toEqual({...join, retirementAware: true, expectedOwnerId: "facebook_owner"});
 });
 it.each([false, 1, "true"])("rejects a malformed retirement opt-in %p", retirementAware => {
   expect(JoinLiveRaceSchema.safeParse({...join, retirementAware}).success).toBe(false);

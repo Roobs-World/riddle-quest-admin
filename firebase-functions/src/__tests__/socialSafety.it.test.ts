@@ -15,7 +15,7 @@ if (
 /** Renders the reporter interface. */
 const REPORTER = `facebook_${"c".repeat(40)}`;
 /** Renders the target interface. */
-const TARGET = `jest_${"d".repeat(40)}`;
+const TARGET = `facebook_${"d".repeat(40)}`;
 /** Renders the now interface. */
 const NOW = Date.parse("2026-08-19T12:00:00.000Z");
 /** Provides db behavior. */

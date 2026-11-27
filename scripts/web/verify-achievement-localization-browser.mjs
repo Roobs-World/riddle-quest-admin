@@ -1,4 +1,4 @@
-// Supporting injected component checks; actual Jest-hosted E2E is recorded separately.
+// Supporting injected component checks; actual provider-hosted E2E is recorded separately.
 import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';

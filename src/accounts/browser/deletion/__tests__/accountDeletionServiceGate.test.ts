@@ -18,7 +18,7 @@ it("routes normal host work through the shared gate and deletion through the exc
   /** Provides coordinated behavior. */
   const coordinated = coordinateHostServices(services, {run, runExclusive});
 
-  await coordinated.loadProfile("jest-guest");
+  await coordinated.loadProfile("guest-player");
   /** Provides product id behavior. */
   const productId = services.products[0]!.productId;
   await coordinated.requestPurchase(productId);
@@ -26,7 +26,7 @@ it("routes normal host work through the shared gate and deletion through the exc
 
   expect(run).toHaveBeenCalledTimes(2);
   expect(runExclusive).toHaveBeenCalledTimes(1);
-  expect(loadProfile).toHaveBeenCalledWith("jest-guest");
+  expect(loadProfile).toHaveBeenCalledWith("guest-player");
   expect(requestPurchase).toHaveBeenCalledWith(productId);
   expect(deleteAccount).toHaveBeenCalledTimes(1);
 });
@@ -38,14 +38,14 @@ it("retains loader identity across renders so pending profile refreshes keep the
   const run = jest.fn(async <Result>(operation: () => Promise<Result>) => operation());
   /** Exclusive deletion ordering remains independent of profile reads. */
   const runExclusive = jest.fn(async (operation: () => Promise<void>) => operation());
-  /** Jest authority wrapper retained through host renders. */
+  /** Platform authority wrapper retained through host renders. */
   const coordinated = coordinateHostServices(services, {run, runExclusive});
   /** Loader identity captured before the confirmed balance changes. */
   const refresh = coordinated.loadProfile;
   expect(coordinated.loadProfile).toBe(refresh);
   expect(coordinated.deleteAccount).toBe(coordinated.deleteAccount);
-  await refresh("jest-guest");
-  await coordinated.loadProfile("jest-guest");
+  await refresh("guest-player");
+  await coordinated.loadProfile("guest-player");
   expect(run).toHaveBeenCalledTimes(2);
   expect(runExclusive).not.toHaveBeenCalled();
 });
@@ -56,7 +56,7 @@ it("retires a cached wrapper when its underlying service changes", async () => {
   /** Gate belonging to this authority lifetime. */
   const gate = {run: async <Result>(operation: () => Promise<Result>) => operation(),
     runExclusive: async (operation: () => Promise<void>) => operation()};
-  /** Jest authority wrapper retained through host renders. */
+  /** Platform authority wrapper retained through host renders. */
   const coordinated = coordinateHostServices(services, gate);
   /** Previous operation retained only by its original callers. */
   const original = coordinated.loadProfile;
@@ -79,7 +79,7 @@ it("keeps cached operations gated after the gate rejects later work", async () =
   const loader = jest.spyOn(services, "loadProfile");
   /** Models deletion closing the gate after an initial successful read. */
   let closed = false;
-  /** Jest authority wrapper retained through host renders. */
+  /** Platform authority wrapper retained through host renders. */
   const coordinated = coordinateHostServices(services, {
     run: async <Result>(operation: () => Promise<Result>) => {
       if (closed) throw new Error("account gate closed");
@@ -89,8 +89,8 @@ it("keeps cached operations gated after the gate rejects later work", async () =
   });
   /** Loader identity captured before the confirmed balance changes. */
   const refresh = coordinated.loadProfile;
-  await refresh("jest-guest");
+  await refresh("guest-player");
   closed = true;
-  await expect(refresh("jest-guest")).rejects.toThrow("account gate closed");
+  await expect(refresh("guest-player")).rejects.toThrow("account gate closed");
   expect(loader).toHaveBeenCalledTimes(1);
 });

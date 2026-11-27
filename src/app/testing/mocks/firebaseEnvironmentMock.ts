@@ -13,7 +13,6 @@ export const firebaseEnvironment = {
   appCheckSiteKey: "unit-test-site-key",
   functionsRegion: undefined,
   gameplayRegion: undefined,
-  jestRuntime: "0",
-  platformTarget: "jest",
+  platformTarget: "facebook",
   production: false,
 } as const;

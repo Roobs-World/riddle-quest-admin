@@ -8,8 +8,8 @@ import type {LiveTicket} from "../../race/live/raceLiveState";
 
 /** Every source/account mutation belongs to an isolated loopback demo. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "",
-  A = `jest_${"a".repeat(40)}`,
-  B = `jest_${"b".repeat(40)}`,
+  A = `facebook_${"a".repeat(40)}`,
+  B = `facebook_${"b".repeat(40)}`,
   NOW = 1_800_000_000_000;
 /** The actual SDK exercises current live invitation preview, ownership and leave transactions. */
 let db: FirebaseFirestore.Firestore;

@@ -6,7 +6,7 @@ import {fileURLToPath} from "node:url";
 import {build} from "vite";
 import {chromium} from "@playwright/test";
 
-// Supplementary component regression: this is not hosted Jest E2E evidence.
+// Supplementary component regression: this is not hosted Facebook E2E evidence.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const output = path.resolve(process.env.LIVE_RACE_REPORT_DIR ?? path.join(root, "artifacts/live-cancellation"));
 await mkdir(output, {recursive: true});
@@ -102,7 +102,7 @@ try {
     }
     await context.close();
   }
-  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Jest E2E", report}, null, 2));
+  await writeFile(path.join(output, "report.json"), JSON.stringify({scope: "Supplementary real-component harness; not hosted Facebook E2E", report}, null, 2));
   console.log(`PASS: ${report.length} cancelled-lobby rendering and return cases`);
 } finally {
   await browser?.close();

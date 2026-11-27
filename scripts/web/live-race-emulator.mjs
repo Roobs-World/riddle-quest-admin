@@ -3,7 +3,7 @@ import {fileURLToPath} from "node:url";
 import {createRequire} from "node:module";
 
 /** Real authority seam for the injected browser harness; never contacts production. */
-export async function createLiveRaceEmulator({provider = "jest"} = {}) {
+export async function createLiveRaceEmulator({provider = "facebook"} = {}) {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Live browser tests require Firestore emulator");
   const projectId = process.env.GCLOUD_PROJECT ?? "demo-riddle-quest-live-browser";
   if (!projectId.startsWith("demo-")) throw new Error("Live browser fixtures require a demo project");
@@ -22,7 +22,7 @@ export async function createLiveRaceEmulator({provider = "jest"} = {}) {
   const tickets = new Map();
   let clockOffsetMs = 0, lastCommitAtMs = 0;
   async function clear() {
-    for (const collection of ["jestAccountDeletionTombstones", "liveRaceSignals", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
+    for (const collection of ["liveRaceSignals", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "users", "usernameReservations", "liveRacePushOutbox", "localizedRiddles/en/riddles"])
       await db.recursiveDelete(db.collection(collection));
     tickets.clear();
   }

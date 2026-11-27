@@ -317,10 +317,10 @@ describe("Race to 10 contracts", () => {
       }).success,
     ).toBe(false);
     expect(PublishRaceChallengeRequestSchema.safeParse({
-      runId: "run-1", requestId, reservedChallengeId: `jest-invite-${"a".repeat(64)}-${"b".repeat(32)}`,
+      runId: "run-1", requestId, reservedChallengeId: `race-invite-${"a".repeat(64)}-${"b".repeat(32)}`,
     }).success).toBe(true);
     expect(PublishRaceChallengeRequestSchema.safeParse({
-      runId: "run-1", requestId, reservedChallengeId: "jest-invite-guessable",
+      runId: "run-1", requestId, reservedChallengeId: "race-invite-guessable",
     }).success).toBe(false);
   });
 

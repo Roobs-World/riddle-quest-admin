@@ -65,7 +65,7 @@ describe("Race rollout cohort evaluation", () => {
     expect(db.runTransaction).not.toHaveBeenCalled();
   });
 
-  it("keeps non-English race disabled for Jest identities", async () => {
+  it("keeps non-English race disabled for unsupported identities", async () => {
     /** Provides {db} behavior. */
     const {db} = createDb();
     await expect(getRaceAccessForUser("player-1", "fr", db as never)).resolves.toMatchObject({enabled: false});
@@ -126,7 +126,7 @@ describe("Race rollout cohort evaluation", () => {
     {name: "missing account", profile: undefined},
     {name: "missing provider marker", profile: {}},
     {name: "null provider marker", profile: {androidProvider: null}},
-    {name: "another provider marker", profile: {androidProvider: "jest"}},
+    {name: "another provider marker", profile: {androidProvider: "facebook"}},
     {name: "malformed provider marker", profile: {androidProvider: true}},
   ])("refuses Android rollout before config access for $name", async ({profile}) => {
     /** A Firebase-shaped uid alone must never authorize native multiplayer. */

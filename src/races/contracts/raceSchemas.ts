@@ -391,7 +391,7 @@ export const PublishRaceChallengeRequestSchema = z
   .object({
     runId: OpaqueIdSchema,
     requestId: RequestIdSchema,
-    reservedChallengeId: z.string().regex(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/).optional(),
+    reservedChallengeId: z.string().regex(/^race-invite-[a-f0-9]{64}-[a-f0-9]{32}$/).optional(),
   })
   .strict();
 
@@ -417,7 +417,7 @@ export const ReserveRaceInviteRequestSchema = z
 /** Identifies the reserved lobby carried through the provider referral payload. */
 export const ReserveRaceInviteResponseSchema = z
   .object({
-    challengeId: z.string().regex(/^jest-invite-[a-f0-9]{64}-[a-f0-9]{32}$/),
+    challengeId: z.string().regex(/^race-invite-[a-f0-9]{64}-[a-f0-9]{32}$/),
     expiresAtMs: MillisecondsSchema,
   })
   .strict();

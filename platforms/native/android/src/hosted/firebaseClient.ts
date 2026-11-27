@@ -73,7 +73,7 @@ const isProvisionedAccount = (value: unknown): value is ProvisionedAccount =>
  * Creates the Firebase client for hosted play.
  *
  * @remarks
- * The same Firebase project and callables serve the Jest Web Target; this
+ * The same Firebase project and callables serve the shared hosted game; this
  * client differs only in auth persistence (AsyncStorage) and in optionally
  * targeting the local emulators. Outside the emulators App Check attests the
  * device with Play Integrity (`appCheck.ts`).

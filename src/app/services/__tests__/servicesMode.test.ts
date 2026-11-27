@@ -18,18 +18,12 @@ describe("host service trust boundary", () => {
     });
     expect(hasTrustedTestHarnessMarker()).toBe(true);
 
-    Object.defineProperty(globalThis, "window", {
-      configurable: true,
-      value: {__RIDDLE_QUEST_JEST_AUTH_TEST__: false},
-    });
-    expect(hasTrustedTestHarnessMarker()).toBe(true);
-
     Object.defineProperty(globalThis, "window", {configurable: true, value: {}});
     expect(hasTrustedTestHarnessMarker()).toBe(false);
   });
 
   it("does not let production URL parameters select fake multiplayer services", () => {
-    for (const harness of ["jest", "jest-auth", "race", "race-auth", "dev"]) {
+    for (const harness of ["facebook", "race", "race-auth", "dev"]) {
       expect(
         shouldUseFakeHostServices({
           search: `?harness=${harness}`,

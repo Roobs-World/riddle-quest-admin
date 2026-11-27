@@ -16,7 +16,7 @@ import nl from "../../../../../src/locales/nl/profile.json";
 import pl from "../../../../../src/locales/pl/profile.json";
 import vi from "../../../../../src/locales/vi/profile.json";
 
-/** Existing translated profile strings shared with the Jest game. */
+/** Existing translated profile strings shared with the shared game. */
 const dictionaries = {en, es, pt, fr, de, ja, ko, hi, ru, tr, ar, id, it, nl, pl, vi} satisfies Record<YouTubeLocale, typeof en>;
 /** Avatar controls reuse the corresponding web profile translations. */
 export type AvatarCopyKey = "UPLOAD_FROM_LIBRARY_BUTTON" | "ALERT_AVATAR_SELECT_FAIL" | "ALERT_AVATAR_UPDATE_ERROR" | "ALERT_AVATAR_UPDATE_SUCCESS";

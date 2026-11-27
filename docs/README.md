@@ -11,13 +11,14 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 | Platform | Documentation |
 | --- | --- |
 | Android / Google Play | [Android documentation](android/README.md) |
-| Jest | [Jest documentation](jest/README.md), [27 November review feedback implementation](jest/evidence/review-feedback-2026-11-27.md) |
 | Facebook Instant Games | [Setup guide](facebook/facebook-setup-guide.md), [Facebook documentation](facebook/README.md) |
 | Reddit Devvit Web | [Game and review guide](reddit/README.md), [operations](reddit/reddit-games-operations.md), [progress](reddit/reddit-games-progress.html) |
 | YouTube Playables | [YouTube documentation](youtube/README.md) |
 | Netflix candidate | [Candidate build guide](netflix/README.md) |
 | Yahoo candidate | [Candidate build guide](yahoo/README.md) |
 | GameSnacks | [Build and handoff guide](gamesnacks/README.md) |
+
+This `facebook` branch uses the Facebook entry by default and has removed the Jest game platform. Its [former provider documentation](jest/README.md), [review feedback evidence](jest/evidence/review-feedback-2026-11-27.md), and other dated records under `docs/jest/` are historical; their build and release commands are unavailable here. Jest unit-test tooling remains.
 
 Other web destinations use the [shared release guides](common/releases/README.md) and [platform integration matrix](common/architecture/platform-integration-matrix.md).
 
@@ -27,7 +28,7 @@ The background Sentry worker has its own [runbook](sentry-worker/README.md) and 
 
 Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
 
-The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling. [Jest SDK delivery](common/notifications/platform-delivery.md#jest) describes the manager-owned daily plan. [Supabase FCM delivery](common/notifications/supabase-fcm.md) describes the Edge Function transport and its rollout.
+The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling. [Facebook API coverage](facebook/facebook-instant-games-operations.md#facebook-branch-api-coverage) describes the manager-owned A2U route. [Supabase FCM delivery](common/notifications/supabase-fcm.md) describes the Edge Function transport and its rollout.
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 
@@ -35,7 +36,7 @@ Leaderboard requests, page caching and loading behavior are documented in [Leade
 
 The shared catalog, localized collections and unlock authority are documented in [Achievements](common/progression/achievements.md).
 
-Coin earnings, help prices and balance evaluation are documented in [Coin economy](common/core/game-economy.md), including the [Jest sandbox balance reconciliation](jest/evidence/coin-balance-reconciliation-2026-11-26.md).
+Coin earnings, help prices and balance evaluation are documented in [Coin economy](common/core/game-economy.md), with historical comparison in the [Jest sandbox balance reconciliation](jest/evidence/coin-balance-reconciliation-2026-11-26.md).
 
 ## Documentation placement
 

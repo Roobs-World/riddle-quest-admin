@@ -5,7 +5,7 @@ export const ANDROID_PACKAGE_NAME = "com.roobsworld.riddlequest";
 export type CoinPackBadge = "starter" | "popular" | "bestValue";
 /** One coin pack in shop order. */
 export type CoinPack = Readonly<{
-  /** Play in-app product id, identical to the Jest SKU. */
+  /** Play in-app product id, identical to the shared SKU. */
   productId: string;
   /** Coins the backend grants. */
   coins: number;
@@ -18,7 +18,7 @@ const BADGES: Readonly<Record<string, CoinPackBadge>> = {STARTER: "starter", POP
 export const ANDROID_COIN_PACKS: readonly CoinPack[] = DEFAULT_PRODUCT_PRICING.filter((pack) => pack.isActive)
   .sort((a, b) => a.sortOrder - b.sortOrder)
   .map((pack) => ({productId: pack.productId, coins: pack.coins, badge: BADGES[pack.featuredBadge ?? ""] ?? null}));
-/** Premium subscriptions sold on Android, identical to the Jest SKUs. */
+/** Premium subscriptions sold on Android, identical to the shared SKUs. */
 export const ANDROID_PREMIUM_SUBSCRIPTIONS: readonly string[] = [
   "com.roobsworld.riddlequest.premium.monthly",
   "com.roobsworld.riddlequest.premium.yearly",

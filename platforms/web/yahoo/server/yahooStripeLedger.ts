@@ -1,6 +1,6 @@
 import {createHash} from "node:crypto";
 import type {Firestore} from "firebase-admin/firestore";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {resolveYahooStripeProduct} from "./yahooStripeCatalog";
 
 /** Trusted fields projected from a Stripe Checkout Session. */
@@ -82,9 +82,9 @@ export async function grantVerifiedYahooStripePurchase(db: Firestore, input: Ver
       transaction.get(accountRef),
       transaction.get(receiptRef),
       transaction.get(paymentRef),
-      transaction.get(getJestAccountDeletionRef(db, input.uid)),
+      transaction.get(getAccountDeletionRef(db, input.uid)),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (!user.exists) throw new Error("yahoo-stripe-user-not-found");
     /** Provides coins behavior. */
     const coins = nonNegative(user.data()?.coins, "coins");

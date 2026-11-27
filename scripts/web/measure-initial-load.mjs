@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 // Cold browser contexts, local uncompressed artifacts, 4x CPU slowdown and a
 // deterministic 300ms host SDK response. No live provider/backend timing noise.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const supportedTargets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo'];
+const supportedTargets = ['facebook', 'reddit', 'youtube', 'netflix', 'yahoo'];
 const targets = process.env.LOAD_TARGETS?.split(',') ?? supportedTargets;
 assert.ok(targets.every(target => supportedTargets.includes(target)), 'Unknown measurement target');
 const results = [];

@@ -1,4 +1,4 @@
-// Supporting compiled host/UI checks. Actual Jest response-fault verification is separate.
+// Supporting compiled host/UI checks. Actual provider response-fault verification is separate.
 import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';

@@ -592,7 +592,7 @@ export const createFakeRaceServices = (): RaceMethods => {
       /** Deterministic unique reservation identity. */
       const suffix = (++sequence).toString(16).padStart(32, "0");
       /** Private reservation expires even if no recording is published. */
-      const challengeId = `jest-invite-${"a".repeat(64)}-${suffix}`;
+      const challengeId = `race-invite-${"a".repeat(64)}-${suffix}`;
       /** Independent invitation facts for this creator surface. */
       const invitation = {claimState: "unclaimed" as const, publicationState: "pending" as const, role: "creator" as const, canCancel: true, expiresAtMs: Date.now() + 7 * 86400000, cancelled: false};
       invitations.set(challengeId, invitation);
@@ -739,7 +739,7 @@ export const createFakeRaceServices = (): RaceMethods => {
           {
             itemId: "fake-race-result-1",
             challengeId: "fake-challenge-1",
-            opponentUserId: "jest_1111111111111111111111111111111111111111",
+            opponentUserId: "facebook_1111111111111111111111111111111111111111",
             opponentDisplayName: "Nova",
             categoryId: "history" as const,
             result: "win" as const,

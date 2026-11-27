@@ -15,14 +15,14 @@ describe("presence server aggregation", () => {
   it("uses the highest activity across tabs and devices", () => {
     expect(
       aggregatePresenceValue({
-        a: {platform: "jest", state: "online"},
+        a: {platform: "facebook", state: "online"},
         b: {platform: "facebook", state: "playing"},
       }),
     ).toBe("playing");
     expect(
       aggregatePresenceValue({
         a: {platform: "facebook", state: "racing"},
-        b: {platform: "jest", state: "playing"},
+        b: {platform: "facebook", state: "playing"},
       }),
     ).toBe("racing");
   });
@@ -31,19 +31,19 @@ describe("presence server aggregation", () => {
     expect(
       aggregatePresenceValue({
         a: null,
-        b: {platform: "jest", state: 4},
-        c: {platform: "jest", state: "online"},
+        b: {platform: "facebook", state: 4},
+        c: {platform: "facebook", state: "online"},
       }),
     ).toBe("online");
   });
 
-  it("provider-scoped kill switch suppresses Facebook without hiding Jest sessions", () => {
+  it("provider kill switch suppresses all Facebook sessions", () => {
     /** Provides connections behavior. */
     const connections = {
       facebook: {platform: "facebook", state: "racing"},
-      jest: {platform: "jest", state: "playing"},
+      anotherDevice: {platform: "facebook", state: "playing"},
     };
-    expect(aggregatePresenceValue(connections, false)).toBe("playing");
+    expect(aggregatePresenceValue(connections, false)).toBe("offline");
     expect(aggregatePresenceValue({facebook: connections.facebook}, false)).toBe("offline");
     expect(aggregatePresenceValue(connections, true)).toBe("racing");
   });

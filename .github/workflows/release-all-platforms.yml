@@ -22,7 +22,6 @@ jobs:
     if: github.ref == 'refs/heads/main' && inputs.confirm_runner_usage
     runs-on: ubuntu-24.04
     timeout-minutes: 360
-    environment: jest-production
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
         with:
@@ -44,8 +43,7 @@ jobs:
       - name: Verify every configured target
         run: pnpm verify:all-targets
       - name: Run core provider release adapters
-        # Jest is published by deploy-jest.yml and YouTube is packaged by the
-        # parallel youtube job, keeping their independent release boundaries.
+        # YouTube is packaged by the parallel youtube job.
         shell: bash
         run: |
           set -euo pipefail

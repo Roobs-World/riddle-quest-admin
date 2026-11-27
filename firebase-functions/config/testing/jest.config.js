@@ -3,7 +3,7 @@ const repositoryRoot = require("node:path").resolve(__dirname, "../../..").repla
 const sharedSourcePattern = `${repositoryRoot.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/(?:src|platforms/web/[^/]+/src)/.+\\.ts$`;
 module.exports = {
   rootDir: "../..",
-  roots: ["<rootDir>/src", "<rootDir>/../platforms/native/android/server", "<rootDir>/../platforms/web/jest/server", "<rootDir>/../platforms/web/facebook/server", "<rootDir>/../platforms/web/reddit/server", "<rootDir>/../platforms/web/yahoo/server"],
+  roots: ["<rootDir>/src", "<rootDir>/../platforms/native/android/server", "<rootDir>/../platforms/web/facebook/server", "<rootDir>/../platforms/web/reddit/server", "<rootDir>/../platforms/web/yahoo/server"],
   modulePaths: ["<rootDir>/node_modules"],
   testEnvironment: "node",
   testEnvironmentOptions: {globalsCleanup: "on"},
@@ -45,7 +45,6 @@ module.exports = {
     "src/race/content/raceContentImport.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/content/raceContentMigration.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/content/raceContentValidation.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
-    "../platforms/web/jest/server/jestSecurity.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/runs/raceEngine.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/race/raceReadService.ts": {statements: 100, branches: 100, functions: 100, lines: 100},
     "src/gameplay/achievements.ts": {statements: 100, branches: 100, functions: 100, lines: 100},

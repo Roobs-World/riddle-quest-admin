@@ -38,11 +38,11 @@ const mockBatchCommit = jest.fn(async (writes: unknown[]) => {
 
 /** Permanent guard document used by the Firestore mock. */
 const deletionRef = {
-  path: "jestAccountDeletionTombstones/jest-user",
+  path: "jestAccountDeletionTombstones/provider-user",
   set: mockDeletionSet,
   collection: () => ({
     doc: () => ({
-      path: "jestAccountDeletionTombstones/jest-user/activeOperations/lease",
+      path: "jestAccountDeletionTombstones/provider-user/activeOperations/lease",
       delete: mockLeaseDelete,
     }),
     limit: () => ({
@@ -95,10 +95,10 @@ const firestore = Object.assign(
 
 jest.mock("../shared/firebaseAdmin", () => ({admin: {firestore}}));
 
-import {recordJestAccountDeletion} from "../../../platforms/web/jest/server/jestAccountDeletion";
-import {JestAccountDeletedError, JestAccountDeletionBusyError, runWithJestAccountOperationLease} from "../shared/accountDeletion";
+import {recordAccountDeletion} from "../shared/accountDeletion";
+import {AccountDeletedError, AccountDeletionBusyError, runWithAccountOperationLease} from "../shared/accountDeletion";
 
-describe("Jest account operation lease", () => {
+describe("Account operation lease", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     deletionGuardExists = false;
@@ -109,7 +109,7 @@ describe("Jest account operation lease", () => {
 
   it("acquires before authenticated work and always releases afterward", async () => {
     await expect(
-      runWithJestAccountOperationLease("jest-user", 60, async () => {
+      runWithAccountOperationLease("provider-user", 60, async () => {
         events.push("operation");
         return "result";
       }),
@@ -117,7 +117,7 @@ describe("Jest account operation lease", () => {
 
     expect(events).toEqual(["acquire", "operation", "release"]);
     expect(mockBatchWrites).toHaveBeenCalledWith([
-      ["delete", "jestAccountDeletionTombstones/jest-user", {exists: false}],
+      ["delete", "jestAccountDeletionTombstones/provider-user", {exists: false}],
       ["create", expect.stringContaining("/activeOperations/"), {expiresAt: expect.any(Date)}],
     ]);
     expect(mockTransactionCreate).not.toHaveBeenCalled();
@@ -126,7 +126,7 @@ describe("Jest account operation lease", () => {
   it("falls back to the authoritative transaction after an ambiguous single commit", async () => {
     batchCommitFailure = new Error("DEADLINE_EXCEEDED");
 
-    await expect(runWithJestAccountOperationLease("jest-user", 60, async () => {
+    await expect(runWithAccountOperationLease("provider-user", 60, async () => {
       events.push("operation");
       return "result";
     })).resolves.toBe("result");
@@ -143,8 +143,8 @@ describe("Jest account operation lease", () => {
     /** Provides operation behavior. */
     const operation = jest.fn();
 
-    await expect(runWithJestAccountOperationLease("jest-user", 60, operation)).rejects.toBeInstanceOf(
-      JestAccountDeletedError,
+    await expect(runWithAccountOperationLease("provider-user", 60, operation)).rejects.toBeInstanceOf(
+      AccountDeletedError,
     );
     expect(operation).not.toHaveBeenCalled();
     expect(mockTransactionCreate).not.toHaveBeenCalled();
@@ -152,7 +152,7 @@ describe("Jest account operation lease", () => {
 
   it("writes the guard first and refuses to sweep while an older lease is active", async () => {
     /** Provides deterministic jest uid behavior. */
-    const deterministicJestUid = `jest_${"a".repeat(40)}`;
+    const deterministicProviderUid = `facebook_${"a".repeat(40)}`;
     leaseDocuments = [
       {
         ref: {path: "active-lease"},
@@ -160,7 +160,7 @@ describe("Jest account operation lease", () => {
       },
     ];
 
-    await expect(recordJestAccountDeletion(deterministicJestUid)).rejects.toBeInstanceOf(JestAccountDeletionBusyError);
+    await expect(recordAccountDeletion(deterministicProviderUid)).rejects.toBeInstanceOf(AccountDeletionBusyError);
     expect(mockDeletionSet).toHaveBeenCalledWith(
       {
         schemaVersion: 1,
@@ -183,8 +183,8 @@ describe("Jest account operation lease", () => {
       },
     ];
 
-    await expect(recordJestAccountDeletion("legacy-firebase-user")).rejects.toBeInstanceOf(
-      JestAccountDeletionBusyError,
+    await expect(recordAccountDeletion("legacy-firebase-user")).rejects.toBeInstanceOf(
+      AccountDeletionBusyError,
     );
     expect(mockDeletionSet).toHaveBeenCalledTimes(1);
   });

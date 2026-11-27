@@ -35,19 +35,19 @@ window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(
 window.addEventListener('error',event=>window.probe.windowErrors.push(String(event.error??event.message)));
 configureBrowserErrorReporter((error,context)=>window.probe.errors.push({...context,error:String(error)}));
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:false,onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');
-for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');
-for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');
+for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');
+for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 window.requestIdleCallback=()=>1;window.cancelIdleCallback=()=>{};
 const source=createFakeHostServices();
 const originalSetItem=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(window.blockGuessJournal&&key.includes('pendingPlay:v1:'))throw Error('injected journal write failure');return originalSetItem.call(this,key,value);};
 const services={...source,skipRiddle:async input=>{window.probe.skips.push(input);return source.skipRiddle(input);},requestHint:async input=>{window.probe.hints.push(input);return source.requestHint(input);},loadRiddle:async input=>{window.probe.loads.push(input);return source.loadRiddle(input);},submitGuess:async input=>{window.probe.guesses++;if(window.holdGuess)await new Promise(resolve=>window.releaseGuess=resolve);return source.submitGuess(input);},completeGame:async input=>{
- window.probe.completions++;if(window.holdCompletion)await new Promise(resolve=>window.releaseCompletion=resolve);const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('jest-guest'))?.coins;return result;},spendCoins:async input=>{window.probe.spends.push(input);if(window.holdSpend)await new Promise(resolve=>window.releaseSpend=resolve);return source.spendCoins(input);}};
+ window.probe.completions++;if(window.holdCompletion)await new Promise(resolve=>window.releaseCompletion=resolve);const result=await source.completeGame(input);window.probe.authorityCoins=(await source.loadProfile('guest-player'))?.coins;return result;},spendCoins:async input=>{window.probe.spends.push(input);if(window.holdSpend)await new Promise(resolve=>window.releaseSpend=resolve);return source.spendCoins(input);}};
 const params=new URL(location.href).searchParams;
 function ProviderRace(){window.probe.customRenders++;throw Error('provider surface render failed');}
 const session=createHostedPlaySession({hostServices:services,economyAvailable:true,raceAvailable:params.has('race'),raceLocalePolicy:'all',initialGameMode:params.has('daily')?'challenge':'classic',onPlayerDataChange:update=>window.probe.saves.push(update)});
 createRoot(document.querySelector('#root')).render(<React.StrictMode><FatalErrorBoundary><PlayHostApp session={session} raceSurface={params.has('provider')?ProviderRace:undefined}/></FatalErrorBoundary></React.StrictMode>);
-window.profile=()=>source.loadProfile('jest-guest');
+window.profile=()=>source.loadProfile('guest-player');
 window.loaded=true;
 `);
 let browser,server;const observations=[];

@@ -3,7 +3,7 @@ import {createHash} from "node:crypto";
 import {HttpsError} from "firebase-functions/v2/https";
 import {z} from "zod";
 import type {Firestore} from "firebase-admin/firestore";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 
 /** Signed Firebase claims must identify exactly one durable Google subject. */
 const GoogleClaims = z.looseObject({
@@ -101,9 +101,9 @@ export async function registerAndroidReferralIdentity(
     const [user, durable, deleted] = await Promise.all([
       tx.get(userRef),
       tx.get(identityRef),
-      tx.get(getJestAccountDeletionRef(db, identity.uid)),
+      tx.get(getAccountDeletionRef(db, identity.uid)),
     ]);
-    assertJestAccountActive(deleted);
+    assertAccountActive(deleted);
     /** Validated canonical Android account state used for referral eligibility. */
     const profile = AndroidReferralProfileSchema.safeParse(user.data());
     if (!user.exists || !profile.success) throw new HttpsError("permission-denied", "Android account required.");
@@ -113,7 +113,7 @@ export async function registerAndroidReferralIdentity(
     const previous = durable.exists ? AndroidReferralIdentitySchema.parse(durable.data()) : null;
     if (previous?.uid && previous.uid !== identity.uid) {
       /** Permanent deletion guard required before transferring a Google subject to a new game account. */
-      const oldDeletion = await tx.get(getJestAccountDeletionRef(db, previous.uid));
+      const oldDeletion = await tx.get(getAccountDeletionRef(db, previous.uid));
       if (!oldDeletion.exists)
         throw new HttpsError("failed-precondition", "Google identity belongs to another game account.");
     }

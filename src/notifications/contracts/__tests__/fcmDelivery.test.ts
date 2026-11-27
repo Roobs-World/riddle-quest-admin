@@ -14,7 +14,7 @@ it("preserves the native Android campaign payload sent by the dispatcher", () =>
 it("rejects a previously accepted browser FCM request", () => {
   const {accountId: _accountId, ...common} = request.data;
   const web = {...request, transport: "web",
-    data: {...common, kind: "notification", deviceHash: "b".repeat(64), target: "jest", launchUrl: "https://example.com/game"}};
+    data: {...common, kind: "notification", deviceHash: "b".repeat(64), target: "facebook", launchUrl: "https://example.com/game"}};
   expect(FcmDeliveryRequest.safeParse(web).success).toBe(false);
   expect(FcmDeliveryRequest.safeParse({...web, transport: "android"}).success).toBe(false);
 });

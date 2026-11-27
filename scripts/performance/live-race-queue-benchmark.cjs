@@ -19,12 +19,12 @@ const profileOnly = argumentsMap.profile === "true";
 const concurrencyOnly = argumentsMap.concurrent === "true";
 const baselinePath = path.resolve(argumentsMap.baseline);
 const candidatePath = path.resolve(argumentsMap.candidate ?? argumentsMap.baseline);
-const userId = index => `jest_${(index + 1).toString(16).padStart(40, "0")}`;
+const userId = index => `facebook_${(index + 1).toString(16).padStart(40, "0")}`;
 const hash = value => createHash("sha256").update(value).digest("hex");
 const ticketId = index => hash(`queue-performance-${index}`);
 const pointerId = id => hash(`${id}\u0000active-live-race`);
 const ownerId = userId(0);
-const pool = hash("jest:en:history");
+const pool = hash("facebook:en:history");
 const sorted = values => [...values].sort((a, b) => a - b);
 const distribution = values => ({median: sorted(values)[Math.floor(values.length / 2)], min: Math.min(...values), max: Math.max(...values)});
 
@@ -202,7 +202,7 @@ async function main() {
     baselinePath, candidatePath, hostBefore, hostAfter: {loadAverage: os.loadavg()}, profileOnly, samples, summaries,
     limitations: ["Warm compiled production Functions on local Firestore emulator, synthetic 32 KiB account payloads, sequential requests.",
       "Counts are application document-read attempts and SDK read calls, not billed reads or network packet counts.",
-      "No cloud network, cold starts, transport, hosted Jest SDK, cross-instance contention or production SLO claim."]};
+      "No cloud network, cold starts, transport, hosted Facebook SDK, cross-instance contention or production SLO claim."]};
   await fs.writeFile(path.resolve(argumentsMap.output), `${JSON.stringify(report, null, 2)}\n`);
   process.stdout.write(`${JSON.stringify({output: argumentsMap.output, successes: samples.filter(row => row.correct).length,
     failures: samples.filter(row => !row.correct).length, summaries}, null, 2)}\n`);

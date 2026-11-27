@@ -1,7 +1,7 @@
 import {createHash} from "node:crypto";
 import type {Firestore} from "firebase-admin/firestore";
 import {resolveRedditGoldProduct} from "../src/shared/redditCatalog.js";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {isRedditCommerceEnabled} from "./redditFeatureFlags";
 import {isRedditFirebaseUid} from "./redditSecurity";
 
@@ -118,9 +118,9 @@ export async function grantVerifiedRedditOrder(db: Firestore, input: VerifiedRed
       transaction.get(userRef),
       transaction.get(accountRef),
       transaction.get(receiptRef),
-      transaction.get(getJestAccountDeletionRef(db, input.uid)),
+      transaction.get(getAccountDeletionRef(db, input.uid)),
     ]);
-    assertJestAccountActive(deletion);
+    assertAccountActive(deletion);
     if (!user.exists) throw new Error("reddit-commerce-user-not-found");
     /** Provides coins behavior. */
     const coins = nonNegative(user.data()?.coins, "coins");

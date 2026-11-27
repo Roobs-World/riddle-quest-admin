@@ -51,7 +51,7 @@ export function createFacebookNotificationCapability(sdk: FacebookInstantSdk, is
       return inFlight;
     },
     // Bot subscription is consent, not a browser scheduling API. Delivery requires
-    // a separately approved server integration; never forward this to Jest.
+    // the notification manager's separately approved server integration.
     /** Reports scheduling as unavailable until a separate Meta delivery contract is implemented. */
     async schedule() {
       return {status: "unavailable", message: "facebook-notification-scheduling-unavailable"};

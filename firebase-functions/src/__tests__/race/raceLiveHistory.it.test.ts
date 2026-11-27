@@ -4,7 +4,7 @@ import {createHmac} from "node:crypto";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {listLiveRaceHistoryForUser} from "../../race/live/raceLiveHistory";
-import {getJestAccountDeletionRef, JEST_ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
+import {getAccountDeletionRef, ACCOUNT_DELETION_COLLECTION} from "../../shared/accountDeletion";
 import {LIVE_RACE_HISTORY_MS} from "../../../../src/races/contracts/index.js";
 import {redditGameplay} from "../../../../platforms/web/reddit/server/redditGameplayEndpoint";
 import {redditProviderIdentityId} from "../../../../platforms/web/reddit/server/redditEndpoints";
@@ -23,7 +23,7 @@ let db: FirebaseFirestore.Firestore;
 /** Delete only synthesized demo collections after validating the environment. */
 async function clear() {
   for (const collection of ["users", "localizedRiddles", "liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers",
-    "racePerformanceOutbox", "providerIdentities", "redditGatewayNonces", "redditGatewayRateLimits", JEST_ACCOUNT_DELETION_COLLECTION]) await db.recursiveDelete(db.collection(collection));
+    "racePerformanceOutbox", "providerIdentities", "redditGatewayNonces", "redditGatewayRateLimits", ACCOUNT_DELETION_COLLECTION]) await db.recursiveDelete(db.collection(collection));
   await db.doc("raceConfig/rollout").delete();
 }
 beforeAll(() => {
@@ -131,7 +131,7 @@ it("returns the exact history response through the real signed Reddit gateway an
     expect(JSON.stringify(body)).not.toMatch(/reddit_|profile|userId|riddles|answer|matchId/);
     await send({locale: "en", limit: 20, userId: ids[1]});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
-    await getJestAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 9000});
+    await getAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 9000});
     await send({locale: "en", limit: 20});
     expect(status).toBe(401); expect(body).toEqual({error: "invalid-request"});
   } finally {
@@ -145,7 +145,7 @@ it.each(["blocked", "reverse-blocked", "deleted", "missing", "expired-peer"] as 
   const {ids, seats} = await completed("facebook");
   if (kind === "blocked") await db.doc(`users/${ids[0]}/blockedRivals/${ids[1]}`).set({targetUserId: ids[1]});
   if (kind === "reverse-blocked") await db.doc(`users/${ids[1]}/blockedRivals/${ids[0]}`).set({targetUserId: ids[0]});
-  if (kind === "deleted") await getJestAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 9000});
+  if (kind === "deleted") await getAccountDeletionRef(db, ids[1]).set({deletedAtMs: NOW + 9000});
   if (kind === "missing") await db.doc(`users/${ids[1]}`).delete();
   if (kind === "expired-peer") await db.doc(`liveRaceTickets/${seats[1].ticketId}`).update({expiresAt: Timestamp.fromMillis(NOW + 8999)});
   /** Previous copied profile, score and ability to target the rival are all suppressed. */
@@ -182,7 +182,7 @@ it.each(["foreign-owner", "corrupt-run", "missing-grant", "expired-match", "dele
   if (kind === "missing-grant") await db.doc(`liveRaceMatches/${seats[0].ticketId}`).update({rewardCoins: -1});
   if (kind === "expired-match") await db.doc(`liveRaceMatches/${seats[0].ticketId}`).update({expiresAt: Timestamp.fromMillis(NOW + 8999)});
   if (kind === "deleted-owner") {
-    await getJestAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 9000});
+    await getAccountDeletionRef(db, ids[0]).set({deletedAtMs: NOW + 9000});
     await expect(listLiveRaceHistoryForUser(ids[0], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})).rejects.toThrow("account-deleted");
   } else expect((await listLiveRaceHistoryForUser(ids[0], {locale: "en", limit: 20}, {db, nowMs: NOW + 9000})).entries).toEqual([]);
 });

@@ -8,7 +8,7 @@ import {raceDeckContentVersion} from "../../race/runs/raceDeckSnapshot";
 import type {LiveMatch, LiveTicket} from "../../race/live/raceLiveState";
 
 /** Every canonical mutation belongs to this pass's private loopback demo. */
-const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`, NOW = 1_800_000_000_000;
+const PROJECT = process.env.GCLOUD_PROJECT ?? "", A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`, NOW = 1_800_000_000_000;
 /** Real SDK exercises queue transactions, immutable decks, signals and settlement. */
 let db: FirebaseFirestore.Firestore;
 /** New match boundaries share frozen content without constraining accepted journeys. */

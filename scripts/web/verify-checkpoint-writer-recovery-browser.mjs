@@ -31,11 +31,11 @@ import {applyPlayerPreferences} from ${JSON.stringify(path.join(portal, "src/set
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(portal, "src/onboarding/browser/guidanceConfig.ts"))};
 import ${JSON.stringify(path.join(portal, "src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-for(const uid of ['jest-guest']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const key of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+key,uid),'seen');}
+for(const uid of ['guest-player']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const key of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+key,uid),'seen');}
 const scenario=new URLSearchParams(location.search).get('scenario');
 window.probe={updates:[],writes:[],reads:[],caught:[],errors:[],unhandled:[],flushes:0};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
-const fixture=createFakeHostServices(),profile=await fixture.loadProfile('jest-guest');
+const fixture=createFakeHostServices(),profile=await fixture.loadProfile('guest-player');
 const user={uid:'Alice',displayName:'Alice',isAnonymous:true,accountGeneration:1};
 const first={riddleId:'classic_1',text:'What has keys but cannot open doors?',answerLength:5,sessionToken:'00000000-0000-4000-8000-000000000001',gameMode:'classic',index:1,attemptsUsed:0,hasUsedContinue:false,awaitingContinue:false},second={...first,riddleId:'classic_2',sessionToken:'00000000-0000-4000-8000-000000000002',index:2};
 function seed(){let state=gameSessionReducer(createInitialGameSession(),{type:'hostInit',locale:'en',gameMode:'classic',user,profile,products:[]});return gameSessionReducer(state,{type:'loadRiddle',riddle:first});}

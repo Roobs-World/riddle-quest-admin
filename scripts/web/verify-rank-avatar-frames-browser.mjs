@@ -50,7 +50,7 @@ function App() {
  if(mode==='live') return <LiveRaceGame transport={transport} locale='en' categoryId='mixed' coins={100} onClose={noop}/>;
  if(mode==='inbox') return <RaceInboxPanel items={entries.map((entry,index)=>({itemId:'item-'+index,challengeId:'challenge-'+index,opponentUserId:entry.userId,opponentDisplayName:entry.username,opponentAvatarUrl:entry.avatarUrl,opponentLevel:entry.level,categoryId:'mixed',result:'win',adjustedDeltaMs:100,read:false,createdAtMs:now}))} loading={false} safetyPending={null} onRematch={noop} onBlock={noop} onReport={noop} onChooseCategory={noop}/>;
  if(mode==='leaderboard') return <div className='game-modal modal-leaderboard' style={{position:'relative',transform:'none',inset:'auto',margin:'20px auto'}}><LeaderboardModalPage entries={entries} loading={false} leaderboardType='xp' onRequestLeaderboard={noop}/></div>;
- return <div className='game-modal modal-profile' style={{position:'relative',transform:'none',inset:'auto',margin:'20px auto'}}><ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={async()=>{}} onDeleteAccount={noop}/></div>;
+ return <div className='game-modal modal-profile' style={{position:'relative',transform:'none',inset:'auto',margin:'20px auto'}}><ProfileModalPage profile={profile} accountManagement={{username:true,avatar:true,deletion:true}} onOpenModal={noop} onUpdateAvatar={async()=>{}} onDeleteAccount={noop}/></div>;
 }
 createRoot(document.getElementById('root')).render(<React.StrictMode><App/></React.StrictMode>);
 `;

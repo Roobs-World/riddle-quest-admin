@@ -25,21 +25,21 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
-import {createNotificationOperationGate} from ${JSON.stringify(path.join(root,'platforms/web/jest/src/notifications/operationGate.ts'))};
+import {LocalAccountDeletionGate} from ${JSON.stringify(path.join(root,'src/accounts/browser/deletion/LocalAccountDeletionGate.ts'))};
 import {applyPlayerPreferences} from ${JSON.stringify(path.join(root,"src/settings/browser/playerPreferences.ts"))};
 import {createGuidanceStorageKey,createTooltipTourStorageKey,TOOLTIP_KEYS} from ${JSON.stringify(path.join(root,"src/onboarding/browser/guidanceConfig.ts"))};
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 const scenario=new URL(location.href).searchParams.get('scenario')??'ready';
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-for(const uid of ['jest-guest']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const id of Object.keys(TOOLTIP_KEYS))if(scenario!=='guidance'||id!=='leaderboardFifthCorrectAnswer')localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');}
+for(const uid of ['guest-player']){sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');for(const id of Object.keys(TOOLTIP_KEYS))if(scenario!=='guidance'||id!=='leaderboardFifthCorrectAnswer')localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');}
 window.probe={outbound:[],inbound:[],reads:[],locks:[],guesses:[],spends:[],completions:[],saves:[],errors:[],unhandled:[],epochs:0};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 window.addEventListener('riddle-quest:game-to-host',e=>window.probe.outbound.push(e.detail));window.addEventListener('riddle-quest:host-to-game',e=>window.probe.inbound.push(e.detail));
 const locks=navigator.locks,request=locks.request.bind(locks);locks.request=(name,options,callback)=>{window.probe.locks.push({name,mode:options.mode,time:performance.now()});return request(name,options,callback);};
-const gate=createNotificationOperationGate();window.closeGate=()=>gate.close();
-const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),before=await source.loadProfile('jest-guest');
-window.probe.before=before;window.profile=()=>source.loadProfile('jest-guest');let optionalReads=0;
+const gate=new LocalAccountDeletionGate();window.closeGate=()=>gate.close();
+const source=createFakeHostServices(),first=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:1}),next=await source.loadRiddle({gameMode:'classic',locale:'en',classicIndex:2}),before=await source.loadProfile('guest-player');
+window.probe.before=before;window.profile=()=>source.loadProfile('guest-player');let optionalReads=0;
 const services={...source,loadRiddle:async input=>{
  window.probe.reads.push(input);if(input.classicIndex===2){optionalReads++;
  if(optionalReads===1&&['pending','retire-pending'].includes(scenario))await new Promise(resolve=>window.releasePreparation=resolve);

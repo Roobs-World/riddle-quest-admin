@@ -3,7 +3,7 @@ import {Timestamp, type Firestore} from "firebase-admin/firestore";
 import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_INVITE_MS, type LiveRaceChallenge} from "../../../../src/races/contracts/index.js";
 import {createUsernameReservationId, normalizeUsernameForReservation} from "../../profile/usernameReservations";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {getLiveRaceChallengeForUser} from "./raceLiveInvitation";
 import {type LiveTicket} from "../live/raceLiveState";
@@ -36,7 +36,7 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
     /** Raw provider IDs and Firebase UIDs are never accepted from the browser. */
     const ticket = seat.data() as LiveTicket | undefined, recipientId = reservation.data()?.userId;
     if (!ticket?.privateChallenge || ticket.userId !== userId || typeof recipientId !== "string" || recipientId === userId ||
-        !["jest", "facebook", "android"].includes(raceProviderScope(userId) ?? "") || raceProviderScope(recipientId) !== raceProviderScope(userId))
+        !["facebook", "android"].includes(raceProviderScope(userId) ?? "") || raceProviderScope(recipientId) !== raceProviderScope(userId))
       throw new HttpsError("not-found", "Invitation recipient unavailable.");
     /** Accounts, blocks and rate receipts share the recipient binding transaction. */
     const rateRef = db.doc(`users/${userId}/liveChallengeRate/current`);
@@ -46,11 +46,11 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
     const recipientRateRef = db.doc(`users/${recipientId}/liveChallengeInboxRate/current`);
     /** Account, safety and receipt snapshots read before transaction writes. */
     const [creator, recipient, deleted, recipientDeleted, blocked, reverse, rate, existing, recipientRate] = await Promise.all([
-      tx.get(db.doc(`users/${userId}`)), tx.get(db.doc(`users/${recipientId}`)), tx.get(getJestAccountDeletionRef(db, userId)),
-      tx.get(getJestAccountDeletionRef(db, recipientId)), tx.get(db.doc(`users/${userId}/blockedRivals/${recipientId}`)),
+      tx.get(db.doc(`users/${userId}`)), tx.get(db.doc(`users/${recipientId}`)), tx.get(getAccountDeletionRef(db, userId)),
+      tx.get(getAccountDeletionRef(db, recipientId)), tx.get(db.doc(`users/${userId}/blockedRivals/${recipientId}`)),
       tx.get(db.doc(`users/${recipientId}/blockedRivals/${userId}`)), tx.get(rateRef), tx.get(eventRef), tx.get(recipientRateRef),
     ]);
-    assertJestAccountActive(deleted);
+    assertAccountActive(deleted);
     if ((raceProviderScope(userId) === "android" && (!isAndroidAccountProvider(creator.data()?.androidProvider) || !isAndroidAccountProvider(recipient.data()?.androidProvider))) ||
         !creator.exists || !recipient.exists || recipientDeleted.exists || blocked.exists || reverse.exists ||
         recipient.data()?.usernameReservationId !== reservationId || typeof recipient.data()?.username !== "string" ||
@@ -81,7 +81,7 @@ export async function sendLiveRaceChallengeForUser(db: Firestore, userId: string
     tx.set(db.doc(`users/${recipientId}/liveRaceInvitations/${seat.id}`), {challengeId: input.challengeId,
       createdAtMs: nowMs, expiresAt: Timestamp.fromMillis(expiresAtMs)});
     tx.create(eventRef, {challengeId: input.challengeId, creatorId: userId, recipientId, expiresAtMs,
-      status: raceProviderScope(userId) === "jest" ? "skipped" : "queued", createdAtMs: nowMs,
+      status: "queued", createdAtMs: nowMs,
       expiresAt: Timestamp.fromMillis(expiresAtMs + 86_400_000)} satisfies LiveChallengePushEvent & Record<string, unknown>);
     return {status: "queued" as const};
   });

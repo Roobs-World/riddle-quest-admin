@@ -1,4 +1,3 @@
-import {jestShaderIndentationPlugin, jestFirebaseScriptPolicyPlugin} from "../../../platforms/web/jest/tooling/jestArtifactPlugins.ts";
 import {redditArtifactPlugin} from "../../../platforms/web/reddit/tooling/redditArtifactPlugin.ts";
 import {facebookArtifactPlugin} from "../../../platforms/web/facebook/tooling/facebookArtifactPlugin.ts";
 import {webBuildFacts} from "../../release/release-registry.mjs";
@@ -34,8 +33,6 @@ const gameRuleSources = new Set([
 const sharedShopModalPage = fileURLToPath(new URL("../../../src/commerce/components/ShopModalPage.tsx", import.meta.url));
 /** Provides reddit shop modal page behavior. */
 const redditShopModalPage = fileURLToPath(new URL("../../../platforms/web/reddit/src/RedditShopModalPage.tsx", import.meta.url));
-/** Provides jest html entry behavior. */
-const jestHtmlEntry = fileURLToPath(new URL("../../../platforms/web/jest/index.html", import.meta.url));
 /** Provides facebook html entry behavior. */
 const facebookHtmlEntry = fileURLToPath(new URL("../../../platforms/web/facebook/index.html", import.meta.url));
 /** Provides reddit html entry behavior. */
@@ -65,8 +62,8 @@ const youtubeLocales = [
   "ar", "de", "en", "es", "fr", "hi", "id", "it", "ja", "ko", "nl", "pl", "pt", "ru", "tr", "vi",
 ] as const;
 
-/** The four compile-time Web Targets shipped by the portal package. */
-export type WebTarget = "jest" | "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
+/** Compile-time Web Targets shipped by the game. */
+export type WebTarget = "facebook" | "reddit" | "youtube" | "netflix" | "yahoo" | "gamesnacks";
 
 /** Provides canonical build output directories behavior. */
 const canonicalBuildOutputDirectories = Object.freeze(Object.fromEntries(
@@ -323,14 +320,6 @@ function targetHtmlPlugin(profile: WebTargetProfile, targetRoot: string): Plugin
 
 /** Provides target profiles behavior. */
 const targetProfiles: Readonly<Record<WebTarget, WebTargetProfile>> = Object.freeze({
-  jest: Object.freeze({
-    id: "jest",
-    shopEntry: sharedShopModalPage,
-    publicDirectory: "public",
-    input: jestHtmlEntry,
-    htmlOutputs: Object.freeze([{source: jestHtmlEntry, fileName: "index.html"}] as const),
-    createArtifactPlugins: () => [],
-  }),
   facebook: Object.freeze({
     id: "facebook",
     shopEntry: sharedShopModalPage,
@@ -404,7 +393,7 @@ function isWebTarget(mode: string): mode is WebTarget {
 /** Resolves web target. */
 function resolveWebTarget(mode: string): WebTargetProfile {
   if (isWebTarget(mode)) return targetProfiles[mode];
-  throw new Error(`Unknown Web Target mode: ${mode}; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
+  throw new Error(`Unknown Web Target mode: ${mode}; expected facebook, reddit, youtube, netflix, yahoo, or gamesnacks`);
 }
 
 /** Provides contains path behavior. */
@@ -492,11 +481,8 @@ export function createWebTargetViteConfig({
     throw new Error("Sentry source-map upload is forbidden for self-contained artifacts");
   }
 
-  /** Provides jest build out dir behavior. */
-  const jestBuildOutDir = environment.JEST_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.jest;
   /** Builds output directories. */
   const buildOutputDirectories: Readonly<Record<WebTarget, string>> = {
-    jest: jestBuildOutDir,
     facebook: environment.FACEBOOK_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.facebook,
     reddit: environment.REDDIT_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.reddit,
     youtube: environment.YOUTUBE_BUILD_OUT_DIR?.trim() || canonicalBuildOutputDirectories.youtube,
@@ -528,7 +514,6 @@ export function createWebTargetViteConfig({
     webTargetBuildContractPlugin(profile.id, selectedBuildOutDir),
     targetHtmlPlugin(profile, targetRoot),
     webTargetDependencyPlugin(profile.id),
-    ...(profile.id === "jest" ? [jestShaderIndentationPlugin(), jestFirebaseScriptPolicyPlugin()] : []),
     react(),
     babel({presets: [reactCompilerPreset()]}),
     ...profile.createArtifactPlugins({allowYouTubeFixture, youtubeContent}),
@@ -569,7 +554,7 @@ export function createWebTargetViteConfig({
     define: {
       "import.meta.env.VITE_PLATFORM_TARGET": JSON.stringify(profile.id),
       // Error-only targets do not ship tracing or SDK debug instrumentation.
-      ...(["jest", "facebook"].includes(profile.id) ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
+      ...(profile.id === "facebook" ? {__SENTRY_DEBUG__: "false", __SENTRY_TRACING__: "false"} : {}),
     },
     envDir: targetRoot,
     envPrefix: "VITE_",
@@ -586,7 +571,6 @@ export function createWebTargetViteConfig({
       dedupe: ["react", "react-dom"],
       tsconfigPaths: true,
       alias: {
-        ...(profile.id === "jest" ? {"./localeModules": fileURLToPath(new URL("../../../platforms/web/jest/src/localeModules.ts", import.meta.url))} : {}),
         "#shop-modal-page": profile.shopEntry,
         "#youtube-content": ["youtube", "netflix", "yahoo", "gamesnacks"].includes(profile.id) ? playableContentModule : youtubeContent,
       },

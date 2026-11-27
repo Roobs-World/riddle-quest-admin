@@ -11,7 +11,7 @@ import * as facebookTransport from "../../../../platforms/web/facebook/server/fa
 import {createUsernameReservationFields, createUsernameReservationId} from "../../profile/usernameReservations";
 
 /** Synthetic same-provider account identities for emulator tests. */
-const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
+const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`;
 /** Stable server clock. */
 const NOW = 1_800_000_000_000;
 /** Isolated or configured server database. */
@@ -68,7 +68,7 @@ it("atomically addresses the existing lobby, inbox and one durable event; retrie
   const seat = await reserve();
   await Promise.all([notify(seat.challengeId!), notify(seat.challengeId!, "BOB")]);
   expect((await db.collection("liveRacePushOutbox").get()).size).toBe(1);
-  expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()?.status).toBe("skipped");
+  expect((await db.doc(`liveRacePushOutbox/${seat.ticketId}`).get()).data()?.status).toBe("queued");
   expect((await db.doc(`users/${A}/liveChallengeRate/current`).get()).data()?.count).toBe(1);
   expect(await listLiveRaceChallengesForUser(db, B, NOW + 1000)).toMatchObject([{challengeId: seat.challengeId, creator: {displayName: "Alice"}, status: "available"}]);
   expect((await db.collection("liveRacePlayers").get()).size).toBe(1);
@@ -107,7 +107,7 @@ it("rejects foreign creators, self-invites, stale reservations and invitation ra
   const seat = await reserve(A);
   await expect(sendLiveRaceChallengeForUser(db, C, {challengeId: seat.challengeId!, recipientUsername: "Bob"}, NOW)).rejects.toMatchObject({code: "not-found"});
   await expect(notify(seat.challengeId!, "Alice", A)).rejects.toMatchObject({code: "not-found"});
-  await db.doc(`usernameReservations/${createUsernameReservationId("Bob")}`).update({userId: `jest_${"b".repeat(40)}`});
+  await db.doc(`usernameReservations/${createUsernameReservationId("Bob")}`).update({userId: `reddit_${"b".repeat(40)}`});
   await expect(notify(seat.challengeId!, "Bob", A)).rejects.toMatchObject({code: "not-found"});
   await db.doc(`usernameReservations/${createUsernameReservationId("Bob")}`).update({userId: B});
   await db.doc(`users/${B}`).update({username: "NewBob"});

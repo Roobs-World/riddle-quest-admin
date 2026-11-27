@@ -4,7 +4,7 @@ import {HttpsError} from "firebase-functions/v2/https";
 import {LIVE_RACE_HISTORY_MS, ListLiveRaceHistoryRequestSchema, ListLiveRaceHistoryResponseSchema,
   LiveRaceHistoryEntrySchema, RaceCategoryIdSchema, type ListLiveRaceHistoryRequest, type LiveRaceHistoryEntry} from "../../../../src/races/contracts/index.js";
 import {admin} from "../../shared/firebaseAdmin";
-import {assertJestAccountActive, getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {assertAccountActive, getAccountDeletionRef} from "../../shared/accountDeletion";
 import {resolveLiveRaceSafetyTarget} from "../../social/liveRaceSafetyTarget";
 import {raceProviderScope} from "../access/raceProviderScope";
 import type {LiveMatch, LiveTicket} from "./raceLiveState";
@@ -25,8 +25,8 @@ export async function listLiveRaceHistoryForUser(userId: string, request: ListLi
     throw new HttpsError("permission-denied", "Live history unavailable.");
   return db.runTransaction(async tx => {
     /** A deletion that commits before this read cannot expose retained private results. */
-    const [owner, deletion] = await Promise.all([tx.get(db.doc(`users/${userId}`)), tx.get(getJestAccountDeletionRef(db, userId))]);
-    assertJestAccountActive(deletion);
+    const [owner, deletion] = await Promise.all([tx.get(db.doc(`users/${userId}`)), tx.get(getAccountDeletionRef(db, userId))]);
+    assertAccountActive(deletion);
     if (!owner.exists) throw new HttpsError("not-found", "Player profile unavailable.");
     /** Forty recent owned tickets bound cost while omitting searching and unsettled matches. */
     const rows = await tx.get(db.collection("liveRaceTickets").where("userId", "==", userId).where("run.locale", "==", input.locale)

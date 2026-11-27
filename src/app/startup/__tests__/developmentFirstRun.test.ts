@@ -33,15 +33,15 @@ describe("development first-run reset", () => {
   it("clears Riddle Quest progress and preferences without touching unrelated storage", () => {
     /** Provides local storage behavior. */
     const localStorage = createStorage({
-      "riddleQuest:onboarding:jest-guest": "seen",
-      "riddleQuest:mockJestPlayerData": '{"level":3}',
+      "riddleQuest:onboarding:guest-player": "seen",
+      "riddleQuest:mockPlatformPlayerData": '{"level":3}',
       "riddleQuest:soundEnabled": "false",
       appLanguage: "fr",
       unrelated: "preserved",
     });
     /** Provides session storage behavior. */
     const sessionStorage = createStorage({
-      "riddleQuest:welcomeSession:jest-guest": "seen",
+      "riddleQuest:welcomeSession:guest-player": "seen",
       unrelatedSession: "preserved",
     });
 

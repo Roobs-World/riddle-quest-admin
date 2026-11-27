@@ -13,7 +13,7 @@ type BrowserSentryConfiguration = {
   /** Immutable application release identifier. */
   release?: string;
   /** Web Target that owns this Sentry adapter. */
-  runtime: "jest" | "facebook";
+  runtime: "facebook";
 };
 
 /** Tracks whether the browser SDK has been initialized by this application. */

@@ -3,7 +3,7 @@ import {assertRaceDeckCompatible} from "../runs/raceDeckCompatibility";
 import type {RaceRiddleSnapshot} from "../runs/raceEngine";
 import {parseRaceInvitation} from "../invitations/raceInvitationRecord";
 import {HttpsError} from "firebase-functions/v2/https";
-import {JestAccountDeletedError, getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {AccountDeletedError, getAccountDeletionRef} from "../../shared/accountDeletion";
 import {validateRaceDeckSnapshot, assertRaceCreatorArchiveLink} from "../runs/raceDeckSnapshot";
 import {requestDocumentId, parseRunRecord, type Firestore, type RaceChallengeRecord} from "../raceSetupService";
 
@@ -45,7 +45,7 @@ export async function inspectRaceChallengeEligibility(
   if (challenge.status !== "active" || challenge.createdAtMs > nowMs || challenge.expiresAtMs <= nowMs) return {reason: "inactive"};
   /** Privacy gates reject candidates before reading attempts, invitations or legacy archives. */
   const [creatorDeletion, playerDeletion, outgoingBlock, incomingBlock] = await readRaceEligibilityDocuments(transaction, [
-    getJestAccountDeletionRef(db, challenge.creatorId), getJestAccountDeletionRef(db, userId),
+    getAccountDeletionRef(db, challenge.creatorId), getAccountDeletionRef(db, userId),
     db.doc(`users/${userId}/blockedRivals/${challenge.creatorId}`), db.doc(`users/${challenge.creatorId}/blockedRivals/${userId}`),
   ]);
   if (creatorDeletion.exists || playerDeletion.exists) return {reason: "deleted"};
@@ -55,7 +55,7 @@ export async function inspectRaceChallengeEligibility(
     db.doc(`raceAttempts/${requestDocumentId(challenge.challengeId, userId)}`), db.doc(`raceInviteLobbies/${challenge.challengeId}`),
   ]);
   if (attempt.exists && (!acceptedRunId || attempt.data()?.runId !== acceptedRunId)) return {reason: "attempted"};
-  if ((challenge.scope === "invitation" || challenge.challengeId.startsWith("jest-invite-")) && !invitation.exists) return {reason: "invitation"};
+  if ((challenge.scope === "invitation" || challenge.challengeId.startsWith("race-invite-")) && !invitation.exists) return {reason: "invitation"};
   if (invitation.exists) {
     /** Independent facts preserve authorization regardless of claim/publication ordering. */
     try {
@@ -93,7 +93,7 @@ export function readRaceEligibilityDocuments(transaction: FirebaseFirestore.Tran
 /** Converts expected eligibility failures into stable authoritative start errors. */
 export function assertRaceChallengeEligible(reason: RaceEligibilityReason | null): void {
   if (!reason) return;
-  if (reason === "deleted") throw new JestAccountDeletedError();
+  if (reason === "deleted") throw new AccountDeletedError();
   /** Provides code behavior. */
   const code = reason === "attempted" ? "already-exists" :
     ["blocked", "invitation", "provider", "deleted"].includes(reason) ? "permission-denied" : "failed-precondition";

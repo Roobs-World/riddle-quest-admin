@@ -30,7 +30,7 @@ const nativeDraw=CanvasRenderingContext2D.prototype.drawImage;CanvasRenderingCon
 const nativeEncode=HTMLCanvasElement.prototype.toBlob;HTMLCanvasElement.prototype.toBlob=function(callback,...args){probe.encodes++;return nativeEncode.call(this,blob=>heldEncoder?probe.encodeReleases.push(()=>callback(blob)):callback(blob),...args);};
 const nativeRead=FileReader.prototype.readAsDataURL;FileReader.prototype.readAsDataURL=function(...args){probe.reads++;return nativeRead.apply(this,args);};
 const nativeBitmap=window.createImageBitmap.bind(window);window.createImageBitmap=async(...args)=>{const bitmap=await nativeBitmap(...args),close=bitmap.close.bind(bitmap);bitmap.close=()=>{probe.closed++;close();};probe.started++;return new Promise((resolve,reject)=>probe.releases.push(fail=>{if(fail){bitmap.close();reject(new Error('fixture-image-decode-failed'));}else resolve(bitmap);}));};
-const noop=()=>{};const user=(uid,generation=1)=>({uid,accountGeneration:generation,isAnonymous:false,platformRegistered:true});
+const noop=()=>{};const user=(uid,generation=1)=>({uid,accountGeneration:generation,isAnonymous:false,accountManagement:{username:true,avatar:true,deletion:true}});
 function Controls({state,dispatch,revision}){const stateRef=React.useRef(state);stateRef.current=state;
  const postToHost=React.useCallback(message=>{parseGameToHostMessage(message);probe.sent.push({uid:stateRef.current.user?.uid,generation:stateRef.current.user?.accountGeneration,sender:revision,requestId:message.requestId,webp:message.payload.imageDataUrl.startsWith('data:image/webp;base64,')});},[revision]);
  const operations=useGameOperations({state,stateRef,dispatch,postToHost,playFeedback:noop});

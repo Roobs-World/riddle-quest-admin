@@ -1,5 +1,4 @@
 import {useCallback, useSyncExternalStore} from "react";
-import {isJestWebTarget} from "../../platform/browser/webTargetEnvironment";
 import enAboutLegal from "../../locales/en/aboutLegal.json";
 import enAccessibility from "../../locales/en/accessibility.json";
 import enAchievements from "../../locales/en/achievements.json";
@@ -262,7 +261,7 @@ export function registerTargetLocaleNamespace(registration: TargetLocaleNamespac
 
 /** Provides import namespace behavior. */
 const importSharedNamespace = async (locale: Locale, namespace: SharedNamespace): Promise<NamespaceCatalog> => {
-  if (locale === "en" || isJestWebTarget) {
+  if (locale === "en") {
     return ENGLISH_NAMESPACE_BY_NAME[namespace];
   }
 
@@ -294,7 +293,7 @@ const loadLocaleCatalog = async (locale: Locale): Promise<RootCatalog> => {
   const nextLoad = Promise.all([
     ...SHARED_NAMESPACES.map((namespace) => importSharedNamespace(locale, namespace)),
     ...[...targetLocaleNamespaces.values()].map((registration) =>
-      locale === "en" || isJestWebTarget ? registration.english : registration.load(locale),
+      locale === "en" ? registration.english : registration.load(locale),
     ),
   ])
     .then((namespaces) => {
@@ -395,7 +394,7 @@ const commitLocale = (locale: Locale): void => {
 /** Waits for translated copy before committing the requested locale. */
 export const setLocaleAndWait = async (requestedLocale: Locale): Promise<void> => {
   /** Saved and later locale requests obey the active target's supported language. */
-  const locale = isJestWebTarget ? "en" : requestedLocale;
+  const locale = requestedLocale;
   /** Requests version. */
   const requestVersion = ++localeRequestVersion;
   /** Provides previous locale behavior. */
@@ -425,7 +424,7 @@ export const setLocale = (locale: Locale): void => {
 /** Provides detect device language behavior. */
 export const detectDeviceLanguage = (locale?: string): Locale => {
   /** Resolves d. */
-  const resolved = isJestWebTarget ? "en" : normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
+  const resolved = normalizeLocale(locale ?? Intl.DateTimeFormat().resolvedOptions().locale ?? "en");
   setLocale(resolved);
   return resolved;
 };

@@ -426,7 +426,7 @@ describe("race presentation components", () => {
     expect(onRematch).toHaveBeenCalledWith("science");
   });
 
-  it("keeps Jest sharing out of the lobby until a run has completed", async () => {
+  it("keeps provider sharing out of the lobby until a run has completed", async () => {
     /** Categories required before the challenge action can be used. */
     const categories = (await createFakeRaceServices().listRaceCategories("en")).categories;
     /** Challenge-enabled lobby presentation. */
@@ -620,7 +620,7 @@ describe("race presentation components", () => {
           onClose={noop}
         />,
       ),
-    ).toContain("Choose a mobile number or another Jest user in Jest.");
+    ).toContain("Challenge a friend");
 
     /** Published challenge fixture used by the share-ready result variant. */
     const publication: PublishRaceChallengeResponse = {

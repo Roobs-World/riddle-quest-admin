@@ -38,14 +38,14 @@ const profile: BridgeProfile = {
 describe("ProfileModalPage", () => {
   it("shows the saved game avatar and its picker when the provider supplies a profile", () => {
     /** Captures html for this regression check. */
-    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: "https://example.com/jest.webp"}}>
-      <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
+    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Provider Solver", avatarUrl: "https://example.com/provider.webp"}}>
+      <ProfileModalPage profile={profile} accountManagement={{username: false, avatar: true, deletion: true}} onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
     expect(html).toContain("Nova");
     expect(html).toContain("avatar.webp");
-    expect(html).not.toContain("jest.webp");
+    expect(html).not.toContain("provider.webp");
     expect(html).toContain("250");
-    expect(html).not.toContain("Jest Solver");
+    expect(html).not.toContain("Provider Solver");
     expect(html).toContain('type="file"');
     expect(html).toContain('aria-label="Upload from Photo Library"');
     expect(html).toContain("profile-avatar-edit");
@@ -54,27 +54,27 @@ describe("ProfileModalPage", () => {
   it("preserves the game username when the provider has no configured profile", () => {
     /** Captures html for this regression check. */
     const html = renderToString(<ProviderProfileContext.Provider value={{username: null, avatarUrl: null}}>
-      <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
+      <ProfileModalPage profile={profile} accountManagement={{username: false, avatar: true, deletion: true}} onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
     expect(html).toContain("Nova");
     expect(html).not.toContain("Guest");
   });
 
-  it("does not offer Jest-only avatar uploads on targets without registration", () => {
-    /** Profile markup for a target without Jest registration. */
+  it("does not offer account operations without target permissions", () => {
+    /** Profile markup for a target without account permissions. */
     const html = renderToString(<ProfileModalPage profile={profile} onOpenModal={noop}
       onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />);
     expect(html).toContain("avatar.webp");
     expect(html).not.toContain('type="file"');
     expect(html).not.toContain("profile-avatar-edit");
-    expect(html).toContain("Delete Account");
+    expect(html).not.toContain("Delete Account");
   });
-  it("renders safe guest and registration fallbacks", () => {
+  it("renders a safe guest fallback without unsupported controls", () => {
     /** Guest profile markup with no optional platform profile fields. */
     const html = renderToString(
       <ProfileModalPage
         profile={null}
-        platformRegistered={false}
+        accountManagement={{username: false, avatar: false, deletion: false}}
         onOpenModal={noop}
         onUpdateAvatar={updateAvatar}
         onDeleteAccount={noop}
@@ -82,21 +82,20 @@ describe("ProfileModalPage", () => {
     );
     expect(html).toContain("Guest");
     expect(html).toContain("profile-avatar-fallback");
-    expect(html).toContain("Register or Log In");
+    expect(html).not.toContain("Register or Log In");
     expect(html).not.toContain("Delete Account");
     expect(html).not.toContain("profile-danger-zone");
   });
 
-  it.each([false, true, undefined])("shows account deletion only for permitted registration state %s", platformRegistered => {
-    /** Provider-backed profile reflects the actual Jest registration capability. */
-    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: null}}>
-      <ProfileModalPage profile={profile} platformRegistered={platformRegistered}
+  it.each([false, true])("shows account deletion only with explicit permission %s", deletion => {
+    /** Provider-backed profile reflects the explicit account capability. */
+    const html = renderToString(<ProviderProfileContext.Provider value={{username: "Provider Solver", avatarUrl: null}}>
+      <ProfileModalPage profile={profile} accountManagement={{username: false, avatar: false, deletion}}
         onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
     expect(html).toContain("Nova");
-    expect(html.includes("Delete Account")).toBe(platformRegistered !== false);
-    expect(html.includes("profile-danger-zone")).toBe(platformRegistered !== false);
-    if (platformRegistered === false) expect(html).toContain("Register or Log In");
+    expect(html.includes("Delete Account")).toBe(deletion);
+    expect(html.includes("profile-danger-zone")).toBe(deletion);
   });
 
   it("renders registered identity, progression, and profile destinations", () => {
@@ -104,7 +103,7 @@ describe("ProfileModalPage", () => {
     const html = renderToString(
       <ProfileModalPage
         profile={profile}
-        platformRegistered
+        accountManagement={{username: true, avatar: true, deletion: true}}
         onOpenModal={noop}
         onUpdateAvatar={updateAvatar}
         onDeleteAccount={noop}
@@ -124,7 +123,7 @@ describe("ProfileModalPage", () => {
       <ReferralSharingProvider capability={referralSharing}>
         <ProfileModalPage
           profile={profile}
-          platformRegistered
+          accountManagement={{username: true, avatar: true, deletion: true}}
           onOpenModal={noop}
           onUpdateAvatar={updateAvatar}
           onDeleteAccount={noop}

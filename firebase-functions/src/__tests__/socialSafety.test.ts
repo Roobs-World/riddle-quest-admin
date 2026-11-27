@@ -1,7 +1,7 @@
 // Real operation leases and permission delivery are exercised by emulator suites.
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual("../shared/accountDeletion"),
-  runWithJestAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
+  runWithAccountOperationLease: (_owner: string, _timeout: number, operation: () => Promise<unknown>) =>
     operation(),
 }));
 

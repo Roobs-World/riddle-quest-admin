@@ -4,6 +4,7 @@ import chestUrl from "../../../assets/images-web/chest-closed.webp";
 import {useProviderProfile} from "./ProviderProfileContext";
 import {useContext, useLayoutEffect, useRef, useState} from "react";
 import type {ChangeEvent, KeyboardEvent} from "react";
+import type {BridgeUser} from "../../platform/bridge/messages";
 import type {GameModal, GameSessionState} from "../../gameplay/session/gameSession";
 import {useTranslator} from "../../localization/browser/i18n";
 import {getNextRankForLevel, getRankForLevel} from "../../progression/browser/ranks";
@@ -16,10 +17,8 @@ import {useReferralSharing} from "../../sharing/components/ReferralSharingCapabi
 export type ProfileModalPageProps = {
   /** Latest profile returned by the trusted host, or null for a guest fallback. */
   profile: GameSessionState["profile"];
-  /** Whether the current Jest player has completed platform registration. */
-  platformRegistered?: boolean;
-  /** Dismisses the profile before opening provider-owned registration. */
-  onClose?: () => void;
+  /** Account controls explicitly approved by the active platform. */
+  accountManagement?: BridgeUser["accountManagement"];
   /** Opens a related profile modal. */
   onOpenModal: (modal: Exclude<GameModal, null>) => void;
   /** Uploads a selected avatar through the existing host boundary. */
@@ -31,9 +30,8 @@ export type ProfileModalPageProps = {
 /** Renders player identity, progression, statistics shortcuts, and avatar selection. */
 export function ProfileModalPage({
   profile,
-  platformRegistered,
+  accountManagement,
   onOpenModal,
-  onClose,
   onUpdateAvatar,
   onDeleteAccount,
 }: ProfileModalPageProps) {
@@ -74,13 +72,10 @@ export function ProfileModalPage({
   const nextRank = getNextRankForLevel(progress.level);
   const balance = profile?.coins ?? 0;
 
-  /** Opens registration for guests or the system file picker for registered players. */
+  /** Opens the system file picker when the target permits avatar uploads. */
   const chooseAvatar = () => {
     setAvatarError(null);
-    if (platformRegistered === false) {
-      window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
-      return;
-    }
+    if (!accountManagement?.avatar) return;
     avatarInputRef.current?.click();
   };
 
@@ -142,7 +137,7 @@ export function ProfileModalPage({
     <div className="profile-page">
       <div className="profile-hero">
         <div className="profile-identity" data-tooltip="profileIdentity">
-          {platformRegistered === undefined ? (
+          {!accountManagement?.avatar ? (
             <div className="profile-avatar-button">
               <RankedAvatar avatarUrl={avatarUrl} level={progress.level} size={84}
                 fallback={displayName.slice(0, 1).toUpperCase()} fallbackClassName="profile-avatar-fallback" />
@@ -151,11 +146,7 @@ export function ProfileModalPage({
           <button
             type="button"
             className="profile-avatar-button"
-            aria-label={
-              platformRegistered === false
-                ? tr("Profile.UPGRADE_ACCOUNT_BUTTON")
-                : tr("Profile.UPLOAD_FROM_LIBRARY_BUTTON")
-            }
+            aria-label={tr("Profile.UPLOAD_FROM_LIBRARY_BUTTON")}
             onClick={chooseAvatar}
           >
             <RankedAvatar avatarUrl={avatarUrl} level={progress.level} size={84}
@@ -181,15 +172,7 @@ export function ProfileModalPage({
           ) : null}
           <div>
             <strong>{displayName}</strong>
-            {providerProfile && platformRegistered === false && (
-              <button className="play-text-button" onClick={() => {
-                onClose?.();
-                window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
-              }}>
-                {tr("Profile.UPGRADE_ACCOUNT_BUTTON")}
-              </button>
-            )}
-            {!providerProfile && <button className="play-text-button" onClick={() => onOpenModal("username")}>
+            {accountManagement?.username && <button className="play-text-button" onClick={() => onOpenModal("username")}>
               {tr("Profile.EDIT_BUTTON")}
             </button>}
           </div>
@@ -276,7 +259,7 @@ export function ProfileModalPage({
         </button>
       </div>
       {subscriptionControls}
-      {platformRegistered !== false && <div className="profile-danger-zone">
+      {accountManagement?.deletion && <div className="profile-danger-zone">
         <button
           ref={deleteTriggerRef}
           type="button"
@@ -286,7 +269,7 @@ export function ProfileModalPage({
           {tr("Profile.DELETE_ACCOUNT_BUTTON")}
         </button>
       </div>}
-      {platformRegistered !== false && deleteConfirmationOpen ? (
+      {accountManagement?.deletion && deleteConfirmationOpen ? (
         <div className="profile-delete-backdrop">
           <section
             ref={deleteDialogRef}

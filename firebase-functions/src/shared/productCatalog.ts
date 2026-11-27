@@ -1,7 +1,7 @@
 import {PREMIUM_SUBSCRIPTION_GRANT_INTERVAL_MS, PREMIUM_SUBSCRIPTION_MONTHLY_COINS} from "../../../src/commerce/pricing/catalog.js";
 
-/** Shared Google Play and Jest SKU grants; provider receipt verification stays in each adapter. */
-export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freeze({
+/** Google Play SKU grants; provider receipt verification stays in each adapter. */
+export const COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freeze({
   "com.roobsworld.riddlequest.coinpack1": 250,
   "com.roobsworld.riddlequest.coinpack2": 550,
   "com.roobsworld.riddlequest.coinpack3": 900,
@@ -10,8 +10,8 @@ export const JEST_COIN_PRODUCTS: Readonly<Record<string, number>> = Object.freez
   "com.roobsworld.riddlequest.coinpack6": 7000,
 });
 
-/** Shared Google Play and Jest subscription SKU entitlement mapping. */
-export const JEST_SUBSCRIPTIONS = Object.freeze({
+/** Google Play subscription SKU entitlement mapping. */
+export const SUBSCRIPTIONS = Object.freeze({
   "com.roobsworld.riddlequest.premium.monthly": "premium",
   "com.roobsworld.riddlequest.premium.yearly": "premium",
 } as const);

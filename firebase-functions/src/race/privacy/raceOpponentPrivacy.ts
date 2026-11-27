@@ -1,5 +1,5 @@
 import {admin} from "../../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import type {RaceRunRecord} from "../runs/raceEngine";
 import {stripUndefined, type Firestore} from "../raceSetupService";
 
@@ -39,7 +39,7 @@ export async function resolveRaceOpponentPrivacy(
     return {run: scrubRaceOpponent(run), scrubbed: true};
   }
   /** Provides deletion behavior. */
-  const deletion = await transaction.get(getJestAccountDeletionRef(db, subjectUserId));
+  const deletion = await transaction.get(getAccountDeletionRef(db, subjectUserId));
   return deletion.exists ? {run: scrubRaceOpponent(run), scrubbed: true} : {run, scrubbed: false};
 }
 

@@ -300,17 +300,6 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
       avatarUrl: string;
     }
   >(regions.account, "updateAvatar");
-  /** Fills an empty Jest game profile avatar from the platform profile. */
-  const syncJestAvatar = httpsCallable<
-    {
-      /** Stores avatar url. */
-      avatarUrl: string;
-    },
-    {
-      /** Stores avatar url. */
-      avatarUrl: string;
-    }
-  >(regions.account, "syncJestAvatar");
   /** Deletes account. */
   const deleteAccount = httpsCallable<
     Record<string, never>,
@@ -375,7 +364,7 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     regions.race,
     "publishRaceChallenge",
   );
-  /** Reserves a server-owned two-player lobby before opening a Jest invite. */
+  /** Reserves a server-owned two-player lobby before opening a provider invite. */
   const reserveRaceInvite = httpsCallable<ReserveRaceInviteRequest, ReserveRaceInviteResponse>(
     regions.race,
     "reserveRaceInvite",
@@ -480,7 +469,6 @@ export function createGameFunctionsClient(regions: GameFunctionRegions, options:
     getLeaderboard,
     updateUsername,
     updateAvatar,
-    syncJestAvatar,
     deleteAccount,
     setPresenceConsent,
     listRaceCategories,

@@ -128,7 +128,7 @@ createRoot(document.getElementById('root')).render(<React.StrictMode><RaceTo10Ga
     await Promise.all(contexts.map(context => context.close()));
     console.log(`PASS ${width}px: Public waiting outlasted the former bot timeout, reload recovered the same seat, reconnect joined the human countdown, and both answers synchronized without friend invitations.`);
   }
-  await writeFile(path.join(output, "evidence.json"), JSON.stringify({environment: "Local browser with injected HTTP transport to real Firestore-emulator authority. This is not hosted Jest end-to-end evidence.", observations}, null, 2) + "\n");
+  await writeFile(path.join(output, "evidence.json"), JSON.stringify({environment: "Local browser with injected HTTP transport to real Firestore-emulator authority. This is not hosted Facebook end-to-end evidence.", observations}, null, 2) + "\n");
 } finally {
   await browser?.close();
   if (server) {server.closeAllConnections();await new Promise(resolve => server.close(resolve));}

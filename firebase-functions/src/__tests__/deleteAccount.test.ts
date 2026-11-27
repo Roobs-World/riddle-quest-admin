@@ -5,7 +5,6 @@ const mockLoggerError = jest.fn();
 /** Firestore recursive deletion mock. */
 const mockRecursiveDelete = jest.fn();
 /** Deterministic current referral-verification document deletion mock. */
-const mockReferralVerificationDelete = jest.fn();
 /** Direct deletion mock for legacy document-ID-owned records. */
 const mockDirectDocumentDelete = jest.fn();
 const mockNotificationPairingLimitDelete = jest.fn();
@@ -13,8 +12,8 @@ const mockNotificationPairingLimitDelete = jest.fn();
 const mockAndroidCommerceDelete = jest.fn();
 /** Direct deletion mock for the provider-neutral Reddit player snapshot. */
 const mockRedditPlayerStorageDelete = jest.fn();
-/** Permanent pseudonymous Jest account-deletion guard write mock. */
-const mockJestDeletionSet = jest.fn();
+/** Permanent pseudonymous account-deletion guard write mock. */
+const mockDeletionSet = jest.fn();
 /** Active-operation drain query run after the permanent guard is written. */
 const mockActiveOperationsGet = jest.fn(async () => ({empty: true, docs: []}));
 /** Transactional username/profile document deletion mock. */
@@ -28,7 +27,7 @@ const mockTransactionGet = jest.fn(
     /** Stores path. */
     path: string;
   }) => {
-    if (ref.path.startsWith("jestAccountDeletionTombstones/")) return {exists: mockJestDeletionSet.mock.calls.length > 0, data: () => ({recreationBlocked: true})};
+    if (ref.path.startsWith("jestAccountDeletionTombstones/")) return {exists: mockDeletionSet.mock.calls.length > 0, data: () => ({recreationBlocked: true})};
     if (ref.path === "users/user-1") {
       return {exists: true, data: () => ({username: "Player One"})};
     }
@@ -154,12 +153,6 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 jest.mock("firebase-functions/v2", () => ({logger: {error: mockLoggerError}}));
 jest.mock("../shared/callableSecurity", () => ({browserCallableSecurityOptions: {enforceAppCheck: true}}));
-jest.mock("../../../platforms/web/jest/server/jestAccountLifecycle", () => ({
-  deleteJestAccountGeneration: async (playerId: string, uid: string) => {
-    await jest.requireActual("../profile/accountDeletion/deleteAccountData").deleteAccountForUser(uid, playerId);
-    return uid;
-  },
-}));
 jest.mock("../../../platforms/web/facebook/server/facebookAccountDeletion", () => ({
   deleteFacebookAccountGeneration: mockDeleteFacebookAccountGeneration,
 }));
@@ -172,9 +165,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
         collection: (collection: string) => ({
           orderBy: () => mockCreateQuery(collection, "__name__", "*"),
           doc: (id = "user-1") =>
-            collection === "jestReferralVerifications"
-              ? {delete: mockReferralVerificationDelete, path: `${collection}/${id}`}
-              : collection === "redditPlayerStorage"
+            collection === "redditPlayerStorage"
                 ? {delete: mockRedditPlayerStorageDelete, path: `${collection}/${id}`}
                 : collection === "androidCommerceAccounts"
                   ? {delete: () => mockAndroidCommerceDelete(id), path: `${collection}/${id}`}
@@ -187,7 +178,7 @@ jest.mock("../shared/firebaseAdmin", () => ({
                   ? {delete: mockDirectDocumentDelete, path: `${collection}/${id}`}
                   : collection === "jestAccountDeletionTombstones"
                     ? {
-                        set: mockJestDeletionSet,
+                        set: mockDeletionSet,
                         path: `${collection}/${id}`,
                         collection: () => ({
                           limit: () => ({get: mockActiveOperationsGet}),
@@ -223,11 +214,9 @@ jest.mock("../shared/firebaseAdmin", () => ({
 
 import {deleteAccount} from "../profile/accountDeletion/index";
 import {deleteAccountForUser} from "../profile/accountDeletion/deleteAccountData";
-import {createJestPurchaseGrantId} from "../../../platforms/web/jest/server/jestPurchaseReceipts";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 import {hashRaceCohortUser} from "../race/access/raceRollout";
 import {requestDocumentId} from "../race/raceSetupService";
-import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
 
 describe("deleteAccount", () => {
   beforeEach(() => {
@@ -371,9 +360,8 @@ describe("deleteAccount", () => {
     ]);
     mockBatchCommit.mockResolvedValue(undefined);
     mockRecursiveDelete.mockResolvedValue(undefined);
-    mockReferralVerificationDelete.mockResolvedValue(undefined);
     mockRedditPlayerStorageDelete.mockResolvedValue(undefined);
-    mockJestDeletionSet.mockResolvedValue(undefined);
+    mockDeletionSet.mockResolvedValue(undefined);
     mockDeleteFiles.mockResolvedValue([]);
     mockDeleteUser.mockResolvedValue(undefined);
     mockDeleteFacebookAccountGeneration.mockResolvedValue(2);
@@ -386,7 +374,7 @@ describe("deleteAccount", () => {
     ).rejects.toMatchObject({code: "unauthenticated"});
   });
 
-  it("handles a non-Jest authenticated test request without a token object", async () => {
+  it("handles an authenticated test request without a token object", async () => {
     await expect(
       (deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
         auth: {uid: "user-1"},
@@ -394,7 +382,7 @@ describe("deleteAccount", () => {
       }),
     ).resolves.toEqual({success: true});
 
-    expect(mockJestDeletionSet).toHaveBeenCalledWith(
+    expect(mockDeletionSet).toHaveBeenCalledWith(
       {
         schemaVersion: 1,
         recreationBlocked: true,
@@ -419,7 +407,7 @@ describe("deleteAccount", () => {
       {uid, accountGeneration: 3},
       {uidSecret: expect.any(String)},
     );
-    expect(mockJestDeletionSet).not.toHaveBeenCalled();
+    expect(mockDeletionSet).not.toHaveBeenCalled();
   });
 
   it("rejects Facebook-shaped UIDs without matching provider-generation claims", async () => {
@@ -549,7 +537,7 @@ describe("deleteAccount", () => {
     expect(mockDeleteFiles).toHaveBeenCalledWith({prefix: "exports/user-1/"});
     expect(mockBatchDelete).toHaveBeenCalledWith({path: "leaderboard/noncanonical-subject-copy"});
     expect(mockDeleteUser).toHaveBeenCalledWith("user-1");
-    expect(mockJestDeletionSet).toHaveBeenCalledTimes(2);
+    expect(mockDeletionSet).toHaveBeenCalledTimes(2);
     expect(mockActiveOperationsGet).toHaveBeenCalledTimes(1);
     expect(mockDeleteUser).not.toHaveBeenCalledWith("attacker-selected-user");
   });
@@ -616,132 +604,7 @@ describe("deleteAccount", () => {
     release();
     expect(await outcome).toBe(failure);
     expect(mockDeleteUser).not.toHaveBeenCalled();
-    expect(mockJestDeletionSet).not.toHaveBeenCalledWith({cleanupComplete: true}, {merge: true});
-  });
-
-  it("removes Jest referral identity while preserving anonymized anti-replay receipts", async () => {
-    /** Provides r id. */
-    const userId = jestFirebaseUid("jest-player-1");
-    /** Provides legacy purchase token behavior. */
-    const legacyPurchaseToken = "legacy-purchase-token";
-    /** Provides purchase token hash behavior. */
-    const purchaseTokenHash = createJestPurchaseGrantId(legacyPurchaseToken);
-    queryDocuments.set(`jestPurchaseGrants:uid:${userId}`, [
-      queryDocument(`jestPurchaseGrants/${legacyPurchaseToken}`, {
-        uid: userId,
-        playerId: "jest-player-1",
-        productSku: "coin-pack",
-        coins: 250,
-        newCoins: 550,
-        grantedAt: "timestamp",
-      }),
-    ]);
-    queryDocuments.set("jestReferralVerifications:playerId:jest-player-1", [
-      queryDocument("jestReferralVerifications/verification-1", {playerId: "jest-player-1"}),
-    ]);
-    queryDocuments.set("jestReferralRewards:playerId:jest-player-1", [
-      queryDocument("jestReferralRewards/reward-as-inviter", {
-        playerId: "jest-player-1",
-        referredPlayerId: "friend-1",
-        reference: "riddle_quest_friend_challenge_v2",
-        inviterCoins: 100,
-        referredCoins: 100,
-        joinedAt: "personal-timestamp",
-        grantedAt: "timestamp",
-      }),
-    ]);
-    queryDocuments.set("jestReferralRewards:referredPlayerId:jest-player-1", [
-      queryDocument("jestReferralRewards/reward-as-friend", {
-        playerId: "inviter-1",
-        referredPlayerId: "jest-player-1",
-        reference: "riddle_quest_race_to_10_v1",
-        inviterCoins: 100,
-        referredCoins: 100,
-        grantedAt: "timestamp",
-      }),
-    ]);
-
-    await expect(
-      (deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
-        auth: {uid: userId, token: {jestPlayerId: "jest-player-1"}},
-        data: {},
-      }),
-    ).resolves.toEqual({success: true});
-
-    expect(mockBatchDelete).toHaveBeenCalledWith({path: `jestPurchaseGrants/${legacyPurchaseToken}`});
-    expect(mockBatchDelete).toHaveBeenCalledWith({path: "jestReferralVerifications/verification-1"});
-    expect(mockReferralVerificationDelete).toHaveBeenCalledTimes(1);
-    expect(mockBatchSet).toHaveBeenCalledWith(
-      {path: `jestPurchaseGrants/${purchaseTokenHash}`},
-      {
-        purchaseTokenHash,
-        replayProtection: true,
-        productSku: "coin-pack",
-        coins: 250,
-        grantedAt: "timestamp",
-      },
-    );
-    expect(mockBatchSet).toHaveBeenCalledWith(
-      {path: "jestReferralRewards/reward-as-inviter"},
-      {
-        replayProtection: true,
-        reference: "riddle_quest_friend_challenge_v2",
-        inviterCoins: 100,
-        referredCoins: 100,
-        grantedAt: "timestamp",
-      },
-    );
-    expect(mockBatchSet).toHaveBeenCalledWith(
-      {path: "jestReferralRewards/reward-as-friend"},
-      expect.not.objectContaining({playerId: expect.anything(), referredPlayerId: expect.anything()}),
-    );
-    expect(mockDeleteUser).toHaveBeenCalledWith(userId);
-    expect(mockJestDeletionSet).toHaveBeenCalledWith({cleanupComplete: true}, {merge: true});
-    expect(mockJestDeletionSet).toHaveBeenCalledWith(
-      {
-        schemaVersion: 1,
-        recreationBlocked: true,
-        deletedAt: expect.anything(),
-      },
-      {merge: true},
-    );
-  });
-
-  it("ignores an untrusted Jest player ID supplied in callable data", async () => {
-    await expect(
-      (deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
-        auth: {uid: "user-1", token: {}},
-        data: {jestPlayerId: "attacker-selected-player"},
-      }),
-    ).resolves.toEqual({success: true});
-
-    expect([...queryPages.keys()].some((key) => key.includes("attacker-selected-player"))).toBe(false);
-  });
-
-  it("rejects a deterministic Jest UID when an old token lacks the platform claim", async () => {
-    /** Provides r id. */
-    const userId = `jest_${"a".repeat(40)}`;
-    await expect(
-      (deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
-        auth: {uid: userId, token: {}},
-        data: {},
-      }),
-    ).rejects.toMatchObject({code: "failed-precondition"});
-
-    expect(mockJestDeletionSet).not.toHaveBeenCalled();
-    expect(mockDeleteUser).not.toHaveBeenCalled();
-  });
-
-  it("rejects a Jest claim that is not bound to the authenticated deterministic UID", async () => {
-    await expect(
-      (deleteAccount as unknown as (request: unknown) => Promise<unknown>)({
-        auth: {uid: jestFirebaseUid("player-a"), token: {jestPlayerId: "player-b"}},
-        data: {},
-      }),
-    ).rejects.toMatchObject({code: "failed-precondition"});
-
-    expect(mockJestDeletionSet).not.toHaveBeenCalled();
-    expect(mockDeleteUser).not.toHaveBeenCalled();
+    expect(mockDeletionSet).not.toHaveBeenCalledWith({cleanupComplete: true}, {merge: true});
   });
 
   it("does not release a username reservation owned by another user", async () => {

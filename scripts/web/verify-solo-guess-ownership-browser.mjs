@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
-// Supporting component regression; real delayed-response evidence is collected on Jest.
+// Supporting component regression; real delayed-response evidence is collected on the platform.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const evidence = path.resolve(root, 'artifacts/solo-guess-ownership');
 await mkdir(path.join(root, 'node_modules/.cache'), {recursive: true});

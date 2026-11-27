@@ -2,12 +2,12 @@ import {getApps, initializeApp} from "firebase-admin/app";
 import {DocumentSnapshot, getFirestore} from "firebase-admin/firestore";
 import {joinLiveRaceForUser} from "../../race/live/raceLiveService";
 import {getLiveRaceChallengeForUser} from "../../race/invitations/raceLiveInvitation";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 
 /** Destructive fixtures may run only in a private loopback demo emulator. */
 const PROJECT = process.env.GCLOUD_PROJECT ?? "";
 /** Provider-owned accounts isolate profile identity from external SDK calls. */
-const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`;
+const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`;
 /** A deterministic server clock retains original lobby and countdown behavior. */
 const NOW = 1_800_000_000_000;
 /** Real Admin SDK executes all profile, ticket, queue and invitation reads and writes. */
@@ -18,7 +18,7 @@ const catalogPaths = Array.from({length: 30}, (_, index) => `localizedRiddles/en
 const clear = async () => {
   for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "liveRaceSignals"])
     await db.recursiveDelete(db.collection(path));
-  await Promise.all([A, B].flatMap(uid => [db.recursiveDelete(db.doc(`users/${uid}`)), getJestAccountDeletionRef(db, uid).delete()]));
+  await Promise.all([A, B].flatMap(uid => [db.recursiveDelete(db.doc(`users/${uid}`)), getAccountDeletionRef(db, uid).delete()]));
   await Promise.all(catalogPaths.map(path => db.doc(path).delete()));
 };
 beforeAll(() => {
@@ -170,7 +170,7 @@ it.each(["join", "accept"] as const)("captures fresh identity after an actual SD
 
 it.each(["missing", "deleted"] as const)("rejects a %s account before publishing a new live seat", async kind => {
   if (kind === "missing") await db.doc(`users/${A}`).delete();
-  else await getJestAccountDeletionRef(db, A).set({deletedAt: NOW});
+  else await getAccountDeletionRef(db, A).set({deletedAt: NOW});
   if (kind === "missing") await expect(join()).rejects.toMatchObject({code: "not-found"});
   else await expect(join()).rejects.toThrow("account-deleted");
   expect((await db.collection("liveRaceTickets").get()).empty).toBe(true);

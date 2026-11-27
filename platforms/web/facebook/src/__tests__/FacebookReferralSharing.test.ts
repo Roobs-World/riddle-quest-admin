@@ -4,7 +4,7 @@ import {createFacebookNotificationCapability} from "../FacebookNotificationCapab
 import type {FacebookReferralToken} from "../referrals";
 import {setLocale} from "../../../../../src/localization/browser/i18n";
 
-/** Target-local SDK boundary with no Jest platform or DOM identity involved. */
+/** Target-local SDK boundary with no foreign platform or DOM identity involved. */
 const fixture = () => {
   /** Stores shareAsync for this isolated provider verification. */
   const shareAsync = jest.fn(async (_payload: FacebookSharePayload) => undefined);

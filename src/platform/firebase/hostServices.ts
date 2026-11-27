@@ -409,7 +409,7 @@ export const createFirebaseHostServices = (deps: HostServiceDependencies): HostS
     },
     /** Requests purchase. */
     async requestPurchase() {
-      throw new Error("Jest checkout is not ready.");
+      throw new Error("Platform checkout is not ready.");
     },
     /** Loads leaderboard. */
     async loadLeaderboard(type, pagination) {

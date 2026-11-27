@@ -1,33 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {assertTargetDependency, runtimePackage, targetDependencyEvidencePath} from './build/webTargetDependencies.ts';
-const targets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo', 'gamesnacks'];
-test('retained-race artifact validates the configured inventory directory and rebuilds altered bytes', {timeout: 180_000}, async t => {
-  const {mkdtemp,readFile,writeFile,rm}=await import('node:fs/promises');
-  const {tmpdir}=await import('node:os');
-  const path=await import('node:path');
-  const {fileURLToPath}=await import('node:url');
-  const {execFile}=await import('node:child_process');
-  const {promisify}=await import('node:util');
-  const temporary=await mkdtemp(path.join(tmpdir(),'retained-inventory-test-'));
-  t.after(()=>rm(temporary,{recursive:true,force:true}));
-  const evidence=path.join(temporary,'evidence');
-  const run=async()=>JSON.parse((await promisify(execFile)(process.execPath,['scripts/web/build-retained-race-test-artifact.mjs'],{
-    cwd:fileURLToPath(new URL('../..',import.meta.url)),maxBuffer:32*1024*1024,timeout:120_000,
-    env:{...process.env,TMPDIR:temporary,RIDDLE_QUEST_TARGET_DEPENDENCY_EVIDENCE_DIR:evidence},
-  })).stdout);
-  const built=await run();
-  assert.equal(built.inventoryFile,targetDependencyEvidencePath('jest',built.directory,evidence));
-  const inventory=JSON.parse(await readFile(built.inventoryFile,'utf8'));
-  assert.equal(inventory.outputDirectory,built.directory);
-  assert.ok(inventory.modules.includes('scripts/web/fixtures/RetainedRaceHarness.tsx'));
-  assert.deepEqual(await run(),built);
-  const entry=path.join(built.directory,'index.html');
-  const original=await readFile(entry,'utf8');
-  await writeFile(entry,original+'\n<!-- altered test artifact -->');
-  await run();
-  assert.equal(await readFile(entry,'utf8'),original);
-});
+const targets = ['facebook', 'reddit', 'youtube', 'netflix', 'yahoo', 'gamesnacks'];
 test('each target rejects every other provider module, including resolved aliases and dynamic imports', () => {
   for (const target of targets) for (const owner of targets) {
     const id = `/workspace/platforms/web/${owner}/src/adapter.ts`;
@@ -41,17 +15,17 @@ test('transitive SDK packages and tooling fail closed on every artifact', () => 
     assert.throws(() => assertTargetDependency(target, '/node_modules/another-provider-sdk/index.js'), /undeclared runtime/u);
     assert.throws(() => assertTargetDependency(target, "/workspace/src/app/testing/mocks/harness.ts"), /test code/u);
     assert.doesNotThrow(() => assertTargetDependency(target, '/node_modules/.pnpm/react@19/node_modules/react/index.js'));
-    if (!['jest','facebook'].includes(target)) assert.throws(() => assertTargetDependency(target,
+    if (!['facebook'].includes(target)) assert.throws(() => assertTargetDependency(target,
       '/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), /undeclared runtime/u);
   }
   assert.equal(runtimePackage('/node_modules/.pnpm/@firebase+app@1/node_modules/@firebase/app/index.js'), '@firebase/app');
-  for (const target of ['jest', 'facebook']) for (const module of [
+  for (const target of ['facebook']) for (const module of [
     '/node_modules/.pnpm/@firebase+messaging@1/node_modules/@firebase/messaging/dist/index.esm.js',
     '/node_modules/@firebase/messaging-compat/dist/index.esm.js',
     '/node_modules/firebase/messaging/dist/esm/index.esm.js',
     '/node_modules/firebase/compat/messaging/dist/esm/index.esm.js',
   ]) assert.throws(() => assertTargetDependency(target, module), /Firebase Messaging cannot enter the game artifact/u);
-  for (const target of ['jest', 'facebook']) for (const product of ['auth', 'firestore', 'database']) {
+  for (const target of ['facebook']) for (const product of ['auth', 'firestore', 'database']) {
     assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/firebase/${product}/dist/esm/index.esm.js`));
     assert.doesNotThrow(() => assertTargetDependency(target, `/node_modules/@firebase/${product}/dist/index.esm.js`));
   }
@@ -61,7 +35,7 @@ test('Firestore TypeScript runtime helpers remain limited to Firebase-backed tar
   const helper = '/node_modules/.pnpm/tslib@2.9.1/node_modules/tslib/tslib.es6.mjs';
   assert.equal(runtimePackage(helper), 'tslib');
   for (const target of targets) {
-    if (['jest', 'facebook'].includes(target)) assert.doesNotThrow(() => assertTargetDependency(target, helper));
+    if (['facebook'].includes(target)) assert.doesNotThrow(() => assertTargetDependency(target, helper));
     else assert.throws(() => assertTargetDependency(target, helper), /undeclared runtime package tslib/u);
   }
 });
@@ -281,7 +255,7 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
   }
   for (const relative of [
     'docs/facebook/assets/icon-1024.png',
-    'docs/jest/assets/riddle-quest-hero.png',
+    'docs/facebook/assets/riddle-quest-hero.png',
     'docs/common/web-game/visual-parity/current/05-game.png',
     'node_modules/.modules.yaml',
   ]) {
@@ -353,10 +327,9 @@ test('GameSnacks packaging uses relocated audited evidence and rejects changed o
 });
 
 
-test('Jest screenshot renderer stays exclusive to the Jest artifact', () => {
+test('screenshot renderer stays outside every supported artifact', () => {
   const renderer = '/workspace/node_modules/html2canvas-pro/dist/html2canvas-pro.esm.js';
-  assert.doesNotThrow(() => assertTargetDependency('jest', renderer));
-  for (const target of targets.filter(target => target !== 'jest')) {
+  for (const target of targets) {
     assert.throws(() => assertTargetDependency(target, renderer), /undeclared runtime package html2canvas-pro/u);
   }
 });

@@ -3,8 +3,6 @@ import {cp, mkdir, mkdtemp, readFile, rm, symlink, writeFile} from "node:fs/prom
 import {tmpdir} from "node:os";
 import path from "node:path";
 import {spawnSync} from "node:child_process";
-import {createRequire} from "node:module";
-import {runInNewContext} from "node:vm";
 import {fileURLToPath} from "node:url";
 import test from "node:test";
 import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
@@ -12,7 +10,6 @@ import {inspectWebTargetArtifact} from "./web-target-artifact-inventory.mjs";
 const packageDirectory = fileURLToPath(new URL("../..", import.meta.url));
 const repositoryDirectory = path.resolve(packageDirectory);
 const platformDirectory = target => path.join(repositoryDirectory, "platforms/web", target);
-const jestAudit = path.join(platformDirectory("jest"), "scripts/audit-jest-artifact.mjs");
 const facebookAudit = path.join(platformDirectory("facebook"), "scripts/audit-facebook-artifact.mjs");
 const redditAudit = path.join(platformDirectory("reddit"), "scripts/audit-reddit-artifact.mjs");
 const youtubeAudit = path.join(platformDirectory("youtube"), "scripts/audit-youtube-artifact.mjs");
@@ -27,7 +24,6 @@ const runAudit = (script, directory, extraArguments = []) => spawnSync(process.e
 });
 
 const runPlatformAudit = (platform, directory) => {
-  if (platform === "jest") return runAudit(jestAudit, directory);
   if (platform === "facebook") return runAudit(facebookAudit, directory);
   if (platform === "reddit") return runAudit(redditAudit, directory);
   return runAudit(youtubeAudit, directory, ["--allow-incomplete-fixture"]);
@@ -51,12 +47,12 @@ const runBuildContract = (config, {
   plugin.configResolved({root, build: {outDir}});
 };
 
-test("Jest bundles English copy without other targets' locale chunks", async () => {
+test("Facebook bundles every supported locale", async () => {
   /** The actual translation module must lose unreachable locale imports during production bundling. */
   const {build} = await import("vite");
   /** Target aliases prevent unsupported catalogs from entering the module graph. */
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  for (const target of ["jest", "facebook"]) {
+  for (const target of ["facebook"]) {
     /** Production target policy is shared with this in-memory translation build. */
     const targetConfig = createWebTargetViteConfig({command: "build", mode: target, environment: {}});
     /** In-memory builds inspect target elimination without replacing any game artifacts. */
@@ -79,70 +75,9 @@ test("Jest bundles English copy without other targets' locale chunks", async () 
       .filter(({type}) => type === "chunk")
       .flatMap(({modules}) => Object.keys(modules).map(id => id.replaceAll("\\", "/"))));
     assert.ok(modules.some(id => id.endsWith("/src/locales/en/settings.json")), target);
-    if (target === "jest") {
-      assert.equal(modules.some(id => /\/src\/locales\/(?!en\/)/u.test(id)), false);
-      assert.equal(modules.some(id => id.endsWith("/src/localization/browser/localeModules.ts")), false);
-    } else {
-      assert.ok(modules.some(id => id.endsWith("/src/locales/fr/settings.json")));
-      assert.ok(modules.some(id => id.endsWith("/src/localization/browser/localeModules.ts")));
-    }
+    assert.ok(modules.some(id => id.endsWith("/src/locales/fr/settings.json")));
+    assert.ok(modules.some(id => id.endsWith("/src/localization/browser/localeModules.ts")));
   }
-});
-
-test("Jest omits unused Firebase products while retaining every supported script URL and version mapping", async () => {
-  /** The installed SDK supplies the reviewed declaration and actual URL validation behavior. */
-  const require = createRequire(import.meta.url);
-  /** Resolve the app package through the same Firebase version used by the portal. */
-  const app = createRequire(require.resolve("firebase/app")).resolve("@firebase/app");
-  /** Actual vendor source ensures a dependency update cannot silently bypass this boundary. */
-  const source = await readFile(app, "utf8");
-  /** Production target configuration owns the narrowing transform. */
-  const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  /** Select the target-only plugin without replacing the package or policy implementation. */
-  const plugin = createWebTargetViteConfig({command: "build", mode: "jest", environment: {}}).plugins.flat(Infinity)
-    .find(candidate => candidate?.name === "riddle-quest-jest-firebase-script-policy");
-  assert.ok(plugin);
-  /** Only the unused Analytics URL and Crashlytics metadata may disappear from the reviewed SDK. */
-  const result = plugin.transform(source, app);
-  assert.ok(result);
-  /** The SDK's validator executes with its unchanged Auth and App Check entries. */
-  const declaration = result.code.match(/const ALLOWED_SCRIPT_URLS = \[[\s\S]*?\n\];/u)?.[0];
-  /** This helper is independent of the rest of the Firebase runtime. */
-  const validator = result.code.match(/function _createTrustedScriptURL\(url\) \{[\s\S]*?^\}/mu)?.[0];
-  assert.ok(declaration);
-  assert.ok(validator);
-  /** Compare the entire policy so future supported URLs cannot be removed silently. */
-  const originalDeclaration = source.match(/const ALLOWED_SCRIPT_URLS = \[[\s\S]*?\n\];/u)?.[0];
-  assert.ok(originalDeclaration);
-  assert.deepEqual(Array.from(runInNewContext(`${declaration}\nALLOWED_SCRIPT_URLS`)),
-    Array.from(runInNewContext(`${originalDeclaration}\nALLOWED_SCRIPT_URLS`))
-      .filter(url => url !== "https://www.googletagmanager.com/gtag/js"));
-  /** Evaluate only the actual identifier constants and their pure platform-log dictionary. */
-  const platformLog = code => {
-    /** Product-name declarations supply the dictionary's computed property keys. */
-    const names = code.match(/const name[\w$]* = ["'][^"']+["'];/gu) ?? [];
-    /** This single dictionary is the only reviewed Crashlytics reference. */
-    const registration = code.match(/const PLATFORM_LOG_STRING = \{[\s\S]*?\n\};/u)?.[0];
-    assert.ok(registration);
-    return Object.fromEntries(Object.entries(runInNewContext(`${names.join("\n")}\n${registration}\nPLATFORM_LOG_STRING`)));
-  };
-  assert.deepEqual(platformLog(result.code), Object.fromEntries(Object.entries(platformLog(source))
-    .filter(([product]) => product !== "@firebase/crashlytics")));
-  /** An isolated context evaluates only the actual allowlist and its pure validator. */
-  const allow = runInNewContext(`${declaration}\n${validator}\n_createTrustedScriptURL`);
-  for (const url of ["https://apis.google.com/js/api.js", "https://www.google.com/recaptcha/api.js", "https://www.google.com/recaptcha/enterprise.js"]) {
-    assert.equal(allow(url), url);
-    assert.equal(allow(`${url}?key=fixture`), `${url}?key=fixture`);
-    assert.throws(() => allow(`${url}.evil.example`), /Refusing to load untrusted script URL/u);
-  }
-  assert.throws(() => allow("https://www.googletagmanager.com/gtag/js"), /Refusing to load untrusted script URL/u);
-  assert.equal(result.code.includes("googletagmanager.com"), false);
-  assert.equal(result.code.includes("@firebase/crashlytics"), false);
-  assert.equal(plugin.transform(source, app.replace("@firebase/app/", "@firebase/analytics/")), null);
-  assert.throws(() => plugin.transform(source.replace("const ALLOWED_SCRIPT_URLS", "const CHANGED_SCRIPT_URLS"), app), /source changed/u);
-  assert.throws(() => plugin.transform(source.replace("'fire-cls'", "'changed-fire-cls'"), app), /registration changed/u);
-  assert.equal(pluginNames(createWebTargetViteConfig({command: "build", mode: "facebook", environment: {}}).plugins)
-    .includes("riddle-quest-jest-firebase-script-policy"), false);
 });
 
 test("Vite configuration requires an explicit known Web Target for build and serve", async () => {
@@ -150,7 +85,7 @@ test("Vite configuration requires an explicit known Web Target for build and ser
   for (const command of ["build", "serve"]) {
     assert.throws(
       () => createWebTargetViteConfig({command, mode: "unknown-target", environment: {}}),
-      /Unknown Web Target mode: unknown-target; expected jest, facebook, reddit, youtube, netflix, yahoo, or gamesnacks/u,
+      /Unknown Web Target mode: unknown-target; expected facebook, reddit, youtube, netflix, yahoo, or gamesnacks/u,
     );
   }
   assert.throws(
@@ -177,16 +112,10 @@ test("YouTube Vite configuration rejects private Sentry upload configuration", a
 test("the Web Target config resolves one isolated build profile for every release target", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
   const expectations = {
-    jest: {
-      outDir: path.join(repositoryDirectory, "platforms/web/jest/build/dist"),
-      htmlEntry: "/platforms/web/jest/index.html",
-      shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
-      artifactPlugin: "riddle-quest-jest-firebase-script-policy",
-    },
     facebook: {
       outDir: path.join(repositoryDirectory, "platforms/web/facebook/build/dist"),
       htmlEntry: "/platforms/web/facebook/index.html",
-      shopEntry: "/src/play/modalPages/commerce/ShopModalPage.tsx",
+      shopEntry: "/src/commerce/components/ShopModalPage.tsx",
       artifactPlugin: "riddle-quest-facebook-artifact",
     },
     reddit: {
@@ -219,7 +148,7 @@ test("the Web Target config resolves one isolated build profile for every releas
     const config = createWebTargetViteConfig({command: "build", mode, environment: {}});
     assert.equal(config.base, "./");
     assert.equal(config.define["import.meta.env.VITE_PLATFORM_TARGET"], JSON.stringify(mode));
-    if (["jest", "facebook"].includes(mode)) {
+    if (["facebook"].includes(mode)) {
       assert.equal(config.define.__SENTRY_DEBUG__, "false");
       assert.equal(config.define.__SENTRY_TRACING__, "false");
     } else {
@@ -290,7 +219,6 @@ test("the private HTML adapter emits host filenames with artifact-root-relative 
 test("one selected output directory drives each Web Target build", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
   for (const [mode, environmentName] of [
-    ["jest", "JEST_BUILD_OUT_DIR"],
     ["facebook", "FACEBOOK_BUILD_OUT_DIR"],
     ["reddit", "REDDIT_BUILD_OUT_DIR"],
     ["youtube", "YOUTUBE_BUILD_OUT_DIR"],
@@ -330,23 +258,23 @@ test("the resolved profile owns runtime target identity despite conflicting ambi
 
 test("the build contract accepts matching absolute release and harness output directories", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  const absoluteJestReleaseDirectory = path.join(tmpdir(), "riddle-quest-jest-release", "artifact");
+  const absoluteFacebookReleaseDirectory = path.join(tmpdir(), "riddle-quest-facebook-release", "artifact");
   const config = createWebTargetViteConfig({
     command: "build",
-    mode: "jest",
-    environment: {JEST_BUILD_OUT_DIR: absoluteJestReleaseDirectory},
+    mode: "facebook",
+    environment: {FACEBOOK_BUILD_OUT_DIR: absoluteFacebookReleaseDirectory},
   });
-  runBuildContract(config, {outDir: absoluteJestReleaseDirectory});
+  runBuildContract(config, {outDir: absoluteFacebookReleaseDirectory});
 });
 
 test("the build contract rejects CLI output overrides that differ from the selected directory", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  const expected = path.join(tmpdir(), "riddle-quest-jest-release", "expected");
-  const actual = path.join(tmpdir(), "riddle-quest-jest-release", "overridden");
+  const expected = path.join(tmpdir(), "riddle-quest-facebook-release", "expected");
+  const actual = path.join(tmpdir(), "riddle-quest-facebook-release", "overridden");
   const config = createWebTargetViteConfig({
     command: "build",
-    mode: "jest",
-    environment: {JEST_BUILD_OUT_DIR: expected},
+    mode: "facebook",
+    environment: {FACEBOOK_BUILD_OUT_DIR: expected},
   });
   assert.throws(
     () => runBuildContract(config, {outDir: actual}),
@@ -358,14 +286,14 @@ test("the build contract rejects roots, repository paths, and another target's c
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
   const repositoryDirectory = path.resolve(packageDirectory);
   for (const unsafeDirectory of [
-    platformDirectory("jest"),
+    platformDirectory("facebook"),
     repositoryDirectory,
     path.dirname(repositoryDirectory),
   ]) {
     const config = createWebTargetViteConfig({
       command: "build",
-      mode: "jest",
-      environment: {JEST_BUILD_OUT_DIR: unsafeDirectory},
+      mode: "facebook",
+      environment: {FACEBOOK_BUILD_OUT_DIR: unsafeDirectory},
     });
     assert.throws(
       () => runBuildContract(config, {outDir: unsafeDirectory}),
@@ -376,12 +304,12 @@ test("the build contract rejects roots, repository paths, and another target's c
   for (const unsafeDirectory of [
     path.join(packageDirectory, "src"),
     path.join(repositoryDirectory, "docs", "generated-web-target"),
-    path.join(packageDirectory, "platforms/web/jest/build/dist", "nested"),
+    path.join(packageDirectory, "platforms/web/facebook/build/dist", "nested"),
   ]) {
     const config = createWebTargetViteConfig({
       command: "build",
-      mode: "jest",
-      environment: {JEST_BUILD_OUT_DIR: unsafeDirectory},
+      mode: "facebook",
+      environment: {FACEBOOK_BUILD_OUT_DIR: unsafeDirectory},
     });
     assert.throws(
       () => runBuildContract(config, {outDir: unsafeDirectory}),
@@ -391,18 +319,18 @@ test("the build contract rejects roots, repository paths, and another target's c
 
   const crossTarget = createWebTargetViteConfig({
     command: "build",
-    mode: "jest",
-    environment: {JEST_BUILD_OUT_DIR: "platforms/web/facebook/build/dist"},
+    mode: "facebook",
+    environment: {FACEBOOK_BUILD_OUT_DIR: "platforms/web/reddit/build/dist"},
   });
   assert.throws(
-    () => runBuildContract(crossTarget, {outDir: path.join(repositoryDirectory, "platforms/web/facebook/build/dist")}),
-    /collides with the facebook canonical artifact/u,
+    () => runBuildContract(crossTarget, {outDir: path.join(repositoryDirectory, "platforms/web/reddit/build/dist")}),
+    /collides with the reddit canonical artifact/u,
   );
 });
 
 test("explicit development profiles serve their owned HTML without redirecting signed query parameters", async () => {
   const {createWebTargetViteConfig} = await import("./build/webTargetViteConfig.ts");
-  for (const mode of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
+  for (const mode of ["facebook", "reddit", "youtube", "netflix", "yahoo", "gamesnacks"]) {
     const development = createWebTargetViteConfig({command: "serve", mode, environment: {}});
     const plugin = development.plugins.flat(Infinity).find(
       (candidate) => candidate?.name === "riddle-quest-web-target-html",
@@ -428,11 +356,6 @@ test("explicit development profiles serve their owned HTML without redirecting s
 
 test("each target-owned HTML document imports one explicit target main and only its allowed SDK", async () => {
   const documents = [
-    {
-      file: "platforms/web/jest/index.html",
-      module: "/src/main.tsx",
-      externalScripts: ["https://cdn.jest.com/sdk/latest/jestsdk.js"],
-    },
     {
       file: "platforms/web/facebook/index.html",
       module: "/src/main.tsx",
@@ -477,11 +400,7 @@ async function withFixture(platform, operation) {
         "@sentry/browser@1\nfirebase@1\nreact@1\nreact-dom@1\nthree@1\n",
       );
     }
-    if (platform === "jest") {
-      await writeFile(path.join(directory, "index.html"), `<!doctype html>
-<html lang="en"><head><meta charset="UTF-8"><script async src="https://cdn.jest.com/sdk/latest/jestsdk.js"></script></head>
-<body><script type="module" src="./app.js"></script></body></html>\n`);
-    } else if (platform === "facebook") {
+    if (platform === "facebook") {
       await writeFile(path.join(directory, "index.html"), `<!doctype html>
 <html lang="en"><head><meta charset="UTF-8"><script src="https://connect.facebook.net/en_US/fbinstant.8.0.js"></script></head>
 <body><script type="module" src="./app.js"></script></body></html>\n`);
@@ -530,7 +449,6 @@ async function withFixture(platform, operation) {
 
 test("artifact audits follow the same output override selected by each Web Target", async () => {
   for (const [platform, script, environmentName, extraArguments] of [
-    ["jest", jestAudit, "JEST_BUILD_OUT_DIR", []],
     ["facebook", facebookAudit, "FACEBOOK_BUILD_OUT_DIR", []],
     ["reddit", redditAudit, "REDDIT_BUILD_OUT_DIR", []],
     ["youtube", youtubeAudit, "YOUTUBE_BUILD_OUT_DIR", ["--allow-incomplete-fixture"]],
@@ -605,32 +523,6 @@ for (const platform of ["netflix", "yahoo"]) {
     });
   });
 }
-
-test("Jest audit accepts Firebase account services and rejects browser push, FCM and Facebook", async () => {
-  await withFixture("jest", async (directory) => {
-    await writeFile(path.join(directory, "app.js"), 'console.log("grindheadgames@gmail.com", "firebase/auth", "firebase/firestore", "@firebase/messaging", "@firebase/messaging-compat");\n');
-    const clean = runAudit(jestAudit, directory);
-    assert.equal(clean.status, 0, clean.stderr);
-    for (const browserPush of [
-      'Notification.requestPermission();',
-      'registration.showNotification("Challenge");',
-      'new PushManager();',
-      'self.addEventListener("push", () => {});',
-      'import("firebase/messaging");',
-      'fetch("https://fcmregistrations.googleapis.com/v1/projects/example");',
-      'setLiveRacePushSubscription({enabled: true});',
-    ]) {
-      await writeFile(path.join(directory, "app.js"), browserPush);
-      const rejected = runAudit(jestAudit, directory);
-      assert.notEqual(rejected.status, 0, browserPush);
-      assert.match(rejected.stderr, /Browser push notifications|Firebase Cloud Messaging/);
-    }
-    await writeFile(path.join(directory, "app.js"), "window.FBInstant.initializeAsync();\n");
-    const contaminated = runAudit(jestAudit, directory);
-    assert.notEqual(contaminated.status, 0);
-    assert.match(contaminated.stderr, /Facebook Instant Games integration/);
-  });
-});
 
 test("Facebook audit rejects the navigation menu value rejected by Meta", async () => {
   await withFixture("facebook", async (directory) => {
@@ -709,16 +601,7 @@ test("Facebook audit accepts its fixture and rejects Jest contamination", async 
   });
 });
 
-test("Jest and Facebook audits reject the other target's App Check adapter", async () => {
-  await withFixture("jest", async (directory) => {
-    await writeFile(
-      path.join(directory, "app.js"),
-      "throw new Error('Facebook App Check token provider is unavailable.');\n",
-    );
-    const result = runAudit(jestAudit, directory);
-    assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /Facebook App Check adapter/u);
-  });
+test("Facebook audits reject the other target's App Check adapter", async () => {
   await withFixture("facebook", async (directory) => {
     await writeFile(
       path.join(directory, "app.js"),
@@ -803,7 +686,7 @@ test("YouTube audit accepts only its explicit engineering fixture and rejects ot
 });
 
 test("existing target audits reject YouTube SDK, adapter, and bundled-content contamination", async () => {
-  for (const platform of ["jest", "facebook", "reddit"]) {
+  for (const platform of ["facebook", "reddit"]) {
     await withFixture(platform, async (directory) => {
       for (const [kind, contamination] of [
         ["SDK", "globalThis.ytgame = {}; // www.youtube.com/game_api/v1\n"],
@@ -834,11 +717,11 @@ test("Reddit audit rejects forbidden commerce UI in compiled commerce chunks", a
   });
 });
 
-test("Jest and Facebook audits reject Reddit Devvit contamination", async () => {
-  for (const platform of ["jest", "facebook"]) {
+test("Facebook audits reject Reddit Devvit contamination", async () => {
+  for (const platform of ["facebook"]) {
     await withFixture(platform, async (directory) => {
       await writeFile(path.join(directory, "app.js"), "globalThis.devvit = {redditGatewaySecret: 'fixture'};\n");
-      const result = runAudit(platform === "jest" ? jestAudit : facebookAudit, directory);
+      const result = runAudit(facebookAudit, directory);
       assert.notEqual(result.status, 0);
       assert.match(result.stderr, /Reddit Devvit integration/);
     });
@@ -846,7 +729,7 @@ test("Jest and Facebook audits reject Reddit Devvit contamination", async () => 
 });
 
 test("every non-Reddit audit rejects Reddit-owned locale copy", async () => {
-  for (const platform of ["jest", "facebook", "youtube"]) {
+  for (const platform of ["facebook", "youtube"]) {
     await withFixture(platform, async (directory) => {
       await writeFile(path.join(directory, "app.js"), "const copy = {RedditPlatform: {TAGLINE: 'fixture'}};\n");
       const result = runPlatformAudit(platform, directory);
@@ -862,7 +745,7 @@ for (const [label, contamination] of [
   ["service-account JSON", `const credential = {"type":"service_account","private_key_id":"fixture"};\n`],
 ]) {
   test(`both artifact audits reject ${label}`, async () => {
-    for (const platform of ["jest", "facebook", "reddit", "youtube"]) {
+    for (const platform of ["facebook", "reddit", "youtube"]) {
       await withFixture(platform, async (directory) => {
         await writeFile(path.join(directory, "app.js"), contamination);
         const result = runPlatformAudit(platform, directory);
@@ -874,7 +757,7 @@ for (const [label, contamination] of [
 }
 
 test("all artifact audits reject symbolic links escaping the build root", async () => {
-  for (const platform of ["jest", "facebook", "reddit", "youtube"]) {
+  for (const platform of ["facebook", "reddit", "youtube"]) {
     await withFixture(platform, async (directory) => {
       const externalDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-external-artifact-"));
       try {
@@ -896,7 +779,7 @@ test("all artifact audits reject symbolic links escaping the build root", async 
 });
 
 test("all artifact audits reject a linked artifact root before following it", async () => {
-  for (const platform of ["jest", "facebook", "reddit", "youtube"]) {
+  for (const platform of ["facebook", "reddit", "youtube"]) {
     await withFixture(platform, async (directory) => {
       const linkDirectory = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-root-link-`));
       const linkedRoot = path.join(linkDirectory, "artifact");
@@ -918,7 +801,7 @@ test("all artifact audits scan environment and text files for common credentials
     [".env.production", "OPENAI_API_KEY=fixture-secret\n", /server secret/iu],
     ["credentials.txt", "-----BEGIN PRIVATE KEY-----\nfixture\n", /private key/iu],
   ]) {
-    for (const platform of ["jest", "facebook", "reddit", "youtube"]) {
+    for (const platform of ["facebook", "reddit", "youtube"]) {
       await withFixture(platform, async (directory) => {
         await writeFile(path.join(directory, filename), contamination);
         await assert.rejects(
@@ -949,8 +832,8 @@ test("the common inventory rejects every canonical server-only identifier", asyn
     ]) {
       await writeFile(path.join(directory, "credential.txt"), `${identifier}=fixture\n`);
       await assert.rejects(
-        inspectWebTargetArtifact({rootDirectory: directory, target: "jest"}),
-        /server secret found in Jest artifact: credential\.txt/iu,
+        inspectWebTargetArtifact({rootDirectory: directory, target: "facebook"}),
+        /server secret found in Facebook artifact: credential\.txt/iu,
       );
     }
   } finally {
@@ -968,27 +851,27 @@ test("the common inventory validates its target and returns deterministic file o
   try {
     await writeFile(path.join(directory, "z.js"), "export const z = true;\n");
     await writeFile(path.join(directory, "a.js"), "export const a = true;\n");
-    const inventory = await inspectWebTargetArtifact({rootDirectory: directory, target: "jest"});
+    const inventory = await inspectWebTargetArtifact({rootDirectory: directory, target: "facebook"});
     assert.deepEqual(inventory.files.map((file) => path.basename(file)), ["a.js", "z.js"]);
   } finally {
     await rm(directory, {recursive: true, force: true});
   }
 });
 
-test("the Jest audit scans progress files for common credentials", async () => {
-  await withFixture("jest", async (directory) => {
+test("the Facebook inventory scans progress files for common credentials", async () => {
+  await withFixture("facebook", async (directory) => {
     const progressDirectory = path.join(directory, "progress");
     await mkdir(progressDirectory, {recursive: true});
     await writeFile(path.join(progressDirectory, "leak.js"), "const secret = 'FACEBOOK_APP_SECRET';\n");
     await assert.rejects(
-      inspectWebTargetArtifact({rootDirectory: directory, target: "jest"}),
-      /server secret found in Jest artifact: progress[\\/]leak\.js/iu,
+      inspectWebTargetArtifact({rootDirectory: directory, target: "facebook"}),
+      /server secret found in Facebook artifact: progress[\\/]leak\.js/iu,
     );
   });
 });
 
 test("all artifact audits reject an empty real directory through the common inventory", async () => {
-  for (const platform of ["jest", "facebook", "reddit", "youtube"]) {
+  for (const platform of ["facebook", "reddit", "youtube"]) {
     const directory = await mkdtemp(path.join(tmpdir(), `riddle-quest-${platform}-empty-artifact-`));
     try {
       await assert.rejects(

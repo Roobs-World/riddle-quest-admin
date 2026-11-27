@@ -1,6 +1,6 @@
 import hostedConfigDocument from "#hosted-config";
 import {isFirebaseFunctionsRegion} from "../../../../../src/platform/firebase/secureConfiguration";
-/** Public Firebase web-app configuration; never a secret, identical to the Jest Web Target's client config. */
+/** Public Firebase web-app configuration; never a secret, identical to the shared hosted game's client config. */
 export type HostedFirebaseConfig = Readonly<{
   /** Stores api key. */
   apiKey: string;

@@ -1,7 +1,7 @@
 import {getProfileLevel} from "../../profile/profileLevel";
 import {HttpsError} from "firebase-functions/v2/https";
 import {admin} from "../../shared/firebaseAdmin";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {raceProviderScope} from "../access/raceProviderScope";
 import {assertLiveRaceDeckCompatible, isLiveRaceDeckCompatible} from "../runs/raceDeckCompatibility";
 import {requestDocumentId, stripUndefined, type Firestore} from "../raceSetupService";
@@ -82,7 +82,7 @@ export async function prepareLiveRaceQueue(db: Firestore, transaction: FirebaseF
     const other = candidate.ticket;
     return {candidate,
       pointer: db.doc(`liveRacePlayers/${requestDocumentId(other.userId, "active-live-race")}`),
-      profile: db.doc(`users/${other.userId}`), deleted: getJestAccountDeletionRef(db, other.userId),
+      profile: db.doc(`users/${other.userId}`), deleted: getAccountDeletionRef(db, other.userId),
       outgoingBlock: db.doc(`users/${ticket.userId}/blockedRivals/${other.userId}`),
       incomingBlock: db.doc(`users/${other.userId}/blockedRivals/${ticket.userId}`)};
   });

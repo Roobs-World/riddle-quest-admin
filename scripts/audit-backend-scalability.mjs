@@ -48,9 +48,6 @@ const requiredExemptions = new Map([
     ],
   ],
   ["leaderboard", ["updatedAt"]],
-  ["jestPurchaseGrants", ["grantedAt"]],
-  ["jestReferralRewards", ["grantedAt"]],
-  ["jestReferralVerifications", ["verifiedAt"]],
   ["riddleSupplyRequests", ["requestedAt"]],
 ]);
 

@@ -88,14 +88,14 @@ describe("recordFacebookTournament callable", () => {
     });
   });
 
-  it("rejects missing, Jest, and mismatched provider identities", async () => {
+  it("rejects missing, other-provider, and mismatched provider identities", async () => {
     await expect(handler({auth: undefined, data: {}} as CallableRequest<unknown>)).rejects.toMatchObject({
       code: "unauthenticated",
     });
     await expect(
-      handler(request({}, {uid: `jest_${"b".repeat(40)}`, token: {provider: "jest"}})),
+      handler(request({}, {uid: `reddit_${"b".repeat(40)}`, token: {provider: "reddit"}})),
     ).rejects.toMatchObject({code: "permission-denied"});
-    await expect(handler(request({}, {uid, token: {provider: "jest"}}))).rejects.toMatchObject({
+    await expect(handler(request({}, {uid, token: {provider: "reddit"}}))).rejects.toMatchObject({
       code: "permission-denied",
     });
     expect(mockRecord).not.toHaveBeenCalled();

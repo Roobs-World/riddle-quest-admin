@@ -1,7 +1,7 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {reserveRaceInviteForUser, claimRaceInviteForUser, getRaceEntryForUser, cancelRaceInviteForUser} from "../../race/invitations/raceInvitation";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {startRaceRunForUser, submitRaceGuessForUser, publishRaceChallengeForUser, resumeRaceRunForUser} from "../../race/raceService";
 
 /** Isolated emulator project selected by the invoking test command. */
@@ -43,9 +43,9 @@ const record = async (challengeId: string) => {
 
 describe("Race Invitation transactional lifecycle", () => {
   it.each([
-    {creator: `jest_${"a".repeat(40)}`, recipient: "legacy-recipient"},
-    {creator: "legacy-creator", recipient: `jest_${"b".repeat(40)}`},
-    {creator: `jest_${"a".repeat(40)}`, recipient: `reddit_${"b".repeat(40)}`},
+    {creator: `facebook_${"a".repeat(40)}`, recipient: "legacy-recipient"},
+    {creator: "legacy-creator", recipient: `facebook_${"b".repeat(40)}`},
+    {creator: `facebook_${"a".repeat(40)}`, recipient: `reddit_${"b".repeat(40)}`},
   ])("does not expose or claim an invitation across provider/legacy namespaces: %j", async identities => {
     /** Reservation records belong to the authenticated creator namespace. */
     const invitation = await reserveRaceInviteForUser(identities.creator, {locale: "en", requestId: "provider-reserve"}, {db, nowMs: NOW});
@@ -168,11 +168,11 @@ describe("Race Invitation transactional lifecycle", () => {
     await db.doc("users/creator/blockedRivals/recipient").set({blocked: true});
     await expect(getRaceEntryForUser("recipient", reserved.challengeId, "en", {db, nowMs: NOW + 2})).resolves.toMatchObject({status: "unavailable", reason: "blocked"});
     await db.doc("users/creator/blockedRivals/recipient").delete();
-    await getJestAccountDeletionRef(db, "creator").set({deletedAtMs: NOW});
+    await getAccountDeletionRef(db, "creator").set({deletedAtMs: NOW});
     await expect(getRaceEntryForUser("recipient", reserved.challengeId, "en", {db, nowMs: NOW + 3})).resolves.toMatchObject({status: "unavailable", reason: "deleted"});
     await expect(claimRaceInviteForUser("recipient", reserved.challengeId, "en", {db, nowMs: NOW + 3})).rejects.toMatchObject({code: "permission-denied"});
     await expect(reserve()).rejects.toMatchObject({code: "permission-denied"});
-    await getJestAccountDeletionRef(db, "creator").delete();
+    await getAccountDeletionRef(db, "creator").delete();
     await expect(getRaceEntryForUser("recipient", reserved.challengeId, "en", {db, nowMs: reserved.expiresAtMs})).resolves.toMatchObject({status: "expired"});
     await db.doc(`raceInviteLobbies/${reserved.challengeId}`).update({locale: "made-up"});
     await expect(getRaceEntryForUser("recipient", reserved.challengeId, "en", {db, nowMs: NOW + 4})).resolves.toMatchObject({status: "unavailable", reason: "invalid"});

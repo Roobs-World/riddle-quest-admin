@@ -10,7 +10,7 @@ import {getHint, skipRiddle, spendCoins} from "../../../../firebase-functions/sr
 import {getLeaderboard} from "../../../../firebase-functions/src/gameplay/leaderboard";
 import {getUser} from "../../../../firebase-functions/src/gameplay/firestoreService";
 import {updateUsername} from "../../../../firebase-functions/src/profile/updateUsername";
-import {runWithJestAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
+import {runWithAccountOperationLease} from "../../../../firebase-functions/src/shared/accountDeletion";
 import {
   consumeRedditGatewayNonce,
   consumeRedditRequestQuota,
@@ -197,7 +197,7 @@ const dispatch = async (
   switch (operation) {
     case "gameplay.profile.load":
       if (!isRecord(payload) || Object.keys(payload).length !== 0) throw new Error("invalid-reddit-profile-payload");
-      return runWithJestAccountOperationLease(uid, 60, () => publicProfile(uid));
+      return runWithAccountOperationLease(uid, 60, () => publicProfile(uid));
     case "gameplay.riddle.classic":
       return getCurrentClassicRiddle.run(callableRequest(uid, payload) as never);
     case "gameplay.riddle.classic-buffer":
@@ -278,7 +278,7 @@ const dispatch = async (
       const input = RecordFacebookTournamentRunRequestSchema.parse(payload);
       await assertRaceAccess(uid, input.locale);
       /** Provides {entry, improved} behavior. */
-      const {entry, improved} = await runWithJestAccountOperationLease(uid, options.timeoutSeconds,
+      const {entry, improved} = await runWithAccountOperationLease(uid, options.timeoutSeconds,
         () => recordRedditTournamentRun(uid, input));
       return RecordFacebookTournamentRunResponseSchema.parse({
         tournamentId: entry.tournamentId,

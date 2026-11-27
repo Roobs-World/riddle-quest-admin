@@ -29,7 +29,7 @@ describe("fake host services", () => {
       answerLength: 4,
     });
     expect(await services.loadRiddle({gameMode: "challenge", locale: "en"})).not.toHaveProperty("answer");
-    expect(await services.loadProfile("jest-guest")).toMatchObject({coins: 300});
+    expect(await services.loadProfile("guest-player")).toMatchObject({coins: 300});
 
     await expect(
       services.requestHint({

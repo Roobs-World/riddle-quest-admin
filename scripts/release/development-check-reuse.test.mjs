@@ -14,7 +14,7 @@ async function fixture(run) {
     await writeFile(path.join(root, log), "Verified build");
     await writeFile(path.join(root, "artifact.html"), "Built artifact");
     const check = {id: "build", executable: "pnpm", args: ["build"]};
-    const task = {checks: [check], artifacts: [{target: "jest", file: "artifact.html"}]};
+    const task = {checks: [check], artifacts: [{target: "facebook", file: "artifact.html"}]};
     const source = {revision: "a".repeat(40), sourceDigest: "b".repeat(64)};
     const report = {...source, checks: [{...check, status: "passed", log, sha256: sha("Verified build"), checkedAt: "2026-10-11T12:00:00Z", artifacts: {"artifact.html": sha("Built artifact")}}]};
     await run({root, task, source, report});

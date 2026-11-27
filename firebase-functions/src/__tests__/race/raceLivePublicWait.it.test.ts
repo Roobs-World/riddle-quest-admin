@@ -1,13 +1,13 @@
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore, Timestamp} from "firebase-admin/firestore";
 import {LIVE_RACE_COUNTDOWN_MS, LIVE_RACE_INVITE_MS, LIVE_RACE_WAIT_MS, type LiveRaceView} from "../../../../src/races/contracts/index.js";
-import {getJestAccountDeletionRef} from "../../shared/accountDeletion";
+import {getAccountDeletionRef} from "../../shared/accountDeletion";
 import {requestDocumentId} from "../../race/raceSetupService";
 import {joinLiveRaceForUser, updateLiveRaceForUser} from "../../race/live/raceLiveService";
 import {generateRaceBotName} from "../../race/matchmaking/raceBotName";
 
-/** Distinct deterministic Jest accounts used for public pairing and ownership checks. */
-const A = `jest_${"a".repeat(40)}`, B = `jest_${"b".repeat(40)}`, C = `jest_${"c".repeat(40)}`;
+/** Distinct deterministic Facebook accounts used for public pairing and ownership checks. */
+const A = `facebook_${"a".repeat(40)}`, B = `facebook_${"b".repeat(40)}`, C = `facebook_${"c".repeat(40)}`;
 /** Fixed server time shared by joins, leases and expiry boundary assertions. */
 const NOW = 1_800_000_000_000;
 /** Isolated emulator database used by the production matchmaking functions. */
@@ -17,7 +17,7 @@ let db: FirebaseFirestore.Firestore;
 async function clear() {
   for (const path of ["liveRaceTickets", "liveRaceMatches", "liveRaceQueues", "liveRacePlayers", "liveRaceSignals", "users", "localizedRiddles/en/riddles"])
     await db.recursiveDelete(db.collection(path));
-  await Promise.all([A, B, C].map(userId => getJestAccountDeletionRef(db, userId).delete()));
+  await Promise.all([A, B, C].map(userId => getAccountDeletionRef(db, userId).delete()));
 }
 beforeAll(() => {
   if (!process.env.FIRESTORE_EMULATOR_HOST) throw new Error("Local Firestore emulator required");
@@ -294,7 +294,7 @@ it.each(["blocked", "reverse-blocked", "private", "expired", "noncanonical", "mi
   if (mode === "expired") await db.doc(`liveRaceTickets/${first.ticketId}`).update({expiresAt: Timestamp.fromMillis(NOW + 1000)});
   if (mode === "noncanonical") await db.doc(`liveRacePlayers/${requestDocumentId(A, "active-live-race")}`).set({ticketId: "f".repeat(64)});
   if (mode === "missing-profile") await db.doc(`users/${A}`).delete();
-  if (mode === "deleted") await getJestAccountDeletionRef(db, A).set({deleted: true});
+  if (mode === "deleted") await getAccountDeletionRef(db, A).set({deleted: true});
   expect(await join(B, "unsafe-candidate-second", NOW + 1000)).toMatchObject({phase: "searching", opponent: null});
   expect((await db.collection("liveRaceMatches").get()).empty).toBe(true);
 });

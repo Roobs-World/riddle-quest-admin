@@ -1,4 +1,4 @@
-// Supporting injected source check. Hosted Jest verification is recorded separately.
+// Supporting injected source check. Hosted Facebook verification is recorded separately.
 import assert from 'node:assert/strict';
 import {mkdtemp, mkdir, writeFile, readFile, rm} from 'node:fs/promises';
 import {createServer} from 'node:http';

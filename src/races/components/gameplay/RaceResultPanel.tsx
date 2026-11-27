@@ -81,7 +81,7 @@ export function RaceResultPanel({
           <strong>{formatRaceTime(outcome.adjustedFinishMs)}</strong>
         </span>
       </div>
-      {sharingRewardCoins !== undefined && outcome.publishable ? <p>{sharingReadyText ?? tr("RaceTo10.CHALLENGE_READY")}</p> : null}
+      {sharingRewardCoins !== undefined && outcome.publishable ? <p>{sharingReadyText ?? tr("RaceTo10.CHALLENGE_FRIEND")}</p> : null}
       {sharingRewardCoins !== undefined && outcome.publishable && !publication ? (
         <button className="race-primary" onClick={onPublish} disabled={publishing} aria-busy={publishing}>
           {tr("RaceTo10.CREATE_CHALLENGE")}

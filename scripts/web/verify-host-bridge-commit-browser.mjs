@@ -27,7 +27,7 @@ import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;window.probe={guesses:[],completions:[],errors:[],unhandled:[],suspended:0,calls:[],messages:[],notices:[],recoveries:[],reports:[],bridgeAdds:0,bridgeRemoves:0,visibilityAdds:0,visibilityRemoves:0};
 window.addEventListener('error',event=>window.probe.errors.push(String(event.error??event.message)));window.addEventListener('unhandledrejection',event=>window.probe.unhandled.push(String(event.reason)));
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 const service=createFakeHostServices();const hosted={};for(const version of ['A','B'])hosted[version]=createHostedPlaySession({hostServices:{...service,submitGuess:async input=>{window.probe.guesses.push({version,guess:input.guess,requestId:input.requestId});return service.submitGuess(input);},completeGame:async input=>{window.probe.completions.push(version);return service.completeGame(input);}},economyAvailable:false,raceAvailable:false});
 const scenario=new URL(location.href).searchParams.get('scenario')??'speculative';
 const add=window.addEventListener.bind(window),remove=window.removeEventListener.bind(window),docAdd=document.addEventListener.bind(document),docRemove=document.removeEventListener.bind(document);
@@ -57,7 +57,7 @@ try{
   const context=await browser.newContext({viewport:{width,height}}),page=await context.newPage();const metric=(name,actual,expected)=>observations.push({width,height,scenario,name,actual,expected});
   await page.goto(url+'/?scenario='+scenario);
   if(scenario.includes('-')||scenario==='stable'){
-   await page.waitForFunction(()=>document.querySelector('[data-owner]')?.dataset.owner==='jest-guest');await page.evaluate(()=>window.emitBridge());await page.waitForFunction(()=>window.probe.calls.length===1);
+   await page.waitForFunction(()=>document.querySelector('[data-owner]')?.dataset.owner==='guest-player');await page.evaluate(()=>window.emitBridge());await page.waitForFunction(()=>window.probe.calls.length===1);
    const counts=await page.evaluate(()=>({bridge:window.probe.bridgeAdds,visibility:window.probe.visibilityAdds,active:window.probe.bridgeAdds-window.probe.bridgeRemoves}));metric('one committed bridge listener survives StrictMode',counts.active,1);
    if(scenario.includes('error')||scenario.includes('unavailable')){await page.evaluate(()=>{window.holdBridge=true;window.emitBridge();});await page.waitForFunction(()=>!!window.rejectBridge);}
    await page.evaluate(()=>window.speculate());await page.waitForFunction(()=>window.probe.suspended>0);metric('unfinished callback replacement retains the committed host',await page.locator('[data-version]').getAttribute('data-version'),'A');

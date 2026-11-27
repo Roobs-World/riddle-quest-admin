@@ -10,7 +10,7 @@ import type {
 } from "../../races/contracts/index";
 
 /** Identifies the release target that owns the active browser session. */
-export type PlatformId = "jest" | "facebook" | "reddit" | "youtube";
+export type PlatformId = "facebook" | "reddit" | "youtube";
 
 /**
  * Declares which browser behaviors are owned by the game and which are delegated
@@ -44,7 +44,7 @@ export type PlatformRuntimePolicy = Readonly<{
 }>;
 
 /**
- * Legacy hosted-web policy retained by Jest, Facebook, and Reddit.
+ * Hosted-web policy retained by Facebook and Reddit.
  *
  * @remarks
  * YouTube supplies its own restrictive policy so adding that target cannot
@@ -95,12 +95,6 @@ export type PlatformPreferences = {
   notificationsEnabled?: boolean;
   /** Indicates that the shared first-run onboarding flow has completed. */
   onboardingComplete?: boolean;
-  /** Unix epoch milliseconds of the latest dismissed registration prompt. */
-  registrationPromptDismissedAt?: number;
-  /** Records historical milestone completion; Jest deduplicates SDK reporting per session. */
-  firstMilestoneMarked?: boolean;
-  /** Number of authoritative riddles solved while playing as a Jest guest. */
-  jestGuestCompletedRiddles?: number;
   /** Explicit player consent for account-wide presence publication. */
   presenceEnabled?: boolean;
   /** Last durable Facebook notification-prompt outcome. */
@@ -156,14 +150,6 @@ export interface PlatformStorage {
   /** Waits until writes queued before this call have reached provider storage. */
   flush(): Promise<void>;
 }
-
-/** Optional guest-to-registered-account flow supplied by the active platform. */
-export type AccountUpgradeCapability = {
-  /** Whether registration can begin or has already completed. */
-  state: "available" | "complete";
-  /** @returns The normalized registration outcome without exposing provider errors. */
-  begin(): Promise<PlatformResult<void>>;
-};
 
 /** Provider lifecycle callbacks used when browser visibility is not sufficient. */
 export type LifecycleCapability = {
@@ -415,8 +401,6 @@ export type PlatformCapabilities = {
     /** Whether authoritative account deletion is available. */
     deletion: boolean;
   };
-  /** Guest registration/upgrade flow, when supported by the provider. */
-  accountUpgrade?: AccountUpgradeCapability;
   /** Provider pause/resume callbacks, when browser lifecycle events are insufficient. */
   lifecycle?: LifecycleCapability;
   /** Provider catalog and server-authoritative purchase flow. */

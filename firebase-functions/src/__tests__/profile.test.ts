@@ -110,8 +110,8 @@ const mockLoggerInfo = jest.fn<(...args: unknown[]) => void>();
 const mockLoggerError = jest.fn<(...args: unknown[]) => void>();
 /** Provides mock storage save behavior. */
 const mockStorageSave = jest.fn<() => Promise<void>>();
-/** Provides mock run with jest account operation lease behavior. */
-const mockRunWithJestAccountOperationLease = jest.fn(
+/** Provides mock run with account operation lease behavior. */
+const mockRunWithAccountOperationLease = jest.fn(
   async (_userId: string, _timeoutSeconds: number, operation: () => Promise<unknown>) => operation(),
 );
 /** Provides mock storage file behavior. */
@@ -140,7 +140,7 @@ jest.mock("../gameplay/firestoreService", () => ({
 
 jest.mock("../shared/accountDeletion", () => ({
   ...jest.requireActual<typeof import("../shared/accountDeletion")>("../shared/accountDeletion"),
-  runWithJestAccountOperationLease: mockRunWithJestAccountOperationLease,
+  runWithAccountOperationLease: mockRunWithAccountOperationLease,
 }));
 
 jest.mock("firebase-functions/v2", () => ({
@@ -184,8 +184,7 @@ jest.mock("firebase-functions/v2/https", () => {
 });
 
 // 4. Import the module under test
-import {syncJestAvatar, updateAvatar, updateUsername} from "../profile/index";
-import {jestFirebaseUid} from "../../../platforms/web/jest/server/jestSecurity";
+import {updateAvatar, updateUsername} from "../profile/index";
 import {syncLeaderboardProfileFields} from "../profile/leaderboardProfile";
 import {createUsernameReservationId} from "../profile/usernameReservations";
 
@@ -205,7 +204,6 @@ describe("Profile Cloud Functions", () => {
 
   it("enables App Check and public Cloud Run ingress on profile update callables", () => {
     expect(mockOnCallInvocations).toEqual([
-      [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
       [{enforceAppCheck: true, invoker: "public", timeoutSeconds: 60, minInstances: 0}, expect.any(Function)],
       [
@@ -413,43 +411,16 @@ describe("Profile Cloud Functions", () => {
   });
 
   describe("updateAvatar", () => {
+    beforeEach(() => {mockFirestoreDocuments.set("users/android_user", {userId: "android_user", androidProvider: "anonymous"});});
     /** Provides png data url behavior. */
     const pngDataUrl = `data:image/png;base64,${Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).toString(
       "base64",
     )}`;
 
-    it("uploads a registered Jest player's avatar and updates profile records", async () => {
-      mockStorageSave.mockResolvedValue(undefined);
-      mockUpdateUserProfile.mockResolvedValue(undefined);
-      mockAdminFirestoreSet.mockResolvedValue(undefined);
-      /** Provides request behavior. */
-      const request = {
-        auth: {uid: "jest_user", token: {jestRegistered: true}},
-        data: {imageDataUrl: pngDataUrl},
-      } as unknown as CallableRequest<{
-        /** Stores image data url. */
-        imageDataUrl: string;
-      }>;
-
-      /** Provides result behavior. */
-      const result = await (updateAvatar as any)(request);
-
-      expect(mockStorageFile).toHaveBeenCalledWith("avatars/jest_user/profile");
-      expect(mockStorageSave).toHaveBeenCalledWith(
-        expect.any(Buffer),
-        expect.objectContaining({resumable: false, metadata: expect.objectContaining({contentType: "image/png"})}),
-      );
-      expect(mockUpdateUserProfile).toHaveBeenCalledWith(
-        "jest_user",
-        expect.objectContaining({avatarUrl: expect.stringContaining("firebasestorage.googleapis.com")}),
-      );
-      expect(result).toEqual(expect.objectContaining({success: true, avatarUrl: expect.any(String)}));
-    });
-
     it("rejects guest players before accepting avatar data", async () => {
       /** Provides request behavior. */
       const request = {
-        auth: {uid: "jest_guest", token: {jestRegistered: false}},
+        auth: {uid: "facebook_guest", token: {provider: "facebook"}},
         data: {imageDataUrl: pngDataUrl},
       } as unknown as CallableRequest<{
         /** Stores image data url. */
@@ -457,7 +428,7 @@ describe("Profile Cloud Functions", () => {
       }>;
 
       await expect((updateAvatar as any)(request)).rejects.toThrow(
-        new HttpsError("failed-precondition", "Register with Jest before uploading a profile photo."),
+        new HttpsError("failed-precondition", "This account uses its platform profile photo."),
       );
       expect(mockStorageSave).not.toHaveBeenCalled();
     });
@@ -497,7 +468,7 @@ describe("Profile Cloud Functions", () => {
 
       await expect(
         (updateAvatar as any)({
-          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          auth: {uid: "android_user", token: {firebase: {sign_in_provider: "anonymous"}}},
           data: {imageDataUrl: invalidPng},
         }),
       ).rejects.toMatchObject({code: "invalid-argument"});
@@ -509,7 +480,7 @@ describe("Profile Cloud Functions", () => {
 
       await expect(
         (updateAvatar as any)({
-          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          auth: {uid: "android_user", token: {firebase: {sign_in_provider: "anonymous"}}},
           data: {imageDataUrl: pngDataUrl},
         }),
       ).rejects.toMatchObject({code: "internal"});
@@ -524,7 +495,7 @@ describe("Profile Cloud Functions", () => {
 
       await expect(
         (updateAvatar as any)({
-          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          auth: {uid: "android_user", token: {firebase: {sign_in_provider: "anonymous"}}},
           data: {imageDataUrl: pngDataUrl},
         }),
       ).rejects.toBe(error);
@@ -535,48 +506,11 @@ describe("Profile Cloud Functions", () => {
 
       await expect(
         (updateAvatar as any)({
-          auth: {uid: "jest_user", token: {jestRegistered: true}},
+          auth: {uid: "android_user", token: {firebase: {sign_in_provider: "anonymous"}}},
           data: {imageDataUrl: pngDataUrl},
         }),
       ).rejects.toMatchObject({code: "internal"});
     });
   });
 
-  describe("syncJestAvatar", () => {
-    /** Provides player id behavior. */
-    const playerId = "jest-player-1";
-    /** Provides uid behavior. */
-    const uid = jestFirebaseUid(playerId);
-    /** Provides avatar url behavior. */
-    const avatarUrl = "https://cdn.jest.com/avatars/player.webp";
-    /** Provides request behavior. */
-    const request = (url = avatarUrl) => ({
-      auth: {uid, token: {jestPlayerId: playerId, jestRegistered: true}},
-      data: {avatarUrl: url},
-    });
-
-    it("fills only an empty Jest avatar and updates an existing leaderboard row", async () => {
-      mockFirestoreDocuments.set(`users/${uid}`, {username: "Player"});
-      mockFirestoreDocuments.set(`leaderboard/${uid}`, {username: "Player"});
-      await expect((syncJestAvatar as any)(request())).resolves.toEqual({avatarUrl});
-      expect(mockFirestoreDocuments.get(`users/${uid}`)?.avatarUrl).toBe(avatarUrl);
-      expect(mockFirestoreDocuments.get(`leaderboard/${uid}`)?.avatarUrl).toBe(avatarUrl);
-    });
-
-    it("keeps a player-selected avatar", async () => {
-      mockFirestoreDocuments.set(`users/${uid}`, {avatarUrl: "https://example.com/custom.webp"});
-      await expect((syncJestAvatar as any)(request())).resolves.toEqual({avatarUrl: "https://example.com/custom.webp"});
-      expect(mockTransactionUpdate).not.toHaveBeenCalled();
-    });
-
-    it("rejects other targets, malformed URLs, and deleted accounts", async () => {
-      await expect((syncJestAvatar as any)({auth: {uid, token: {provider: "facebook"}}, data: {avatarUrl}}))
-        .rejects.toMatchObject({code: "permission-denied"});
-      await expect((syncJestAvatar as any)(request("javascript:alert(1)")))
-        .rejects.toMatchObject({code: "invalid-argument"});
-      mockFirestoreDocuments.set(`users/${uid}`, {});
-      mockFirestoreDocuments.set(`jestAccountDeletionTombstones/${uid}`, {recreationBlocked: true});
-      await expect((syncJestAvatar as any)(request())).rejects.toMatchObject({code: "failed-precondition"});
-    });
-  });
 });

@@ -7,8 +7,8 @@ import {fileURLToPath} from 'node:url';
 import {build} from 'vite';
 import {chromium} from '@playwright/test';
 const browserScope=process.env.PORTAL_BROWSER_SCOPE;
-assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
-const providers=browserScope==='jest-facebook'?['facebook']:['facebook','reddit'];
+assert.ok(browserScope===undefined||browserScope==='facebook','PORTAL_BROWSER_SCOPE must be facebook or unset');
+const providers=browserScope==='facebook'?['facebook']:['facebook','reddit'];
 if(browserScope&&process.env.PROVIDER_RECOVERY_ONLY)assert.ok(providers.includes(process.env.PROVIDER_RECOVERY_ONLY.split(':')[0]),'PROVIDER_RECOVERY_ONLY is outside PORTAL_BROWSER_SCOPE');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.PROVIDER_RECOVERY_REACT_MODE??'development',baseline=process.env.PROVIDER_RECOVERY_BASELINE_DIR,wakeBaseline=process.env.PROVIDER_RECOVERY_WAKE_BASELINE_DIR;
@@ -21,7 +21,7 @@ try {
   const dir=path.join(scratch,provider);await mkdir(dir);
   const source=`
 import React from 'react';import {createRoot} from 'react-dom/client';
-import {${provider==='facebook'?'FacebookPlatformBootstrap':'RedditPlatformBootstrap'}} from ${JSON.stringify(path.join(root,'src',provider,provider==='facebook'?'FacebookPlatformBootstrap.ts':'RedditPlatformBootstrap.ts'))};
+import {${provider==='facebook'?'FacebookPlatformBootstrap':'RedditPlatformBootstrap'}} from ${JSON.stringify(path.join(root,'platforms/web',provider,'src',provider==='facebook'?'FacebookPlatformBootstrap.ts':'RedditPlatformBootstrap.ts'))};
 ${provider==='reddit'?"import {getWebViewMode} from '@devvit/client';":''}
 import {PlayerProjectionPersistence} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerProjectionPersistence.ts"))};
 import {usePlayerProjectionRecovery} from ${JSON.stringify(path.join(root,"src/accounts/hooks/usePlayerProjectionRecovery.ts"))};
@@ -37,7 +37,7 @@ window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 window.probe={writes:[],preferences:[],failures:[],errors:[],unhandled:[],flushes:0,guesses:0,completions:0,pauseConsumers:0,resumeConsumers:0,initializations:0,nativePauseRegistrations:0,nativeResumeRegistrations:0,paths:[],failDraft:0,failPreferences:0,holdNext:false,holding:false};
 window.addEventListener('error',e=>window.probe.errors.push(String(e.error??e.message)));window.addEventListener('unhandledrejection',e=>window.probe.unhandled.push(String(e.reason)));
 const preferences={locale:'en',muted:true,reducedMotion:true,onboardingComplete:true};applyPlayerPreferences(preferences);
-sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','jest-guest'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'jest-guest'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'jest-guest'),'seen');
+sessionStorage.setItem(createGuidanceStorageKey('welcomeSession','guest-player'),'seen');for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,'guest-player'),'seen');for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,'guest-player'),'seen');
 let stored={riddleQuestPreferences:preferences},durable=structuredClone(stored),pauseNative,resumeNative,release;
 const failed=counter=>{if(window.probe[counter]===0)return false;if(window.probe[counter]>0)window.probe[counter]--;return true;};
 async function save(key,value){const copy=structuredClone(value);if(key==='riddleQuestPlayerState')window.probe.writes.push(copy);else window.probe.preferences.push(copy);
@@ -72,7 +72,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><App/></Rea
 window.preference=()=>setPlayerReducedMotion(false);window.draft=()=>Array.from(document.querySelector('.guess-row')?.querySelectorAll('.cell')??[]).map(x=>x.textContent.trim()).join('');
 `;
   await writeFile(path.join(dir,'main.tsx'),source);await writeFile(path.join(dir,'tsconfig.json'),JSON.stringify({compilerOptions:{jsx:'react-jsx'}}));await writeFile(path.join(dir,'index.html'),'<html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head><body><div id="root"></div><script type="module" src="/main.tsx"></script></body></html>');
-  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
+  await build({root:dir,base:"./",configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-provider-owner',async load(id){if(browserScope==='facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');if(wakeBaseline&&id.endsWith('/usePlayerProjectionRecovery.ts'))return readFile(path.join(wakeBaseline,'usePlayerProjectionRecovery.uncoalesced.txt'),'utf8');if(!baseline)return;if(id.endsWith('/PlayerProjectionPersistence.ts'))return readFile(path.join(baseline,'PlayerProjectionPersistence.before.txt'),'utf8');if(id.endsWith('/usePlayerProjectionRecovery.ts'))return `import {useMemo} from 'react';import {PlayerSaveRecovery} from ${JSON.stringify(path.join(root,"src/accounts/browser/playerState/PlayerSaveRecovery.ts"))};export function usePlayerProjectionRecovery(){return useMemo(()=>new PlayerSaveRecovery(async()=>{},()=>false),[]);}`;}}],build:{outDir:'dist',minify:false}});
  }
  server=createServer(async(req,res)=>{try{const pathname=new URL(req.url,'http://localhost').pathname,parts=pathname.split('/').filter(Boolean),provider=parts.shift();if(!providers.includes(provider))throw new Error('unknown-fixture');const file=path.join(scratch,provider,'dist',parts.join('/')||'index.html');res.setHeader('content-type',({'.js':'text/javascript','.css':'text/css','.woff2':'font/woff2','.svg':'image/svg+xml','.webp':'image/webp','.mp3':'audio/mpeg'})[path.extname(file)]??'text/html');res.end(await readFile(file));}catch{res.writeHead(404).end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port;
  if(process.env.PROVIDER_RECOVERY_SERVE_ONLY==='1'){console.log(JSON.stringify({url,scratch,mode}));await new Promise(r=>{process.once('SIGINT',r);process.once('SIGTERM',r);});}

@@ -1,3 +1,4 @@
+import {ACCOUNT_DELETION_COLLECTION} from "../../../../../firebase-functions/src/shared/accountDeletion";
 import {getApps, initializeApp} from "firebase-admin/app";
 import {getFirestore} from "firebase-admin/firestore";
 import {grantVerifiedFacebookPurchase, refundVerifiedFacebookPurchase} from "../facebookCommerceLedger";
@@ -14,7 +15,7 @@ const collections = [
   "facebookCommerceAccounts",
   "facebookCommerceReceipts",
   "facebookCommerceRefunds",
-  "jestAccountDeletionTombstones",
+  ACCOUNT_DELETION_COLLECTION,
 ];
 /** Provides db behavior. */
 let db: FirebaseFirestore.Firestore;

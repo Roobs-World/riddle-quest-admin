@@ -168,7 +168,7 @@ describe("Facebook client configuration", () => {
 
   it("requires exact Facebook authentication and returns no hidden commerce fields", async () => {
     await expect(call({}, undefined)).rejects.toMatchObject({code: "unauthenticated"});
-    await expect(call({}, {uid, token: {provider: "jest"}})).rejects.toMatchObject({code: "unauthenticated"});
+    await expect(call({}, {uid, token: {provider: "reddit"}})).rejects.toMatchObject({code: "unauthenticated"});
     await expect(call({}, {uid: "facebook_bad", token: {provider: "facebook"}})).rejects.toMatchObject({
       code: "unauthenticated",
     });
@@ -211,7 +211,7 @@ describe("Facebook client configuration", () => {
   it.each([
     {label: "missing", rows: []},
     {label: "ambiguous", rows: [identity(), identity()]},
-    {label: "another provider", rows: [identity({provider: "jest"})]},
+    {label: "another provider", rows: [identity({provider: "reddit"})]},
     {label: "deleted", rows: [identity({status: "deleted"})]},
     {label: "another generation", rows: [identity({accountGeneration: 2})]},
     {label: "missing creation time", rows: [identity({createdAt: undefined})]},

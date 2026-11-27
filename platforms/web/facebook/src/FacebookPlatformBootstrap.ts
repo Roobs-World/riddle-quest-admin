@@ -33,10 +33,6 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(typeof value.muted === "boolean" ? {muted: value.muted} : {}),
     ...(typeof value.reducedMotion === "boolean" ? {reducedMotion: value.reducedMotion} : {}),
     ...(typeof value.onboardingComplete === "boolean" ? {onboardingComplete: value.onboardingComplete} : {}),
-    ...(Number.isSafeInteger(value.registrationPromptDismissedAt)
-      ? {registrationPromptDismissedAt: value.registrationPromptDismissedAt as number}
-      : {}),
-    ...(typeof value.firstMilestoneMarked === "boolean" ? {firstMilestoneMarked: value.firstMilestoneMarked} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
     ...(typeof value.notificationsEnabled === "boolean" ? {notificationsEnabled: value.notificationsEnabled} : {}),
     ...(value.facebookNotificationPermission === "unknown" ||
