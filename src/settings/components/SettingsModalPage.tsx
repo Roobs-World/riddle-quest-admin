@@ -1,5 +1,6 @@
 import {NotificationSettings} from "../../notifications/components/NotificationSettings";
 import {PlayerSettingsActions} from "./PlayerSettingsActions";
+import {HapticFeedbackSettings} from "./HapticFeedbackSettings";
 import {AnalyticsConsentControls} from "../../observability/analytics/AnalyticsConsentControls";
 import {useSyncExternalStore, type ChangeEvent} from "react";
 import {resolveYouTubeLocale} from "../../content/catalog/bundledContent";
@@ -56,6 +57,7 @@ export function SettingsModalPage({
         <strong>{reducedMotion ? tr("Settings.TOGGLE_ON") : tr("Settings.TOGGLE_OFF")}</strong>
       </button>
       <NotificationSettings />
+      <HapticFeedbackSettings />
       <AnalyticsConsentControls />
       <label className="settings-row">
         <span>{tr("Settings.LANGUAGE_LABEL")}</span>

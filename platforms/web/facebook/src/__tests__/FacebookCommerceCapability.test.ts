@@ -124,6 +124,8 @@ describe("Facebook commerce capability", () => {
         title: entry.title,
         description: entry.description,
         price: entry.price,
+        priceAmount: entry.priceAmount,
+        currency: entry.priceCurrencyCode,
         kind: entry.productID === durableProductId ? "durable" : "consumable",
       })),
     });
@@ -287,6 +289,22 @@ describe("Facebook commerce capability", () => {
     releasePurchase?.();
     await expect(first).resolves.toEqual({status: "success", value: {providerReceiptId: "receipt-1"}});
     expect(purchaseAsync).toHaveBeenCalledTimes(1);
+  });
+
+  test("does not open a new checkout after its account retires during pending-receipt recovery", async () => {
+    let active = true;
+    let finishRecovery!: (value: unknown[]) => void;
+    let recoveryStarted!: () => void;
+    const started = new Promise<void>(resolve => {recoveryStarted = resolve;});
+    const pending = new Promise<unknown[]>(resolve => {finishRecovery = resolve;});
+    const sdk = payments({getPurchasesAsync: async () => {recoveryStarted(); return pending;}});
+    const capability = new FacebookCommerceCapability(sdk, jest.fn(), () => active);
+    const result = capability.purchase(coinProductId);
+    await started;
+    active = false;
+    finishRecovery([]);
+    await expect(result).resolves.toEqual({status: "cancelled"});
+    expect(sdk.purchaseAsync).not.toHaveBeenCalled();
   });
 
   test("serializes purchase and recovery so they cannot race a provider token", async () => {

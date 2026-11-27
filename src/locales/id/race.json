@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Kirim tantangan",
     "INVITE_QUEUED": "Undangan disimpan. Undangan akan muncul di kotak masuk multipemain pemain tersebut.",
     "LIVE_HISTORY_TITLE": "Pertandingan terbaru",
-    "LIVE_HISTORY_EMPTY": "Belum ada pertandingan yang selesai."
+    "LIVE_HISTORY_EMPTY": "Belum ada pertandingan yang selesai.",
+    "FACEBOOK_SOCIAL": "Main di Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Teman yang bermain: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Pemain dalam grup ini: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Pilih teman",
+    "FACEBOOK_LEAVE_CONTEXT": "Kembali bermain sendiri",
+    "FACEBOOK_TOURNAMENTS": "Turnamen Facebook",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Turnamen {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Ikuti turnamen",
+    "FACEBOOK_REFRESH": "Segarkan",
+    "FACEBOOK_JOIN_ROOM": "Gabung permainan ruangan",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Bagikan skor balapan"
   }
 }

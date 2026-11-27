@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "이용 약관",
     "TITLE": "설정",
     "TOGGLE_OFF": "끄기",
-    "TOGGLE_ON": "켜기"
+    "TOGGLE_ON": "켜기",
+    "PRIVACY_BUTTON": "개인정보 처리방침",
+    "HAPTICS_TOGGLE": "진동"
   }
 }

@@ -17,7 +17,7 @@ export function createFacebookContextChallenges({sdk, coordinator, live, join, t
   isActive, getLocale, renderImage = captureVictoryShareImage, reportFailure = () => undefined}: {
   /** Started owning native SDK. */ sdk: FacebookInstantSdk;
   /** Native selection is reconciled with the existing game membership service. */
-  coordinator: Pick<FacebookContextCoordinator, "chooseContext" | "ensureCurrent">;
+  coordinator: Pick<FacebookContextCoordinator, "chooseContext" | "ensureCurrent"> & {canChooseContext?: boolean};
   /** Ordinary transport retains public matching, rematches and safety operations. */ live: LiveRaceCapability;
   /** Original authenticated join accepts the captured context without selecting it again. */ join: LiveRaceCapability["join"];
   /** Template identifier must be declared in this artifact's fbapp-config.json. */ template: string | undefined;
@@ -28,7 +28,7 @@ export function createFacebookContextChallenges({sdk, coordinator, live, join, t
   /** Locally rendered invitation card. */ renderImage?: typeof captureVictoryShareImage;
   /** Fixed diagnostic contains no native errors or context identifiers. */ reportFailure?: (error: Error) => void;
 }): LiveRaceCapability["chooseChallenge"] {
-  if (!enabled || ageCategory !== "13_plus" || !template || !/^[A-Za-z0-9_-]{1,128}$/u.test(template) ||
+  if (!enabled || ageCategory !== "13_plus" || coordinator.canChooseContext === false || !template || !/^[A-Za-z0-9_-]{1,128}$/u.test(template) ||
     !sdk.getSupportedAPIs().includes("updateAsync") || typeof sdk.updateAsync !== "function") return undefined;
   return async () => {
     if (!isActive()) return {status: "error"};

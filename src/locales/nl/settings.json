@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Gebruiksvoorwaarden",
     "TITLE": "Instellingen",
     "TOGGLE_OFF": "Uit",
-    "TOGGLE_ON": "Aan"
+    "TOGGLE_ON": "Aan",
+    "PRIVACY_BUTTON": "Privacybeleid",
+    "HAPTICS_TOGGLE": "Trillen"
   }
 }

@@ -75,7 +75,7 @@ export class FacebookCommerceSession {
       }
       this.requireActive();
       return grant;
-    });
+    }, () => this.isActive());
   }
 
   /** Registers the payment-ready callback and begins owned recovery. */
@@ -162,7 +162,10 @@ export class FacebookCommerceSession {
         items: [{item_id: productId, item_category: FACEBOOK_PRODUCTS[productId].kind, quantity: 1}],
       });
       /** SDK dialog result after the authoritative grant and optional consumption. */
-      const purchase = await runFacebookSdkDialog(this.options.sdk, () => this.capability.purchase(productId));
+      const purchase = await runFacebookSdkDialog(this.options.sdk, () => {
+        this.requireActive();
+        return this.capability.purchase(productId);
+      });
       if (purchase.status === "cancelled") {
         if (this.isActive()) trackEvent("purchase_cancelled", {product_id: productId});
         return {success: false, cancelled: true, productId, purchaseType: FACEBOOK_PRODUCTS[productId].kind};

@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Términos de uso",
     "TITLE": "Configuración",
     "TOGGLE_OFF": "Apagado",
-    "TOGGLE_ON": "Encendido"
+    "TOGGLE_ON": "Encendido",
+    "PRIVACY_BUTTON": "Política de privacidad",
+    "HAPTICS_TOGGLE": "Vibración"
   }
 }

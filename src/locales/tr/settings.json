@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Kullanım Koşulları",
     "TITLE": "Ayarlar",
     "TOGGLE_OFF": "Kapalı",
-    "TOGGLE_ON": "Açık"
+    "TOGGLE_ON": "Açık",
+    "PRIVACY_BUTTON": "Gizlilik Politikası",
+    "HAPTICS_TOGGLE": "Titreşim"
   }
 }

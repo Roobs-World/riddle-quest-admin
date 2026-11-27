@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Herausforderung senden",
     "INVITE_QUEUED": "Einladung gespeichert. Sie erscheint im Mehrspieler-Posteingang des Spielers.",
     "LIVE_HISTORY_TITLE": "Letzte Spiele",
-    "LIVE_HISTORY_EMPTY": "Noch keine abgeschlossenen Spiele."
+    "LIVE_HISTORY_EMPTY": "Noch keine abgeschlossenen Spiele.",
+    "FACEBOOK_SOCIAL": "Auf Facebook spielen",
+    "FACEBOOK_FRIEND_COUNT": "Freunde, die spielen: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Spieler in dieser Gruppe: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Freunde auswählen",
+    "FACEBOOK_LEAVE_CONTEXT": "Zum Solospiel zurückkehren",
+    "FACEBOOK_TOURNAMENTS": "Facebook-Turniere",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Turnier {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Am Turnier teilnehmen",
+    "FACEBOOK_REFRESH": "Aktualisieren",
+    "FACEBOOK_JOIN_ROOM": "Dem Spiel im Raum beitreten",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Rennpunktzahl teilen"
   }
 }

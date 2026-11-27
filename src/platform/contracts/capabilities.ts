@@ -91,6 +91,8 @@ export type PlatformPreferences = {
   muted?: boolean;
   /** Player-selected reduced-motion accessibility preference. */
   reducedMotion?: boolean;
+  /** Explicit opt-in to optional device vibration feedback. */
+  hapticsEnabled?: boolean;
   /** Master preference for game reminders and challenge notifications; absent means on. */
   notificationsEnabled?: boolean;
   /** Indicates that the shared first-run onboarding flow has completed. */
@@ -249,6 +251,8 @@ export type AttemptRecoveryCapability = {
 
 /** Optional provider context selection that never exposes a social graph to game code. */
 export type NativeSocialCapability = {
+  /** Hosts may support contexts or matchmaking without offering a context chooser. */
+  canChooseContext?: boolean;
   /** Observes successful provider context changes; unsubscribe retires the callback. */
   onContextChange?(callback: () => void): () => void;
   /** @returns The active provider thread/group, or `unavailable` outside one. */

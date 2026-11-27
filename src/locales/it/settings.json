@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Termini di utilizzo",
     "TITLE": "Impostazioni",
     "TOGGLE_OFF": "Spento",
-    "TOGGLE_ON": "Acceso"
+    "TOGGLE_ON": "Acceso",
+    "PRIVACY_BUTTON": "Informativa sulla privacy",
+    "HAPTICS_TOGGLE": "Vibrazione"
   }
 }

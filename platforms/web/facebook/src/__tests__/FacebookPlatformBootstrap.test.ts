@@ -2,6 +2,7 @@ import {describe, expect, test} from "@jest/globals";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {FacebookPlatformBootstrap} from "../FacebookPlatformBootstrap";
 import {createFacebookAdsCapability} from "../FacebookAdsCapability";
+import {registerFacebookSdkDialogGuard} from "../FacebookSdkDialogGate";
 
 /** Creates sdk. */
 const createSdk = () => {
@@ -68,10 +69,30 @@ const createSdk = () => {
 };
 
 describe("FacebookPlatformBootstrap", () => {
+  test.each(["choose", "match"] as const)("does not admit %s after the account retires during banner cleanup", async operation => {
+    const harness = createSdk();
+    let active = true;
+    let finish!: () => void;
+    const pending = new Promise<void>(resolve => {finish = resolve;});
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync"];
+    harness.sdk.context = {getID: () => "thread-a", getType: () => "THREAD", chooseAsync: jest.fn(async () => undefined)};
+    harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
+    const stop = registerFacebookSdkDialogGuard(harness.sdk, {beforeOpen: () => pending, afterClose: () => undefined});
+    const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus", () => active).initialize(() => undefined);
+    if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
+    const social = result.value.capabilities.nativeSocial;
+    const action = operation === "choose" ? social.chooseContext() : social.matchPlayer!("race10_v1_en");
+    active = false;
+    finish();
+    await expect(action).resolves.toEqual({status: "cancelled"});
+    expect(harness.sdk.context.chooseAsync).not.toHaveBeenCalled();
+    expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
+    stop();
+  });
   test("observes native context successes and retires callbacks without treating cancellation as a switch", async () => {
     /** Controlled native-event boundary for this adapter regression. */
     const harness = createSdk();
-    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync"];
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "onContextChange"];
     harness.sdk.context = {getID: () => "thread-a", getType: () => "THREAD", chooseAsync: async () => undefined};
     /** Controlled native-event boundary for this adapter regression. */
     let success!: (contextId: string | null) => void, failure!: (error: unknown) => void;
@@ -106,7 +127,7 @@ describe("FacebookPlatformBootstrap", () => {
     if (harness.sdk.matchPlayerAsync) expect(harness.sdk.matchPlayerAsync).not.toHaveBeenCalled();
   });
 
-  test("does not expose a chooser method that the host advertises without implementing", async () => {
+  test("disables an unimplemented chooser while retaining supported matchmaking", async () => {
     /** Runtime host availability must include a callable method as well as its advertised name. */
     const harness = createSdk();
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync"];
@@ -116,7 +137,10 @@ describe("FacebookPlatformBootstrap", () => {
     /** A malformed provider surface must not render an unusable chooser. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success") throw new Error("bootstrap failed");
-    expect(result.value.capabilities.nativeSocial).toBeUndefined();
+    expect(result.value.capabilities.nativeSocial?.canChooseContext).toBe(false);
+    await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "unavailable"});
+    await expect(result.value.capabilities.nativeSocial?.matchPlayer?.("race10_v1_en")).resolves.toMatchObject({status: "success"});
+    expect(harness.sdk.matchPlayerAsync).toHaveBeenCalledWith("race10_v1_en", true, true);
   });
 
   test("does not start context selection or native matching over an active result ad", async () => {
@@ -126,10 +150,12 @@ describe("FacebookPlatformBootstrap", () => {
     let finish!: () => void;
     /** Deferred provider ad response. */
     const pending = new Promise<void>(resolve => {finish = resolve;});
+    let loaded!: () => void;
+    const loading = new Promise<void>(resolve => {loaded = resolve;});
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync"];
     harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD", chooseAsync: jest.fn(async () => undefined)};
     harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
-    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => pending, showAsync: async () => undefined}));
+    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => {loaded(); await pending;}, showAsync: async () => undefined}));
     /** Native capabilities come from the public bootstrap interface. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
@@ -137,6 +163,7 @@ describe("FacebookPlatformBootstrap", () => {
     const ads = createFacebookAdsCapability({sdk: harness.sdk, placementId: "result", adFree: false})!;
     /** Running provider operation has not completed. */
     const showing = ads.showInterstitial("result");
+    await loading;
     await expect(result.value.capabilities.nativeSocial.chooseContext()).resolves.toMatchObject({status: "unavailable"});
     await expect(result.value.capabilities.nativeSocial.matchPlayer!("race10_v1_en")).resolves.toMatchObject({status: "unavailable"});
     expect(harness.sdk.context.chooseAsync).not.toHaveBeenCalled();

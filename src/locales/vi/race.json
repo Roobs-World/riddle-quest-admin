@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Gửi thử thách",
     "INVITE_QUEUED": "Đã lưu lời mời. Lời mời sẽ xuất hiện trong hộp thư nhiều người chơi của người chơi đó.",
     "LIVE_HISTORY_TITLE": "Trận đấu gần đây",
-    "LIVE_HISTORY_EMPTY": "Chưa có trận đấu nào hoàn thành."
+    "LIVE_HISTORY_EMPTY": "Chưa có trận đấu nào hoàn thành.",
+    "FACEBOOK_SOCIAL": "Chơi trên Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Bạn bè có chơi: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Người chơi trong nhóm này: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Chọn bạn bè",
+    "FACEBOOK_LEAVE_CONTEXT": "Quay lại chơi một mình",
+    "FACEBOOK_TOURNAMENTS": "Giải đấu Facebook",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Giải đấu {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Tham gia giải đấu",
+    "FACEBOOK_REFRESH": "Làm mới",
+    "FACEBOOK_JOIN_ROOM": "Tham gia trò chơi trong phòng",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Chia sẻ điểm cuộc đua"
   }
 }

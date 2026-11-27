@@ -41,6 +41,18 @@ const fakeRiddles: Array<
     awaitingContinue: false,
   },
   {
+    riddleId: "classic-fake-3",
+    text: "What has a thumb and four fingers but is not alive?",
+    answer: "glove",
+    answerLength: 5,
+    sessionToken: "00000000-0000-4000-8000-000000000004",
+    gameMode: "classic",
+    index: 3,
+    attemptsUsed: 0,
+    hasUsedContinue: false,
+    awaitingContinue: false,
+  },
+  {
     riddleId: "daily-fake-1",
     text: "I speak without a mouth and hear without ears. What am I?",
     answer: "echo",

@@ -6,6 +6,7 @@ import type {FacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import type {FacebookInstantSdk, FacebookInstantTournament} from "./fbinstant";
 import {parseFacebookTournamentResponse, parseFacebookTournamentRecordResponse} from "./facebookCallableResponses";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
+import {parseFacebookTournamentPayload} from "./social/facebookTournamentPayload";
 
 /** Native score/sharing projection of server-owned daily tournaments; no economy authority. */
 export function createFacebookTournamentPresentation({sdk, enabled, ageCategory, isActive, getLocale, list,
@@ -29,12 +30,13 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
   /** Receives only fixed diagnostic errors, not raw SDK payloads. */
   reportFailure?: (error: Error) => void;
 }) {
-  /** All native APIs must be advertised and callable independently of the server board. */
-  const required = ["getTournamentAsync", "tournament.createAsync", "tournament.shareAsync", "tournament.postScoreAsync"];
-  if (!enabled || ageCategory !== "13_plus" || required.some(api => !sdk.getSupportedAPIs().includes(api)) ||
+  const supported = new Set(sdk.getSupportedAPIs());
+  const canCreate = supported.has("tournament.createAsync") && typeof sdk.tournament?.createAsync === "function";
+  const canShare = supported.has("tournament.shareAsync") && typeof sdk.tournament?.shareAsync === "function";
+  const canProject = supported.has("tournament.postScoreAsync") && typeof sdk.tournament?.postScoreAsync === "function";
+  if (!enabled || ageCategory !== "13_plus" || !supported.has("getTournamentAsync") ||
     typeof sdk.getTournamentAsync !== "function" || typeof sdk.context?.getID !== "function" ||
-    typeof sdk.tournament?.createAsync !== "function" || typeof sdk.tournament.shareAsync !== "function" ||
-    typeof sdk.tournament.postScoreAsync !== "function") return undefined;
+    (!canCreate && !canShare && !canProject)) return undefined;
 
   /** Hints associate native presentation with one exact official locale/day; they grant nothing. */
   const envelope = (board: ListFacebookTournamentResponse) => ({kind: "rq-race10-tournament-v1", locale: board.locale,
@@ -51,7 +53,7 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
   /** Native contexts are untrusted and cannot supply a run, rank, score or reward. */
   const matches = (native: FacebookInstantTournament, board: ListFacebookTournamentResponse) => {
     /** Compare an exact small envelope without accepting extra payload fields. */
-    const payload = native.getPayload();
+    const payload = parseFacebookTournamentPayload(native.getPayload());
     /** Compare against the exact authoritative daily/locale envelope. */
     const expected = envelope(board);
     return typeof native.getID() === "string" && /^[A-Za-z0-9._:-]{1,256}$/.test(native.getID()) &&
@@ -99,6 +101,7 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
   };
   /** Recovered server standings authorize presentation without any client score receipt. */
   const projectBoard = (value: ListFacebookTournamentResponse): Promise<void> => {
+    if (!canProject) return Promise.resolve();
     /** Validated official standings for the exact player locale and UTC window. */
     let board: ListFacebookTournamentResponse;
     try {board = parseFacebookTournamentResponse(value);} catch {projectionFailure(); return Promise.resolve();}
@@ -142,9 +145,9 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
     projectionTail = operation;
     return operation;
   };
-  return {
+  const share =
     /** Opens one explicitly requested native share/create dialog using a fresh official best score. */
-    async share(locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>> {
+    async (locale: RaceLocale, signal?: AbortSignal): Promise<PlatformResult<void>> => {
       return runFacebookSdkDialog(sdk, async () => {
         try {
           if (!active(locale)) return {status: "unavailable", message: "facebook-tournament-inactive"};
@@ -193,14 +196,16 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
           /** Existing native tournaments for another day/locale are never overwritten or silently switched. */
           if (native) {
             /** A native invitation in another supported content locale receives existing localized guidance. */
-            const payload = native.getPayload();
+            const payload = parseFacebookTournamentPayload(native.getPayload());
             if (payload !== null && typeof payload === "object" && "locale" in payload && payload.locale !== locale) {
               return {status: "unavailable", message: "RaceTo10.ERROR_LOCALE_MISMATCH"};
             }
             if (!matches(native, board)) return {status: "unavailable", message: "facebook-tournament-context-mismatch"};
+            if (!canShare) return {status: "unavailable", message: "facebook-tournament-sharing-unavailable"};
             assertPreparing();
             await sdk.tournament!.shareAsync({score: board.currentPlayer.adjustedTimeMs, data: envelope(board)});
           } else {
+            if (!canCreate) return {status: "unavailable", message: "facebook-tournament-creation-unavailable"};
             /** Native creation is itself the explicit provider dialog; do not open a second share dialog. */
             const image = renderImage({title: tr("RaceTo10.HUB_TOURNAMENTS"),
               summary: tr("RaceTo10.TIME_TO_BEAT", {time: `${(board.currentPlayer.adjustedTimeMs / 1000).toFixed(2)}s`}), emojiGrid: ""});
@@ -223,11 +228,14 @@ export function createFacebookTournamentPresentation({sdk, enabled, ageCategory,
           return {status: "retryable-failure", message: "facebook-tournament-share-failed"};
         }
       });
-    },
+    };
+  return {
+    ...((canCreate || canShare) ? {share} : {}),
     /** Projects a fresh official board when a completed activity is recovered or reopened. */
     projectBoard,
     /** Idempotent official receipts can recover a native projection after a lost browser reply. */
     async projectRecord(value: RecordFacebookTournamentRunResponse): Promise<void> {
+      if (!canProject) return;
       try {
         /** Validated official receipt may represent an idempotent server replay. */
         const record = parseFacebookTournamentRecordResponse(value);

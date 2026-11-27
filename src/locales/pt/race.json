@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Enviar desafio",
     "INVITE_QUEUED": "Convite salvo. Ele aparecerá na caixa de entrada multijogador do jogador.",
     "LIVE_HISTORY_TITLE": "Partidas recentes",
-    "LIVE_HISTORY_EMPTY": "Ainda não há partidas concluídas."
+    "LIVE_HISTORY_EMPTY": "Ainda não há partidas concluídas.",
+    "FACEBOOK_SOCIAL": "Jogar no Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Amigos que jogam: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Jogadores neste grupo: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Escolher amigos",
+    "FACEBOOK_LEAVE_CONTEXT": "Voltar ao jogo solo",
+    "FACEBOOK_TOURNAMENTS": "Torneios do Facebook",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Torneio {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Entrar no torneio",
+    "FACEBOOK_REFRESH": "Atualizar",
+    "FACEBOOK_JOIN_ROOM": "Entrar no jogo da sala",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Partilhar pontuação da corrida"
   }
 }

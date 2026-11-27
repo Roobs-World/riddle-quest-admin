@@ -36,7 +36,8 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
     /** Preserve the capability inventory before enabling controlled context selection. */
     const supported = sdk.getSupportedAPIs.bind(sdk);
     sdk.getSupportedAPIs = () => [...supported().filter(api => api !== "matchPlayerAsync"), "context.chooseAsync",
-      ...(nativeMatching ? ["matchPlayerAsync"] : []), ...(contextChallenges ? ["updateAsync"] : [])];
+      ...(nativeMatching ? ["matchPlayerAsync"] : []), ...(deliverContextEvents ? ["onContextChange"] : []),
+      "context.getPlayersAsync", ...(contextChallenges ? ["updateAsync"] : [])];
     if (contextChallenges) {
       Reflect.set(window, "__contextUpdates", []);
       sdk.updateAsync = async payload => {Reflect.get(window, "__contextUpdates").push({payload, contextId: sdk.context.getID()});};
@@ -56,6 +57,7 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
     sdk.context = {
       getID: () => Reflect.get(window, "__contextId"),
       getType: () => Reflect.get(window, "__contextType"),
+      getPlayersAsync: async () => ["fixture-player-a", "fixture-player-b", "fixture-player-c"].map(id => ({getID: () => id})),
       chooseAsync: () => {
         Reflect.set(window, "__contextDialogCalls", Reflect.get(window, "__contextDialogCalls") + 1);
         return new Promise<void>((resolve, reject) => {
@@ -76,7 +78,7 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
 export async function verifyRaceContextDialogs(page: Page, screenshotPath = "/tmp/race-context-dialog-recovery.png"): Promise<void> {
   await page.locator('[role="tab"]').nth(1).click();
   /** Context button uses the actual translated provider action. */
-  const choose = page.locator(".race-hub-social-actions button").last();
+  const choose = page.getByRole("button", {name: "Jouer avec des amis", exact: true});
   await choose.waitFor({timeout: 5000});
   try {await page.locator(".race-context-board li").waitFor();}
   catch {
@@ -91,10 +93,11 @@ export async function verifyRaceContextDialogs(page: Page, screenshotPath = "/tm
   await page.waitForFunction(() => window.__facebookEvents.includes("overlay:picture:show") && window.__facebookEvents.includes("overlay:name:show"));
   // Dispatch twice within one JavaScript task, before React can commit disabled controls.
   await choose.evaluate((button: HTMLElement) => {button.click(); button.click();});
+  await page.waitForFunction(() => Reflect.get(window, "__contextDialogCalls") === 1);
   expect(await page.evaluate(() => Reflect.get(window, "__contextDialogCalls"))).toBe(1);
   await page.getByRole("tab").first().click(); await page.getByRole("tab").nth(1).click();
   await page.evaluate(() => Reflect.get(window, "__finishContextDialog")(false));
-  await page.waitForFunction(() => !document.querySelector(".race-hub-social-actions button:last-child")?.hasAttribute("disabled"));
+  await choose.and(page.locator(":enabled")).waitFor();
   expect(await page.getByRole("alert").count()).toBe(0);
   await choose.click();
   await page.evaluate(() => Reflect.get(window, "__finishContextDialog")(true));

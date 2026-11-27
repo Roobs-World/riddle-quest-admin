@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Điều khoản sử dụng",
     "TITLE": "Cài đặt",
     "TOGGLE_OFF": "Tắt",
-    "TOGGLE_ON": "Bật"
+    "TOGGLE_ON": "Bật",
+    "PRIVACY_BUTTON": "Chính sách quyền riêng tư",
+    "HAPTICS_TOGGLE": "Rung"
   }
 }

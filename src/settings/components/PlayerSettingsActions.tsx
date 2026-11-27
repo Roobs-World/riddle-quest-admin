@@ -18,6 +18,8 @@ const ACTION_LABELS = {
   "create-shortcut": "Settings.ADD_SHORTCUT_BUTTON",
   "follow-community": "Settings.FOLLOW_COMMUNITY_BUTTON",
   "join-community": "Settings.JOIN_COMMUNITY_BUTTON",
+  "privacy-policy": "Settings.PRIVACY_BUTTON",
+  "terms-of-use": "Settings.TERMS_BUTTON",
   quit: "Settings.QUIT_GAME_BUTTON",
 } satisfies Record<PlayerSettingsAction, string>;
 
@@ -25,12 +27,12 @@ function AvailablePlayerSettingsActions({capability}: {capability: PlayerSetting
   const tr = useTranslator();
   const snapshot = useSyncExternalStore(capability.subscribe, capability.getSnapshot, capability.getSnapshot);
   const [notice, setNotice] = useState<"error" | "unavailable" | "unsaved" | null>(null);
-  const owner = useRef<object | null>(null);
+  const owner = useRef<AbortController | null>(null);
   useLayoutEffect(() => {
-    const current = {};
+    const current = new AbortController();
     owner.current = current;
     setNotice(null);
-    return () => {if (owner.current === current) owner.current = null;};
+    return () => {current.abort(); if (owner.current === current) owner.current = null;};
   }, [capability]);
   useEffect(() => {void capability.refresh();}, [capability]);
 
@@ -38,7 +40,7 @@ function AvailablePlayerSettingsActions({capability}: {capability: PlayerSetting
     const current = owner.current;
     if (!current || snapshot.pendingAction) return;
     setNotice(null);
-    const result = await capability.run(action);
+    const result = await capability.run(action, current.signal);
     if (owner.current !== current) return;
     if (result === "error" || result === "unavailable" || result === "unsaved") setNotice(result);
   };

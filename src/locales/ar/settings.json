@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "شروط الاستخدام",
     "TITLE": "الإعدادات",
     "TOGGLE_OFF": "إيقاف",
-    "TOGGLE_ON": "تشغيل"
+    "TOGGLE_ON": "تشغيل",
+    "PRIVACY_BUTTON": "سياسة الخصوصية",
+    "HAPTICS_TOGGLE": "الاهتزاز"
   }
 }

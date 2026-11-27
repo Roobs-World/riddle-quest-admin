@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "उपयोग की शर्तें",
     "TITLE": "सेटिंग्स",
     "TOGGLE_OFF": "बंद",
-    "TOGGLE_ON": "चालू"
+    "TOGGLE_ON": "चालू",
+    "PRIVACY_BUTTON": "गोपनीयता नीति",
+    "HAPTICS_TOGGLE": "कंपन"
   }
 }

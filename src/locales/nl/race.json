@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Uitdaging sturen",
     "INVITE_QUEUED": "Uitnodiging opgeslagen. Deze verschijnt in de multiplayer-inbox van de speler.",
     "LIVE_HISTORY_TITLE": "Recente wedstrijden",
-    "LIVE_HISTORY_EMPTY": "Nog geen voltooide wedstrijden."
+    "LIVE_HISTORY_EMPTY": "Nog geen voltooide wedstrijden.",
+    "FACEBOOK_SOCIAL": "Spelen op Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Vrienden die spelen: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Spelers in deze groep: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Vrienden kiezen",
+    "FACEBOOK_LEAVE_CONTEXT": "Terug naar solospel",
+    "FACEBOOK_TOURNAMENTS": "Facebook-toernooien",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Toernooi {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Deelnemen aan toernooi",
+    "FACEBOOK_REFRESH": "Vernieuwen",
+    "FACEBOOK_JOIN_ROOM": "Deelnemen aan kamerspel",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Racescore delen"
   }
 }

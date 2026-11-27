@@ -84,6 +84,7 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   /** Stores backend. */
   private readonly backend: FacebookContextBackendPort;
   readonly matchPlayer?: NativeSocialCapability["matchPlayer"];
+  readonly canChooseContext: boolean;
 
   /** Creates a facebook context coordinator instance. */
   constructor(
@@ -92,6 +93,7 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
     backend: FacebookContextBackendPort = new FirebaseFacebookContextBackend(),
   ) {
     this.sdkSocial = sdkSocial;
+    this.canChooseContext = sdkSocial.canChooseContext !== false;
     this.getLocale = getLocale;
     this.backend = backend;
     const matchPlayer = sdkSocial.matchPlayer;
@@ -158,6 +160,14 @@ export class FacebookContextCoordinator implements NativeSocialCapability {
   /** Provides synchronize current behavior. */
   async synchronizeCurrent(): Promise<PlatformResult<ContextValue>> {
     return this.synchronize(this.sdkSocial.currentContext());
+  }
+
+  /** Native actions also invalidate boards on hosts that do not emit onContextChange. */
+  reconcileNativeContext(): Promise<PlatformResult<ContextValue>> {
+    const notify = !this.reconciliation && this.currentContext().status !== "success";
+    const operation = this.ensureCurrent();
+    if (notify) for (const listener of this.contextListeners) listener();
+    return operation;
   }
 
   /** Reconciles restored preferences or external context changes before a board adapter proceeds. */

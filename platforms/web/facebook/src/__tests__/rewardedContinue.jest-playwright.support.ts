@@ -47,7 +47,7 @@ export async function verifyRewardedContinue(page: Page, origin: string): Promis
   const video = page.locator(".loss-video-action");
   await video.waitFor();
   await page.waitForFunction(() => !(document.querySelector(".loss-video-action") as HTMLButtonElement)?.disabled);
-  expect(await video.innerText()).toBe("Watch a video for an extra try");
+  expect(await video.innerText()).toBe("Watch an ad for another attempt");
   expect(await page.locator(".loss-continue-action").innerText()).toContain("50");
   /** Displayed balance before cancelled or unavailable video must remain unchanged. */
   const balance = await page.locator(".continue-balance span").innerText();

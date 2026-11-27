@@ -32,6 +32,7 @@ const parsePreferences = (value: unknown): PlatformPreferences => {
     ...(typeof value.locale === "string" ? {locale: value.locale.slice(0, 32)} : {}),
     ...(typeof value.muted === "boolean" ? {muted: value.muted} : {}),
     ...(typeof value.reducedMotion === "boolean" ? {reducedMotion: value.reducedMotion} : {}),
+    ...(typeof value.hapticsEnabled === "boolean" ? {hapticsEnabled: value.hapticsEnabled} : {}),
     ...(typeof value.onboardingComplete === "boolean" ? {onboardingComplete: value.onboardingComplete} : {}),
     ...(typeof value.presenceEnabled === "boolean" ? {presenceEnabled: value.presenceEnabled} : {}),
     ...(typeof value.notificationsEnabled === "boolean" ? {notificationsEnabled: value.notificationsEnabled} : {}),
@@ -165,6 +166,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
   private readonly getSdk: () => FacebookInstantSdk;
   /** Stores age category. */
   private readonly ageCategory: FacebookAgeCategory;
+  private readonly isActive: () => boolean;
   private playerAgeCategory: FacebookAgeCategory = "unknown";
 
   /** The entry uses the same audience decision as bootstrap-owned capabilities. */
@@ -173,9 +175,11 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
   }
 
   /** Creates a facebook platform bootstrap instance. */
-  constructor(getSdk: () => FacebookInstantSdk = requireFacebookInstant, ageCategory: FacebookAgeCategory = "unknown") {
+  constructor(getSdk: () => FacebookInstantSdk = requireFacebookInstant, ageCategory: FacebookAgeCategory = "unknown",
+    isActive: () => boolean = () => true) {
     this.getSdk = getSdk;
     this.ageCategory = ageCategory;
+    this.isActive = isActive;
   }
 
   /** Provides initialize behavior. */
@@ -183,6 +187,7 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
     try {
       /** Provides sdk behavior. */
       const sdk = this.getSdk();
+      const isActive = this.isActive;
       await sdk.initializeAsync();
       sdk.setLoadingProgress(30);
       reportProgress(30);
@@ -210,16 +215,15 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
           ads: false,
           notifications: false,
           nativeSocial:
-            Boolean(sdk.context) &&
-            supportedApis.has("context.chooseAsync") &&
-            typeof sdk.context?.chooseAsync === "function",
+            typeof sdk.context?.getID === "function" && typeof sdk.context?.getType === "function",
         },
       });
       /** Provides native social behavior. */
       const nativeSocial =
         sdk.context && visibility.nativeSocial
           ? {
-              ...(typeof sdk.onContextChange === "function" ? {
+              canChooseContext: supportedApis.has("context.chooseAsync") && typeof sdk.context.chooseAsync === "function",
+              ...(supportedApis.has("onContextChange") && typeof sdk.onContextChange === "function" ? {
                 /** Native callbacks have no unregister API; retirement makes them inert. */
                 onContextChange(callback: () => void) {
                   /** Native callback retirement is local because the SDK has no unsubscribe method. */
@@ -234,9 +238,14 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
               },
               /** Provides choose context behavior. */
               async chooseContext() {
+                if (!supportedApis.has("context.chooseAsync") || typeof sdk.context?.chooseAsync !== "function") {
+                  return {status: "unavailable" as const, message: "facebook-context-chooser-unavailable"};
+                }
                 return runFacebookSdkDialog(sdk, async () => {
                   try {
+                    if (!isActive()) return {status: "cancelled"};
                     await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+                    if (!isActive()) return {status: "cancelled"};
                     return facebookContextResult(sdk);
                   } catch (error) {
                     return facebookSocialFailure(error);
@@ -254,12 +263,15 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
                   }
                   return runFacebookSdkDialog(sdk, async () => {
                     try {
+                      if (!isActive()) return {status: "cancelled"};
                       if (supportedApis.has("checkCanPlayerMatchAsync") &&
                           typeof sdk.checkCanPlayerMatchAsync === "function" &&
                           await sdk.checkCanPlayerMatchAsync() !== true) {
                         return {status: "unavailable", message: "facebook-matchmaking-unavailable"};
                       }
+                      if (!isActive()) return {status: "cancelled"};
                       await sdk.matchPlayerAsync!(tag, true, true);
+                      if (!isActive()) return {status: "cancelled"};
                       return facebookContextResult(sdk);
                     } catch (error) {
                       return facebookSocialFailure(error);

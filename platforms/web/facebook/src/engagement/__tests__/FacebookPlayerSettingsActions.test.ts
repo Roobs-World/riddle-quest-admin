@@ -1,5 +1,5 @@
 import {describe, expect, it, jest} from "@jest/globals";
-import {runFacebookSdkDialog} from "../../FacebookSdkDialogGate";
+import {registerFacebookSdkDialogGuard, runFacebookSdkDialog} from "../../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../../fbinstant";
 import {createFacebookPlayerSettingsActions, type FacebookPlayerSettingsActionsOptions} from "../FacebookPlayerSettingsActions";
 
@@ -55,6 +55,41 @@ const requireActions = (options: FacebookPlayerSettingsActionsOptions) => {
 };
 
 describe("Facebook player Settings actions", () => {
+  it("cancels a closed Settings panel before a delayed native prompt and keeps the action retryable", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const cleanup = deferred<void>();
+    const stop = registerFacebookSdkDialogGuard(setup.sdk, {beforeOpen: () => cleanup.promise, afterClose: () => undefined});
+    const panel = new AbortController();
+    const pending = actions.run("follow-community", panel.signal);
+    panel.abort();
+    cleanup.resolve();
+    await expect(pending).resolves.toBe("cancelled");
+    expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+    expect(actions.getSnapshot().actions).toContain("follow-community");
+    stop();
+    await expect(actions.run("follow-community")).resolves.toBe("success");
+    expect(setup.followOfficialPageAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not prompt if Settings closes while Meta checks eligibility", async () => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const eligibility = deferred<boolean>();
+    let checking!: () => void;
+    const started = new Promise<void>(resolve => {checking = resolve;});
+    setup.canFollowOfficialPageAsync.mockImplementation(() => {checking(); return eligibility.promise;});
+    const panel = new AbortController();
+    const pending = actions.run("follow-community", panel.signal);
+    await started;
+    panel.abort();
+    eligibility.resolve(true);
+    await expect(pending).resolves.toBe("cancelled");
+    expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+  });
+
   it("requires independently advertised and callable APIs before probing or displaying actions", async () => {
     const unsupported = fixture([]);
     expect(createFacebookPlayerSettingsActions(unsupported.options)).toBeUndefined();

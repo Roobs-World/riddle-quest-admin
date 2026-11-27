@@ -119,9 +119,10 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
   const navigation = <>
     <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
       onSelect={(next, keyboard = false) => {revision.current++; setContextError(false); keyboardSelection.current = keyboard; setDestination(next);}} />
+    {props.introNavigation}
     {props.nativeSocial && (props.nativeSocial.matchPlayer || destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
       <div className="race-hub-social-actions">
-        {(destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
+        {props.nativeSocial.canChooseContext !== false && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
           <button type="button" disabled={busy} onClick={() => void choose("chooseContext")}>
             {tr("RaceTo10.CHOOSE_CONTEXT")}
           </button>}

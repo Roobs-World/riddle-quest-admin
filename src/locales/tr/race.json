@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Meydan okuma gönder",
     "INVITE_QUEUED": "Davet kaydedildi. Oyuncunun çok oyunculu gelen kutusunda görünecek.",
     "LIVE_HISTORY_TITLE": "Son maçlar",
-    "LIVE_HISTORY_EMPTY": "Henüz tamamlanmış maç yok."
+    "LIVE_HISTORY_EMPTY": "Henüz tamamlanmış maç yok.",
+    "FACEBOOK_SOCIAL": "Facebook'ta oyna",
+    "FACEBOOK_FRIEND_COUNT": "Oynayan arkadaşlar: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Bu gruptaki oyuncular: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Arkadaş seç",
+    "FACEBOOK_LEAVE_CONTEXT": "Tek oyunculu oyuna dön",
+    "FACEBOOK_TOURNAMENTS": "Facebook turnuvaları",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Turnuva {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Turnuvaya katıl",
+    "FACEBOOK_REFRESH": "Yenile",
+    "FACEBOOK_JOIN_ROOM": "Oda oyununa katıl",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Yarış puanını paylaş"
   }
 }

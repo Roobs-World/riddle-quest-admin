@@ -152,6 +152,7 @@ it("applies validated platform preferences before play and overrides browser fal
     locale: "fr",
     muted: true,
     reducedMotion: true,
+    hapticsEnabled: false,
     notificationsEnabled: true,
     onboardingComplete: true,
   });
@@ -177,6 +178,7 @@ it("uses existing stored preferences when platform values are absent", () => {
     locale: "es",
     muted: true,
     reducedMotion: true,
+    hapticsEnabled: false,
     notificationsEnabled: true,
     onboardingComplete: false,
   });

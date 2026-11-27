@@ -13,6 +13,15 @@ import {captureBrowserException} from "../../../../src/observability/browserErro
 import {bindFacebookEntryReferral, facebookLaunchFromEntryData} from "./referrals";
 import {createFacebookReferralSharing} from "./FacebookReferralSharing";
 import {createFacebookPlayerSettingsActions} from "./engagement/FacebookPlayerSettingsActions";
+import {createFacebookHostEnvironment} from "./engagement/FacebookHostEnvironment";
+import {createFacebookHaptics, type FacebookHaptics} from "./engagement/FacebookHaptics";
+import {HapticFeedbackProvider} from "../../../../src/settings/components/HapticFeedbackSettings";
+import {createFacebookNativeSocial, type FacebookNativeSocial} from "./social/FacebookNativeSocial";
+import {FacebookNativeSocialProvider} from "./social/FacebookNativeSocialPanel";
+import {createFacebookBanner, type FacebookBanner} from "./ads/FacebookBanner";
+import {FacebookBannerLayout} from "./ads/FacebookBannerLayout";
+import {createFacebookSessionScore, type FacebookSessionScore} from "./engagement/FacebookSessionScore";
+import {FacebookSessionScoreProvider} from "./engagement/FacebookSessionScoreActions";
 import {PlayerSettingsActionsProvider} from "../../../../src/settings/components/PlayerSettingsActions";
 import type {PlayerSettingsActionsCapability} from "../../../../src/settings/contracts/playerSettingsActions";
 import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
@@ -73,6 +82,10 @@ type StartupState =
       referralSharing?: import("../../../../src/sharing/components/ReferralSharingCapability").ReferralSharingCapability;
       /** Optional user-initiated native player actions for this account. */
       settingsActions?: PlayerSettingsActionsCapability;
+      haptics?: FacebookHaptics;
+      nativeSocial?: FacebookNativeSocial;
+      banner?: FacebookBanner;
+      sessionScore?: FacebookSessionScore;
       /** Settings owns the authenticated player's Facebook campaign consent. */
       notificationProvider?: NotificationProvider;
       /** Bounded launch hints; competitive authority remains on the server. */
@@ -126,6 +139,9 @@ export function FacebookPlatformEntry() {
   const [presenceAvailable, setPresenceAvailable] = useState(false);
   const [, setAdPolicyVersion] = useState(0);
   const levelInterstitialRef = useRef<ReturnType<typeof createFacebookLevelInterstitial> | null>(null);
+  const hostEnvironmentRef = useRef<ReturnType<typeof createFacebookHostEnvironment> | null>(null);
+  const hapticsRef = useRef<FacebookHaptics | null>(null);
+  const bannerRef = useRef<FacebookBanner | null>(null);
   /** Current SDK catalog and purchase callback exposed to hosted play. */
   const [commercePresentation, setCommercePresentation] = useState<{
     /** Visible Facebook product summaries for the authenticated account. */
@@ -152,6 +168,7 @@ export function FacebookPlatformEntry() {
   useEffect(() => {
     /** Provides active behavior. */
     let active = true;
+    let nativeSessionIsActive = () => active && deletionGateRef.current.isOpen();
     const removeBrowserStateGuard = installBrowserPlayerStateMutationGuard(
       () => active && deletionGateRef.current.isOpen(),
     );
@@ -170,6 +187,11 @@ export function FacebookPlatformEntry() {
     let commerceSession: FacebookCommerceSession | undefined;
     let sessionNotifications: NotificationProvider | undefined;
     let settingsActions: PlayerSettingsActionsCapability | undefined;
+    let hostEnvironment: ReturnType<typeof createFacebookHostEnvironment> | undefined;
+    let haptics: FacebookHaptics | undefined;
+    let nativeSocial: FacebookNativeSocial | undefined;
+    let banner: FacebookBanner | undefined;
+    let sessionScore: FacebookSessionScore | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -181,7 +203,7 @@ export function FacebookPlatformEntry() {
       try {
         /** Provides age category behavior. */
         const configuredAudience = parseFacebookAgeCategory(import.meta.env.VITE_FACEBOOK_AGE_CATEGORY);
-        const bootstrap = new FacebookPlatformBootstrap(undefined, configuredAudience);
+        const bootstrap = new FacebookPlatformBootstrap(undefined, configuredAudience, () => nativeSessionIsActive());
         /** Provides result behavior. */
         const result = await bootstrap.initialize((progress) => {
           if (active) setStartup({status: "loading", progress});
@@ -200,6 +222,7 @@ export function FacebookPlatformEntry() {
         const accountOwner = auth.currentUser;
         if (!accountOwner || accountOwner.uid !== userId) throw new Error("facebook-authentication-owner-changed");
         const isAdSessionActive = () => active && deletionGateRef.current.isOpen() && auth.currentUser === accountOwner;
+        nativeSessionIsActive = isAdSessionActive;
         /** Provides ads behavior. */
         let ads = undefined;
         /** Latest verified ad-removal entitlement passed to the ad adapter. */
@@ -290,7 +313,8 @@ export function FacebookPlatformEntry() {
           if (
             ageCategory === "13_plus" &&
             (sdk.getSupportedAPIs().includes("getInterstitialAdAsync") ||
-              sdk.getSupportedAPIs().includes("getRewardedVideoAsync"))
+              sdk.getSupportedAPIs().includes("getRewardedVideoAsync") ||
+              sdk.getSupportedAPIs().includes("loadBannerAdAsync"))
           ) {
             const adConfiguration = createFacebookAdConfiguration({
               initial: clientConfiguration,
@@ -300,10 +324,21 @@ export function FacebookPlatformEntry() {
                 if (isAdSessionActive()) removeInterstitialAds = configuration.removeInterstitialAds;
                 return configuration;
               },
-              onChange: () => setAdPolicyVersion(version => version + 1),
+              onChange: () => {setAdPolicyVersion(version => version + 1); banner?.refresh();},
               reportFailure: error => captureBrowserException(error, {component: "facebook_ads", operation: "refresh_configuration"}),
             });
             unsubscribeAdsResume = session.capabilities.lifecycle?.onResume?.(() => {void adConfiguration.refresh();});
+            banner = createFacebookBanner({
+              sdk, isActive: isAdSessionActive,
+              enabled: import.meta.env.VITE_FACEBOOK_BANNER_ENABLED === "true",
+              placementId: import.meta.env.VITE_FACEBOOK_BANNER_PLACEMENT_ID || "",
+              allowsBanner: () => adConfiguration.allows("interstitial"),
+              refreshEligibility: () => adConfiguration.refreshEligibility("interstitial"),
+              lifecycle: session.capabilities.lifecycle,
+              reportFailure: operation => captureBrowserException(new Error("facebook-banner-failed"),
+                {component: "facebook_banner", operation}),
+            });
+            bannerRef.current = banner ?? null;
             ads = createFacebookAdsCapability({
               sdk,
               isActive: isAdSessionActive,
@@ -355,6 +390,7 @@ export function FacebookPlatformEntry() {
               record: async (runId: string, locale: import("../../../../src/races/contracts/index").RaceLocale) => {
                 /** Official success is returned independently of provider score delivery. */
                 const result = (await recordFacebookTournament({runId, locale})).data;
+                sessionScore?.record(runId, result);
                 if (presentation) void presentation.projectRecord(result);
                 return result;
               },
@@ -425,6 +461,32 @@ export function FacebookPlatformEntry() {
               operation: "initial_sync",
             });
           }
+        }
+        if (contextCoordinator && configurationLoaded && ageCategory === "13_plus") {
+          nativeSocial = createFacebookNativeSocial({
+            sdk, isActive: isAdSessionActive,
+            synchronizeContext: async () => {
+              const result = await contextCoordinator.reconcileNativeContext();
+              if (result.status === "retryable-failure" || result.status === "terminal-failure") {
+                throw new Error("facebook-native-context-sync-failed");
+              }
+            },
+            onContextChange: listener => contextCoordinator.onContextChange(listener),
+          });
+        }
+        if (tournaments && configurationLoaded && ageCategory === "13_plus") {
+          sessionScore = createFacebookSessionScore({
+            sdk, isActive: isAdSessionActive, getLocale: getCurrentLocale,
+            canPresent: () => document.visibilityState === "visible" && settingsActions?.getSnapshot().pendingAction !== "quit",
+            synchronizeContext: async () => {
+              const result = await contextCoordinator?.reconcileNativeContext();
+              if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
+                throw new Error("facebook-score-context-sync-failed");
+              }
+            },
+            reportFailure: operation => captureBrowserException(new Error("facebook-session-score-failed"),
+              {component: "facebook_session_score", operation}),
+          });
         }
         /** Provides context board behavior. */
         const contextBoard =
@@ -532,6 +594,11 @@ export function FacebookPlatformEntry() {
         );
         playerPersistenceRef.current = playerPersistence;
         if (configurationLoaded && ageCategory === "13_plus") {
+          haptics = createFacebookHaptics({sdk, isActive: isAdSessionActive, lifecycle: session.capabilities.lifecycle});
+          hapticsRef.current = haptics ?? null;
+          hostEnvironment = createFacebookHostEnvironment({sdk, isActive: isAdSessionActive});
+          hostEnvironmentRef.current = hostEnvironment;
+          hostEnvironment.setActivity("online");
           settingsActions = createFacebookPlayerSettingsActions({
             sdk,
             isActive: isAdSessionActive,
@@ -542,7 +609,7 @@ export function FacebookPlatformEntry() {
               }
             },
             reportFailure: ({action}) => captureBrowserException(new Error("facebook-player-action-failed"),
-              {component: "facebook_engagement", operation: action}),
+              {component: "facebook_engagement", operation: action, ...hostEnvironment?.getSnapshot()}),
           });
         }
         unsubscribePause = session.capabilities.lifecycle?.onPause(() =>
@@ -560,7 +627,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, () => active && deletionGateRef.current.isOpen());
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, notificationProvider, launch,
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, haptics, nativeSocial, banner, sessionScore, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
@@ -581,6 +648,14 @@ export function FacebookPlatformEntry() {
       commerceSession?.retire();
       sessionNotifications?.retire();
       settingsActions?.retire();
+      hostEnvironment?.retire();
+      haptics?.retire();
+      nativeSocial?.retire();
+      sessionScore?.retire();
+      void banner?.retire().catch(() => undefined);
+      if (bannerRef.current === banner) bannerRef.current = null;
+      if (hapticsRef.current === haptics) hapticsRef.current = null;
+      if (hostEnvironmentRef.current === hostEnvironment) hostEnvironmentRef.current = null;
       unsubscribePreferences?.();
       unsubscribeContext?.();
       void stopPresence?.();
@@ -648,6 +723,11 @@ export function FacebookPlatformEntry() {
     analyticsLifetimeRef.current.abort();
     deletionGateRef.current.close();
     startup.settingsActions?.retire();
+    hostEnvironmentRef.current?.retire();
+    hapticsRef.current?.retire();
+    startup.nativeSocial?.retire();
+    startup.sessionScore?.retire();
+    await startup.banner?.retire();
     await startup.notificationProvider?.setEnabled(false);
     startup.notificationProvider?.retire();
     await presenceRef.current?.stop();
@@ -658,6 +738,11 @@ export function FacebookPlatformEntry() {
   const completeAccountDeletion = useCallback(async () => {
     if (startup.status !== "ready") return;
     startup.settingsActions?.retire();
+    startup.haptics?.retire();
+    startup.nativeSocial?.retire();
+    startup.sessionScore?.retire();
+    await startup.banner?.retire();
+    hostEnvironmentRef.current?.retire();
     startup.notificationProvider?.retire();
     await playerPersistenceRef.current?.clear();
     playerPersistenceRef.current = null;
@@ -669,13 +754,17 @@ export function FacebookPlatformEntry() {
 
   /** Sets presence state. */
   const setPresenceState = useCallback((state: import("../../../../src/presence/PlatformPresenceSession").ActivePresenceState) => {
+    hostEnvironmentRef.current?.setActivity(state);
+    bannerRef.current?.setActivity(state);
     void presenceRef.current?.setState(state).catch((error) => {
       captureBrowserException(error, {component: "facebook_presence", operation: "state"});
     });
   }, []);
 
-  const onLevelCompleted = useCallback((input: HostCompletionInput, result: CompletionResult) =>
-    levelInterstitialRef.current?.complete(input, result), []);
+  const onLevelCompleted = useCallback((input: HostCompletionInput, result: CompletionResult) => {
+    void hapticsRef.current?.complete(input, result);
+    return levelInterstitialRef.current?.complete(input, result);
+  }, []);
 
   if (startup.status === "error") {
     return (
@@ -704,6 +793,10 @@ export function FacebookPlatformEntry() {
     >
     <PlayerSaveRecoveryLayout recovery={saveRecovery}>
     <PlayerSettingsActionsProvider capability={startup.settingsActions}>
+    <HapticFeedbackProvider capability={startup.haptics}>
+    <FacebookNativeSocialProvider capability={startup.nativeSocial}>
+    <FacebookBannerLayout banner={startup.banner}>
+    <FacebookSessionScoreProvider capability={startup.sessionScore}>
     <div style={{display: "contents"}} inert={quitPending || undefined}>
       <PlayHostApp
         raceSurface={FacebookRaceSurface}
@@ -731,6 +824,10 @@ export function FacebookPlatformEntry() {
         onAuthoritativeComplete={onLevelCompleted}
       />
     </div>
+    </FacebookSessionScoreProvider>
+    </FacebookBannerLayout>
+    </FacebookNativeSocialProvider>
+    </HapticFeedbackProvider>
     </PlayerSettingsActionsProvider>
     </PlayerSaveRecoveryLayout>
     </GoogleAnalyticsConsent>

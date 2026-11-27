@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "利用規約",
     "TITLE": "設定",
     "TOGGLE_OFF": "オフ",
-    "TOGGLE_ON": "オン"
+    "TOGGLE_ON": "オン",
+    "PRIVACY_BUTTON": "プライバシーポリシー",
+    "HAPTICS_TOGGLE": "振動"
   }
 }

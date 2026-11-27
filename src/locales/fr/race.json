@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Envoyer un défi",
     "INVITE_QUEUED": "Invitation enregistrée. Elle apparaîtra dans la boîte de réception multijoueur du joueur.",
     "LIVE_HISTORY_TITLE": "Matchs récents",
-    "LIVE_HISTORY_EMPTY": "Aucun match terminé pour le moment."
+    "LIVE_HISTORY_EMPTY": "Aucun match terminé pour le moment.",
+    "FACEBOOK_SOCIAL": "Jouer sur Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Amis qui jouent : {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Joueurs dans ce groupe : {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Choisir des amis",
+    "FACEBOOK_LEAVE_CONTEXT": "Revenir au jeu en solo",
+    "FACEBOOK_TOURNAMENTS": "Tournois Facebook",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Tournoi {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Rejoindre le tournoi",
+    "FACEBOOK_REFRESH": "Actualiser",
+    "FACEBOOK_JOIN_ROOM": "Rejoindre la partie du salon",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Partager le score de la course"
   }
 }

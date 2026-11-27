@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Wyślij wyzwanie",
     "INVITE_QUEUED": "Zaproszenie zapisane. Pojawi się w skrzynce odbiorczej gracza w trybie wieloosobowym.",
     "LIVE_HISTORY_TITLE": "Ostatnie mecze",
-    "LIVE_HISTORY_EMPTY": "Nie ma jeszcze ukończonych meczów."
+    "LIVE_HISTORY_EMPTY": "Nie ma jeszcze ukończonych meczów.",
+    "FACEBOOK_SOCIAL": "Graj na Facebooku",
+    "FACEBOOK_FRIEND_COUNT": "Znajomi, którzy grają: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Gracze w tej grupie: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Wybierz znajomych",
+    "FACEBOOK_LEAVE_CONTEXT": "Wróć do gry solo",
+    "FACEBOOK_TOURNAMENTS": "Turnieje na Facebooku",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Turniej {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Dołącz do turnieju",
+    "FACEBOOK_REFRESH": "Odśwież",
+    "FACEBOOK_JOIN_ROOM": "Dołącz do gry w pokoju",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Udostępnij wynik wyścigu"
   }
 }

@@ -23,6 +23,8 @@
     "TERMS_BUTTON": "Условия использования",
     "TITLE": "Настройки",
     "TOGGLE_OFF": "Выкл.",
-    "TOGGLE_ON": "Вкл."
+    "TOGGLE_ON": "Вкл.",
+    "PRIVACY_BUTTON": "Политика конфиденциальности",
+    "HAPTICS_TOGGLE": "Вибрация"
   }
 }

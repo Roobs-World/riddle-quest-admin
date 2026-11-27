@@ -11,6 +11,7 @@ const shortcutAttempted = new WeakSet<FacebookInstantSdk>();
 type NativeAction = {
   id: PlayerSettingsAction;
   canRun?: () => Promise<boolean>;
+  repeatable?: boolean;
   invoke: () => Promise<void>;
 };
 
@@ -47,6 +48,13 @@ export function createFacebookPlayerSettingsActions({
     nativeActions.push({id: "join-community", canRun: canJoin, invoke: join});
   }
   const quit = typeof sdk.quit === "function" ? sdk.quit.bind(sdk) : undefined;
+  const openExternalLink = typeof sdk.openExternalLinkAsync === "function" ? sdk.openExternalLinkAsync.bind(sdk) : undefined;
+  if (supported.has("openExternalLinkAsync") && openExternalLink) {
+    nativeActions.push(
+      {id: "privacy-policy", repeatable: true, invoke: () => openExternalLink("https://roobsworld.com/riddle-quest/privacy")},
+      {id: "terms-of-use", repeatable: true, invoke: () => openExternalLink("https://roobsworld.com/riddle-quest/terms")},
+    );
+  }
   if (supported.has("quit") && quit) nativeActions.push({id: "quit", invoke: async () => {quit();}});
   if (nativeActions.length === 0) return undefined;
 
@@ -58,6 +66,7 @@ export function createFacebookPlayerSettingsActions({
     try {reportFailure?.({action, error});} catch { /* Diagnostics cannot change a player action's outcome. */ }
   };
   const available = new Set(nativeActions.filter(action => !action.canRun).map(action => action.id));
+  const unsupported = new Set<PlayerSettingsAction>();
   const listeners = new Set<() => void>();
   let snapshot: PlayerSettingsActionsSnapshot = {actions: nativeActions.filter(action => available.has(action.id)).map(action => action.id), pendingAction: null};
   const publish = (pendingAction: PlayerSettingsAction | null) => {
@@ -66,7 +75,7 @@ export function createFacebookPlayerSettingsActions({
     listeners.forEach(listener => listener());
   };
   const eligible = async (action: NativeAction): Promise<boolean> => {
-    try {return current() && (!action.canRun || await action.canRun() === true) && current();} catch {return false;}
+    try {return current() && !unsupported.has(action.id) && (!action.canRun || await action.canRun() === true) && current();} catch {return false;}
   };
 
   return {
@@ -80,7 +89,8 @@ export function createFacebookPlayerSettingsActions({
       nativeActions.forEach((action, index) => {if (eligibility[index]) available.add(action.id); else available.delete(action.id);});
       publish(null);
     },
-    run: async id => {
+    run: async (id, signal) => {
+      if (signal?.aborted) return "cancelled";
       if (!current() || snapshot.pendingAction || !available.has(id)) return "unavailable";
       const action = nativeActions.find(candidate => candidate.id === id);
       if (!action) return "unavailable";
@@ -89,7 +99,10 @@ export function createFacebookPlayerSettingsActions({
       let unsaved = false;
       try {
         const result = await runFacebookSdkDialog(sdk, async (): Promise<PlatformResult<void>> => {
-          if (!await eligible(action)) {
+          if (signal?.aborted || !current()) return {status: "cancelled"};
+          const mayRun = await eligible(action);
+          if (signal?.aborted || !current()) return {status: "cancelled"};
+          if (!mayRun) {
             available.delete(id);
             return {status: "unavailable", message: "facebook-settings-action-ineligible"};
           }
@@ -100,17 +113,18 @@ export function createFacebookPlayerSettingsActions({
               return {status: "retryable-failure", message: "player-progress-unsaved"};
             }
           }
-          if (!current()) return {status: "cancelled"};
+          if (!current() || signal?.aborted) return {status: "cancelled"};
           try {
             await action.invoke();
             if (!current()) return {status: "cancelled"};
-            if (id !== "quit") available.delete(id);
-            return {status: "success", value: undefined};
+            if (id !== "quit" && !action.repeatable) available.delete(id);
+            return signal?.aborted ? {status: "cancelled"} : {status: "success", value: undefined};
           } catch (error) {
             if (!current()) return {status: "cancelled"};
             const code = typeof error === "object" && error !== null && "code" in error ? error.code : undefined;
             if (code === "USER_INPUT" || code === "USER_CANCELLED") return {status: "cancelled"};
             if (code === "CLIENT_UNSUPPORTED_OPERATION" || code === "PAGE_NOT_LINKED" || code === "GROUP_NOT_LINKED") {
+              unsupported.add(id);
               available.delete(id);
               return {status: "unavailable", message: "facebook-settings-action-unavailable"};
             }
@@ -118,7 +132,7 @@ export function createFacebookPlayerSettingsActions({
             return {status: "retryable-failure", message: "facebook-settings-action-failed"};
           }
         });
-        if (!current()) return "cancelled";
+        if (!current() || signal?.aborted) return "cancelled";
         const outcome: PlayerSettingsActionOutcome = result.status === "success" || result.status === "cancelled" || result.status === "unavailable"
           ? result.status : unsaved ? "unsaved" : "error";
         return outcome;

@@ -82,6 +82,7 @@ export class FacebookCommerceCapability implements CommerceCapability {
   private readonly recovery: FacebookPurchaseRecovery;
   /** Stores payments. */
   private readonly payments: FacebookInstantPayments;
+  private readonly isActive: () => boolean;
   /** Stores operation tail. */
   private operationTail: Promise<void> = Promise.resolve();
   /** Stores active purchase. */
@@ -92,9 +93,10 @@ export class FacebookCommerceCapability implements CommerceCapability {
   private readonly pendingPurchases = new Map<string, FacebookRecoverableCharge>();
 
   /** Creates a facebook commerce capability instance. */
-  constructor(payments: FacebookInstantPayments, grant: FacebookSignedPurchaseGrant) {
+  constructor(payments: FacebookInstantPayments, grant: FacebookSignedPurchaseGrant, isActive: () => boolean = () => true) {
     this.payments = payments;
     this.recovery = new FacebookPurchaseRecovery(payments, grant);
+    this.isActive = isActive;
   }
 
   /** Lists products. */
@@ -137,6 +139,7 @@ export class FacebookCommerceCapability implements CommerceCapability {
   /** Provides run purchase behavior. */
   private async runPurchase(productId: string): Promise<PlatformResult<PurchaseValue>> {
     try {
+      if (!this.isActive()) return {status: "cancelled"};
       /** A temporary grant or consumption failure always retries its original charge first. */
       const cachedPurchase = this.pendingPurchases.get(productId);
       if (cachedPurchase && !this.recovery.isQuarantined(cachedPurchase)) {
@@ -154,6 +157,7 @@ export class FacebookCommerceCapability implements CommerceCapability {
         if (completion.status !== "rejected") return this.purchaseResult(completion);
       }
       /** One explicit user action may create at most one new provider charge. */
+      if (!this.isActive()) return {status: "cancelled"};
       const [purchase] = parseFacebookUnconsumedPurchases([await this.payments.purchaseAsync({productID: productId})]);
       if (!purchase) return {status: "terminal-failure", message: "facebook-purchase-invalid"};
       if (purchase.productID !== productId) {

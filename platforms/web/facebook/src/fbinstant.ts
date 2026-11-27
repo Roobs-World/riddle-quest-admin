@@ -6,6 +6,8 @@ export interface FacebookPlayerData {
 
 /** Defines the contract for facebook instant player. */
 export interface FacebookInstantPlayer {
+  /** Native connections expose identifiers only under Zero Permissions. */
+  getConnectedPlayersAsync?(): Promise<Array<{getID(): string}>>;
   /** Reads Meta's coarse age category without exposing a birth date. */
   getAgeCategoryAsync?(): Promise<"TN" | "AD" | "UNKNOWN">;
   /** Gets id. */
@@ -27,10 +29,16 @@ export interface FacebookInstantPlayer {
 
 /** Defines the contract for facebook instant context. */
 export interface FacebookInstantContext {
+  /** Native friend picker creates a context after an explicit player request. */
+  createAsync?(suggestedPlayerIDs?: string | string[]): Promise<void>;
+  /** Switches to an observed native context, or SOLO to leave one. */
+  switchAsync?(id: string, switchSilentlyIfSolo?: boolean): Promise<void>;
+  /** Context participants expose identifiers without profile data. */
+  getPlayersAsync?(): Promise<Array<{getID(): string}>>;
   /** Gets id. */
   getID(): string | null;
   /** Gets type. */
-  getType(): "SOLO" | "THREAD" | "GROUP";
+  getType(): "SOLO" | "POST" | "THREAD" | "GROUP";
   /** Provides choose async behavior. */
   chooseAsync(options?: {
     /** Stores min size. */
@@ -56,7 +64,7 @@ export interface FacebookOverlayView {
   showAsync(): Promise<void>;
   /** Provides dismiss async behavior. */
   dismissAsync?(): Promise<void>;
-  /** Optional runtime extension; documented v8 views need only show/dismiss lifecycle APIs. */
+  /** Releases the native overlay and its retained resources. */
   destroyAsync?(): Promise<void>;
 }
 
@@ -169,6 +177,10 @@ export interface FacebookInvitePayload {
 
 /** Meta's current native tournament getters, inspected in the public v8 SDK. */
 export interface FacebookInstantTournament {
+  /** Optional native presentation title; never game-owned authority. */
+  getTitle?(): string | null;
+  /** Native tournament family reported by the host. */
+  getTournamentType?(): "DEFAULT" | "PRIVATE" | "DAILY" | "PAGE_HOSTED";
   /** Meta's opaque tournament identifier, never an official game ranking key. */
   getID(): string;
   /** Context selected by the native tournament. */
@@ -181,6 +193,12 @@ export interface FacebookInstantTournament {
 
 /** Current v8 native tournament dialog and score APIs. */
 export interface FacebookInstantTournaments {
+  /** Lists native tournaments in which this player is eligible to participate. */
+  getTournamentsAsync?(): Promise<FacebookInstantTournament[]>;
+  /** Explicitly joins an eligible native tournament and changes context. */
+  joinAsync?(tournamentID: string): Promise<void>;
+  /** Allowlisted group-chat competition; requires configured native scoring. */
+  createPrivateAsync?(payload: {initialScore: number; data?: Record<string, string | number>}): Promise<FacebookInstantTournament>;
   /** Creates a native presentation tournament through Meta's dialog. */
   createAsync(payload: {
     /** Server-derived adjusted milliseconds, never a browser-computed score. */
@@ -226,6 +244,27 @@ export interface FacebookInstantCommunity {
 
 /** Defines the contract for facebook instant sdk. */
 export interface FacebookInstantSdk {
+  /** Existing Messenger Rooms match, available only inside an eligible native host. */
+  room?: {getCurrentMatchAsync?(): Promise<{getID(): string; getContextID(): string}>};
+  /** Deprecated native banner surface; requires an explicitly configured placement. */
+  loadBannerAdAsync?(placementId: string, position?: "top" | "bottom"): Promise<void>;
+  hideBannerAdAsync?(): Promise<void>;
+  /** Optional player-requested device feedback. */
+  performHapticFeedbackAsync?(): Promise<void>;
+  /** Opens an approved absolute destination through Meta's confirmation UI. */
+  openExternalLinkAsync?(url: string): Promise<void>;
+  /** Coarse host information used for diagnostics, without player identifiers. */
+  getPlatform?(): "IOS" | "ANDROID" | "WEB" | "MOBILE_WEB" | null;
+  getSDKVersion?(): string;
+  getEntryPointAsync?(): Promise<string>;
+  /** Read-only desktop presentation signals; they do not request fullscreen. */
+  getDisplayMode?(): "NORMAL" | "EXPANDED" | "FULLSCREEN" | null;
+  onDisplayModeChange?(callback: (mode: "NORMAL" | "EXPANDED" | "FULLSCREEN") => void): void;
+  /** Bounded, non-authoritative game session context attached to platform updates. */
+  setSessionData?(data: Record<string, string | number>): void;
+  /** Posts an authoritative comparable activity score to the current native session. */
+  postSessionScore?(score: number): void;
+  postSessionScoreAsync?(score: number): Promise<void>;
   /** Sends native Meta events; a returned error means the event was rejected. */
   logEvent?(name: string, valueToSum: number | null, parameters: Record<string, string>): {
     /** Stable provider failure category. */

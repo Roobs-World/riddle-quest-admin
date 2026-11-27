@@ -1,5 +1,5 @@
 /** Explicit player requests that a host can offer from Settings. */
-export type PlayerSettingsAction = "create-shortcut" | "follow-community" | "join-community" | "quit";
+export type PlayerSettingsAction = "create-shortcut" | "follow-community" | "join-community" | "privacy-policy" | "terms-of-use" | "quit";
 
 export type PlayerSettingsActionOutcome = "success" | "cancelled" | "unavailable" | "error" | "unsaved";
 
@@ -14,6 +14,6 @@ export interface PlayerSettingsActionsCapability {
   getSnapshot(): PlayerSettingsActionsSnapshot;
   subscribe(listener: () => void): () => void;
   refresh(): Promise<void>;
-  run(action: PlayerSettingsAction): Promise<PlayerSettingsActionOutcome>;
+  run(action: PlayerSettingsAction, signal?: AbortSignal): Promise<PlayerSettingsActionOutcome>;
   retire(): void;
 }

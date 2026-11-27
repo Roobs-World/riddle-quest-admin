@@ -1,5 +1,9 @@
 # Facebook Instant Games
 
+- [Complete current API inventory](facebook-api-research-2026-11-27.md)
+- [API submission checklist and reviewer journeys](facebook-api-submission-checklist-2026-11-27.md)
+- [Live dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md)
+- [Expanded API candidate and local build evidence](evidence/facebook-expanded-api-build-2026-11-27.md)
 - [Get Riddle Quest working on Facebook](facebook-setup-guide.md)
 - [Assets](assets/)
 - [Evidence](evidence/)

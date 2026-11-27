@@ -1,0 +1,157 @@
+{
+  "checkedAt": "2026-11-27",
+  "appId": "1748953042991569",
+  "source": "Meta Developer Tools read-only connector",
+  "reviewStatus": {
+    "app_id": "1748953042991569",
+    "app_name": "Riddle Quest",
+    "submission_status": "UNSUBMITTED",
+    "submission_id": "1748953122991561",
+    "is_approved": true,
+    "is_pending": false,
+    "is_canceled": false,
+    "submitted_time": null,
+    "review_completed_time": null,
+    "last_reviewed_submission_id": null,
+    "last_reviewed_is_approved": null,
+    "last_reviewed_completed_time": null
+  },
+  "requirements": {
+    "app_id": "1748953042991569",
+    "can_submit": false,
+    "cannot_submit_reason": "Cannot submit to App Review while a previous submission is in review.",
+    "app_settings_valid": {
+      "has_privacy_policy": true,
+      "business_verification_passes": true
+    },
+    "requested_privileges": [
+      {
+        "name": "Instant Games Zero Permission Access",
+        "steps": [
+          {
+            "step_name": "data_use_checkup",
+            "is_completed": true
+          }
+        ],
+        "prerequisite_privileges": [],
+        "error_message": null
+      }
+    ]
+  },
+  "privileges": {
+    "app_id": "1748953042991569",
+    "privileges": [
+      {
+        "name": "read_audience_network_insights",
+        "is_live": true,
+        "is_rejected": false,
+        "is_devops_approved": true,
+        "grant_status": "DEVOPS_APPROVED",
+        "access_level": "standard",
+        "in_current_submission": false
+      },
+      {
+        "name": "email",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": false
+      },
+      {
+        "name": "gaming_profile",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": false
+      },
+      {
+        "name": "gaming_user_picture",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": false
+      },
+      {
+        "name": "openid",
+        "is_live": true,
+        "is_rejected": false,
+        "is_devops_approved": true,
+        "grant_status": "DEVOPS_APPROVED",
+        "access_level": "standard",
+        "in_current_submission": false
+      },
+      {
+        "name": "gaming_user_locale",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": false
+      },
+      {
+        "name": "Instant Games Zero Permission Access",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": true
+      },
+      {
+        "name": "public_profile",
+        "is_live": false,
+        "is_rejected": true,
+        "is_devops_approved": false,
+        "grant_status": "REJECTED",
+        "access_level": "none",
+        "in_current_submission": false
+      }
+    ],
+    "rejections": [
+      {
+        "privilege_name": "email",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      },
+      {
+        "privilege_name": "gaming_profile",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      },
+      {
+        "privilege_name": "gaming_user_picture",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      },
+      {
+        "privilege_name": "gaming_user_locale",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      },
+      {
+        "privilege_name": "Instant Games Zero Permission Access",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      },
+      {
+        "privilege_name": "public_profile",
+        "rejection_reasons": {},
+        "nmi_reasons": null
+      }
+    ],
+    "general_rejections": {},
+    "permission": null
+  },
+  "observations": [
+    "Review status and requirements disagree; dashboard confirmation is required.",
+    "These are app-review records, not proof of selected Instant Games bundle or hosted API behavior.",
+    "No review, permission, publication or app-settings changes were made."
+  ]
+}

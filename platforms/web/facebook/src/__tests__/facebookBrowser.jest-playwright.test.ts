@@ -9,6 +9,7 @@ import {describe, expect, it} from "@jest/globals";
 import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
 import {chromium} from "@playwright/test";
 import type {PlayerData} from "../../../../../src/platform/contracts/capabilities";
+import {withProtectedFacebookFixtures} from "./protectedFixtures.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -37,19 +38,24 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     /** Provides {exec file sync} behavior. */
     const {execFileSync} = await import("node:child_process");
     /** Provides {create server} behavior. */
-    const {createServer} = await import("node:http");
+    const {createServer} = await import("node:https");
     /** Provides {mkdtemp, read file, rm} behavior. */
-    const {mkdtemp, readFile, rm} = await import("node:fs/promises");
+    const {mkdir, mkdtemp, readFile, rm} = await import("node:fs/promises");
     /** Provides {tmpdir} behavior. */
     const {tmpdir} = await import("node:os");
     /** Provides path behavior. */
     const path = await import("node:path");
     /** Provides package root behavior. */
     const packageRoot = path.resolve(__dirname, "../../..");
+    const evidenceDirectory = path.resolve(packageRoot, "../../docs/facebook/evidence/expanded-api-2026-11-27");
+    await mkdir(evidenceDirectory, {recursive: true});
     // This harness owns a separate explicit 13+ fixture so reusing other release
     // builds cannot silently disable the platform capabilities under test.
     /** Provides dist directory behavior. */
     const distDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-"));
+    const tlsDirectory = await mkdtemp(path.join(tmpdir(), "riddle-quest-facebook-browser-tls-"));
+    execFileSync("openssl", ["req", "-x509", "-newkey", "rsa:2048", "-nodes", "-days", "1", "-subj", "/CN=localhost",
+      "-keyout", path.join(tlsDirectory, "key.pem"), "-out", path.join(tlsDirectory, "cert.pem")], {stdio: "ignore"});
     execFileSync("pnpm", ["--filter", "riddle-quest", "build:facebook"], {
       cwd: path.resolve(packageRoot, "../.."),
       env: {
@@ -61,7 +67,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       stdio: "inherit",
     });
     /** Provides server behavior. */
-    const server = createServer(async (request, response) => {
+    const server = createServer({key: await readFile(path.join(tlsDirectory, "key.pem")),
+      cert: await readFile(path.join(tlsDirectory, "cert.pem"))}, async (request, response) => {
       /** Requests url. */
       const requestUrl = new URL(request.url ?? "/", "http://127.0.0.1");
       /** Requests ed. */
@@ -99,12 +106,16 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
     const address = server.address();
     if (!address || typeof address === "string") throw new Error("Facebook browser fixture did not bind a TCP port");
     /** Both provider journeys use the same isolated build origin. */
-    const origin = `http://127.0.0.1:${address.port}`;
+    const origin = `https://127.0.0.1:${address.port}`;
     /** Provides browser behavior. */
     const browser = await chromium.launch({headless: true});
     try {
       /** Provides page behavior. */
-      const page = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
+      const page = withProtectedFacebookFixtures(await (await browser.newContext({viewport: {width: 390, height: 844}, ignoreHTTPSErrors: true})).newPage());
+      const startupDiagnostics: string[] = [];
+      page.on("console", message => {if (message.type() === "error") startupDiagnostics.push(message.text());});
+      page.on("requestfailed", request => startupDiagnostics.push(`${request.url()}: ${request.failure()?.errorText}`));
+      page.on("request", request => {if (request.method() === "POST") startupDiagnostics.push(`POST ${request.url()}`);});
       await page.route("https://connect.facebook.net/en_US/fbinstant.8.0.js", (route) =>
         route.fulfill({status: 200, contentType: "text/javascript", body: "/* injected by browser contract test */"}),
       );
@@ -184,6 +195,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await page.getByRole("alert").getByRole("heading").waitFor({timeout: 15_000});
       await expectWebStandards(page, "facebook startup recovery");
       expect(await page.getByRole("button", {name: /retry/i}).isVisible()).toBe(true);
+      if (!await page.evaluate(nonce => window.__facebookEvents.includes(`signed:${nonce}`), FAILURE_NONCE)) {
+        throw new Error(`Startup failed before the identity fixture: ${JSON.stringify({body: await page.locator("body").innerText(), startupDiagnostics})}`);
+      }
       expect(await page.evaluate(() => window.__facebookEvents)).toEqual([
         "initialize",
         "progress:30",
@@ -199,7 +213,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await page.locator('script[src*="cdn.jest.com"]').count()).toBe(0);
 
       /** Provides success page behavior. */
-      const successPage = await (await browser.newContext({viewport: {width: 390, height: 844}})).newPage();
+      const successPage = withProtectedFacebookFixtures(await (await browser.newContext({viewport: {width: 390, height: 844}, ignoreHTTPSErrors: true})).newPage());
       successPage.setDefaultTimeout(5_000);
       /** Provides success requests behavior. */
       const successRequests: string[] = [];
@@ -397,6 +411,9 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
               "getInterstitialAdAsync",
               "getRewardedVideoAsync",
               "shareAsync",
+              "performHapticFeedbackAsync",
+              "openExternalLinkAsync",
+              "player.getConnectedPlayersAsync",
             ];
           },
           /** Records native analytics at the provider boundary. */
@@ -404,6 +421,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             window.__facebookEvents.push(`analytics:${name}:${JSON.stringify(parameters)}`);
             return null;
           },
+          async performHapticFeedbackAsync() {window.__facebookEvents.push("haptic");},
+          async openExternalLinkAsync(url) {window.__facebookEvents.push(`external:${url}`);},
           /** Simulates Meta's completion, cancellation and no-fill contracts without creating rewards. */
           async getRewardedVideoAsync(placementId) {
             window.__facebookEvents.push(`rewarded:placement:${placementId}`);
@@ -491,6 +510,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             },
           },
           player: {
+            async getConnectedPlayersAsync() {return [{getID: () => "fixture-friend-a"}, {getID: () => "fixture-friend-b"}];},
             /** Gets id. */
             getID() {
               window.__facebookEvents.push("player");
@@ -509,6 +529,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
             /** Sets data async. */
             async setDataAsync(update) {
               window.__facebookEvents.push("write");
+              const preferences = Reflect.get(update, "riddleQuestPreferences");
+              if (preferences) Reflect.set(window, "__savedFacebookHaptics", preferences.hapticsEnabled);
               /** Player snapshot supplied by the actual target storage adapter. */
               const value = Reflect.get(update, "riddleQuestPlayerState");
               if (value?.activeGame?.currentLetters.join("") === "PIAN" && Reflect.get(window, "__facebookFailDraft")) {
@@ -660,6 +682,14 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await expectWebStandards(successPage, "facebook game");
       await verifyMultiplayer("fr");
       await successPage.locator(".multiplayer-navigation-action").click();
+      const socialPanel = successPage.locator(".facebook-native-social");
+      await socialPanel.locator("summary").click();
+      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
+      await socialPanel.getByText("Joueurs dans ce groupe : 3", {exact: true}).waitFor();
+      await socialPanel.locator('[aria-busy="false"]').waitFor();
+      expect(await socialPanel.innerText()).not.toContain("fixture-friend");
+      await successPage.screenshot({path: path.join(evidenceDirectory, "native-social-mobile.png")});
+      await socialPanel.locator("summary").click();
       await verifyTournamentPresentation(successPage);
       await verifyRaceContextDialogs(successPage, process.env.FACEBOOK_CONTEXT_SCREENSHOT_PATH);
       if (process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1") await verifyContextChallenges(successPage);
@@ -671,6 +701,19 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator(".game-bottom-navigation button").first().click();
       const settings = successPage.locator(".modal-settings");
       await settings.waitFor();
+      const haptics = settings.getByRole("button", {name: /^Vibrations?\b/});
+      expect(await haptics.getAttribute("aria-pressed")).toBe("false");
+      await haptics.click();
+      await haptics.and(settings.locator('[aria-pressed="true"]')).waitFor();
+      await successPage.waitForFunction(() => Reflect.get(window, "__savedFacebookHaptics") === true);
+      await settings.getByRole("button", {name: /Politique de confidentialit/}).click();
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("external:https://roobsworld.com/riddle-quest/privacy"));
+      await settings.getByRole("button", {name: /Conditions d'utilisation/}).click();
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("external:https://roobsworld.com/riddle-quest/terms"));
+      await successPage.screenshot({path: path.join(evidenceDirectory, "settings-mobile.png")});
+      await haptics.click();
+      await haptics.and(settings.locator('[aria-pressed="false"]')).waitFor();
+      await successPage.waitForFunction(() => Reflect.get(window, "__savedFacebookHaptics") === false);
       const notificationToggle = settings.getByRole("button", {name: /^Notifications\b/});
       expect(await notificationToggle.count()).toBe(1);
       await notificationToggle.and(settings.locator('[aria-busy="false"][aria-pressed="false"]')).waitFor();
@@ -728,11 +771,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await successPage.locator(".keyboard").getByRole("button", {name: new RegExp(`^${letter}$`)}).click();
       }
       await successPage.locator(".submit-action").click();
-      await successPage.waitForFunction(() => window.__facebookEvents.includes("ads:show"));
-      /** The post-result ad uses Meta's configured ID and loads before showing. */
-      const providerEvents = await successPage.evaluate(() => window.__facebookEvents);
-      expect(providerEvents).toContain("ads:interstitial:1748953042991569_1765481644672042");
-      expect(providerEvents.indexOf("ads:load")).toBeLessThan(providerEvents.indexOf("ads:show"));
+      await successPage.locator(".fanfare-content .reward-continue").waitFor();
+      expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
       /** Dismissing Meta sharing leaves the result available for a later explicit retry. */
       const resultShare = successPage.locator(".fanfare-content .play-secondary");
       await resultShare.click();
@@ -745,6 +785,24 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           {intent: "SHARE", switchContext: false, data: {gameMode: "classic", referralToken: "t".repeat(43)}, png: true}]);
       expect(referralRequests).toEqual(Array.from({length: 2}, () => ({authorization: `Bearer ${firebaseIdToken}`, appCheck: appCheckToken,
         body: JSON.stringify({data: {}})})));
+      for (const [answer, clue] of [["CLOCK", "What has a face and hands but no arms?"],
+        ["GLOVE", "What has a thumb and four fingers but is not alive?"]]) {
+        await successPage.locator(".fanfare-content .reward-continue").click();
+        await successPage.locator(".fanfare-content").waitFor({state: "detached"});
+        await successPage.getByText(clue, {exact: true}).waitFor();
+        for (let tip = 0; tip < 3 && !await successPage.locator(".keyboard").getByRole("button", {name: "C", exact: true}).count(); tip++) {
+          await successPage.locator(".tooltip-backdrop").first().locator("button").click();
+        }
+        for (const letter of answer) await successPage.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
+        await successPage.locator(".submit-action").click();
+        await successPage.locator(".fanfare-content .reward-continue").waitFor();
+        if (answer === "CLOCK") expect(await successPage.evaluate(() => window.__facebookEvents.includes("ads:show"))).toBe(false);
+      }
+      await successPage.waitForFunction(() => window.__facebookEvents.includes("ads:show"));
+      const providerEvents = await successPage.evaluate(() => window.__facebookEvents);
+      expect(providerEvents.filter(event => event === "ads:show")).toHaveLength(1);
+      expect(providerEvents).toContain("ads:interstitial:1748953042991569_1765481644672042");
+      expect(providerEvents.indexOf("ads:load")).toBeLessThan(providerEvents.indexOf("ads:show"));
       await successPage.reload();
       await successPage.waitForFunction(
         () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -823,6 +881,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await new Promise<void>((resolve, reject) => server.close((error) => (error ? reject(error) : resolve())));
       } finally {
         await rm(distDirectory, {force: true, recursive: true});
+        await rm(tlsDirectory, {force: true, recursive: true});
       }
     }
   }, 60_000);

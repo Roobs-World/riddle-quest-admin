@@ -15,6 +15,8 @@ export type PlayerPreferences = {
   muted?: boolean;
   /** Whether non-essential motion is reduced. */
   reducedMotion?: boolean;
+  /** Explicit opt-in to provider-owned vibration feedback. */
+  hapticsEnabled?: boolean;
   /** Master preference for game reminders and challenge notifications. */
   notificationsEnabled?: boolean;
   /** Whether the player has completed onboarding. */
@@ -42,6 +44,9 @@ const supportedLocales = new Set<Locale>(LANGUAGE_OPTIONS.map(({code}) => code))
 const preferenceSubscribers = new Set<(change: PlayerPreferenceChange) => void>();
 /** Read-only subscribers observe applied motion preferences without creating provider writes. */
 const motionSubscribers = new Set<() => void>();
+/** Feedback opt-in belongs to the restored account rather than browser fallback storage. */
+const hapticsSubscribers = new Set<() => void>();
+let hapticsEnabled = false;
 /** All notification paths observe the same applied preference. */
 const notificationSubscribers = new Set<() => void>();
 /** Retains the preference when embedded browser storage is unavailable. */
@@ -141,6 +146,8 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
   /** Provides onboarding complete behavior. */
   const onboardingComplete = preferences.onboardingComplete ?? false;
   const notificationsEnabled = preferences.notificationsEnabled ?? true;
+  hapticsEnabled = preferences.hapticsEnabled === true;
+  hapticsSubscribers.forEach(subscriber => subscriber());
 
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.locale, locale);
   safeBrowserStorageSet("local", PLAYER_PREFERENCE_STORAGE_KEYS.soundEnabled, String(!muted));
@@ -152,7 +159,27 @@ export function applyPlayerPreferences(preferences: PlayerPreferences): Required
     typeof preferences.onboardingComplete === "boolean" ? preferences.onboardingComplete : undefined;
   setLocale(locale);
   applyReducedMotionPreference(reducedMotion);
-  return {locale, muted, reducedMotion, notificationsEnabled, onboardingComplete};
+  return {locale, muted, reducedMotion, hapticsEnabled, notificationsEnabled, onboardingComplete};
+}
+
+/** Missing account preferences never inherit another player's vibration opt-in. */
+export function isPlayerHapticsEnabled(): boolean {
+  return hapticsEnabled;
+}
+
+/** The active platform persists this choice through the existing preference stream. */
+export function setPlayerHapticsEnabled(enabled: boolean): void {
+  if (browserPlayerStateMutationGuard && !browserPlayerStateMutationGuard()) return;
+  if (hapticsEnabled === enabled) return;
+  hapticsEnabled = enabled;
+  hapticsSubscribers.forEach(subscriber => subscriber());
+  emitPreferenceChange({hapticsEnabled: enabled});
+}
+
+/** Observes restored account preferences and deliberate Settings changes. */
+export function subscribeToPlayerHaptics(subscriber: () => void): () => void {
+  hapticsSubscribers.add(subscriber);
+  return () => {hapticsSubscribers.delete(subscriber);};
 }
 
 /** An absent preference keeps game notifications on by default. */
@@ -280,6 +307,8 @@ export function clearBrowserPlayerState(preserveKeys: readonly string[] = []): v
     failures.push(error);
   } finally {
     onboardingCompleteOverride = undefined;
+    hapticsEnabled = false;
+    hapticsSubscribers.forEach(subscriber => subscriber());
     notificationsEnabledOverride = undefined;
     notificationSubscribers.forEach(subscriber => subscriber());
     /** Provides root behavior. */

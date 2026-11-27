@@ -121,6 +121,17 @@
     "NOTIFY_PLAYER": "Отправить вызов",
     "INVITE_QUEUED": "Приглашение сохранено. Оно появится во входящих игрока в многопользовательском режиме.",
     "LIVE_HISTORY_TITLE": "Недавние матчи",
-    "LIVE_HISTORY_EMPTY": "Завершённых матчей пока нет."
+    "LIVE_HISTORY_EMPTY": "Завершённых матчей пока нет.",
+    "FACEBOOK_SOCIAL": "Играть в Facebook",
+    "FACEBOOK_FRIEND_COUNT": "Друзья, которые играют: {count}",
+    "FACEBOOK_CONTEXT_COUNT": "Игроки в этой группе: {count}",
+    "FACEBOOK_CREATE_CONTEXT": "Выбрать друзей",
+    "FACEBOOK_LEAVE_CONTEXT": "Вернуться к одиночной игре",
+    "FACEBOOK_TOURNAMENTS": "Турниры Facebook",
+    "FACEBOOK_TOURNAMENT_NUMBER": "Турнир {number}",
+    "FACEBOOK_JOIN_TOURNAMENT": "Присоединиться к турниру",
+    "FACEBOOK_REFRESH": "Обновить",
+    "FACEBOOK_JOIN_ROOM": "Присоединиться к игре в комнате",
+    "FACEBOOK_SHARE_SESSION_SCORE": "Поделиться результатом гонки"
   }
 }
