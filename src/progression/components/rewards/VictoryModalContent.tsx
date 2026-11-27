@@ -2,6 +2,7 @@ import {useRef} from "react";
 import type {GameSessionState} from "../../../gameplay/session/gameSession";
 import {isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
 import {useTranslator} from "../../../localization/browser/i18n";
+import {SpinningWheelLoader} from "../../../app/components/feedback/SpinningWheelLoader";
 import {CoinFlight} from "./CoinFlight";
 import chestClosedUrl from "../../../../assets/images-web/chest-closed.webp";
 import chestOpenUrl from "../../../../assets/images-web/chest-open.webp";
@@ -45,10 +46,11 @@ export function VictoryModalContent({state, onAdvance, onBalancePreview}: {
     <div className="fanfare-content">
       <VictoryChestAward key={state.lastOutcome?.id} amount={reward?.coinsEarned ?? null}
         total={state.profile?.coins ?? reward?.totalCoins ?? 0} onBalancePreview={onBalancePreview} />
-      {state.lastOutcome?.kind === "win" && <button className="play-primary reward-continue"
-        disabled={advancePending} onClick={onAdvance}>
-        {tr(state.riddle?.gameMode !== "classic" ? "GameScreenAlerts.NEXT_BUTTON" : "VictoryModal.NEXT_LEVEL_BUTTON")}
-      </button>}
+      {state.lastOutcome?.kind === "win" && (advancePending
+        ? <SpinningWheelLoader className="reward-continue-loading" />
+        : <button className="play-primary reward-continue" onClick={onAdvance}>
+          {tr(state.riddle?.gameMode !== "classic" ? "GameScreenAlerts.NEXT_BUTTON" : "VictoryModal.NEXT_LEVEL_BUTTON")}
+        </button>)}
     </div>
   </>;
 }

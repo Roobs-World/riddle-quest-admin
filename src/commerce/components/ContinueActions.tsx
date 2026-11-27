@@ -51,6 +51,7 @@ export function ContinueModalPage({
   const canAffordSkip = balance >= SKIP_COIN_COST;
   if (!economyAvailable) return (
     <div className="modal-actions continue-actions">
+      {(pending || recoveryPending) && <p role="status">{tr("Accessibility.LOADING")}</p>}
       <button className="play-primary loss-next-action" disabled={!onDecline || pending || recoveryPending} onClick={onDecline}>
         {tr("GameScreenAlerts.NEXT_BUTTON")}
       </button>
@@ -58,6 +59,7 @@ export function ContinueModalPage({
   );
   return (
     <div className="modal-actions continue-actions">
+      {(pending || recoveryPending) && <p role="status">{tr("Accessibility.LOADING")}</p>}
       <div className="continue-balance">
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>

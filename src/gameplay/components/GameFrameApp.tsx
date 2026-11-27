@@ -332,6 +332,10 @@ export function GameFrameApp({
 
   /** Hosted answer edits wait for the synchronous journal; utility navigation stays available. */
   const answerInputReady = !onSaveGame || inputReady;
+  /** A dismissed terminal round remains unplayable until its replacement arrives. */
+  const waitingForNextRiddle = Boolean(state.engineSnapshot?.gameOver && state.lastOutcome &&
+    state.lastOutcome.riddleId === state.riddle?.riddleId &&
+    state.lastOutcome.sessionToken === state.riddle?.sessionToken && state.modal !== "victory");
 
   /** Provides type keyboard letter behavior. */
   const typeKeyboardLetter = useCallback(
@@ -379,7 +383,18 @@ export function GameFrameApp({
           commerceAvailable={commerceAvailable}
         />
 
-        {!state.riddle || waitingForSkippedRiddle ? (
+        {waitingForNextRiddle ? (
+          <section className="game-loading game-round-transition" aria-busy="true">
+            <SpinningWheelLoader className="game-round-loading" />
+            {(startupError || state.notice) && <p role="status">{startupError ?? (
+              state.notice!.startsWith("WebPortal.") || state.notice!.startsWith("ErrorMessages.")
+                ? tr(state.notice!) : state.notice
+            )}</p>}
+            <button onClick={() => dispatch({type: "openModal", modal: "settings"})}>
+              {tr("Navigation.SETTINGS_BUTTON")}
+            </button>
+          </section>
+        ) : !state.riddle || waitingForSkippedRiddle ? (
           startupError || waitingForSkippedRiddle ? (
             <section className="game-loading">
               {(startupError || state.notice) && <p role="status">{startupError ?? (
@@ -420,6 +435,10 @@ export function GameFrameApp({
                 </button>
               )}
             </section>
+
+            {state.pendingCoinSpend?.continueState && <div className="game-notice" role="status" aria-live="polite">
+              {tr("Accessibility.LOADING")}
+            </div>}
 
             {state.notice && (
               <div className="game-notice" role="status" aria-live="polite">

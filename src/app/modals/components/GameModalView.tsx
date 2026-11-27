@@ -91,6 +91,8 @@ export function GameModalView({
   onCompletionMilestonesPresented,
 }: GameModalViewProps) {
   const {modal} = state;
+  /** A newly available Next action joins the dialog's native focus order. */
+  const completionAdvancePending = isCompletionAdvancePending(state);
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
   /** Keeps status announcements inside the active dialog's accessible reading scope. */
@@ -213,7 +215,7 @@ export function GameModalView({
         externalNotice.removeAttribute("aria-hidden");
       }
     };
-  }, [modalOpen, state.guessPending, state.lastRewards, modal, continuationPending, interactionBlocked]);
+  }, [modalOpen, state.guessPending, state.lastRewards, modal, continuationPending, completionAdvancePending, interactionBlocked]);
 
   /** Completion celebrations survive closing victory and loading the next question. */
   const completion = state.completionMilestones[0];
@@ -285,7 +287,7 @@ export function GameModalView({
         )}
         {modal === "victory" ? <VictoryModalContent key={state.lastOutcome?.id ?? "victory"}
           state={state} onBalancePreview={onCoinBalancePreview} onAdvance={() => {
-            if (isCompletionAdvancePending(state)) return;
+            if (completionAdvancePending) return;
             onClose();
             window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
               detail: {outcomeKey: state.lastOutcome ? completionPresentationKey(state.lastOutcome) : null},

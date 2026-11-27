@@ -58,7 +58,8 @@ describe("VictoryModalContent", () => {
     const classic = renderVictory({...completedState("classic"), completionAcknowledged: false});
     expect(classic).toContain('class="play-primary reward-continue">Next Level</button>');
     const daily = renderVictory({...completedState("challenge"), completionAcknowledged: false});
-    expect(daily).toContain('class="play-primary reward-continue" disabled="">Next</button>');
+    expect(daily).toContain('class="spinning-wheel-loader reward-continue-loading"');
+    expect(daily).not.toContain('class="play-primary reward-continue"');
   });
 
   it("enables Next Level while confirmed milestones are still queued", () => {
@@ -73,7 +74,10 @@ describe("VictoryModalContent", () => {
     const state = completedState("classic");
     state.completionAcknowledged = false;
     state.profile = {...state.profile!, classicIndex: 1};
-    expect(renderVictory(state)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
+    const html = renderVictory(state);
+    expect(html).toContain('class="spinning-wheel-loader reward-continue-loading"');
+    expect(html).toContain('role="status"');
+    expect(html).not.toContain("Next Level");
   });
 
   it("allows a provisional Classic win to continue without waiting for rewards", () => {
@@ -102,7 +106,10 @@ describe("VictoryModalContent", () => {
     state.completionAcknowledged = false;
     if (missing === "index") state.riddle = {...state.riddle!, index: undefined};
     else state.profile = null;
-    expect(renderVictory(state)).toContain('class="play-primary reward-continue" disabled="">Next Level</button>');
+    const html = renderVictory(state);
+    expect(html).toContain('class="spinning-wheel-loader reward-continue-loading"');
+    expect(html).toContain('role="status"');
+    expect(html).not.toContain("Next Level");
   });
 
   it("keeps a referral-inclusive total without rendering bonus rows", () => {
@@ -115,7 +122,8 @@ describe("VictoryModalContent", () => {
     expect(html).not.toContain("<dl");
     /** An unacknowledged Daily result still cannot advance. */
     const provisional = renderVictory({...state, completionAcknowledged: false});
-    expect(provisional).toContain('class="play-primary reward-continue" disabled=""');
+    expect(provisional).toContain('class="spinning-wheel-loader reward-continue-loading"');
+    expect(provisional).not.toContain('class="play-primary reward-continue"');
     expect(provisional).not.toContain("<dl");
   });
 });

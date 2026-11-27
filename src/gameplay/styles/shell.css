@@ -112,6 +112,18 @@
   min-height: 520px;
   overflow: hidden;
 }
+.game-round-transition {
+  min-height: clamp(180px, 50dvh, 360px);
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 16px;
+}
+.game-round-transition .game-round-loading {
+  min-height: 140px;
+  height: 140px;
+  background: transparent;
+}
 .spinning-wheel-loader {
   position: relative;
   isolation: isolate;

@@ -63,6 +63,7 @@ export function SkipModalPage({
   if (gameMode === "challenge") {
     return <div className="modal-actions">
       <p>{tr("GameScreenAlerts.DAILY_SKIP_MESSAGE")}</p>
+      {pending && <p role="status">{tr("Accessibility.LOADING")}</p>}
       <button className="play-primary" disabled={pending} onClick={() => {onRequestAction(); onClose();}}>
         {tr("GameScreenAlerts.DAILY_SKIP_CONTINUE_BUTTON")}
       </button>
@@ -119,6 +120,7 @@ function CoinActionPrompt({
 
   return (
     <div className="modal-actions">
+      {pending && <p role="status">{tr("Accessibility.LOADING")}</p>}
       <p>
         {tr("GameScreenAlerts.COST_COINS_PREFIX")}
         {cost}
