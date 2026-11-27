@@ -13,11 +13,12 @@ The scope remains every possible applicable API integration. An absent adapter, 
 - [Payment configuration and deployment evidence](evidence/facebook-payments-catalog-2026-11-27.md): catalog exists; payout, approval, webhook readiness and checkout activation remain open.
 - [Expanded API build](evidence/facebook-expanded-api-build-2026-11-27.md): the first completed candidate unit built after session-score wiring, with 418 files, 4.48 MB total and 0.69 MB initial resources; hosted acceptance remains open.
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md): 398 focused tests, the expanded local browser journey and backend preflight passed. The production build contains 420 files, 4.50 MB total and 0.70 MB initial resources.
+- [Testing upload and hosted smoke check](evidence/facebook-client-testing-2026-11-27.md): version 10 completed processing and was assigned to Testing; an independently downloaded ZIP matched the exact uploaded hash. Real startup, legal-link cancellation and social discovery were observed. A desktop picker-overload rejection produced a client correction and new regression coverage. Firebase remains unchanged by explicit owner instruction.
 - [Earlier source coverage](evidence/facebook-api-coverage-2026-11-27.md): historical baseline, superseded by this checklist's broader scope for future work.
 
 | Code | What the evidence establishes |
 | --- | --- |
-| W | Source implementation and its entry/UI wiring were inspected. Final artifact inclusion and hosted acceptance are still required. |
+| W | Source implementation and its entry/UI wiring were inspected. Exact-artifact and supported-host evidence are tracked separately; this code alone is not acceptance. |
 | C | Implementation is wired conditionally but provider/deployment prerequisites prevent claiming an active integration. |
 | G | Integration gap: no reachable implementation or complete meaningful workflow was found. |
 | H9 | Narrow historical hosted observation in version 9 only. Every changed flow still needs final-candidate acceptance. |

@@ -572,7 +572,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await installRaceContextDialogs(successPage, nativeMatching, process.env.FACEBOOK_BROWSER_CONTEXT_EVENTS !== "0",
         process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1");
       await installTournamentPresentation(successPage);
-      await successPage.goto(`${origin}/?harness=race`);
+      await successPage.goto(`${origin}/?harness=race&unsupported-create=on`);
       try {
         await successPage.waitForFunction(
           () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -695,7 +695,27 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await socialPanel.locator('[aria-busy="false"]').waitFor();
       expect(await socialPanel.innerText()).not.toContain("fixture-friend");
       await successPage.screenshot({path: path.join(evidenceDirectory, "native-social-mobile.png")});
+      const createContext = socialPanel.getByRole("button", {name: "Choisir des amis", exact: true});
+      await createContext.click();
+      await createContext.waitFor({state: "detached"});
+      await socialPanel.getByRole("status").filter({hasText: "Service temporairement indisponible. Veuillez réessayer."}).waitFor();
+      expect(await socialPanel.getByRole("alert").count()).toBe(0);
+      expect(await socialPanel.innerText()).not.toContain("Client does not support");
+      expect(await successPage.evaluate(() => Reflect.get(window, "__contextCreateCalls"))).toBe(1);
+      await socialPanel.locator('[aria-busy="false"]').waitFor();
+      await successPage.screenshot({path: path.join(evidenceDirectory, "unsupported-friend-picker-mobile.png")});
+      await socialPanel.getByRole("button", {name: "Actualiser", exact: true}).click();
+      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
+      expect(await createContext.count()).toBe(0);
       await socialPanel.locator("summary").click();
+      await socialPanel.locator("summary").click();
+      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
+      expect(await createContext.count()).toBe(0);
+      expect(await successPage.evaluate(() => Reflect.get(window, "__contextCreateCalls"))).toBe(1);
+      await socialPanel.locator("summary").click();
+      await successPage.getByRole("tab", {name: "Activité", exact: true}).click();
+      expect(await successPage.getByRole("button", {name: "Jouer avec des amis", exact: true}).isEnabled()).toBe(true);
+      expect(await successPage.evaluate(() => Reflect.get(window, "__contextDialogCalls"))).toBe(0);
       await verifyTournamentPresentation(successPage);
       await verifyRaceContextDialogs(successPage, process.env.FACEBOOK_CONTEXT_SCREENSHOT_PATH);
       if (process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1") await verifyContextChallenges(successPage);

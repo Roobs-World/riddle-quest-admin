@@ -61,6 +61,58 @@ const fixture = (apis = supported, configure: (sdk: FacebookInstantSdk) => void 
 };
 
 describe("Facebook expanded native social actions", () => {
+  it("retires only the unsupported no-argument picker for this account and returns unavailable", async () => {
+    const harness = fixture();
+    harness.createAsync.mockImplementation(async suggestedPlayer => {
+      if (suggestedPlayer === undefined) throw {code: "CLIENT_UNSUPPORTED_OPERATION",
+        message: "Client does not support no player IDS or multiple player IDs yet"};
+      harness.setContext("single-friend-context");
+    });
+    await harness.owner.refresh();
+    expect(harness.owner.getSnapshot().canCreateContext).toBe(true);
+    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(harness.reconciled).toEqual(["original-context"]);
+    await harness.owner.refresh();
+    expect(harness.owner.getSnapshot()).toMatchObject({canCreateContext: false, canLeaveContext: true,
+      canJoinRoom: true, canJoinTournament: true, error: false, pending: null});
+    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(harness.createAsync.mock.calls).toEqual([[]]);
+
+    if (!harness.sdk.context?.createAsync) throw new Error("Expected native create API");
+    await harness.sdk.context.createAsync("friend-one");
+    expect(harness.getContext()).toBe("single-friend-context");
+    expect(harness.createAsync.mock.calls).toEqual([[], ["friend-one"]]);
+    expect(await harness.owner.leaveContext()).toEqual({status: "success", value: undefined});
+    expect(harness.getContext()).toBeNull();
+  });
+
+  it("keeps a transient native picker failure retryable", async () => {
+    const harness = fixture(["context.createAsync"]);
+    harness.createAsync.mockRejectedValueOnce(new Error("Network unavailable"));
+    expect(await harness.owner.createContext()).toEqual({status: "retryable-failure", message: "facebook-native-social-failed"});
+    expect(harness.owner.getSnapshot().canCreateContext).toBe(true);
+    expect(await harness.owner.createContext()).toEqual({status: "success", value: undefined});
+    expect(harness.getContext()).toBe("created-context");
+    expect(harness.reconciled).toEqual(["original-context", "created-context"]);
+  });
+
+  it("remembers an admitted unsupported picker after the panel closes while retaining reconciliation", async () => {
+    const harness = fixture(["context.createAsync"]);
+    const native = deferred<void>(), started = deferred<void>();
+    harness.createAsync.mockImplementationOnce(() => {started.resolve(); return native.promise;});
+    const panel = new AbortController();
+    const creating = harness.owner.createContext(panel.signal);
+    await started.promise;
+    panel.abort();
+    native.reject({code: "CLIENT_UNSUPPORTED_OPERATION", message: "Client does not support no player IDS or multiple player IDs yet"});
+    expect(await creating).toEqual({status: "cancelled"});
+    expect(harness.reconciled).toEqual(["original-context"]);
+    await harness.owner.refresh();
+    expect(harness.owner.getSnapshot()).toMatchObject({canCreateContext: false, pending: null, error: false});
+    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(harness.createAsync.mock.calls).toEqual([[]]);
+  });
+
   it("never switches context when its panel aborts during the final room read", async () => {
     const harness = fixture();
     await harness.owner.refresh();

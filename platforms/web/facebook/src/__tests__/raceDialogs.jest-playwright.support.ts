@@ -33,11 +33,12 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
   await page.addInitScript(({nativeMatching, deliverContextEvents, contextChallenges}) => {
     /** Extend the existing SDK fixture while preserving identity and profile overlay contracts. */
     const sdk = window.FBInstant!;
+    const unsupportedCreate = new URL(location.href).searchParams.get("unsupported-create") === "on";
     /** Preserve the capability inventory before enabling controlled context selection. */
     const supported = sdk.getSupportedAPIs.bind(sdk);
     sdk.getSupportedAPIs = () => [...supported().filter(api => api !== "matchPlayerAsync"), "context.chooseAsync",
       ...(nativeMatching ? ["matchPlayerAsync"] : []), ...(deliverContextEvents ? ["onContextChange"] : []),
-      "context.getPlayersAsync", ...(contextChallenges ? ["updateAsync"] : [])];
+      "context.getPlayersAsync", ...(unsupportedCreate ? ["context.createAsync"] : []), ...(contextChallenges ? ["updateAsync"] : [])];
     if (contextChallenges) {
       Reflect.set(window, "__contextUpdates", []);
       sdk.updateAsync = async payload => {Reflect.get(window, "__contextUpdates").push({payload, contextId: sdk.context.getID()});};
@@ -47,7 +48,7 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
       Reflect.set(window, "__matchPlayerRequest", {tag, switchContext, offlineMatch});
     };
     else delete sdk.matchPlayerAsync;
-    Object.assign(window, {__contextDialogCalls: 0, __contextId: "context-old", __contextType: "GROUP"});
+    Object.assign(window, {__contextDialogCalls: 0, __contextCreateCalls: 0, __contextId: "context-old", __contextType: "GROUP"});
     /** The SDK state changes even when no game callback has been registered. */
     let contextChanged: ((contextId: string | null) => void) | undefined;
     sdk.onContextChange = success => {if (deliverContextEvents) contextChanged = success;};
@@ -55,6 +56,10 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
       Reflect.set(window, "__contextId", contextId); Reflect.set(window, "__contextType", contextType); contextChanged?.(contextId);
     });
     sdk.context = {
+      ...(unsupportedCreate ? {createAsync: async () => {
+        Reflect.set(window, "__contextCreateCalls", Reflect.get(window, "__contextCreateCalls") + 1);
+        throw {code: "CLIENT_UNSUPPORTED_OPERATION", message: "Client does not support no player IDS or multiple player IDs yet"};
+      }} : {}),
       getID: () => Reflect.get(window, "__contextId"),
       getType: () => Reflect.get(window, "__contextType"),
       getPlayersAsync: async () => ["fixture-player-a", "fixture-player-b", "fixture-player-c"].map(id => ({getID: () => id})),

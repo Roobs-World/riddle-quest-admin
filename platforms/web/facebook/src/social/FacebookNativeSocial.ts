@@ -116,6 +116,7 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
     ? sdk.room.getCurrentMatchAsync.bind(sdk.room) : undefined;
   if (!getConnected && !getPlayers && !create && !switchContext && !list && !getRoom) return undefined;
   let retired = false, revision = 0;
+  let noArgumentPickerUnsupported = false;
   let room: RoomDestination | null = null;
   let snapshot: FacebookNativeSocialSnapshot = {...empty, canCreateContext: Boolean(create), canListTournaments: Boolean(list), canJoinTournament: Boolean(join)};
   const listeners = new Set<() => void>();
@@ -174,13 +175,23 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
           admitted = true;
           return mutation();
         };
-        let failure: {error: unknown} | undefined;
-        try {await operation(admit);} catch (error) {failure = {error};}
+        let failure: {error: unknown; unsupportedPicker: boolean} | undefined;
+        try {await operation(admit);} catch (error) {
+          const unsupportedPicker = pending === "create-context" && typeof error === "object" && error !== null &&
+            "code" in error && error.code === "CLIENT_UNSUPPORTED_OPERATION";
+          failure = {error, unsupportedPicker};
+          if (unsupportedPicker && current()) {
+            // Some hosts support createAsync(playerID), but reject its no-argument picker form.
+            noArgumentPickerUnsupported = true;
+            publish({...snapshot, canCreateContext: false});
+          }
+        }
         if (!current()) return {status: "cancelled"};
         // Once admitted, retain the original SDK operation and reconcile its actual outcome,
         // even when the initiating panel has gone away. Only feedback is retired.
         if (admitted) await synchronizeContext();
         if (!current() || signal?.aborted) return {status: "cancelled"};
+        if (failure?.unsupportedPicker) return {status: "unavailable", message: "facebook-native-social-unavailable"};
         if (failure) throw failure.error;
         return {status: "success", value: undefined};
       });
@@ -206,7 +217,7 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
     getSnapshot: () => snapshot,
     subscribe: listener => {listeners.add(listener); return () => {listeners.delete(listener);};},
     refresh,
-    createContext: signal => run("create-context", create ? admit => admit(() => create()) : undefined, signal),
+    createContext: signal => run("create-context", create && !noArgumentPickerUnsupported ? admit => admit(() => create()) : undefined, signal),
     leaveContext: signal => run("leave-context", switchContext && contextId() ? admit => admit(() => switchContext("SOLO")) : undefined, signal),
     joinTournament: (id, signal) => {
       const selected = snapshot.tournaments.find(item => item.id === id && item.endsAtMs > now());

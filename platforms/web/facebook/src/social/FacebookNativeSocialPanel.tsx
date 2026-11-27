@@ -17,7 +17,7 @@ export function FacebookNativeSocialPanel() {
 
 function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSocial}) {
   const snapshot = useSyncExternalStore(capability.subscribe, capability.getSnapshot, capability.getSnapshot);
-  const [actionError, setActionError] = useState(false);
+  const [actionNotice, setActionNotice] = useState<"error" | "unavailable" | null>(null);
   const owner = useRef<FacebookNativeSocial | null>(capability);
   const pendingAction = useRef<AbortController | null>(null);
   const details = useRef<HTMLDetailsElement>(null);
@@ -30,18 +30,19 @@ function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSoc
     if (owner.current !== capability || !details.current?.open || pendingAction.current) return;
     const controller = new AbortController();
     pendingAction.current = controller;
-    setActionError(false);
+    setActionNotice(null);
     try {
       const result = await operation(controller.signal);
       if (owner.current === capability && !controller.signal.aborted && details.current?.open) {
-        setActionError(result.status !== "success" && result.status !== "cancelled");
+        setActionNotice(result.status === "success" || result.status === "cancelled" ? null :
+          result.status === "unavailable" ? "unavailable" : "error");
       }
     } catch {
-      if (owner.current === capability && !controller.signal.aborted && details.current?.open) setActionError(true);
+      if (owner.current === capability && !controller.signal.aborted && details.current?.open) setActionNotice("error");
     } finally {if (pendingAction.current === controller) pendingAction.current = null;}
   };
   return <details ref={details} className="race-panel facebook-native-social" onToggle={event => {
-    if (event.currentTarget.open) {setActionError(false); void capability.refresh();}
+    if (event.currentTarget.open) {setActionNotice(null); void capability.refresh();}
     else pendingAction.current?.abort();
   }}>
     <summary onClick={() => {if (details.current?.open) pendingAction.current?.abort();}}>{tr("RaceTo10.FACEBOOK_SOCIAL")}</summary>
@@ -70,8 +71,9 @@ function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSoc
         </li>)}</ul>
       </section>}
       {snapshot.loading && <p role="status">{tr("RaceTo10.RESULTS_LOADING")}</p>}
-      {(snapshot.error || actionError) && <p className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
-      <button type="button" disabled={busy} className="race-secondary" onClick={() => {setActionError(false); void capability.refresh();}}>
+      {actionNotice === "unavailable" && <p className="race-error" role="status">{tr("ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE")}</p>}
+      {(snapshot.error || actionNotice === "error") && <p className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</p>}
+      <button type="button" disabled={busy} className="race-secondary" onClick={() => {setActionNotice(null); void capability.refresh();}}>
         {tr("RaceTo10.FACEBOOK_REFRESH")}
       </button>
     </div>
