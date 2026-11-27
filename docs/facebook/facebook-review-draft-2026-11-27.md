@@ -13,7 +13,7 @@ Use the [API submission checklist](facebook-api-submission-checklist-2026-11-27.
 
 The uploaded source is `8e3b7d2ef942ea387e7370c23ff4f1c1448fa108` on `facebook`. The archive SHA-256 is `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`, with 2,864,259 bytes, 422 ZIP entries, and 420 runtime files. Meta's downloaded archive matched the recorded hash and byte count. See the [exact version 12 acceptance record](evidence/facebook-testing-version-12-2026-11-27.json).
 
-Production remains version 9, bundle `29168977262783270`. Access through a developer-role account does not establish public availability or Zero Permission Access approval.
+Production remains version 9, bundle `29168977262783270`. The permission-specific query reports BASIC standard access for developer-role testing, with advanced access absent. This does not establish public availability or product-review approval. See the [role-access follow-up](evidence/facebook-role-access-followup-2026-11-27.json).
 
 ## Reproduce the recorded desktop checks
 
@@ -27,10 +27,15 @@ Production remains version 9, bundle `29168977262783270`. Access through a devel
 8. Complete unique Classic levels until an interstitial opportunity becomes eligible. Keep the result screen open while preparation settles. In the recorded session, immediately leaving the third win retired that opportunity. Holding the sixth win displayed a native interstitial.
 9. Select **Close Ad**. Confirm that the victory screen returns and **Next Level** works. The recorded win showed its ordinary 55-coin reward; no ad reward was claimed.
 10. Select **Invite a friend**. Confirm that the native dialog identifies Riddle Quest, then select **Close** without choosing a recipient. The recorded cancellation sent no invitation. Closing Profile restored the game with **Multiplayer** enabled.
+11. Toggle the host's **Collapse** and **Expand** controls. In the recorded check, Collapse changed the game's `data-facebook-display-mode` from `normal` to `expanded`; Expand restored `normal`. Game controls remained enabled. This verifies the visible mode-change path, not an independent trace of each SDK method.
+12. Open **Settings**, then **Terms of Use**. Confirm that Meta's prompt names `https://roobsworld.com/riddle-quest/terms`, then select **Go back**. The recorded cancellation restored enabled Terms and Quit controls.
+13. Complete a Classic puzzle and select **Share** on its result. Confirm that the native **Share game** composer contains Riddle Quest result copy. Close the composer without selecting an audience or sending. The recorded cancellation restored **Share** and **Next Level**; advancing returned to gameplay.
+14. Open **Race to 10**, then **Play on Facebook**. The recorded session showed **Friends who play** as 0 and an empty **Facebook tournaments** list. **Choose friends** returned **Service temporarily unavailable** and disappeared; **Refresh** did not restore it. No raw SDK error code was captured, so this establishes failure and action retirement only.
+15. Use the separate **Play with friends** action. Close its native context chooser without selecting anyone. The recorded cancellation restored enabled **Play with friends** and **Start PvP** controls. Closing the lobby returned to gameplay with **Multiplayer** enabled.
 
-These observations used the real desktop Meta host without SDK replacement or native-result fixtures. They establish startup, restored progress, one completed rewarded continuation, Settings labels, privacy-prompt cancellation, preference persistence through native quit, shortcut cancellation, one interstitial, and invite cancellation. They do not establish every failure path, entitlement rule, session cap, or mobile-host behavior.
+These observations used the real desktop Meta host without SDK replacement or native-result fixtures. They establish the specific startup, save, ad, display, legal-link, and social outcomes recorded above. They do not establish every failure path, entitlement rule, session cap, or mobile-host behavior. Empty counts and listings do not establish matches with other players, tournament joining, or Rooms.
 
-The session ended with 885 coins after normal gameplay. See the [initial client review and hosted observations](evidence/facebook-client-review-2026-11-27.md) and the [version 12 native follow-up evidence](evidence/facebook-native-followup-version-12-2026-11-27.md).
+The earlier native follow-up ended with 885 coins after normal gameplay. One subsequent Classic win awarded its ordinary 35 coins, bringing the balance to 920. Sharing and context cancellation added no rewards. See the [initial client review](evidence/facebook-client-review-2026-11-27.md), [first native follow-up](evidence/facebook-native-followup-version-12-2026-11-27.md), and [host and social follow-up](evidence/facebook-host-social-followup-version-12-2026-11-27.md).
 
 The candidate also passed 136 focused tests across nine suites, shared typecheck, the combined local browser journey, and `pnpm preflight:facebook-upload`. The artifact audit found no Jest gaming-platform SDK, native modules, or credential leakage. Jest unit-test tooling is unrelated to the gaming-platform SDK. Local fixture results do not establish native host support.
 
@@ -40,7 +45,7 @@ Record each result against version 12, the actual host, and the account's eligib
 
 1. Check save failure, interrupted reward delivery, and duplicate-reward prevention. The accepted preference save-and-quit check does not establish these failure paths.
 2. Verify follow-page and join-group eligibility and cancellation independently. Successful shortcut creation remains separate from the recorded cancellation.
-3. Open **Race to 10**, then **Play on Facebook**. Inspect friends and group-player counts and the tournament list. Counts are not an online-player directory. Cancel **Choose friends** and confirm that the lobby remains usable. Earlier version 11 chooser evidence does not certify this version's complete social journey.
+3. With consenting testers on eligible hosts, complete context creation, matchmaking, and the authorized recipient side of social journeys. Counts are not an online-player directory. The recorded **Choose friends** failure and separate **Play with friends** cancellation do not establish successful context membership or co-play.
 4. With consenting testers and an eligible tournament, join from the native list. Confirm that the game opens the matching official board only after validating the fresh native tournament data. Tournament routing and cancellation passed locally; native version 12 acceptance remains open.
 5. Check ad failure and cancellation paths, authoritative subscription suppression, durable interstitial removal, cooldowns, and session caps on eligible hosts. One completed rewarded video and one interstitial do not establish these cases.
 6. Repeat applicable journeys on a supported native mobile host. Check pause and resume, dialogs, available profile overlays, and optional haptics or session-score actions. A resized desktop browser is not mobile-host evidence.
@@ -77,6 +82,8 @@ Cross-Play Management is Not Linked. Do not invent a destination, associated app
 
 Business Verification is Verified and In App Ads is Approved. Those statuses cover only their named requirements. Approved Partner Program, Policy, Quality, In App Purchases, Bot, and App Property are Not Submitted in the recorded dashboard state. Policy and Quality submission controls are disabled.
 
-Zero Permission Access is rejected and not live. The connector reports App Review as UNSUBMITTED while its requirements report a previous review in progress. Reconcile that discrepancy before making a submission claim. See the [recorded review state](evidence/facebook-live-review-state-2026-11-27.json).
+The permission-specific Zero Permission Access query reports `standard_access: true`, `advanced_access: false`, and tier `BASIC`. Its aggregate privilege still reports `is_live: false`, `is_rejected: true`, `grant_status: REJECTED`, and `access_level: none`. BASIC role-account access and the unresolved public-access status must remain distinct.
+
+The connector reports App Review as UNSUBMITTED while its requirements report a previous review in progress. The new history query returns no submissions and `has_been_previously_reviewed: false`, although the permission query reports `in_current_submission: true`. Preserve these conflicting responses without inferring a pending or approved review. See the [original review state](evidence/facebook-live-review-state-2026-11-27.json) and the [permission-specific follow-up](evidence/facebook-role-access-followup-2026-11-27.json).
 
 Before submission, complete the applicable native journeys, verify deployed server behavior without changing the preserved Firebase backend, resolve the missing product and provider prerequisites, and confirm current legal, age, support, and retention disclosures. Production promotion, review submission, and publication each remain separate authorized actions.

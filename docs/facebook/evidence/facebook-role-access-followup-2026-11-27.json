@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-11-27 12:55:14 UTC",
+  "appId": "1748953042991569",
+  "appName": "Riddle Quest",
+  "source": "Meta Developer Tools read-only connector",
+  "queries": [
+    {
+      "action": "privileges",
+      "permission": "Instant Games Zero Permission Access"
+    },
+    {
+      "action": "history"
+    }
+  ],
+  "permission": {
+    "permission": "Instant Games Zero Permission Access",
+    "standard_access": true,
+    "advanced_access": false,
+    "tier": "BASIC",
+    "in_current_submission": true,
+    "required_by_use_cases": [],
+    "optional_for_use_cases": [
+      "INSTANT_GAMES"
+    ],
+    "requirements": [],
+    "prerequisite_permissions": [],
+    "eligible_actions": []
+  },
+  "aggregatePrivilege": {
+    "name": "Instant Games Zero Permission Access",
+    "is_live": false,
+    "is_rejected": true,
+    "is_devops_approved": false,
+    "grant_status": "REJECTED",
+    "access_level": "none",
+    "in_current_submission": true
+  },
+  "history": {
+    "app_id": "1748953042991569",
+    "submissions": [],
+    "has_been_previously_reviewed": false
+  },
+  "observations": [
+    "Permission-specific standard_access true establishes BASIC access for people with an app role; advanced_access false does not establish public access.",
+    "Aggregate privilege rejection/not-live fields coexist with role access. Do not infer lack of developer-role access from the aggregate row.",
+    "History has no submissions, while earlier status and requirements responses disagree. These records do not prove a pending or completed Instant Games product review.",
+    "No permissions, app settings, submissions, uploads, Firebase configuration or services were changed by these read-only queries."
+  ]
+}

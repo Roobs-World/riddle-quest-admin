@@ -8,6 +8,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 
 - [Dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md): current product-specific hosting, review and cross-play observations.
 - [Connector review JSON](evidence/facebook-live-review-state-2026-11-27.json): app-review status, requirements and individual privileges. There is no separate dashboard-prerequisites JSON.
+- [Permission-specific role-access follow-up](evidence/facebook-role-access-followup-2026-11-27.json): Zero Permission Access reports BASIC standard access and no advanced access, while aggregate privilege and review-history fields remain inconsistent.
 - [Recorded version 9 upload](evidence/facebook-campaign-activation-2026-11-26.json): source `af20085bce70fbe73aedebce68975a414d9dac20`, archive SHA-256 `11b614b7c7d483041b689c5ba9750468da37a3a6a5824b7e85f4369eca99dcca`.
 - [Hosted rewarded continuation](evidence/facebook-rewarded-ad-setup-2026-11-27.md): one real version-9 video and successful continuation; not the new ad cadence, subscriber policy or new candidate.
 - [Payment configuration and deployment evidence](evidence/facebook-payments-catalog-2026-11-27.md): catalog exists; payout, approval, webhook readiness and checkout activation remain open.
@@ -17,6 +18,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 - [Exact version 12 acceptance record](evidence/facebook-testing-version-12-2026-11-27.json): Testing bundle `29781063778191740`, SHA-256 `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`, 2,864,259 bytes. Production remains version 9.
 - [Client integration review](evidence/facebook-client-review-2026-11-27.md): version 12 includes tournament routing, Settings ownership and bounded ad-preparation corrections. All 136 focused tests and the combined browser journey passed. Exact-host startup, a completed real rewarded video/continuation and privacy-link cancellation passed.
 - [Native version 12 follow-up](evidence/facebook-native-followup-version-12-2026-11-27.md): Reduced motion survived native quit/relaunch and was restored; shortcut and invitation cancellation returned control; a real interstitial displayed on a held qualifying result and returned to gameplay. These are desktop developer-role observations, not full J01–J14 acceptance.
+- [Version 12 host and social follow-up](evidence/facebook-host-social-followup-version-12-2026-11-27.md): native display-mode changes reached the game; Terms, result-share and context-chooser cancellation returned control. Choose friends failed visibly and retired. Zero friends and an empty tournament list do not establish successful joins, matches or Rooms.
 - [Current reviewer handoff](facebook-review-draft-2026-11-27.md): exact version 12 steps, enabled behavior and remaining prerequisites; the September draft is historical.
 - [Earlier source coverage](evidence/facebook-api-coverage-2026-11-27.md): historical baseline, superseded by this checklist's broader scope for future work.
 
@@ -56,8 +58,8 @@ All Facebook browser paths below are beneath `platforms/web/facebook/src/`:
 
 | ID | Requirement and currently observed state |
 | --- | --- |
-| A0 | Current SDK v8 host support, callable methods, signed account/age gates and active adapter lifetime. The dashboard SDK selector is **8.0 [Network Enabled Zero Permissions]**. Production remains version **9**, bundle **29168977262783270**; Testing is version **12**, bundle **29781063778191740**, containing the expansion and reviewed corrections. Debug Mode is enabled. Zero Permission Access is rejected/not live in connector privileges, so role-account desktop testing does not prove public capability access. |
-| A1 | Product review: Business Verification **Verified**, In App Ads **Approved**. Approved Partner Program, Policy, Quality, In App Purchases, Bot and App Property each **Not Submitted**. Policy/Quality submission controls are disabled. General App Review says UNSUBMITTED while requirements claim a previous review is in progress; resolve this discrepancy without treating either response as product approval. |
+| A0 | Current SDK v8 host support, callable methods, signed account/age gates and active adapter lifetime. The dashboard SDK selector is **8.0 [Network Enabled Zero Permissions]**. Production remains version **9**, bundle **29168977262783270**; Testing is version **12**, bundle **29781063778191740**, containing the expansion and reviewed corrections. Debug Mode is enabled. The permission-specific Zero Permission Access query reports `standard_access: true`, `advanced_access: false`, tier `BASIC`: BASIC developer-role access is granted; advanced public access is absent. The aggregate privilege still reports `is_live: false`, `is_rejected: true`, `grant_status: REJECTED`, and `access_level: none`. Role-account desktop testing does not establish public availability or product approval. |
+| A1 | Product review: Business Verification **Verified**, In App Ads **Approved**. Approved Partner Program, Policy, Quality, In App Purchases, Bot and App Property each **Not Submitted**. Policy/Quality submission controls are disabled. General App Review says UNSUBMITTED while requirements claim a previous review is in progress. The follow-up history returns `submissions: []` and `has_been_previously_reviewed: false`, while the permission-specific query says `in_current_submission: true`. Preserve and reconcile these conflicting responses without inferring a pending or approved review. |
 | A2 | Seven catalog products exist. A valid payout account, IAP approval, V2 payment callback/signed-event acceptance and consistent deployed checkout configuration remain outstanding. Recorded deployed commerce is disabled; webhook-ready configuration is absent. No purchase/refund acceptance is claimed. |
 | A3 | Existing rewarded/interstitial IDs are configured; both native formats displayed and returned control on exact version 12's desktop developer-role host. Monetisation Manager has two ad spaces containing exactly those two placements; no banner placement exists. Banner requires its own approved placement and `VITE_FACEBOOK_BANNER_ENABLED=true` plus `VITE_FACEBOOK_BANNER_PLACEMENT_ID`. Respect authoritative subscription/ad-free eligibility and the banner service deadline. |
 | A4 | Messenger Game Bot requires `pages_messaging` App Review and the `gamebot with Messenger` use case per the dashboard information panel. Bot Review is Not Submitted. SDK bot consent must remain distinct from existing `a2u-v1` manager consent. NEZP stored-content delivery requires a manager-authored plan, current-context recipient restriction, a dispatch consumer and trusted verification of returned content/app/recipient binding. A browser-supplied content ID alone cannot authorize campaign content. No documented Meta verification mechanism or manager approval workflow is established. |
@@ -98,15 +100,15 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | 11 | `FBInstant.onPause` | W · Lifecycle | A0; registered lifecycle adapter | J02, J09, J10 |
 | 12 | `FBInstant.onResume` | W · Lifecycle, optional host signal | A0; browser fallback where absent | J02, J09, J10 |
 | 13 | `FBInstant.onContextChange` | W · Contexts/coordinator | A0; active account and locale owner | J06, J07 |
-| 14 | `FBInstant.getDisplayMode` | W · Host environment | A0; eligible desktop host | J02 |
-| 15 | `FBInstant.onDisplayModeChange` | W · Host environment | A0; eligible desktop host | J02 |
+| 14 | `FBInstant.getDisplayMode` | W/H12 · Host environment; native Collapse/Expand mapped to normal/expanded DOM state, getter not traced independently | A0; eligible desktop host | J02 |
+| 15 | `FBInstant.onDisplayModeChange` | W/H12 · Host environment; native mode changes reached the game, callback not traced independently | A0; eligible desktop host | J02 |
 
 ### Invitations and updates
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
 | 16 | `FBInstant.inviteAsync` | W/H12 · Referral sharing, live-race sharing; general invite opened and cancelled without sending | A0; sharing rollout and audience gates | J03 |
-| 17 | `FBInstant.shareAsync` | W · Referral sharing, live-race sharing | A0; sharing rollout; valid image/data | J03 |
+| 17 | `FBInstant.shareAsync` | W/H12 · Result Share opened native Riddle Quest composer; cancellation restored Share/Next Level, no audience choice or send | A0; sharing rollout; valid image/data | J03 |
 | 18 | `FBInstant.updateAsync` | W · Context challenges | A0; configured race_context_challenge template; selected context | J06 |
 
 ### Scores and session data
@@ -124,7 +126,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | --- | --- | --- | --- | --- |
 | 23 | `FBInstant.canCreateShortcutAsync` | W/H12 · Settings actions; eligible shortcut action shown | A0; eligible home-screen host/player | J04 |
 | 24 | `FBInstant.createShortcutAsync` | W/H12 · Settings actions; native prompt cancelled and action retired for session | A0; positive eligibility; one attempt per SDK session | J04 |
-| 25 | `FBInstant.openExternalLinkAsync` | W/H12 · Settings actions; fixed privacy destination prompt cancelled | A0; fixed privacy/terms HTTPS destinations | J04 |
+| 25 | `FBInstant.openExternalLinkAsync` | W/H12 · Settings actions; fixed privacy and terms destination prompts cancelled, controls restored | A0; fixed privacy/terms HTTPS destinations | J04 |
 | 26 | `FBInstant.performHapticFeedbackAsync` | W · Haptics | A0; saved opt-in; supported device; no reduced-motion/pause suppression | J05 |
 | 27 | `FBInstant.switchGameAsync` | G · No cross-game adapter/destination | A6; real eligible game owned/configured by this business | J13; future explicit cross-promotion journey |
 
@@ -169,7 +171,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 45 | `FBInstant.player.getConnectedPlayersAsync` | W · Native social aggregate count | A0; native-social/age/context policy; recently active connections | J06 |
+| 45 | `FBInstant.player.getConnectedPlayersAsync` | W/H12 · Native social displayed Friends who play 0; no nonempty result or player match established | A0; native-social/age/context policy; recently active connections | J06 |
 
 ### Player bot and NEZP notifications
 
@@ -186,9 +188,9 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | --- | --- | --- | --- | --- |
 | 50 | `FBInstant.context.getID` | W · Contexts, native social and race entry | A0; strict server-bound context identifier | J06, J07 |
 | 51 | `FBInstant.context.getType` | W · Contexts; includes POST | A0; supported context type and synchronized owner | J06 |
-| 52 | `FBInstant.context.chooseAsync` | W · Context chooser | A0; native social policy and dialog guard | J06 |
+| 52 | `FBInstant.context.chooseAsync` | W/H12 · Play with friends opened native chooser; cancellation restored Play with friends/Start PvP, no selection | A0; native social policy and dialog guard | J06 |
 | 53 | `FBInstant.context.switchAsync` | W · Native social: solo or actual current Room | A0; valid destination; authoritative reconciliation | J06, J07 |
-| 54 | `FBInstant.context.createAsync` | W · Native social: Choose friends | A0; Meta picker and account/context policy | J06 |
+| 54 | `FBInstant.context.createAsync` | W/H12 · Choose friends showed Service temporarily unavailable and retired through Refresh; failure path only, raw SDK error code not captured | A0; Meta picker and account/context policy | J06 |
 | 55 | `FBInstant.context.getPlayersAsync` | W · Native social aggregate count | A0; selected context; recent membership, not live presence | J06 |
 
 ### Payments
@@ -207,7 +209,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | --- | --- | --- | --- | --- |
 | 61 | `FBInstant.tournament.createAsync` | W · Tournament presentation | A0; official daily window/locale/score receipt | J07 |
 | 62 | `FBInstant.tournament.createPrivateAsync` | C · Session-score group action with explicit chat disclosure and uncertain-outcome recovery | A7; positive deployment flag, eligible group and verified race receipt | J08, J13 |
-| 63 | `FBInstant.tournament.getTournamentsAsync` | W · Native social listing | A0; eligible active native tournaments; validated metadata | J07 |
+| 63 | `FBInstant.tournament.getTournamentsAsync` | W/H12 · Native social displayed an empty tournament list; no populated listing or join established | A0; eligible active native tournaments; validated metadata | J07 |
 | 64 | `FBInstant.tournament.joinAsync` | W · Native social join | A0; unexpired listed tournament; Meta participant eligibility | J07 |
 | 65 | `FBInstant.tournament.postScoreAsync` | W · Tournament presentation | A0; server-derived adjusted time and daily binding | J07 |
 | 66 | `FBInstant.tournament.shareAsync` | W · Tournament presentation | A0; native tournament exists; explicit player action | J07 |
@@ -343,7 +345,7 @@ The rewarded-video IAP fallback pilot is also not completed: it requires separat
 - [x] Authorization covers the Facebook uploads needed for testing. Production promotion, review submission and publication remain separate actions requiring their own authorization.
 - [x] Confirm the authorized upload finished processing and its exact archive identity, Testing assignment and SDK selector. Version 12 is Testing on SDK 8.0 NEZP; the independently downloaded archive matches the recorded SHA-256 and byte count. Production remains version 9. This gate does not establish feature-specific eligibility.
 - [ ] Verify the deployed backend revision and feature flags for every server-owned integration; the client archive alone cannot establish receipt, identity, context, tournament, ad-entitlement or notification authority.
-- [ ] Finish/reconcile all applicable approvals: Approved Partner Program, Zero Permission Access, Policy, Quality, IAP/payout/payment callbacks, Bot if added, App Property if required, and format-specific ads eligibility. Business Verified and In App Ads Approved cover only those named gates.
+- [ ] Finish/reconcile all applicable approvals: Approved Partner Program, Zero Permission Access beyond the granted BASIC role-account scope, Policy, Quality, IAP/payout/payment callbacks, Bot if added, App Property if required, and format-specific ads eligibility. Business Verified and In App Ads Approved cover only those named gates.
 - [ ] Complete the relevant J01–J14 journeys on the final hosted candidate, with supported web/mobile hosts, authorized accounts and exact evidence references. No production/review success may be inferred from an SDK declaration, locally passing build or a version-9 observation.
 - [ ] Verify official page/group associations, genuine cross-play configuration, private-tournament allowlisting, eligible Rooms hosting and the separate banner placement where those integrations are included.
 - [ ] Refresh the final reviewer instructions and feature claims to match actual enabled behavior, legal/age disclosures and support/retention operations. Complete owner-required final publication approval before public release.

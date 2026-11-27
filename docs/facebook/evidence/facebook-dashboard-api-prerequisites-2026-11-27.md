@@ -4,6 +4,8 @@ Read-only inspection of the authenticated Meta App Dashboard for Riddle Quest (`
 
 ## Hosted artifact
 
+The following paragraph preserves the initial dashboard observation, when version 6 was Testing. The later [version 12 acceptance record](facebook-testing-version-12-2026-11-27.json) supersedes that Testing assignment and binds the current candidate to its exact archive. Production remains version 9. This note does not recast the initial observation as a fresh dashboard read.
+
 The [Web hosting page](https://developers.facebook.com/apps/1748953042991569/use_cases/customize/hosting/?use_case_enum=INSTANT_GAMES&selected_tab=hosting&product_route=instant-games) lists version **9**, bundle **29168977262783270**, as **Production**. Its filename is `artifact-11b614b7c7d483041b689c5ba9750468da37a3a6a5824b7e85f4369eca99dcca.zip`. Version 6 remains Testing; versions 1–5 and 7–8 are Standby. The SDK selector is **8.0 [Network Enabled Zero Permissions]**, with Debug Mode enabled.
 
 The version 9 filename agrees with the earlier upload record. It predates the current source expansion; this observation does not establish that any new integration has reached the hosted game. Quality Review for that bundle displays N/A / Unknown.
@@ -34,6 +36,10 @@ The [Cross-Play Management page](https://developers.facebook.com/apps/1748953042
 ## Connector discrepancy
 
 The [read-only connector response](facebook-live-review-state-2026-11-27.json) describes a general App Review record as UNSUBMITTED, yet its requirements response says a previous review is in progress. Those fields must not be used to infer that Instant Game Policy/Quality review is pending: the product-specific dashboard explicitly shows Not Submitted. Preserve both observations until Meta resolves their differing states.
+
+The later [permission-specific follow-up](facebook-role-access-followup-2026-11-27.json) queried `Instant Games Zero Permission Access` for app `1748953042991569`. It reports `standard_access: true`, `advanced_access: false`, and tier `BASIC`. This grants BASIC developer-role access; advanced public access is absent. The aggregate privilege still reports `is_live: false`, `is_rejected: true`, `grant_status: REJECTED`, and `access_level: none`. These fields do not establish product-review approval.
+
+The permission is optional for `INSTANT_GAMES`, with no required use cases, listed requirements, prerequisite permissions, or eligible actions. Those empty permission-specific lists do not clear the separate product-review prerequisites. The permission query also reports `in_current_submission: true`, but the history query returns `submissions: []` and `has_been_previously_reviewed: false`. Preserve that discrepancy alongside the original status and requirements responses; do not infer that a review is pending or approved.
 
 ## Still required
 
