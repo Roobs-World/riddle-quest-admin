@@ -51,6 +51,16 @@ function livePool(userId: string, input: JoinLiveRace): string {
   return createHash("sha256").update(`${provider}:${input.locale}:${input.categoryId}`).digest("hex");
 }
 
+/** Join recovery and polling seat the same authoritative bot after an empty public search. */
+function createLiveBotMatch(ticketId: string, ticket: LiveTicket, nowMs: number): LiveMatch {
+  assertLiveRaceDeckCompatible(ticket.run);
+  ticket.matchId = ticketId;
+  return createLiveMatch({tickets: [ticketId, null], participantIds: [ticket.userId], nowMs,
+    readySeats: [!ticket.requiresReady, true],
+    players: [ticket.player, {displayName: generateRaceBotName(ticketId), avatarUrl: null, bot: true, correctCount: 0}],
+    runs: [liveRun(ticket.run, ticket.userId, ticketId), liveRun(ticket.run, "bot", `${ticketId}-bot`)]});
+}
+
 /** Enters one owned queue seat; retries and concurrent tabs recover the same active ticket. */
 export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, options: Options = {}) {
   if (input.expectedOwnerId && input.expectedOwnerId !== userId)
@@ -160,11 +170,15 @@ export async function joinLiveRaceForUser(userId: string, input: JoinLiveRace, o
             const queue = !match && !ticket.privateChallenge && observedAtMs < liveRaceSearchEndsAtMs(ticket) ? await prepareLiveRaceQueue(db, transaction,
               {ticketId: id, ticket, nowMs: observedAtMs, expiresAt: old.data()!.expiresAt, ownerProfile: owner, ownerPointer: current}) : undefined;
             match = queue?.match ?? match;
+            const fallback = !match && !ticket.privateChallenge && observedAtMs >= liveRaceSearchEndsAtMs(ticket)
+              ? createLiveBotMatch(id, ticket, observedAtMs) : undefined;
+            match = fallback ?? match;
             queue?.commit();
             transaction.update(old.ref, {seenAtMs: observedAtMs, "player.level": ticket.player.level, ...(match ? {matchId: ticket.matchId} : {})});
-            if (match && !queue?.match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs,
+            if (fallback) transaction.create(db.doc(`liveRaceMatches/${ticket.matchId}`), {...stripUndefined(fallback), expiresAt: old.data()!.expiresAt});
+            else if (match && !queue?.match) transaction.update(db.doc(`liveRaceMatches/${ticket.matchId}`), {observedAtMs,
               ...(refreshMatchLevel ? {players: match.players} : {})});
-            if (queue?.match) publishLiveRaceSignals(db, transaction, match!.tickets, old.data()!.expiresAt);
+            if (queue?.match || fallback) publishLiveRaceSignals(db, transaction, match!.tickets, old.data()!.expiresAt);
             claimLiveJoinIntent(transaction, intent, old.ref, observedAtMs);
             return liveView(id, ticket, match, observedAtMs);
           }
@@ -385,11 +399,7 @@ async function evaluateLiveRaceUpdate(db: Firestore, transaction: FirebaseFirest
     matchChanged = Boolean(match);
   }
   if (!match && !ticket.privateChallenge && nowMs >= liveRaceSearchEndsAtMs(ticket)) {
-    assertLiveRaceDeckCompatible(ticket.run);
-    ticket.matchId = input.ticketId;
-    match = createLiveMatch({tickets: [input.ticketId, null], participantIds: [userId], nowMs, readySeats: [!ticket.requiresReady, true],
-      players: [ticket.player, {displayName: generateRaceBotName(input.ticketId), avatarUrl: null, bot: true, correctCount: 0}],
-      runs: [liveRun(ticket.run, userId, input.ticketId), liveRun(ticket.run, "bot", `${input.ticketId}-bot`)]});
+    match = createLiveBotMatch(input.ticketId, ticket, nowMs);
     matchChanged = true;
   }
   if (!match) {

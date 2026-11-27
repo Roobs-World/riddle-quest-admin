@@ -190,7 +190,7 @@ it("recovers a pruned queue seat without a new join or replacement deck", async 
   expect((await ticketRef.get()).data()?.run).toEqual(before.run);
 });
 
-it("starts one verb-noun named bot at the public deadline and resumes the same match", async () => {
+it("starts one guest-named bot at the public deadline and resumes the same match", async () => {
   /** No human joins this resumable public seat during its six-second search. */
   const first = await join(A, "fallback-public-wait");
   expect(await update(A, first, NOW + 5999)).toMatchObject({phase: "searching", opponent: null});
@@ -203,6 +203,43 @@ it("starts one verb-noun named bot at the public deadline and resumes the same m
   expect(recovered).toMatchObject({ticketId: first.ticketId, startsAtMs: fallback.startsAtMs, opponent: fallback.opponent});
   expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
   expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
+
+it.each(["retry", "reload"])("seats the original public bot on %s after the deadline without waiting for a poll", async mode => {
+  const first = await joinReady(A, "fallback-lost-join");
+  const recovered = mode === "retry"
+    ? await joinReady(A, "fallback-lost-join", NOW + LIVE_RACE_WAIT_MS)
+    : await resume(A, first, "fallback-recovered-join", NOW + LIVE_RACE_WAIT_MS);
+  expect(recovered).toMatchObject({ticketId: first.ticketId, phase: "searching", ready: false,
+    startsAtMs: null, run: null, opponent: {displayName: generateRaceBotName(first.ticketId), bot: true, correctCount: 0}});
+  expect(recovered.opponent?.displayName).toMatch(/^Guest_[A-F0-9]{6}$/);
+  expect(await update(A, first, NOW + LIVE_RACE_WAIT_MS + 1000)).toMatchObject({
+    ticketId: first.ticketId, opponent: recovered.opponent, ready: false, startsAtMs: null,
+  });
+  expect((await db.collection("liveRaceTickets").get()).size).toBe(1);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
+
+it("concurrent join recovery and a poll retain one bot match and countdown", async () => {
+  const first = await join(A, "fallback-concurrent-join");
+  const [recovered, observed] = await Promise.all([
+    join(A, "fallback-concurrent-join", NOW + LIVE_RACE_WAIT_MS),
+    update(A, first, NOW + LIVE_RACE_WAIT_MS),
+  ]);
+  expect(recovered).toMatchObject({ticketId: first.ticketId, phase: "countdown", startsAtMs: observed.startsAtMs,
+    opponent: observed.opponent});
+  expect(recovered.opponent?.bot).toBe(true);
+  expect((await db.collection("liveRaceMatches").get()).size).toBe(1);
+});
+
+it("keeps a recovered private invitation waiting for its friend after the public deadline", async () => {
+  const input = {locale: "en" as const, categoryId: "history" as const, requestId: "private-without-fallback",
+    createChallenge: true, requiresReady: true as const, retirementAware: true as const};
+  const first = await joinLiveRaceForUser(A, input, {db, nowMs: NOW});
+  const recovered = await joinLiveRaceForUser(A, input, {db, nowMs: NOW + LIVE_RACE_WAIT_MS + 1000});
+  expect(recovered).toMatchObject({ticketId: first.ticketId, phase: "searching", opponent: null,
+    searchEndsAtMs: NOW + LIVE_RACE_INVITE_MS, startsAtMs: null});
+  expect((await db.collection("liveRaceMatches").get()).empty).toBe(true);
 });
 
 it("does not resume a replaced account pointer or create a replacement ticket", async () => {

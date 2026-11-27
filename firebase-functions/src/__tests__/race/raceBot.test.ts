@@ -13,6 +13,7 @@ it("keeps immutable pacing on retries and varies rivals between search intents",
   /** First generated rival must replay exactly for the same selection intent. */
   const first = buildRaceBotOpponent(offer(), "search-a", riddles);
   expect(buildRaceBotOpponent(offer(), "search-a", riddles)).toEqual(first);
+  expect(first.displayName).toMatch(/^Guest_[A-F0-9]{6}$/);
   /** Independent selection intents retain varied but deterministic playback. */
   const rivals = Array.from({length: 100}, (_, index) => buildRaceBotOpponent(offer(), `search-${index}`, riddles));
   expect(new Set(rivals.map(rival => rival.displayName)).size).toBeGreaterThan(5);
