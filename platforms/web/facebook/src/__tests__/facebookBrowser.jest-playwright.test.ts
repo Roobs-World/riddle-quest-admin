@@ -12,6 +12,7 @@ import type {PlayerData} from "../../../../../src/platform/contracts/capabilitie
 import {withProtectedFacebookFixtures} from "./protectedFixtures.jest-playwright.support.ts";
 import {installExpandedOptionalApis, verifyGenericProfileOverlay} from "./expandedOptionalApis.jest-playwright.support.ts";
 import {verifyCommerceOwnership} from "./commerceOwnership.jest-playwright.support.ts";
+import {verifyBannerActivation} from "./bannerActivation.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -66,6 +67,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         VITE_FACEBOOK_AGE_CATEGORY: "13_plus",
         VITE_FACEBOOK_MESSENGER_BOT_ENABLED: "true",
         VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED: "false",
+        VITE_FACEBOOK_BANNER_ENABLED: "true",
+        VITE_FACEBOOK_BANNER_PLACEMENT_ID: "browser-banner-placement",
         VITE_NOTIFICATION_SERVICE_URL: "",
       },
       stdio: "inherit",
@@ -933,6 +936,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await verifyTournamentLiveResult(successPage, tournaments);
       }
       await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
+      await verifyBannerActivation(successPage, origin, subscription);
       await verifyCommerceOwnership(successPage, origin);
     } finally {
       await browser.close();

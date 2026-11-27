@@ -4,6 +4,8 @@
 - [API submission checklist and reviewer journeys](facebook-api-submission-checklist-2026-11-27.md)
 - [Published Riddle Quest privacy, terms and audience check](evidence/facebook-published-disclosures-2026-11-27.md)
 - [Settings preparation and checkout ownership corrections](evidence/facebook-native-action-lifetimes-2026-11-27.md)
+- [Banner placement and Testing activation](evidence/facebook-banner-activation-2026-11-27.md)
+- [Tournament and LiveMatch returned-object coverage](evidence/facebook-returned-object-coverage-2026-11-27.md)
 - [Subscription authority and ad eligibility](facebook-ad-eligibility.md)
 - [Subscription ad gate correction and verification](evidence/facebook-subscription-ad-gate-2026-11-27.md)
 - [Live dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md)
