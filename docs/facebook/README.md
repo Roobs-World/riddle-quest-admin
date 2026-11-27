@@ -18,6 +18,8 @@
 - [Version 15 native legal cancellation, preference persistence and display modes](evidence/facebook-native-settings-version-15-2026-11-27.md)
 - [Version 15 native social cancellation, ads and saved Classic progress](evidence/facebook-native-social-ads-version-15-2026-11-27.md)
 - [Version 15 native advertised SDK capabilities](evidence/facebook-native-sdk-capabilities-version-15-2026-11-27.json)
+- [Version 15 physical Android host, Settings and lifecycle evidence](evidence/facebook-android-host-version-15-2026-11-27.md)
+- [Version 15 Android advertised SDK capabilities](evidence/facebook-android-sdk-capabilities-version-15-2026-11-27.json)
 - [Current reviewer handoff for Riddle Quest Testing version 15](facebook-review-draft-2026-11-27.md)
 - [Earlier version 14 upload and exact archive acceptance](evidence/facebook-testing-version-14-2026-11-27.json)
 - [Historical version 14 Settings, legal-link cancellation and quit/relaunch](evidence/facebook-native-settings-version-14-2026-11-27.md)
