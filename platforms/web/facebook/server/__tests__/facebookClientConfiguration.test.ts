@@ -1,5 +1,9 @@
 /** Provides mock get behavior. */
 const mockGet = jest.fn();
+const mockUserGet = jest.fn();
+const mockGetAll = jest.fn(async (...references: Array<{path: string}>) => Promise.all(
+  references.map(reference => reference.path.startsWith("users/") ? mockUserGet() : mockGet()),
+));
 /** Returns the server-owned provider identity rows used for checkout readiness. */
 const mockProviderGet = jest.fn();
 /** Captures the identity query without sharing its results with account state. */
@@ -10,9 +14,10 @@ const mockSetFeatureGate = jest.fn(async () => undefined);
 jest.mock("firebase-admin/firestore", () => ({
   Timestamp: jest.requireActual<typeof import("firebase-admin/firestore")>("firebase-admin/firestore").Timestamp,
   getFirestore: () => ({
+    getAll: mockGetAll,
     collection: (name: string) => name === "providerIdentities"
       ? {where: mockIdentityWhere}
-      : {doc: () => ({get: mockGet})},
+      : {doc: (id: string) => ({path: `${name}/${id}`})},
   }),
 }));
 jest.mock("firebase-admin/database", () => ({
@@ -63,6 +68,8 @@ describe("Facebook client configuration", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockGet.mockReset();
+    mockUserGet.mockReset();
+    mockUserGet.mockResolvedValue({data: () => ({hasActiveSubscription: false})});
     mockProviderGet.mockReset();
     mockProviderGet.mockResolvedValue({size: 1, docs: [{data: () => identity()}]});
     process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED = "1";
@@ -90,11 +97,11 @@ describe("Facebook client configuration", () => {
 
   it("exposes only enabled booleans and the durable ad-free entitlement", () => {
     expect(
-      resolveFacebookClientConfiguration({
+      resolveFacebookClientConfiguration({account: {}, commerceAccount: {
         coinDebt: 9_999,
         removeInterstitialAds: true,
         internalReceipt: "must-not-leak",
-      }),
+      }}),
     ).toEqual({
       interstitialsEnabled: true,
       notificationsEnabled: true,
@@ -108,8 +115,46 @@ describe("Facebook client configuration", () => {
     });
   });
 
+  it("suppresses both ad formats for a verified subscription without changing the nine-field response", () => {
+    expect(resolveFacebookClientConfiguration({
+      commerceAccount: {removeInterstitialAds: false},
+      account: {hasActiveSubscription: true, jestSubscriptions: {activeSkus: ["private-sku"]}},
+    })).toEqual({
+      interstitialsEnabled: false,
+      notificationsEnabled: true,
+      commerceEnabled: true,
+      rewardedAdsEnabled: false,
+      referralsEnabled: true,
+      matchmakingEnabled: true,
+      tournamentsEnabled: true,
+      presenceEnabled: true,
+      removeInterstitialAds: false,
+    });
+  });
+
+  it.each([{}, {hasActiveSubscription: false}])("retains ads for an inactive or legacy account: %p", account => {
+    expect(resolveFacebookClientConfiguration({account, commerceAccount: undefined})).toMatchObject({
+      interstitialsEnabled: true,
+      rewardedAdsEnabled: true,
+    });
+  });
+
+  it.each([
+    undefined, null, [],
+    {hasActiveSubscription: null}, {hasActiveSubscription: "false"},
+    {hasActiveSubscription: 0}, {hasActiveSubscription: {}}, {hasActiveSubscription: []},
+  ])("suppresses both formats when account entitlement is unavailable or malformed: %p", account => {
+    expect(resolveFacebookClientConfiguration({account, commerceAccount: {removeInterstitialAds: true}})).toMatchObject({
+      interstitialsEnabled: false,
+      rewardedAdsEnabled: false,
+      commerceEnabled: true,
+      notificationsEnabled: true,
+      removeInterstitialAds: true,
+    });
+  });
+
   it("applies independent emergency switches and fails on unknown switch names", () => {
-    expect(resolveFacebookClientConfiguration(undefined, "commerce,interstitials")).toEqual({
+    expect(resolveFacebookClientConfiguration({account: {}, commerceAccount: undefined, disabledFeatures: "commerce,interstitials"})).toEqual({
       interstitialsEnabled: false,
       notificationsEnabled: true,
       commerceEnabled: false,
@@ -120,13 +165,14 @@ describe("Facebook client configuration", () => {
       presenceEnabled: true,
       removeInterstitialAds: false,
     });
-    expect(() => resolveFacebookClientConfiguration(undefined, "mystery")).toThrow("unknown-facebook-feature:mystery");
+    expect(() => resolveFacebookClientConfiguration({account: {}, commerceAccount: undefined, disabledFeatures: "mystery"}))
+      .toThrow("unknown-facebook-feature:mystery");
   });
 
   it.each([undefined, "0", "", "true"])("keeps checkout disabled without explicit webhook readiness: %p", (readiness) => {
     if (readiness === undefined) delete process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED;
     else process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED = readiness;
-    expect(resolveFacebookClientConfiguration({removeInterstitialAds: true})).toEqual({
+    expect(resolveFacebookClientConfiguration({account: {}, commerceAccount: {removeInterstitialAds: true}})).toEqual({
       interstitialsEnabled: true,
       notificationsEnabled: true,
       commerceEnabled: false,
@@ -142,7 +188,7 @@ describe("Facebook client configuration", () => {
   it.each([null, "true", 1, {}, []])(
     "fails closed instead of showing ads for a malformed durable entitlement: %p",
     (removeInterstitialAds) => {
-      expect(() => resolveFacebookClientConfiguration({removeInterstitialAds})).toThrow(
+      expect(() => resolveFacebookClientConfiguration({account: {}, commerceAccount: {removeInterstitialAds}})).toThrow(
         "invalid-facebook-commerce-entitlement",
       );
     },
@@ -159,7 +205,7 @@ describe("Facebook client configuration", () => {
     ["presence", "presenceEnabled"],
   ] as const)("projects %s independently through %s", (feature, field) => {
     /** Provides configuration behavior. */
-    const configuration = resolveFacebookClientConfiguration(undefined, feature);
+    const configuration = resolveFacebookClientConfiguration({account: {}, commerceAccount: undefined, disabledFeatures: feature});
     expect(configuration[field]).toBe(false);
     expect(Object.entries(configuration).filter(([key, value]) => key.endsWith("Enabled") && value === false)).toEqual([
       [field, false],
@@ -206,6 +252,38 @@ describe("Facebook client configuration", () => {
       rewardedAdsEnabled: true,
     });
     expect(mockProviderGet).not.toHaveBeenCalled();
+  });
+
+  it("reads only the authenticated account's subscription and commerce state together", async () => {
+    process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED = "0";
+    mockGet.mockResolvedValueOnce({data: () => ({removeInterstitialAds: false})});
+    mockUserGet.mockResolvedValueOnce({data: () => ({hasActiveSubscription: true})});
+    await expect(call({}, {uid, token: {provider: "facebook"}})).resolves.toMatchObject({
+      interstitialsEnabled: false,
+      rewardedAdsEnabled: false,
+      removeInterstitialAds: false,
+      commerceEnabled: false,
+    });
+    expect(mockGetAll).toHaveBeenCalledWith(
+      {path: `facebookCommerceAccounts/${uid}`},
+      {path: `users/${uid}`},
+    );
+    expect(mockProviderGet).not.toHaveBeenCalled();
+  });
+
+  it("suppresses both ad formats for an authenticated account whose user document is missing", async () => {
+    mockGet.mockResolvedValueOnce({data: () => undefined});
+    mockUserGet.mockResolvedValueOnce({data: () => undefined});
+    await expect(call({}, {uid, token: {provider: "facebook"}})).resolves.toMatchObject({
+      interstitialsEnabled: false,
+      rewardedAdsEnabled: false,
+    });
+  });
+
+  it("does not project enabled ads when the account entitlement read fails", async () => {
+    mockGet.mockResolvedValueOnce({data: () => undefined});
+    mockUserGet.mockRejectedValueOnce(new Error("subscription-read-unavailable"));
+    await expect(call({}, {uid, token: {provider: "facebook"}})).rejects.toThrow("subscription-read-unavailable");
   });
 
   it.each([

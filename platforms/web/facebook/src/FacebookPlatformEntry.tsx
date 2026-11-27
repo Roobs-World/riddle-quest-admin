@@ -20,6 +20,10 @@ import {createFacebookContextBoard} from "./contextBoard";
 import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
+import {createFacebookAdConfiguration} from "./FacebookAdConfiguration";
+import {createFacebookLevelInterstitial} from "./FacebookLevelInterstitial";
+import type {HostCompletionInput} from "../../../../src/progression/browser/hostCompletionEffects";
+import type {CompletionResult} from "../../../../src/platform/contracts/hostServices";
 import {FacebookCommerceSession, facebookPaymentsAvailable} from "./FacebookCommerceSession";
 import {createFacebookRewardedContinue} from "./FacebookRewardedContinue";
 import {LocalAccountDeletionGate} from "../../../../src/accounts/browser/deletion/LocalAccountDeletionGate";
@@ -110,6 +114,8 @@ export function FacebookPlatformEntry() {
   const [presenceEnabled, setPresenceEnabled] = useState(false);
   /** Provides [presence available, set presence available] behavior. */
   const [presenceAvailable, setPresenceAvailable] = useState(false);
+  const [, setAdPolicyVersion] = useState(0);
+  const levelInterstitialRef = useRef<ReturnType<typeof createFacebookLevelInterstitial> | null>(null);
   /** Current SDK catalog and purchase callback exposed to hosted play. */
   const [commercePresentation, setCommercePresentation] = useState<{
     /** Visible Facebook product summaries for the authenticated account. */
@@ -147,6 +153,9 @@ export function FacebookPlatformEntry() {
     let unsubscribeResume: (() => void) | undefined;
     /** Removes the payment recovery listener when the account session retires. */
     let unsubscribeCommerceResume: (() => void) | undefined;
+    let unsubscribeAdsResume: (() => void) | undefined;
+    let removeVictoryListener: (() => void) | undefined;
+    let levelInterstitial: ReturnType<typeof createFacebookLevelInterstitial> | undefined;
     /** Payment lifecycle controller for the authenticated Facebook account. */
     let commerceSession: FacebookCommerceSession | undefined;
     let sessionNotifications: NotificationProvider | undefined;
@@ -176,6 +185,10 @@ export function FacebookPlatformEntry() {
         const sdk = requireFacebookInstant();
         /** Provides r id. */
         const userId = await authenticateFacebook(sdk);
+        const {auth} = await import("../../../../src/platform/firebase/browserClient");
+        const accountOwner = auth.currentUser;
+        if (!accountOwner || accountOwner.uid !== userId) throw new Error("facebook-authentication-owner-changed");
+        const isAdSessionActive = () => active && deletionGateRef.current.isOpen() && auth.currentUser === accountOwner;
         /** Provides ads behavior. */
         let ads = undefined;
         /** Latest verified ad-removal entitlement passed to the ad adapter. */
@@ -262,25 +275,58 @@ export function FacebookPlatformEntry() {
           if (matchmakingEnabled) {
             contextBoardApi = {list: listFacebookContextBoard, record: recordFacebookContextRun};
           }
+          if (!isAdSessionActive()) return;
           if (
             ageCategory === "13_plus" &&
-            ((clientConfiguration.interstitialsEnabled && sdk.getSupportedAPIs().includes("getInterstitialAdAsync")) ||
-              (clientConfiguration.rewardedAdsEnabled && sdk.getSupportedAPIs().includes("getRewardedVideoAsync")))
+            (sdk.getSupportedAPIs().includes("getInterstitialAdAsync") ||
+              sdk.getSupportedAPIs().includes("getRewardedVideoAsync"))
           ) {
+            const adConfiguration = createFacebookAdConfiguration({
+              initial: clientConfiguration,
+              isActive: isAdSessionActive,
+              read: async () => {
+                const configuration = (await getFacebookClientConfiguration()).data;
+                if (isAdSessionActive()) removeInterstitialAds = configuration.removeInterstitialAds;
+                return configuration;
+              },
+              onChange: () => setAdPolicyVersion(version => version + 1),
+              reportFailure: error => captureBrowserException(error, {component: "facebook_ads", operation: "refresh_configuration"}),
+            });
+            unsubscribeAdsResume = session.capabilities.lifecycle?.onResume?.(() => {void adConfiguration.refresh();});
             ads = createFacebookAdsCapability({
               sdk,
-              isActive: () => active && deletionGateRef.current.isOpen(),
-              placementId: clientConfiguration.interstitialsEnabled
-                ? import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || ""
-                : "",
+              isActive: isAdSessionActive,
+              placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
-              rewardedEnabled: clientConfiguration.rewardedAdsEnabled,
-              adFree: () => removeInterstitialAds !== false,
+              rewardedEnabled: () => adConfiguration.allows("rewarded"),
+              adFree: () => removeInterstitialAds !== false || !adConfiguration.allows("interstitial"),
+              refreshEligibility: adConfiguration.refreshEligibility,
             });
             attemptRecovery = createFacebookRewardedContinue({ads,
-              isActive: () => active && deletionGateRef.current.isOpen(),
+              isActive: isAdSessionActive,
               claim: input => deletionGateRef.current.run(async () => (await grantFacebookRewardedContinue(input)).data),
             });
+            const sessionAds = ads;
+            const currentLevelInterstitial = createFacebookLevelInterstitial({
+              isActive: isAdSessionActive,
+              show: async isCurrent => {
+                const result = await sessionAds?.showInterstitial("result", () => isCurrent() && document.visibilityState === "visible");
+                if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
+                  captureBrowserException(new Error(result.message), {component: "facebook_ads", operation: "show_level_interstitial"});
+                }
+              },
+            });
+            levelInterstitial = currentLevelInterstitial;
+            levelInterstitialRef.current = currentLevelInterstitial;
+            const onVictoryDismissed = (event: Event): void => {
+              if (!(event instanceof CustomEvent)) return;
+              const detail: unknown = event.detail;
+              if (typeof detail === "object" && detail !== null && "outcomeKey" in detail && typeof detail.outcomeKey === "string") {
+                currentLevelInterstitial.dismiss(detail.outcomeKey);
+              }
+            };
+            window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
+            removeVictoryListener = () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
           }
           if (ageCategory === "13_plus" && clientConfiguration.tournamentsEnabled) {
             /** Native standings remain an optional presentation of the official server board. */
@@ -503,6 +549,10 @@ export function FacebookPlatformEntry() {
       unsubscribePause?.();
       unsubscribeResume?.();
       unsubscribeCommerceResume?.();
+      unsubscribeAdsResume?.();
+      removeVictoryListener?.();
+      levelInterstitial?.retire();
+      if (levelInterstitialRef.current === levelInterstitial) levelInterstitialRef.current = null;
       commerceSession?.retire();
       sessionNotifications?.retire();
       unsubscribePreferences?.();
@@ -596,18 +646,8 @@ export function FacebookPlatformEntry() {
     });
   }, []);
 
-  /** Provides show result interstitial behavior. */
-  const showResultInterstitial = useCallback(async () => {
-    if (startup.status !== "ready") return;
-    /** Provides result behavior. */
-    const result = await startup.session.capabilities.ads?.showInterstitial("result");
-    if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
-      captureBrowserException(new Error(result.message), {
-        component: "facebook_ads",
-        operation: "show_result_interstitial",
-      });
-    }
-  }, [startup]);
+  const onLevelCompleted = useCallback((input: HostCompletionInput, result: CompletionResult) =>
+    levelInterstitialRef.current?.complete(input, result), []);
 
   if (startup.status === "error") {
     return (
@@ -657,7 +697,7 @@ export function FacebookPlatformEntry() {
         })}
         onAccountDeletionRequested={requestAccountDeletion}
         onAccountDeleted={completeAccountDeletion}
-        onResultScreen={showResultInterstitial}
+        onAuthoritativeComplete={onLevelCompleted}
       />
     </PlayerSaveRecoveryLayout>
     </GoogleAnalyticsConsent>

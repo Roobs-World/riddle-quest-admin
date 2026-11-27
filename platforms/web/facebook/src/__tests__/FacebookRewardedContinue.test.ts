@@ -17,11 +17,22 @@ const setup = () => {
 };
 
 describe("Facebook rewarded extra attempt", () => {
-  it("requires an independently enabled placement", () => {
+  it("requires an adapter that declares rewarded support", () => {
     /** Isolated rewarded-continuation harness records video and authoritative grant calls. */
     const s = setup();
     expect(createFacebookRewardedContinue({...s, ads: undefined})).toBeUndefined();
-    expect(createFacebookRewardedContinue({...s, ads: {...s.ads, rewardedAvailable: false}})).toBeUndefined();
+    expect(createFacebookRewardedContinue({...s, ads: {...s.ads, rewardedAvailable: undefined}})).toBeUndefined();
+  });
+  it("retains a disabled capability while live availability changes", () => {
+    const s = setup();
+    s.ads.rewardedAvailable = false;
+    const capability = createFacebookRewardedContinue(s);
+    expect(capability).toBeDefined();
+    expect(capability?.isAvailable?.(input)).toBe(false);
+    s.ads.rewardedAvailable = true;
+    expect(capability?.isAvailable?.(input)).toBe(true);
+    s.isActive.mockReturnValue(false);
+    expect(capability?.isAvailable?.(input)).toBe(false);
   });
   it("claims only after the opt-in SDK video resolves and sends no amount or identity", async () => {
     /** Isolated rewarded-continuation harness records video and authoritative grant calls. */
@@ -38,14 +49,18 @@ describe("Facebook rewarded extra attempt", () => {
     await expect(s.capability.request(input)).resolves.toMatchObject({status});
     expect(s.claim).not.toHaveBeenCalled();
   });
-  it("retries the same server claim without making the player watch again", async () => {
+  it("retains an earned claim for its session when ads become unavailable", async () => {
     /** Isolated rewarded-continuation harness records video and authoritative grant calls. */
     const s = setup();
     s.claim.mockRejectedValueOnce(new Error("offline"));
     await expect(s.capability.request(input)).resolves.toMatchObject({status: "retryable-failure"});
+    s.ads.rewardedAvailable = false;
+    expect(s.capability.isAvailable?.(input)).toBe(true);
+    expect(s.capability.isAvailable?.({...input, sessionToken: "session-token-00000002"})).toBe(false);
     await expect(s.capability.request(input)).resolves.toMatchObject({status: "success"});
     expect(s.showRewarded).toHaveBeenCalledTimes(1);
     expect(s.claim.mock.calls[0]).toEqual(s.claim.mock.calls[1]);
+    expect(s.capability.isAvailable?.(input)).toBe(false);
   });
   it("does not transfer a completed video to another game session", async () => {
     /** Isolated rewarded-continuation harness records video and authoritative grant calls. */

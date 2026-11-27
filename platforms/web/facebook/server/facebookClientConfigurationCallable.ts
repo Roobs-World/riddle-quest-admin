@@ -23,22 +23,32 @@ const FacebookClientConfigurationResponseSchema = z
   })
   .strict();
 
-/** Projects the server switch set and durable entitlement without exposing commerce debt or receipts. */
-export function resolveFacebookClientConfiguration(
-  commerceAccount: Record<string, unknown> | undefined,
+/** Reads only the server-owned subscription projection; legacy accounts may omit it. */
+const FacebookSubscriptionEntitlementSchema = z.object({hasActiveSubscription: z.boolean().default(false)});
+
+/** Projects subscription-aware ad flags without extending the existing client wire contract. */
+export function resolveFacebookClientConfiguration({
+  commerceAccount,
+  account,
   disabledFeatures = process.env.FACEBOOK_DISABLED_FEATURES,
-): z.infer<typeof FacebookClientConfigurationResponseSchema> {
+}: {
+  commerceAccount: Record<string, unknown> | undefined;
+  account: unknown;
+  disabledFeatures?: string;
+}): z.infer<typeof FacebookClientConfigurationResponseSchema> {
   if (
     commerceAccount?.removeInterstitialAds !== undefined &&
     typeof commerceAccount.removeInterstitialAds !== "boolean"
   ) {
     throw new Error("invalid-facebook-commerce-entitlement");
   }
+  const subscription = FacebookSubscriptionEntitlementSchema.safeParse(account);
+  const permitsAds = subscription.success && !subscription.data.hasActiveSubscription;
   return FacebookClientConfigurationResponseSchema.parse({
-    interstitialsEnabled: isFacebookFeatureEnabled("interstitials", disabledFeatures),
+    interstitialsEnabled: isFacebookFeatureEnabled("interstitials", disabledFeatures) && permitsAds,
     notificationsEnabled: isFacebookFeatureEnabled("notifications", disabledFeatures),
     commerceEnabled: isFacebookFeatureEnabled("commerce", disabledFeatures) && process.env.FACEBOOK_PAYMENTS_WEBHOOK_ENABLED === "1",
-    rewardedAdsEnabled: isFacebookFeatureEnabled("rewarded_ads", disabledFeatures),
+    rewardedAdsEnabled: isFacebookFeatureEnabled("rewarded_ads", disabledFeatures) && permitsAds,
     referralsEnabled: isFacebookFeatureEnabled("referrals", disabledFeatures),
     matchmakingEnabled: isFacebookFeatureEnabled("matchmaking", disabledFeatures),
     tournamentsEnabled: isFacebookFeatureEnabled("tournaments", disabledFeatures),
@@ -59,10 +69,13 @@ export const getFacebookClientConfiguration = onCallWithSentry(
     /** Provides presence enabled behavior. */
     const presenceEnabled = isFacebookFeatureEnabled("presence");
     await syncFacebookPresenceFeatureGate(presenceEnabled);
-    /** Provides commerce account behavior. */
-    const commerceAccount = await getFirestore().collection("facebookCommerceAccounts").doc(request.auth.uid).get();
+    const db = getFirestore();
+    const [commerceAccount, account] = await db.getAll(
+      db.collection("facebookCommerceAccounts").doc(request.auth.uid),
+      db.collection("users").doc(request.auth.uid),
+    );
     /** Provides configuration behavior. */
-    const configuration = resolveFacebookClientConfiguration(commerceAccount.data());
+    const configuration = resolveFacebookClientConfiguration({commerceAccount: commerceAccount.data(), account: account.data()});
     if (configuration.commerceEnabled) {
       /** Provider identity matches for this account, capped to detect ambiguity. */
       const identities = await getFirestore().collection("providerIdentities").where("uid", "==", request.auth.uid).limit(2).get();

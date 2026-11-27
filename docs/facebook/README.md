@@ -4,6 +4,7 @@
 - [Assets](assets/)
 - [Evidence](evidence/)
 - [Rewarded-ad setup and hosted continuation verification, 27 November 2026](evidence/facebook-rewarded-ad-setup-2026-11-27.md)
+- [API parity, three-level interstitial cadence and subscription suppression, 27 November 2026](evidence/facebook-api-parity-and-ad-cadence-2026-11-27.md)
 - [Facebook approval walkthrough](facebook-approval-walkthrough.md)
 - [Facebook Instant Games operations](facebook-instant-games-operations.md)
 - [Facebook instant games progress](facebook-instant-games-progress.html)

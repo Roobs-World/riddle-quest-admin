@@ -493,7 +493,7 @@ export function GameFrameApp({
               onDecline: () => {if (!recovery.isPending() && !stateRef.current.guessPending && !stateRef.current.pendingCoinSpend) dispatch({type: "declineContinue"});},
               balance: state.profile?.coins ?? 0,
               onContinue: (amount) => {if (!recovery.isPending()) requestContinue(amount);},
-              onRecoverAttempt: isFacebookWebTarget && attemptRecovery ? recovery.request : undefined,
+              onRecoverAttempt: recovery.available ? recovery.request : undefined,
               pending: recovery.pending || !coinActionsReady,
               recoveryPending: state.guessPending,
               onSkip: () => {if (!recovery.isPending()) requestSkip();},
@@ -520,7 +520,7 @@ export function GameFrameApp({
               onCompletionMilestonesPresented={outcomeKey => dispatch({type: "completionMilestonesPresented", outcomeKey})}
               onClose={() => {if (!recovery.isPending()) dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
               onContinue={(amount) => {if (!recovery.isPending()) requestContinue(amount);}}
-              onRecoverAttempt={isFacebookWebTarget && attemptRecovery ? recovery.request : undefined}
+              onRecoverAttempt={recovery.available ? recovery.request : undefined}
               continuationPending={recovery.pending || !coinActionsReady}
               onPurchase={requestPurchase}
               onNext={requestRiddle}

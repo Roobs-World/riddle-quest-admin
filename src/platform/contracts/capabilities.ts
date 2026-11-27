@@ -227,11 +227,13 @@ export type AdsCapability = {
    *
    * @param placement - Target-defined, allowlisted placement identifier.
    */
-  showInterstitial(placement: string): Promise<PlatformResult<void>>;
+  showInterstitial(placement: string, isPlacementCurrent?: () => boolean): Promise<PlatformResult<void>>;
 };
 
 /** Target-owned recovery of one exhausted authoritative single-player attempt. */
 export type AttemptRecoveryCapability = {
+  /** Current session availability; omitted checks preserve existing capability behavior. */
+  isAvailable?(input: Parameters<AttemptRecoveryCapability["request"]>[0]): boolean;
   /** Resolves only after the provider flow and authoritative continuation succeed. */
   request(input: {
   /** Single-player mode bound to the continuation session. */

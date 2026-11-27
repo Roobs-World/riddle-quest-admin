@@ -20,16 +20,23 @@ export function createFacebookRewardedContinue({ads, claim, isActive}: {
   /** Checks whether the originating account and platform lifetime still own this action. */
   isActive: () => boolean;
 }): AttemptRecoveryCapability | undefined {
-  if (!ads?.rewardedAvailable) return undefined;
+  if (!ads || ads.rewardedAvailable === undefined) return undefined;
   /** Retains an observed completion across transport retries without replaying the video. */
   let pending: {
   /** Serialized mode, question and session identity of the observed video completion. */
   binding: string;
   /** Stable mutation receipt retained across grant delivery retries. */
-  requestId: string} | undefined;
+  requestId: string;
+  /** A delivered receipt remains idempotent but does not expose a new ad action. */
+  delivery: "pending" | "delivered"} | undefined;
   /** Suppresses duplicate clicks throughout both provider and server work. */
   let busy = false;
   return {
+    isAvailable(input) {
+      const binding = JSON.stringify([input.gameMode, input.riddleId, input.sessionToken]);
+      return isActive() && (ads.rewardedAvailable === true ||
+        (pending?.binding === binding && pending.delivery === "pending"));
+    },
     /** Requests continuation only while its account and question still own the action. */
     async request(input) {
       if (busy || !isActive()) return {status: "unavailable", message: "facebook-continuation-unavailable"};
@@ -43,13 +50,15 @@ export function createFacebookRewardedContinue({ads, claim, isActive}: {
           const shown = await ads.showRewarded("continue");
           if (shown.status !== "success") return shown;
           if (!isActive()) return {status: "unavailable", message: "facebook-continuation-unavailable"};
-          pending = {binding, requestId: createRequestId("rewarded-continue")};
+          pending = {binding, requestId: createRequestId("rewarded-continue"), delivery: "pending"};
         }
         if (!isActive()) return {status: "unavailable", message: "facebook-continuation-unavailable"};
         /** Authority response is validated before applying its balance and continuation. */
         const result = await claim({...input, requestId: pending.requestId});
         if (!Number.isSafeInteger(result.newCoins) || result.newCoins < 0) throw new Error("invalid-continuation-response");
-        return isActive() ? {status: "success", value: result} : {status: "unavailable", message: "facebook-continuation-unavailable"};
+        if (!isActive()) return {status: "unavailable", message: "facebook-continuation-unavailable"};
+        pending = {...pending, delivery: "delivered"};
+        return {status: "success", value: result};
       } catch {
         return {status: "retryable-failure", message: "ErrorMessages.SERVICE_TEMPORARILY_UNAVAILABLE"};
       } finally {

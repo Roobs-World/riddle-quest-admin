@@ -25,6 +25,9 @@ export function useAttemptRecovery({capability, state, dispatch}: {
 }) {
   /** Rendered pending state prevents conflicting continuation controls. */
   const [pending, setPending] = useState(false);
+  const available = Boolean(capability && state.riddle && (capability.isAvailable?.({
+    gameMode: state.riddle.gameMode, riddleId: state.riddle.riddleId, sessionToken: state.riddle.sessionToken,
+  }) ?? true));
   /** Profile updates retain the same action; committed account, question and provider changes retire it. */
   const scope = useMemo(() => ({capability, dispatch, uid: state.user?.uid, generation: state.user?.accountGeneration,
     locale: state.locale, token: state.riddle?.sessionToken, riddleId: state.riddle?.riddleId,
@@ -94,5 +97,5 @@ export function useAttemptRecovery({capability, state, dispatch}: {
       if (ownsAction()) {owner.request = null; setPending(false);}
     }
   }, [capability, dispatch, scope]);
-  return {pending, request, isPending: () => Boolean(ownerRef.current?.request)};
+  return {available, pending, request, isPending: () => Boolean(ownerRef.current?.request)};
 }
