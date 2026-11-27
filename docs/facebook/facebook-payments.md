@@ -2,7 +2,21 @@
 
 Facebook checkout uses `FBInstant.payments`. The backend requires both a signed purchase receipt and an authenticated V2 payment webhook before granting anything.
 
-As of 23 November 2026, the implementation is present but checkout remains disabled. The current Meta app has no approved Gaming Profile or Instant Games Zero Permission Access permission. Neither a saved callback nor a successful verification handshake proves that payment events will arrive. No hosted purchase or refund acceptance is claimed for this change. The build wrapper ran 11 boundary tests before its embedded test step was noticed. No gameplay or server test suites or browser harnesses were run.
+As of 27 November 2026, all seven one-time products are registered in Meta's catalog and use the existing SDK checkout and server grant implementation. The missing $4.99 non-consumable Remove Interstitial Ads product was added; the dashboard confirmed seven of seven products. Checkout remains disabled: payout setup, IAP approval, the required game permission and actual V2 payment-event acceptance remain outstanding. See the [catalog and readiness record](evidence/facebook-payments-catalog-2026-11-27.md).
+
+The local Functions configuration still disables `commerce` and `rewarded_ads`, and does not set `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1`. These are local deployment inputs, not a verification of deployed configuration. Neither a saved callback nor a successful verification handshake proves that payment events will arrive. No hosted purchase or refund acceptance is claimed.
+
+## Supported products and subscriptions
+
+The Facebook catalog contains six coin packs and the permanent interstitial-ad-removal product from `platforms/web/facebook/src/commerce/facebookCatalog.ts`. Meta owns localized checkout prices; the server allowlist owns the grants and durable entitlement.
+
+Meta's current [Instant Games IAP guide](https://developers.facebook.com/documentation/games/monetize/in-app-purchases) explicitly excludes recurring subscriptions. Its self-service catalog supports consumable and durable products. The [Payments v8 API](https://developers.facebook.com/documentation/games/sdk-reference/v8.0/payments) and [V2 payment webhooks](https://developers.facebook.com/documentation/games/monetize/iap-webhooks) provide no recurring subscription lifecycle contract. Generic Graph product fields are not evidence of Instant Games subscription availability.
+
+Facebook Premium therefore remains unavailable. A manually renewed pass or a permanent Premium unlock would be a separate product decision with different billing behavior; neither replacement has been selected or implemented.
+
+## Complete payout and IAP setup
+
+The Game Payments dashboard still offers **Set up payout** and requires a valid payment account. Complete the account setup and IAP approval requirements in the Meta dashboard before public checkout. Product registration alone does not approve a game for payments. The account's In-App Test Payment Mode was already enabled and was left unchanged; that setting does not establish production acceptance.
 
 ## Obtain the required permission
 
@@ -52,7 +66,7 @@ The handshake accepts a `GET` request whose `hub.mode` is `subscribe` and whose 
 8. Confirm that a refund delivered before purchase confirmation prevents a later grant.
 9. Confirm that account deletion removes token owner links and prevents old receipts from granting into a recreated account.
 10. Record the accepted app, backend revision, artifact hash, payment environment, and sanitized outcomes.
-11. Set `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1` only after these prerequisites are accepted, then deploy the configuration and restart the game.
+11. Only after these prerequisites are accepted, remove `commerce` from `FACEBOOK_DISABLED_FEATURES`, set `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED=1`, deploy the configuration and restart the game. Preserve unrelated feature switches.
 
 Do not record provider identifiers, purchase tokens, signatures, or app secrets in acceptance evidence. A build or type check does not establish hosted payment acceptance.
 
