@@ -9,8 +9,19 @@ import {createFacebookMessengerBotConsent} from "../notifications/FacebookMessen
 /** Meta permits only one shortcut prompt attempt per game session, including dismissal. */
 const shortcutAttempted = new WeakSet<FacebookInstantSdk>();
 
+const ACTION_LABELS = {
+  "create-shortcut": "Settings.ADD_SHORTCUT_BUTTON",
+  "follow-community": "Settings.FOLLOW_COMMUNITY_BUTTON",
+  "join-community": "Settings.JOIN_COMMUNITY_BUTTON",
+  "subscribe-messenger-bot": "Settings.MESSENGER_UPDATES_BUTTON",
+  "privacy-policy": "Settings.PRIVACY_BUTTON",
+  "terms-of-use": "Settings.TERMS_BUTTON",
+  quit: "Settings.QUIT_GAME_BUTTON",
+};
+type FacebookPlayerSettingsAction = keyof typeof ACTION_LABELS;
+
 type NativeAction = {
-  id: PlayerSettingsAction;
+  id: FacebookPlayerSettingsAction;
   canRun?: (signal?: AbortSignal) => Promise<boolean>;
   repeatable?: boolean;
   invoke: (signal?: AbortSignal) => Promise<void>;
@@ -23,7 +34,7 @@ export type FacebookPlayerSettingsActionsOptions = {
   messengerBotEnabled?: boolean;
   /** Rejects when current progress cannot be durably saved; quitting must then stop. */
   flushBeforeQuit: () => Promise<void>;
-  reportFailure?: (failure: {action: PlayerSettingsAction; error: unknown}) => void;
+  reportFailure?: (failure: {action: FacebookPlayerSettingsAction; error: unknown}) => void;
 };
 
 /** Exposes only advertised, callable native actions; eligibility is checked before each prompt. */
@@ -67,17 +78,18 @@ export function createFacebookPlayerSettingsActions({
   let retired = false;
   let revision = 0;
   const current = () => !retired && isActive();
-  const report = (action: PlayerSettingsAction, error: unknown) => {
+  const report = (action: FacebookPlayerSettingsAction, error: unknown) => {
     if (!current()) return;
     try {reportFailure?.({action, error});} catch { /* Diagnostics cannot change a player action's outcome. */ }
   };
   const available = new Set(nativeActions.filter(action => !action.canRun).map(action => action.id));
-  const unsupported = new Set<PlayerSettingsAction>();
+  const unsupported = new Set<FacebookPlayerSettingsAction>();
   const listeners = new Set<() => void>();
-  let snapshot: PlayerSettingsActionsSnapshot = {actions: nativeActions.filter(action => available.has(action.id)).map(action => action.id), pendingAction: null};
-  const publish = (pendingAction: PlayerSettingsAction | null) => {
+  const describeAction = ({id}: NativeAction): PlayerSettingsAction => ({id, labelKey: ACTION_LABELS[id]});
+  let snapshot: PlayerSettingsActionsSnapshot = {actions: nativeActions.filter(action => available.has(action.id)).map(describeAction), pendingAction: null};
+  const publish = (pendingAction: FacebookPlayerSettingsAction | null) => {
     if (!current()) return;
-    snapshot = {actions: nativeActions.filter(action => available.has(action.id) || action.id === pendingAction).map(action => action.id), pendingAction};
+    snapshot = {actions: nativeActions.filter(action => available.has(action.id) || action.id === pendingAction).map(describeAction), pendingAction};
     listeners.forEach(listener => listener());
   };
   const eligible = async (action: NativeAction, signal?: AbortSignal): Promise<boolean> => {
@@ -95,11 +107,11 @@ export function createFacebookPlayerSettingsActions({
       nativeActions.forEach((action, index) => {if (eligibility[index]) available.add(action.id); else available.delete(action.id);});
       publish(null);
     },
-    run: async (id, signal) => {
+    run: async (requestedId, signal) => {
       if (signal?.aborted) return "cancelled";
-      if (!current() || snapshot.pendingAction || !available.has(id)) return "unavailable";
-      const action = nativeActions.find(candidate => candidate.id === id);
-      if (!action) return "unavailable";
+      const action = nativeActions.find(candidate => candidate.id === requestedId);
+      if (!current() || snapshot.pendingAction || !action || !available.has(action.id)) return "unavailable";
+      const id = action.id;
       ++revision;
       publish(id);
       let unsaved = false;

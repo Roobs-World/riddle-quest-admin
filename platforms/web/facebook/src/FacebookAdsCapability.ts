@@ -3,6 +3,7 @@ import type {FacebookInstantSdk} from "./fbinstant";
 import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 import {trackEvent} from "../../../../src/observability/analytics/events";
 import type {FacebookAdFormat} from "./FacebookAdConfiguration";
+import {createFacebookAdPreparation} from "./ads/FacebookAdPreparation";
 import {
   canShowFacebookInterstitial,
   createFacebookInterstitialState,
@@ -83,6 +84,7 @@ export function createFacebookAdsCapability({
   let showingRewarded = false;
   /** Provides interstitials disabled behavior. */
   let interstitialsDisabled = false;
+  const preparation = createFacebookAdPreparation();
 
   return {
     get rewardedAvailable() {return rewardedSupported && isActive() && isRewardedEnabled();},
@@ -101,6 +103,7 @@ export function createFacebookAdsCapability({
         !interstitialAvailable ||
         showingInterstitial ||
         showingRewarded ||
+        preparation.isPending() ||
         placement !== "result" ||
         !isPlacementCurrent()
       ) {
@@ -118,13 +121,13 @@ export function createFacebookAdsCapability({
             return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           }
           trackEvent("ad_requested", {ad_format: "interstitial", placement});
-          const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
+          const ad = await preparation.run("create", () => sdk.getInterstitialAdAsync!(normalizedPlacement));
           if (!isActive() || !isPlacementCurrent()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           assertPlacement(ad, normalizedPlacement);
           if (!isActive() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
             return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           }
-          await ad.loadAsync();
+          await preparation.run("load", () => ad.loadAsync());
           if (!await refreshEligibility("interstitial") || !isActive() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
             return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           }
@@ -154,7 +157,7 @@ export function createFacebookAdsCapability({
     },
     /** Provides show rewarded behavior. */
     async showRewarded(placement) {
-      if (!isActive() || !rewardedSupported || showingRewarded || showingInterstitial || placement !== "continue") {
+      if (!isActive() || !rewardedSupported || showingRewarded || showingInterstitial || preparation.isPending() || placement !== "continue") {
         return {status: "unavailable", message: "facebook-rewarded-unavailable"};
       }
       showingRewarded = true;
@@ -171,11 +174,11 @@ export function createFacebookAdsCapability({
           }
           trackEvent("ad_requested", {ad_format: "rewarded", placement});
           /** Provides ad behavior. */
-          const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
+          const ad = await preparation.run("create", () => sdk.getRewardedVideoAsync!(normalizedRewardedPlacement));
           if (!isActive() || !isRewardedEnabled()) return {status: "unavailable", message: "facebook-rewarded-unavailable"};
           assertPlacement(ad, normalizedRewardedPlacement);
           if (!isActive() || !isRewardedEnabled()) return {status: "unavailable", message: "facebook-rewarded-unavailable"};
-          await ad.loadAsync();
+          await preparation.run("load", () => ad.loadAsync());
           if (!await refreshEligibility("rewarded") || !isActive() || !isRewardedEnabled()) {
             return {status: "unavailable", message: "facebook-rewarded-unavailable"};
           }

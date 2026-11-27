@@ -36,14 +36,37 @@ export async function installTournamentPresentation(page: Page): Promise<void> {
     };
     /** Exact native inventory is advertised before application bootstrap. */
     const supported = sdk.getSupportedAPIs.bind(sdk);
-    sdk.getSupportedAPIs = () => [...supported(), "getTournamentAsync", "tournament.createAsync", "tournament.shareAsync", "tournament.postScoreAsync"];
+    const currentLookup = new URL(location.href).searchParams.get("current-tournament") !== "off";
+    sdk.getSupportedAPIs = () => [...supported().filter(api => currentLookup || api !== "getTournamentAsync"),
+      ...(currentLookup ? ["getTournamentAsync"] : []), "tournament.createAsync", "tournament.shareAsync", "tournament.postScoreAsync",
+      "tournament.getTournamentsAsync", "tournament.joinAsync"];
+    const listedLocale = new URL(location.href).searchParams.get("listed-tournament");
+    const startsAtMs = Math.floor(Date.now() / 86400000) * 86400000;
+    const listed: FacebookInstantTournament | undefined = listedLocale === "en" || listedLocale === "fr" ? {
+      getID: () => "listed-native-tournament", getContextID: () => "listed-tournament-context",
+      getTitle: () => "Listed daily tournament", getTournamentType: () => "DEFAULT", getEndTime: () => (startsAtMs + 86400000) / 1000,
+      getPayload: () => JSON.stringify({kind: "rq-race10-tournament-v1", locale: listedLocale,
+        tournamentId: `facebook-race10-${listedLocale}-${new Date(startsAtMs).toISOString().slice(0, 10)}`,
+        startsAtMs, endsAtMs: startsAtMs + 86400000}),
+    } : undefined;
     /** No native tournament exists until the player confirms creation. */
     let native: FacebookInstantTournament | undefined;
-    sdk.getTournamentAsync = async () => {
+    if (currentLookup) sdk.getTournamentAsync = async () => {
       if (!native) throw {code: "TOURNAMENT_NOT_FOUND"};
       return native;
     };
+    else delete sdk.getTournamentAsync;
     sdk.tournament = {
+      getTournamentsAsync: async () => {
+        Reflect.set(window, "__tournamentListReads", (Reflect.get(window, "__tournamentListReads") ?? 0) + 1);
+        return listed ? [listed] : [];
+      },
+      joinAsync: async id => {
+        if (!listed || id !== listed.getID()) throw new Error("Unexpected native tournament");
+        native = listed;
+        Reflect.set(window, "__tournamentJoins", (Reflect.get(window, "__tournamentJoins") ?? 0) + 1);
+        Reflect.get(window, "__emitContextChange")(listed.getContextID());
+      },
       createAsync: payload => {
         Reflect.set(window, "__tournamentCreates", [...(Reflect.get(window, "__tournamentCreates") ?? []), payload]);
         return new Promise(resolve => {
@@ -63,6 +86,43 @@ export async function installTournamentPresentation(page: Page): Promise<void> {
       postScoreAsync: async score => {Reflect.set(window, "__tournamentScore", score);},
     };
   });
+}
+
+/** A listed native join must open the official board and retain incoming-language guidance. */
+export async function verifyListedTournamentJoin(page: Page, origin: string): Promise<void> {
+  for (const locale of ["fr", "en"]) {
+    await page.goto(`${origin}/?harness=race&listed-tournament=${locale}&current-tournament=${locale === "en" ? "off" : "on"}`);
+    await page.locator(".game-bottom-navigation").waitFor();
+    const onboarding = page.locator(".onboarding-card .play-primary");
+    if (await onboarding.count()) {
+      await onboarding.click();
+      await page.locator(".onboarding-clues").waitFor();
+      await onboarding.click();
+      await onboarding.waitFor({state: "detached"});
+    }
+    for (let step = 0; step < 4; step++) {
+      const tip = page.locator(".tooltip-backdrop");
+      if (await tip.count()) await tip.locator("button").click();
+    }
+    await page.locator(".multiplayer-navigation-action").click();
+    const social = page.locator(".facebook-native-social");
+    await social.locator("summary").click();
+    await social.getByText("Listed daily tournament", {exact: true}).waitFor();
+    await social.getByRole("button", {name: "Rejoindre le tournoi", exact: true}).click();
+    await page.locator(".race-tournaments li").waitFor();
+    expect(await page.getByRole("tab", {name: "Tournois", exact: true}).getAttribute("aria-selected")).toBe("true");
+    expect(await page.evaluate(() => Reflect.get(window, "__tournamentJoins"))).toBe(1);
+    expect(await page.evaluate(() => Reflect.get(window, "__contextMembershipRequest")))
+      .toEqual({contextId: "listed-tournament-context", contextType: "GROUP", locale: "fr"});
+    if (locale === "en") {
+      expect(await page.getByRole("alert").innerText()).toContain("autre langue");
+      expect(await page.evaluate(() => window.FBInstant!.getSupportedAPIs().includes("getTournamentAsync"))).toBe(false);
+      expect(await page.evaluate(() => typeof window.FBInstant!.getTournamentAsync)).toBe("undefined");
+      expect(await page.evaluate(() => Reflect.get(window, "__tournamentListReads"))).toBeGreaterThanOrEqual(2);
+      await page.screenshot({path: "/tmp/facebook-joined-tournament-language.png"});
+    } else expect(await page.getByRole("alert").count()).toBe(0);
+    expect(await page.evaluate(() => localStorage.getItem("appLanguage"))).toBe("fr");
+  }
 }
 
 /** Proves the localized control, fresh authority, duplicate protection and exact native payloads. */

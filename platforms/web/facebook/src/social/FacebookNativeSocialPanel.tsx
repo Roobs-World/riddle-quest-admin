@@ -1,6 +1,7 @@
 import {createContext, useContext, useLayoutEffect, useRef, useState, useSyncExternalStore, type PropsWithChildren} from "react";
 import {tr} from "../../../../../src/localization/browser/i18n";
 import type {PlatformResult} from "../../../../../src/platform/contracts/capabilities";
+import type {RaceLocale} from "../../../../../src/races/contracts/index";
 import type {FacebookNativeSocial} from "./FacebookNativeSocial";
 
 const FacebookNativeSocialContext = createContext<FacebookNativeSocial | undefined>(undefined);
@@ -10,12 +11,12 @@ export function FacebookNativeSocialProvider({capability, children}: PropsWithCh
 }
 
 /** Native social discovery stays inside the Facebook race lobby and exposes no profile data. */
-export function FacebookNativeSocialPanel() {
+export function FacebookNativeSocialPanel({onTournamentJoined}: {onTournamentJoined?: (locale: RaceLocale) => void}) {
   const capability = useContext(FacebookNativeSocialContext);
-  return capability ? <AvailableNativeSocialPanel key="facebook-native-social" capability={capability} /> : null;
+  return capability ? <AvailableNativeSocialPanel key="facebook-native-social" capability={capability} onTournamentJoined={onTournamentJoined} /> : null;
 }
 
-function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSocial}) {
+function AvailableNativeSocialPanel({capability, onTournamentJoined}: {capability: FacebookNativeSocial; onTournamentJoined?: (locale: RaceLocale) => void}) {
   const snapshot = useSyncExternalStore(capability.subscribe, capability.getSnapshot, capability.getSnapshot);
   const [actionNotice, setActionNotice] = useState<"error" | "unavailable" | null>(null);
   const owner = useRef<FacebookNativeSocial | null>(capability);
@@ -26,7 +27,7 @@ function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSoc
     return () => {owner.current = null; pendingAction.current?.abort(); pendingAction.current = null;};
   }, [capability]);
   const busy = snapshot.loading || snapshot.pending !== null;
-  const run = async (operation: (signal: AbortSignal) => Promise<PlatformResult<void>>) => {
+  const run = async <Value,>(operation: (signal: AbortSignal) => Promise<PlatformResult<Value>>, onSuccess?: (value: Value) => void) => {
     if (owner.current !== capability || !details.current?.open || pendingAction.current) return;
     const controller = new AbortController();
     pendingAction.current = controller;
@@ -36,6 +37,7 @@ function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSoc
       if (owner.current === capability && !controller.signal.aborted && details.current?.open) {
         setActionNotice(result.status === "success" || result.status === "cancelled" ? null :
           result.status === "unavailable" ? "unavailable" : "error");
+        if (result.status === "success") onSuccess?.(result.value);
       }
     } catch {
       if (owner.current === capability && !controller.signal.aborted && details.current?.open) setActionNotice("error");
@@ -65,7 +67,8 @@ function AvailableNativeSocialPanel({capability}: {capability: FacebookNativeSoc
         {!snapshot.loading && snapshot.tournaments.length === 0 && <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>}
         <ul>{snapshot.tournaments.map((tournament, index) => <li key={tournament.id}>
           <span>{tournament.title ?? tr("RaceTo10.FACEBOOK_TOURNAMENT_NUMBER", {number: index + 1})}</span>
-          {snapshot.canJoinTournament && <button type="button" disabled={busy} onClick={() => void run(signal => capability.joinTournament(tournament.id, signal))}>
+          {snapshot.canJoinTournament && <button type="button" disabled={busy} onClick={() => void run(
+            signal => capability.joinTournament(tournament.id, signal), locale => {if (locale) onTournamentJoined?.(locale);})}>
             {tr("RaceTo10.FACEBOOK_JOIN_TOURNAMENT")}
           </button>}
         </li>)}</ul>

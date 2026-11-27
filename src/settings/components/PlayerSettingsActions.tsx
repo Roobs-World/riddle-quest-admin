@@ -1,6 +1,6 @@
 import {createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode} from "react";
 import {useTranslator} from "../../localization/browser/i18n";
-import type {PlayerSettingsAction, PlayerSettingsActionsCapability} from "../contracts/playerSettingsActions";
+import type {PlayerSettingsActionsCapability} from "../contracts/playerSettingsActions";
 
 const PlayerSettingsActionsContext = createContext<PlayerSettingsActionsCapability | null>(null);
 
@@ -13,16 +13,6 @@ export function PlayerSettingsActionsProvider({capability, children}: {
     {children}
   </PlayerSettingsActionsContext.Provider>;
 }
-
-const ACTION_LABELS = {
-  "create-shortcut": "Settings.ADD_SHORTCUT_BUTTON",
-  "follow-community": "Settings.FOLLOW_COMMUNITY_BUTTON",
-  "join-community": "Settings.JOIN_COMMUNITY_BUTTON",
-  "subscribe-messenger-bot": "Settings.MESSENGER_UPDATES_BUTTON",
-  "privacy-policy": "Settings.PRIVACY_BUTTON",
-  "terms-of-use": "Settings.TERMS_BUTTON",
-  quit: "Settings.QUIT_GAME_BUTTON",
-} satisfies Record<PlayerSettingsAction, string>;
 
 function AvailablePlayerSettingsActions({capability}: {capability: PlayerSettingsActionsCapability}) {
   const tr = useTranslator();
@@ -37,25 +27,25 @@ function AvailablePlayerSettingsActions({capability}: {capability: PlayerSetting
   }, [capability]);
   useEffect(() => {void capability.refresh();}, [capability]);
 
-  const request = async (action: PlayerSettingsAction) => {
+  const request = async (actionId: string) => {
     const current = owner.current;
     if (!current || snapshot.pendingAction) return;
     setNotice(null);
-    const result = await capability.run(action, current.signal);
+    const result = await capability.run(actionId, current.signal);
     if (owner.current !== current) return;
     if (result === "error" || result === "unavailable" || result === "unsaved") setNotice(result);
   };
 
   return <>
     {snapshot.actions.map(action => <button
-      key={action}
+      key={action.id}
       type="button"
       className="settings-row"
       disabled={snapshot.pendingAction !== null}
-      aria-busy={snapshot.pendingAction === action}
-      onClick={() => void request(action)}
+      aria-busy={snapshot.pendingAction === action.id}
+      onClick={() => void request(action.id)}
     >
-      <span>{tr(ACTION_LABELS[action])}</span>
+      <span>{tr(action.labelKey)}</span>
       <strong aria-hidden="true">›</strong>
     </button>)}
     {notice && <p role="status">{tr(notice === "unsaved" ? "GameScreenAlerts.PROGRESS_UNSAVED_MESSAGE" :

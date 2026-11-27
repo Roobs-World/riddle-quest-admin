@@ -1,6 +1,9 @@
 import type {PlatformResult} from "../../../../../src/platform/contracts/capabilities";
+import type {RaceLocale} from "../../../../../src/races/contracts/index";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
+import {facebookTournamentLocaleFromEntryData} from "../facebookTournamentEntry";
+import {parseFacebookTournamentPayload} from "./facebookTournamentPayload";
 
 export type FacebookNativeTournament = Readonly<{
   id: string;
@@ -28,7 +31,7 @@ export type FacebookNativeSocial = {
   refresh(): Promise<void>;
   createContext(signal?: AbortSignal): Promise<PlatformResult<void>>;
   leaveContext(signal?: AbortSignal): Promise<PlatformResult<void>>;
-  joinTournament(id: string, signal?: AbortSignal): Promise<PlatformResult<void>>;
+  joinTournament(id: string, signal?: AbortSignal): Promise<PlatformResult<RaceLocale | undefined>>;
   joinRoom(signal?: AbortSignal): Promise<PlatformResult<void>>;
   retire(): void;
 };
@@ -112,6 +115,8 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
     ? tournament.getTournamentsAsync.bind(tournament) : undefined;
   const join = supported.has("tournament.joinAsync") && typeof tournament?.joinAsync === "function"
     ? tournament.joinAsync.bind(tournament) : undefined;
+  const getTournament = supported.has("getTournamentAsync") && typeof sdk.getTournamentAsync === "function"
+    ? sdk.getTournamentAsync.bind(sdk) : undefined;
   const getRoom = supported.has("room.getCurrentMatchAsync") && typeof sdk.room?.getCurrentMatchAsync === "function"
     ? sdk.room.getCurrentMatchAsync.bind(sdk.room) : undefined;
   if (!getConnected && !getPlayers && !create && !switchContext && !list && !getRoom) return undefined;
@@ -160,7 +165,8 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
   };
   type AdmitMutation = (mutation: () => Promise<void>) => Promise<void>;
   const run = async (pending: NonNullable<FacebookNativeSocialSnapshot["pending"]>,
-    operation: ((admit: AdmitMutation) => Promise<void>) | undefined, signal?: AbortSignal): Promise<PlatformResult<void>> => {
+    operation: ((admit: AdmitMutation) => Promise<void>) | undefined, signal?: AbortSignal,
+    afterReconcile?: () => Promise<void>): Promise<PlatformResult<void>> => {
     if (signal?.aborted) return {status: "cancelled"};
     if (!current() || snapshot.pending || !operation) return {status: "unavailable", message: "facebook-native-social-unavailable"};
     ++revision;
@@ -193,6 +199,8 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
         if (!current() || signal?.aborted) return {status: "cancelled"};
         if (failure?.unsupportedPicker) return {status: "unavailable", message: "facebook-native-social-unavailable"};
         if (failure) throw failure.error;
+        await afterReconcile?.();
+        if (!current() || signal?.aborted) return {status: "cancelled"};
         return {status: "success", value: undefined};
       });
       return signal?.aborted ? {status: "cancelled"} : result;
@@ -219,12 +227,48 @@ export function createFacebookNativeSocial({sdk, isActive, synchronizeContext, o
     refresh,
     createContext: signal => run("create-context", create && !noArgumentPickerUnsupported ? admit => admit(() => create()) : undefined, signal),
     leaveContext: signal => run("leave-context", switchContext && contextId() ? admit => admit(() => switchContext("SOLO")) : undefined, signal),
-    joinTournament: (id, signal) => {
+    joinTournament: async (id, signal) => {
       const selected = snapshot.tournaments.find(item => item.id === id && item.endsAtMs > now());
-      return run("join-tournament", selected && join ? admit => {
+      let destination: RaceLocale | undefined;
+      const result = await run("join-tournament", selected && join ? admit => {
         if (selected.endsAtMs <= now()) throw new Error("facebook-native-tournament-expired");
         return admit(() => join(selected.id));
-      } : undefined, signal);
+      } : undefined, signal, async () => {
+        if (!selected || (!getTournament && !list)) return;
+        const joinedContext = contextId(), joinedRevision = revision;
+        const assertDestination = () => {
+          if (!current() || signal?.aborted || revision !== joinedRevision || contextId() !== joinedContext) {
+            throw Object.assign(new Error("facebook-native-destination-retired"), {code: "USER_CANCELLED"});
+          }
+        };
+        const readDestination = async () => {
+          if (getTournament) return getTournament();
+          if (!list) return undefined;
+          // Some hosts expose list/join but no current getter. Re-read after joining:
+          // Meta's list includes participated tournaments, each with one immutable context.
+          const latest = await list();
+          assertDestination();
+          if (!Array.isArray(latest)) throw new Error("facebook-native-tournaments-invalid");
+          const matches = latest.filter(candidate => {
+            try {return candidate.getID() === selected.id && candidate.getContextID() === joinedContext;}
+            catch {return false;}
+          });
+          return matches.length === 1 ? matches[0] : undefined;
+        };
+        const native = await readWithinDeadline(readDestination()).catch(error => {assertDestination(); throw error;});
+        assertDestination();
+        if (!native) return;
+        const payload = parseFacebookTournamentPayload(native.getPayload());
+        const locale = facebookTournamentLocaleFromEntryData(payload, now());
+        const type = native.getTournamentType?.();
+        const matches = locale !== undefined && joinedContext !== null && native.getID() === selected.id &&
+          native.getContextID() === joinedContext && (type === "DEFAULT" || type === "DAILY" || type === "PAGE_HOSTED") &&
+          payload !== null && typeof payload === "object" && "endsAtMs" in payload && native.getEndTime() * 1000 === payload.endsAtMs;
+        // Native getters can synchronously retire the account or change its context.
+        assertDestination();
+        destination = matches ? locale : undefined;
+      });
+      return result.status === "success" ? {status: "success", value: destination} : result;
     },
     joinRoom: signal => {
       const selected = room;

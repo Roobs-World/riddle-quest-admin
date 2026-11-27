@@ -3,7 +3,7 @@ import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support
 import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support.ts";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support.ts";
 import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support.ts";
-import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult} from "./tournaments.jest-playwright.support.ts";
+import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult, verifyListedTournamentJoin} from "./tournaments.jest-playwright.support.ts";
 import {installLiveMultiplayerJourney} from "../../../../../src/app/testing/browser/__tests__/liveMultiplayer.jest-playwright.support.ts";
 import {describe, expect, it} from "@jest/globals";
 import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
@@ -429,11 +429,21 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           /** Simulates Meta's completion, cancellation and no-fill contracts without creating rewards. */
           async getRewardedVideoAsync(placementId) {
             window.__facebookEvents.push(`rewarded:placement:${placementId}`);
+            const holdPreparation = async (phase: "create" | "load") => {
+              if (Reflect.get(window, "__rewardedMode") !== `hold-${phase}`) return;
+              await new Promise<void>(resolve => Reflect.set(window, "__finishRewardedPreparation", () => {
+                Reflect.deleteProperty(window, "__finishRewardedPreparation");
+                window.__facebookEvents.push(`rewarded:preparation-settled:${phase}`);
+                resolve();
+              }));
+            };
+            await holdPreparation("create");
             return {
               getPlacementID: () => placementId,
               /** Mock Meta video load resolves before the completion adapter is used. */
               async loadAsync() {
                 window.__facebookEvents.push("rewarded:load");
+                await holdPreparation("load");
                 if (Reflect.get(window, "__rewardedMode") === "no-fill") throw Object.assign(new Error("no fill"), {code: "ADS_NO_FILL"});
               },
               /** Mock Meta completion supports cancellation, no-fill and held-video scenarios. */
@@ -890,6 +900,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyRewardedContinue(successPage, origin);
       await verifyTournamentEntry(successPage, origin);
+      await verifyListedTournamentJoin(successPage, origin);
       await verifyTournamentScoreRecovery(successPage, origin);
       // Both tournament flag variants preserve live results.
       for (const tournaments of [true, false]) {

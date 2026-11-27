@@ -15,6 +15,7 @@ The scope remains every possible applicable API integration. An absent adapter, 
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md): 398 focused tests, the expanded local browser journey and backend preflight passed. The production build contains 420 files, 4.50 MB total and 0.70 MB initial resources.
 - [Testing upload and hosted smoke check](evidence/facebook-client-testing-2026-11-27.md): version 11 completed processing and is assigned to Testing; an independently downloaded ZIP matched the exact uploaded hash. Its desktop picker correction and native chooser cancellation passed. Version 10 records earlier startup, legal-link cancellation and social discovery. Firebase remains unchanged by explicit owner instruction.
 - [Exact version 11 acceptance record](evidence/facebook-testing-version-11-2026-11-27.json): bundle `29932177596379493`, SHA-256 `b520e2763bef9d50d5e9eb9a5e5883475e68a24f47d9ebb3d75550eeb08201c2`, 2,863,715 bytes. Production remains version 9.
+- [Client integration review](evidence/facebook-client-review-2026-11-27.md): subsequent tournament routing, Settings ownership and bounded ad-preparation corrections. These are not included in version 11; their final artifact and hosted acceptance are tracked separately.
 - [Earlier source coverage](evidence/facebook-api-coverage-2026-11-27.md): historical baseline, superseded by this checklist's broader scope for future work.
 
 | Code | What the evidence establishes |

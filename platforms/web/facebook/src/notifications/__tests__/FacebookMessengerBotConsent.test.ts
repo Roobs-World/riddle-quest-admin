@@ -40,7 +40,7 @@ describe("separate Facebook Messenger bot consent", () => {
   it("restores permission status without subscribing and requires a separate explicit action", async () => {
     const f = fixture();
     await f.actions!.refresh();
-    expect(f.actions!.getSnapshot().actions).toEqual(["subscribe-messenger-bot"]);
+    expect(f.actions!.getSnapshot().actions).toEqual([{id: "subscribe-messenger-bot", labelKey: "Settings.MESSENGER_UPDATES_BUTTON"}]);
     expect(f.subscribe).not.toHaveBeenCalled();
     await expect(f.actions!.run("subscribe-messenger-bot")).resolves.toBe("success");
     expect(f.eligibility).toHaveBeenCalledTimes(2);

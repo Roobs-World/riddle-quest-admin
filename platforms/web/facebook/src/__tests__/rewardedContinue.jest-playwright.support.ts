@@ -25,6 +25,7 @@ export async function verifyRewardedContinue(page: Page, origin: string): Promis
       body: JSON.stringify(claims === 1 ? {error: {status: "UNAVAILABLE", message: "retry"}} : {data: {newCoins: 300}})});
   });
   await page.setViewportSize({width: 390, height: 844});
+  await page.clock.install();
   await page.goto(`${origin}/?harness=race&rewarded=on`);
   await page.locator(".game-bottom-navigation").waitFor();
   await page.locator(".onboarding-card-welcome .play-primary").click();
@@ -62,6 +63,45 @@ export async function verifyRewardedContinue(page: Page, origin: string): Promis
     expect(bounds!.y + bounds!.height).toBeLessThanOrEqual(844);
   }
   await page.screenshot({path: "/tmp/facebook-rewarded-loss-options.png"});
+
+  for (const phase of ["create", "load"] as const) {
+    const before = await page.evaluate(() => ({
+      creations: window.__facebookEvents.filter(value => value.startsWith("rewarded:placement:")).length,
+      shows: window.__facebookEvents.filter(value => value === "rewarded:show").length,
+    }));
+    await page.evaluate(value => Reflect.set(window, "__rewardedMode", `hold-${value}`), phase);
+    await video.click();
+    await page.waitForFunction(() => Reflect.has(window, "__finishRewardedPreparation"));
+    expect(await page.getByRole("status").filter({hasText: /^Loading$/}).isVisible()).toBe(true);
+    expect(await page.locator(".loss-continue-action").isDisabled()).toBe(true);
+    await page.clock.fastForward(30_001);
+    await page.waitForFunction(() => !(document.querySelector(".loss-video-action") as HTMLButtonElement)?.disabled);
+    expect(await page.getByRole("status").filter({hasText: /^Loading$/}).count()).toBe(0);
+    expect(await page.locator(".loss-continue-action").isEnabled()).toBe(true);
+    expect(await page.locator(".loss-skip-action").isEnabled()).toBe(true);
+    expect(await page.locator(".continue-balance span").innerText()).toBe(balance);
+    expect(claims).toBe(0);
+
+    await video.click();
+    await page.waitForFunction(() => !(document.querySelector(".loss-video-action") as HTMLButtonElement)?.disabled);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(value => value.startsWith("rewarded:placement:")).length)).toBe(before.creations + 1);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(value => value === "rewarded:show").length)).toBe(before.shows);
+    await page.evaluate(() => Reflect.get(window, "__finishRewardedPreparation")());
+    await page.waitForFunction(value => window.__facebookEvents.includes(`rewarded:preparation-settled:${value}`), phase);
+    expect(await video.isVisible()).toBe(true);
+    expect(await video.isEnabled()).toBe(true);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(value => value === "rewarded:show").length)).toBe(before.shows);
+    expect(claims).toBe(0);
+
+    // A fresh attempt must work without closing the modal or forcing another render.
+    await page.evaluate(() => Reflect.set(window, "__rewardedMode", "no-fill"));
+    await video.click();
+    await page.waitForFunction(() => !(document.querySelector(".loss-video-action") as HTMLButtonElement)?.disabled);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(value => value.startsWith("rewarded:placement:")).length)).toBe(before.creations + 2);
+    expect(await page.evaluate(() => window.__facebookEvents.filter(value => value === "rewarded:show").length)).toBe(before.shows);
+    expect(claims).toBe(0);
+  }
+  await page.clock.setSystemTime(Date.now());
 
   await page.evaluate(() => Reflect.set(window, "__rewardedMode", "cancel"));
   await video.click();

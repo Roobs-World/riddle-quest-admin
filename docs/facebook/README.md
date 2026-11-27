@@ -6,6 +6,7 @@
 - [Expanded API candidate and local build evidence](evidence/facebook-expanded-api-build-2026-11-27.md)
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md)
 - [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)
+- [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
 - [Version 11 Testing upload and hosted correction evidence](evidence/facebook-testing-version-11-2026-11-27.json)
 - [Earlier version 10 upload and hosted smoke evidence](evidence/facebook-testing-version-10-2026-11-27.json)
 - [Messenger bot consent and stored-content boundary](evidence/facebook-messenger-consent-2026-11-27.md)

@@ -149,7 +149,10 @@ describe("Facebook expanded native legal links", () => {
       flushBeforeQuit: async () => undefined})).toBeUndefined();
     const harness = fixture(["openExternalLinkAsync"]);
     const actions = settings(harness.sdk);
-    expect(actions.getSnapshot()).toEqual({actions: ["privacy-policy", "terms-of-use"], pendingAction: null});
+    expect(actions.getSnapshot()).toEqual({actions: [
+      {id: "privacy-policy", labelKey: "Settings.PRIVACY_BUTTON"},
+      {id: "terms-of-use", labelKey: "Settings.TERMS_BUTTON"},
+    ], pendingAction: null});
     for (let visit = 0; visit < 2; visit++) {
       expect(await actions.run("privacy-policy")).toBe("success");
       expect(await actions.run("terms-of-use")).toBe("success");
@@ -158,7 +161,10 @@ describe("Facebook expanded native legal links", () => {
       "https://roobsworld.com/riddle-quest/privacy", "https://roobsworld.com/riddle-quest/terms",
       "https://roobsworld.com/riddle-quest/privacy", "https://roobsworld.com/riddle-quest/terms",
     ]);
-    expect(actions.getSnapshot()).toEqual({actions: ["privacy-policy", "terms-of-use"], pendingAction: null});
+    expect(actions.getSnapshot()).toEqual({actions: [
+      {id: "privacy-policy", labelKey: "Settings.PRIVACY_BUTTON"},
+      {id: "terms-of-use", labelKey: "Settings.TERMS_BUTTON"},
+    ], pendingAction: null});
   });
 
   it("does not resurrect an unsupported legal action during refresh", async () => {
@@ -167,7 +173,7 @@ describe("Facebook expanded native legal links", () => {
     const actions = settings(harness.sdk);
     expect(await actions.run("privacy-policy")).toBe("unavailable");
     await actions.refresh();
-    expect(actions.getSnapshot()).toEqual({actions: ["terms-of-use"], pendingAction: null});
+    expect(actions.getSnapshot()).toEqual({actions: [{id: "terms-of-use", labelKey: "Settings.TERMS_BUTTON"}], pendingAction: null});
     expect(await actions.run("privacy-policy")).toBe("unavailable");
     expect(await actions.run("terms-of-use")).toBe("success");
     expect(harness.openedUrls).toEqual(["https://roobsworld.com/riddle-quest/terms"]);

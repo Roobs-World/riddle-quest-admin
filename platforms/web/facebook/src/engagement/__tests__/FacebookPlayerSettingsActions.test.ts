@@ -55,6 +55,20 @@ const requireActions = (options: FacebookPlayerSettingsActionsOptions) => {
 };
 
 describe("Facebook player Settings actions", () => {
+  it.each(["unknown-action", "__proto__", "constructor"])("rejects unrecognized action ID %s without invoking the SDK", async id => {
+    const setup = fixture();
+    const actions = requireActions(setup.options);
+    await actions.refresh();
+    const snapshot = actions.getSnapshot();
+    await expect(actions.run(id)).resolves.toBe("unavailable");
+    expect(actions.getSnapshot()).toBe(snapshot);
+    expect(setup.createShortcutAsync).not.toHaveBeenCalled();
+    expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
+    expect(setup.joinOfficialGroupAsync).not.toHaveBeenCalled();
+    expect(setup.flushBeforeQuit).not.toHaveBeenCalled();
+    expect(setup.quit).not.toHaveBeenCalled();
+  });
+
   it("cancels a closed Settings panel before a delayed native prompt and keeps the action retryable", async () => {
     const setup = fixture();
     const actions = requireActions(setup.options);
@@ -67,7 +81,7 @@ describe("Facebook player Settings actions", () => {
     cleanup.resolve();
     await expect(pending).resolves.toBe("cancelled");
     expect(setup.followOfficialPageAsync).not.toHaveBeenCalled();
-    expect(actions.getSnapshot().actions).toContain("follow-community");
+    expect(actions.getSnapshot().actions).toContainEqual({id: "follow-community", labelKey: "Settings.FOLLOW_COMMUNITY_BUTTON"});
     stop();
     await expect(actions.run("follow-community")).resolves.toBe("success");
     expect(setup.followOfficialPageAsync).toHaveBeenCalledTimes(1);
@@ -107,7 +121,7 @@ describe("Facebook player Settings actions", () => {
     const actions = requireActions(partial.options);
     expect(actions.getSnapshot().actions).toEqual([]);
     await actions.refresh();
-    expect(actions.getSnapshot().actions).toEqual(["follow-community"]);
+    expect(actions.getSnapshot().actions).toEqual([{id: "follow-community", labelKey: "Settings.FOLLOW_COMMUNITY_BUTTON"}]);
     expect(partial.canCreateShortcutAsync).not.toHaveBeenCalled();
     expect(partial.canJoinOfficialGroupAsync).not.toHaveBeenCalled();
     expect(partial.followOfficialPageAsync).not.toHaveBeenCalled();
@@ -120,7 +134,7 @@ describe("Facebook player Settings actions", () => {
     harness.canJoinOfficialGroupAsync.mockRejectedValue({code: "GROUP_NOT_LINKED"});
     const actions = requireActions(harness.options);
     await actions.refresh();
-    expect(actions.getSnapshot().actions).toEqual(["quit"]);
+    expect(actions.getSnapshot().actions).toEqual([{id: "quit", labelKey: "Settings.QUIT_GAME_BUTTON"}]);
     await expect(actions.run("create-shortcut")).resolves.toBe("unavailable");
     expect(harness.createShortcutAsync).not.toHaveBeenCalled();
     expect(harness.followOfficialPageAsync).not.toHaveBeenCalled();
@@ -134,12 +148,12 @@ describe("Facebook player Settings actions", () => {
     const first = requireActions(harness.options);
     await first.refresh();
     await expect(first.run("create-shortcut")).resolves.toBe("cancelled");
-    expect(first.getSnapshot().actions).not.toContain("create-shortcut");
+    expect(first.getSnapshot().actions).not.toContainEqual(expect.objectContaining({id: "create-shortcut"}));
     first.retire();
 
     const replacement = requireActions(harness.options);
     await replacement.refresh();
-    expect(replacement.getSnapshot().actions).not.toContain("create-shortcut");
+    expect(replacement.getSnapshot().actions).not.toContainEqual(expect.objectContaining({id: "create-shortcut"}));
     await expect(replacement.run("create-shortcut")).resolves.toBe("unavailable");
     expect(harness.createShortcutAsync).toHaveBeenCalledTimes(1);
     expect(harness.reportFailure).not.toHaveBeenCalled();
@@ -156,7 +170,7 @@ describe("Facebook player Settings actions", () => {
     });
     await expect(actions.run("create-shortcut")).resolves.toBe("unavailable");
     expect(harness.createShortcutAsync).not.toHaveBeenCalled();
-    expect(actions.getSnapshot().actions).toContain("create-shortcut");
+    expect(actions.getSnapshot().actions).toContainEqual({id: "create-shortcut", labelKey: "Settings.ADD_SHORTCUT_BUTTON"});
     closeDialog.resolve();
     await occupied;
     await expect(actions.run("create-shortcut")).resolves.toBe("success");
