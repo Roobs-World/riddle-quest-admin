@@ -50,3 +50,19 @@ Generic Graph `Games IAPProduct` subscription fields and high-level monetization
 `pnpm build:facebook` completed successfully. Target boundaries, commerce activation, all 16 locale keys, licenses, TypeScript compilation, Vite and the Facebook artifact audit passed. The artifact contained 418 files, 4.43 MB in total and 0.66 MB of initial resources. The audit found no Jest SDK, native-module or secret leakage. Vite reported configuration-compatibility and ineffective dynamic-import warnings.
 
 This record also covers source inspection, official API documentation, Meta read APIs and the observed dashboard save result. No tests, browser test harnesses, purchase, refund, payout setup, backend deployment, game upload, review submission or checkout-readiness activation was performed for this catalog correction. The successful build does not establish hosted purchase or refund acceptance.
+
+## Deployed backend follow-up
+
+The continuation on 27 November verified the deployed Functions inventory and narrowly selected nonsecret configuration in `riddle-quest-ec2b2`. All three endpoints are ACTIVE, Gen 2, Node.js 22 in `us-central1`:
+
+| Function | Revision | Last update (UTC) | Disabled features |
+| --- | --- | --- | --- |
+| `facebookPaymentWebhook` | `facebookpaymentwebhook-00002-som` | 26 Nov 2026 04:03:05 | `commerce,rewarded_ads` |
+| `grantFacebookPurchase` | `grantfacebookpurchase-00003-vuq` | 26 Nov 2026 04:04:05 | `commerce,rewarded_ads` |
+| `getFacebookClientConfiguration` | `getfacebookclientconfiguration-00039-ger` | 27 Nov 2026 06:51:21 | `commerce` |
+
+All three omit `FACEBOOK_PAYMENTS_WEBHOOK_ENABLED` and `FACEBOOK_PAYMENT_ENVIRONMENTS`, so webhook readiness defaults to false and the accepted environment defaults to `PROD`. Commerce is consistently disabled. The rewarded-ad switch differs between the newer configuration callable and the older payment endpoints; this inspection did not change those unrelated settings.
+
+`pnpm preflight:facebook-backend` passed secret boundaries, deployment configuration, 25 Facebook export checks, directory layout, types, lint, production module-cycle checks and the deployable Functions build. The deployment artifact audit covered 282 modules and 566 upload files. No tests ran and no deployment was performed.
+
+The remaining work is Meta payout and approval setup, V2 callback configuration and signed-event acceptance, followed by explicit checkout activation with consistent deployed configuration. The browser connection was unavailable during this continuation, so no further dashboard change or payout action occurred. The Premium alternative remains unselected.
