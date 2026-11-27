@@ -51,3 +51,12 @@ export async function initializeFacebookAppCheck(
   await getToken(appCheck, true);
   setTokenAutoRefreshEnabled(appCheck, true);
 }
+
+export async function getFacebookAppCheckToken(): Promise<string> {
+  try {
+    if (!appCheck) throw new Error();
+    return (await getToken(appCheck, false)).token;
+  } catch {
+    throw new Error("Facebook App Check is unavailable.");
+  }
+}

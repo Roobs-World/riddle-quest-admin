@@ -17,7 +17,7 @@ export function createFacebookBanner({sdk, enabled, placementId, isActive, allow
   enabled: boolean;
   placementId: string;
   isActive: () => boolean;
-  /** Use the existing authoritative interstitial/ad-free gate, never a client entitlement. */
+  /** Current verified subscription, interstitial feature and durable ad-removal policy. */
   allowsBanner: () => boolean;
   refreshEligibility: () => Promise<boolean>;
   lifecycle?: LifecycleCapability;
@@ -44,11 +44,14 @@ export function createFacebookBanner({sdk, enabled, placementId, isActive, allow
   const owns = () => native.owner === owner;
   const eligibleSurface = () => owns() && !retired && mounted && !paused && !dialogOpen && activity === "online" &&
     !isFacebookSdkDialogOpen(sdk) && isActive() && document.visibilityState === "visible";
-  const shouldShow = () => {
+  const canUseSurface = () => {
     try {
       const clock = now();
-      return eligibleSurface() && allowsBanner() && Number.isSafeInteger(clock) && clock >= 0 && clock < END_OF_SERVICE;
+      return eligibleSurface() && Number.isSafeInteger(clock) && clock >= 0 && clock < END_OF_SERVICE;
     } catch {return false;}
+  };
+  const shouldShow = () => {
+    try {return canUseSurface() && allowsBanner();} catch {return false;}
   };
   const publish = () => {
     if (!owns()) return;
@@ -76,8 +79,12 @@ export function createFacebookBanner({sdk, enabled, placementId, isActive, allow
   };
   const reconcile = async () => {
     if (!owns()) return;
-    if (!shouldShow() || native.state === "hide-failed") {await hideNative(); return;}
-    if (native.state === "visible" || attemptedVisit === visit) return;
+    if (!canUseSurface() || native.state === "hide-failed") {await hideNative(); return;}
+    if (native.state === "visible") {
+      if (!shouldShow()) await hideNative();
+      return;
+    }
+    if (attemptedVisit === visit) return;
     attemptedVisit = visit;
     let eligible = false;
     try {eligible = await refreshEligibility();} catch {report("load");}

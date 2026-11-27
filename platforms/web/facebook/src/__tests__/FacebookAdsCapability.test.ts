@@ -113,6 +113,33 @@ describe.each(adFormats)("Facebook %s returned placement binding", format => {
 });
 
 describe("Facebook ads capability", () => {
+  it("keeps a rewarded retry offer while unknown and acquires the SDK ad only after verification recovers", async () => {
+    const harness = sdkWithRewardedAd();
+    const initial = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false};
+    const read = jest.fn(async () => ({...initial, hasActiveSubscription: false}));
+    const configuration = createFacebookAdConfiguration({initial, read, isActive: () => true,
+      onChange: () => undefined, reportFailure: () => undefined});
+    const ads = requireAds({sdk: harness.sdk, placementId: "", rewardedPlacementId: "continue-placement",
+      rewardedEnabled: () => configuration.allows("rewarded"),
+      rewardedOfferAvailable: () => configuration.canOffer("rewarded"),
+      adFree: () => !configuration.allows("interstitial"), refreshEligibility: configuration.refreshEligibility,
+      now: () => 1_000_000});
+    expect(ads.rewardedAvailable).toBe(true);
+    expect(harness.getRewardedVideoAsync).not.toHaveBeenCalled();
+    read.mockRejectedValueOnce(new Error("Subscription temporarily unavailable"));
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
+    expect(ads.rewardedAvailable).toBe(true);
+    expect(harness.getRewardedVideoAsync).not.toHaveBeenCalled();
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "success"});
+    expect(harness.getRewardedVideoAsync).toHaveBeenCalledTimes(1);
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+    read.mockResolvedValue({...initial, hasActiveSubscription: true});
+    await configuration.refresh();
+    expect(ads.rewardedAvailable).toBe(false);
+    await expect(ads.showRewarded("continue")).resolves.toMatchObject({status: "unavailable"});
+    expect(harness.getRewardedVideoAsync).toHaveBeenCalledTimes(1);
+  });
+
   it("does not expose formats that the current Meta host fails to advertise", () => {
     /** SDK methods may exist for formats that are unavailable on this platform. */
     const harness = sdkWithAd();
@@ -315,7 +342,7 @@ describe("Facebook ads capability", () => {
     const harness = format === "interstitial" ? sdkWithAd() : sdkWithRewardedAd();
     const loading = deferred(), started = deferred();
     harness.ad.loadAsync.mockImplementationOnce(() => {started.resolve(); return loading.promise;});
-    let serverConfiguration = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false};
+    let serverConfiguration = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false, hasActiveSubscription: false};
     const read = jest.fn(async () => serverConfiguration);
     const configuration = createFacebookAdConfiguration({initial: serverConfiguration, read,
       isActive: () => true, onChange: jest.fn(), reportFailure: jest.fn()});
@@ -324,13 +351,35 @@ describe("Facebook ads capability", () => {
       refreshEligibility: configuration.refreshEligibility});
     const result = format === "interstitial" ? ads.showInterstitial("result") : ads.showRewarded("continue");
     await started.promise;
-    serverConfiguration = {...serverConfiguration, interstitialsEnabled: false, rewardedAdsEnabled: false};
+    serverConfiguration = {...serverConfiguration, hasActiveSubscription: true};
     loading.resolve();
     await expect(result).resolves.toMatchObject({status: "unavailable"});
     expect(read).toHaveBeenCalledTimes(2);
     expect(harness.ad.showAsync).not.toHaveBeenCalled();
     expect(configuration.allows("interstitial")).toBe(false);
     expect(configuration.allows("rewarded")).toBe(false);
+  });
+
+  it.each(adFormats)("does not acquire an initial %s ad while entitlement is unknown or after its account retires", async format => {
+    const harness = format === "interstitial" ? sdkWithAd() : sdkWithRewardedAd();
+    const awaitingEntitlement = deferred(), reading = deferred();
+    let active = true;
+    const initial = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false};
+    const configuration = createFacebookAdConfiguration({initial,
+      read: async () => {reading.resolve(); await awaitingEntitlement.promise; return {...initial, hasActiveSubscription: false};},
+      isActive: () => active, onChange: jest.fn(), reportFailure: jest.fn()});
+    const ads = requireAds({sdk: harness.sdk, placementId: "result", rewardedPlacementId: "continue",
+      rewardedEnabled: () => configuration.allows("rewarded"), rewardedOfferAvailable: () => configuration.canOffer("rewarded"),
+      adFree: () => !configuration.allows("interstitial"), isActive: () => active, refreshEligibility: configuration.refreshEligibility});
+    const result = format === "interstitial" ? ads.showInterstitial("result") : ads.showRewarded("continue");
+    await reading.promise;
+    const request = format === "interstitial" ? harness.sdk.getInterstitialAdAsync : harness.sdk.getRewardedVideoAsync;
+    expect(request).not.toHaveBeenCalled();
+    active = false;
+    awaitingEntitlement.resolve();
+    await expect(result).resolves.toMatchObject({status: "unavailable"});
+    expect(request).not.toHaveBeenCalled();
+    expect(harness.ad.showAsync).not.toHaveBeenCalled();
   });
 
   it.each(["dismissed", "replaced"])("never displays a loaded interstitial after its result is %s", async reason => {

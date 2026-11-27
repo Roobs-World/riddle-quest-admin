@@ -34,6 +34,7 @@ export function createFacebookAdsCapability({
   placementId,
   rewardedPlacementId = "",
   rewardedEnabled = false,
+  rewardedOfferAvailable,
   adFree,
   isActive = () => true,
   refreshEligibility = async () => true,
@@ -47,6 +48,8 @@ export function createFacebookAdsCapability({
   rewardedPlacementId?: string;
   /** Server-controlled release switch for rewarded video. */
   rewardedEnabled?: boolean | (() => boolean);
+  /** A retryable offer can remain visible while strict impression authorization is unknown. */
+  rewardedOfferAvailable?: () => boolean;
   /** Stores ad free. */
   adFree: boolean | (() => boolean);
   isActive?: () => boolean;
@@ -87,7 +90,7 @@ export function createFacebookAdsCapability({
   const preparation = createFacebookAdPreparation();
 
   return {
-    get rewardedAvailable() {return rewardedSupported && isActive() && isRewardedEnabled();},
+    get rewardedAvailable() {return rewardedSupported && isActive() && (rewardedOfferAvailable?.() ?? isRewardedEnabled());},
     /** Provides show interstitial behavior. */
     async showInterstitial(placement, isPlacementCurrent = () => true) {
       /** Starts ed at ms. */

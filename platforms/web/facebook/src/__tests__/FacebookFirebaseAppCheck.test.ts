@@ -86,4 +86,26 @@ describe("Facebook Firebase App Check adapter", () => {
       "only initialize in the Facebook Web Target",
     );
   });
+
+  it("returns a current token from the initialized Facebook attestation instance", async () => {
+    const adapter = await loadAdapter();
+    await adapter.initializeFacebookAppCheck(async () => ({token: "attestation", expireTimeMillis: 1_000}));
+    mockGetToken.mockResolvedValueOnce({token: "current-attestation"});
+    await expect(adapter.getFacebookAppCheckToken()).resolves.toBe("current-attestation");
+    expect(mockGetToken).toHaveBeenLastCalledWith({name: "facebook-app-check"}, false);
+    expect(mockInitializeAppCheck).toHaveBeenCalledTimes(1);
+  });
+
+  it("rejects reads before Facebook attestation is initialized", async () => {
+    const adapter = await loadAdapter();
+    await expect(adapter.getFacebookAppCheckToken()).rejects.toThrow("Facebook App Check is unavailable.");
+    expect(mockGetToken).not.toHaveBeenCalled();
+  });
+
+  it("does not expose SDK details when token refresh fails", async () => {
+    const adapter = await loadAdapter();
+    await adapter.initializeFacebookAppCheck(async () => ({token: "attestation", expireTimeMillis: 1_000}));
+    mockGetToken.mockRejectedValueOnce(new Error("private attestation details"));
+    await expect(adapter.getFacebookAppCheckToken()).rejects.toThrow(new Error("Facebook App Check is unavailable."));
+  });
 });

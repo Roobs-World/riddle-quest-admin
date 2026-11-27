@@ -67,6 +67,14 @@ stream chunks and profile reads. Browser profiles use the authenticated
 `getPlayerProfile` callable rather than direct Firestore reads. That callable
 derives the account from verified authentication and returns only profile fields.
 
+Facebook ad eligibility has one narrow provider-protocol read: the authenticated
+account's server-owned `hasActiveSubscription` field. Its Firestore REST request
+uses a field mask, the current user's Firebase ID token and the existing App Check
+provider. It does not fetch profile identity fields or write any document.
+Unknown, malformed, stale or failed reads cannot authorize an ad. This read only
+restricts the existing feature flags and durable ad-removal policy; profile reads
+continue through `getPlayerProfile`. See the [Facebook ad eligibility contract](../../facebook/facebook-ad-eligibility.md).
+
 The versioned envelope uses a fresh 96-bit IV for each message. Authenticated
 additional data binds the ciphertext to its operation, request identifier and
 request, response or stream direction. The decoder validates the exact envelope

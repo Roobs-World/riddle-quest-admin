@@ -1,5 +1,5 @@
 import {verifyImmediateSoloFeedback} from "../../../../../src/app/testing/browser/__tests__/instantFeedback.jest-playwright.support.ts";
-import {verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support.ts";
+import {installFacebookSubscriptionFixture, verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support.ts";
 import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support.ts";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support.ts";
 import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support.ts";
@@ -293,6 +293,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         }),
         "browser-signature",
       ].join(".");
+      const subscription = await installFacebookSubscriptionFixture(successPage, {
+        projectId: "riddle-quest-ec2b2", uid: `facebook_${"a".repeat(40)}`,
+        idToken: firebaseIdToken, appCheckToken,
+      });
       await successPage.route("**/v1/accounts:signInWithCustomToken**", (route) =>
         route.fulfill({
           status: 200,
@@ -898,7 +902,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-delete-dialog .profile-delete-account-button').click();
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
-      await verifyRewardedContinue(successPage, origin);
+      await verifyRewardedContinue(successPage, origin, subscription);
       await verifyTournamentEntry(successPage, origin);
       await verifyListedTournamentJoin(successPage, origin);
       await verifyTournamentScoreRecovery(successPage, origin);

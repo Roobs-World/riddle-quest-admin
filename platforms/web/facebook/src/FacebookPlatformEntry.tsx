@@ -33,6 +33,7 @@ import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
 import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./FacebookCapabilityPolicy";
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {createFacebookAdConfiguration} from "./FacebookAdConfiguration";
+import {createFacebookSubscriptionEntitlement} from "./ads/FacebookSubscriptionEntitlement";
 import {createFacebookLevelInterstitial} from "./FacebookLevelInterstitial";
 import type {HostCompletionInput} from "../../../../src/progression/browser/hostCompletionEffects";
 import type {CompletionResult} from "../../../../src/platform/contracts/hostServices";
@@ -142,6 +143,7 @@ export function FacebookPlatformEntry() {
   const hostEnvironmentRef = useRef<ReturnType<typeof createFacebookHostEnvironment> | null>(null);
   const hapticsRef = useRef<FacebookHaptics | null>(null);
   const bannerRef = useRef<FacebookBanner | null>(null);
+  const subscriptionEntitlementRef = useRef<ReturnType<typeof createFacebookSubscriptionEntitlement> | null>(null);
   /** Current SDK catalog and purchase callback exposed to hosted play. */
   const [commercePresentation, setCommercePresentation] = useState<{
     /** Visible Facebook product summaries for the authenticated account. */
@@ -191,6 +193,7 @@ export function FacebookPlatformEntry() {
     let haptics: FacebookHaptics | undefined;
     let nativeSocial: FacebookNativeSocial | undefined;
     let banner: FacebookBanner | undefined;
+    let subscriptionEntitlement: ReturnType<typeof createFacebookSubscriptionEntitlement> | undefined;
     let sessionScore: FacebookSessionScore | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
@@ -316,13 +319,25 @@ export function FacebookPlatformEntry() {
               sdk.getSupportedAPIs().includes("getRewardedVideoAsync") ||
               sdk.getSupportedAPIs().includes("loadBannerAdAsync"))
           ) {
+            const entitlement = createFacebookSubscriptionEntitlement({
+              projectId: firebaseEnvironment.projectId,
+              uid: accountOwner.uid,
+              getIdToken: () => accountOwner.getIdToken(),
+              getAppCheckToken: async () => (await import("./FacebookFirebaseAppCheck")).getFacebookAppCheckToken(),
+              isActive: isAdSessionActive,
+            });
+            subscriptionEntitlement = entitlement;
+            subscriptionEntitlementRef.current = entitlement;
             const adConfiguration = createFacebookAdConfiguration({
               initial: clientConfiguration,
               isActive: isAdSessionActive,
               read: async () => {
-                const configuration = (await getFacebookClientConfiguration()).data;
+                const [configuration, hasActiveSubscription] = await Promise.all([
+                  getFacebookClientConfiguration().then(result => result.data),
+                  entitlement.read(),
+                ]);
                 if (isAdSessionActive()) removeInterstitialAds = configuration.removeInterstitialAds;
-                return configuration;
+                return {...configuration, hasActiveSubscription};
               },
               onChange: () => {setAdPolicyVersion(version => version + 1); banner?.refresh();},
               reportFailure: error => captureBrowserException(error, {component: "facebook_ads", operation: "refresh_configuration"}),
@@ -345,9 +360,11 @@ export function FacebookPlatformEntry() {
               placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: () => adConfiguration.allows("rewarded"),
+              rewardedOfferAvailable: () => adConfiguration.canOffer("rewarded"),
               adFree: () => removeInterstitialAds !== false || !adConfiguration.allows("interstitial"),
               refreshEligibility: adConfiguration.refreshEligibility,
             });
+            void adConfiguration.refresh();
             attemptRecovery = createFacebookRewardedContinue({ads,
               isActive: isAdSessionActive,
               claim: input => deletionGateRef.current.run(async () => (await grantFacebookRewardedContinue(input)).data),
@@ -639,6 +656,8 @@ export function FacebookPlatformEntry() {
     })();
     return () => {
       active = false;
+      subscriptionEntitlement?.retire();
+      if (subscriptionEntitlementRef.current === subscriptionEntitlement) subscriptionEntitlementRef.current = null;
       removeBrowserStateGuard();
       stopAnalytics?.();
       unsubscribePause?.();
@@ -725,6 +744,7 @@ export function FacebookPlatformEntry() {
     if (startup.status !== "ready") return;
     analyticsLifetimeRef.current.abort();
     deletionGateRef.current.close();
+    subscriptionEntitlementRef.current?.retire();
     startup.settingsActions?.retire();
     hostEnvironmentRef.current?.retire();
     hapticsRef.current?.retire();

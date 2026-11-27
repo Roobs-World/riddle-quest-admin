@@ -2,6 +2,8 @@
 
 - [Complete current API inventory](facebook-api-research-2026-11-27.md)
 - [API submission checklist and reviewer journeys](facebook-api-submission-checklist-2026-11-27.md)
+- [Subscription authority and ad eligibility](facebook-ad-eligibility.md)
+- [Subscription ad gate correction and verification](evidence/facebook-subscription-ad-gate-2026-11-27.md)
 - [Live dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md)
 - [Expanded API candidate and local build evidence](evidence/facebook-expanded-api-build-2026-11-27.md)
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md)

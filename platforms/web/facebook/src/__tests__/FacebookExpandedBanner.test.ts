@@ -1,6 +1,7 @@
 import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {PlatformResult} from "../../../../../src/platform/contracts/capabilities";
 import {createFacebookBanner, type FacebookBanner} from "../ads/FacebookBanner";
+import {createFacebookAdConfiguration} from "../FacebookAdConfiguration";
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../fbinstant";
 
@@ -33,7 +34,7 @@ afterEach(async () => {
   }
 });
 
-const fixture = () => {
+const fixture = (allowsBanner: () => boolean = () => true) => {
   const events: string[] = [];
   let visible = false;
   const loadBannerAdAsync = jest.fn<NonNullable<FacebookInstantSdk["loadBannerAdAsync"]>>(async (placement, position) => {
@@ -51,7 +52,7 @@ const fixture = () => {
   };
   const refreshEligibility = jest.fn<() => Promise<boolean>>(async () => true);
   const owner = createFacebookBanner({sdk, enabled: true, placementId: "review-banner", isActive: () => true,
-    allowsBanner: () => true, refreshEligibility, now: () => Date.UTC(2026, 10, 27)});
+    allowsBanner, refreshEligibility, now: () => Date.UTC(2026, 10, 27)});
   if (!owner) throw new Error("Expected supported Facebook banner controller");
   owners.push(owner);
   return {owner, sdk, events, loadBannerAdAsync, hideBannerAdAsync, refreshEligibility,
@@ -59,6 +60,67 @@ const fixture = () => {
 };
 
 describe("Facebook expanded native banner lifecycle", () => {
+  it("hides a visible banner when authorization becomes unknown without repeatedly refreshing that visit", async () => {
+    const initial = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false};
+    const read = jest.fn(async () => ({...initial, hasActiveSubscription: false}));
+    let refreshBanner: () => void = () => undefined;
+    const configuration = createFacebookAdConfiguration({initial, read, isActive: () => true,
+      onChange: () => refreshBanner(), reportFailure: () => undefined});
+    const harness = fixture(() => configuration.allows("interstitial"));
+    refreshBanner = () => harness.owner.refresh();
+    harness.refreshEligibility.mockImplementation(() => configuration.refreshEligibility("interstitial"));
+    harness.owner.setMounted(true);
+    harness.owner.setActivity("online");
+    await waitUntil(() => read.mock.calls.length === 2 && harness.isVisible());
+    read.mockRejectedValueOnce(new Error("Subscription temporarily unavailable"));
+    await configuration.refreshEligibility("interstitial");
+    await waitUntil(() => !harness.owner.getSnapshot().reserved);
+    for (let turn = 0; turn < 10; turn++) await Promise.resolve();
+    expect(read).toHaveBeenCalledTimes(3);
+    expect(harness.loadBannerAdAsync).toHaveBeenCalledTimes(1);
+    expect(harness.hideBannerAdAsync).toHaveBeenCalledTimes(1);
+    harness.owner.setActivity("playing");
+    harness.owner.setActivity("online");
+    await waitUntil(() => read.mock.calls.length === 5 && harness.isVisible());
+    expect(harness.loadBannerAdAsync).toHaveBeenCalledTimes(2);
+  });
+
+  it.each(["subscription", "durable ad removal"])("never loads a banner for verified %s despite enabled feature flags", async reason => {
+    const initial = {interstitialsEnabled: true, rewardedAdsEnabled: true, removeInterstitialAds: false};
+    const configuration = createFacebookAdConfiguration({initial,
+      read: async () => ({...initial, hasActiveSubscription: reason === "subscription", removeInterstitialAds: reason === "durable ad removal"}),
+      isActive: () => true, onChange: () => undefined, reportFailure: () => undefined});
+    const harness = fixture(() => configuration.allows("interstitial"));
+    harness.refreshEligibility.mockImplementation(() => configuration.refreshEligibility("interstitial"));
+    harness.owner.setMounted(true);
+    harness.owner.setActivity("online");
+    await waitUntil(() => harness.refreshEligibility.mock.calls.length === 1);
+    for (let turn = 0; turn < 10; turn++) await Promise.resolve();
+    expect(harness.loadBannerAdAsync).not.toHaveBeenCalled();
+    expect(configuration.allows("interstitial")).toBe(false);
+    expect(configuration.allows("rewarded")).toBe(reason === "durable ad removal");
+  });
+
+  it("verifies an unknown hidden entitlement once per visit and retries on the next menu visit", async () => {
+    let allowed = false;
+    const harness = fixture(() => allowed);
+    harness.refreshEligibility.mockResolvedValue(false);
+    harness.owner.setMounted(true);
+    harness.owner.setActivity("online");
+    await waitUntil(() => harness.refreshEligibility.mock.calls.length === 1);
+    expect(harness.loadBannerAdAsync).not.toHaveBeenCalled();
+    harness.owner.refresh();
+    harness.owner.refresh();
+    for (let turn = 0; turn < 10; turn++) await Promise.resolve();
+    expect(harness.refreshEligibility).toHaveBeenCalledTimes(1);
+    harness.refreshEligibility.mockImplementation(async () => {allowed = true; return true;});
+    harness.owner.setActivity("playing");
+    harness.owner.setActivity("online");
+    await waitUntil(() => harness.refreshEligibility.mock.calls.length === 3);
+    expect(harness.isVisible()).toBe(true);
+    expect(harness.loadBannerAdAsync).toHaveBeenCalledTimes(1);
+  });
+
   it("hides a late banner load before admitting a native dialog", async () => {
     const harness = fixture();
     const loading = deferred();
