@@ -16,5 +16,17 @@ This implementation addresses the six items in the supplied Jest review feedback
 - Shared client type checking passed after the final loading-copy changes. The Firebase Functions build, lint, directory-layout and capacity audits passed; locale validation passed for all 16 locales.
 - Regression coverage was added for guest names, join retry/reload, concurrent join recovery and polling, private invitation exclusion, and victory loading presentation.
 - Tests and browser checks were not run, following the repository instruction requiring an explicit request. Historical checks linked above apply only to their recorded revisions.
-- Jest release and activation are pending. No new uploaded version is claimed here.
-- Backend deployment is pending. The guest-name and join-recovery changes require `joinLiveRace`, `updateLiveRace` and `startRaceRun`; a client release alone does not activate those changes.
+- `pnpm release:jest` passed its production gate, target isolation, immutable artifact and W3C HTML checks (zero HTML findings). The artifact contains 104 files, 4.04 MB total and 0.39 MB initial resources.
+- Jest confirmed version `01a21b52-2f4a-703e-a40e-7dd8c208257d` ready and active at **27 November 2026, 04:45:08 UTC**. Build: `1.0.0-dev.20261127044408.c032dedd6a7b.7fc2404f`; source: `c032dedd6a7b4a3f0e5e0537915eda1f7dbd9cd6`; ZIP SHA-256: `8ed974b75775b6a7ee2ff63448166aa66300434e476e7838aca898b894a1207e`. The exact version was checked through Jest's `list_game_versions` tool after upload processing.
+- The Firebase connector initially reported success without changing deployed revisions. The subsequent selective Firebase CLI deployment completed, and `gcloud functions list --v2` confirmed all six functions below `ACTIVE` with source hash `c048768ff15054dcb6d84ac3abbca7b4b1e1069a` at 04:45 UTC. No other functions were selected for this deployment.
+
+| Function | Region | Deployed revision |
+| --- | --- | --- |
+| `joinLiveRace` | `europe-west1` | `joinliverace-00033-tac` |
+| `updateLiveRace` | `europe-west1` | `updateliverace-00031-juk` |
+| `startRaceRun` | `europe-west1` | `startracerun-00035-now` |
+| `joinLiveRace` | `us-central1` | `joinliverace-00033-jut` |
+| `updateLiveRace` | `us-central1` | `updateliverace-00031-tew` |
+| `startRaceRun` | `us-central1` | `startracerun-00065-zij` |
+
+This confirms deployment and build activation, not hosted gameplay acceptance or review approval. Game publication and review submission were not changed.
