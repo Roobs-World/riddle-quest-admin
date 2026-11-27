@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-11-27T11:56:03.018169+00:00",
+  "appId": "1748953042991569",
+  "sourceCommit": "85b8c43d72bca17280592b33eec690c23756c78c",
+  "archiveSha256": "b520e2763bef9d50d5e9eb9a5e5883475e68a24f47d9ebb3d75550eeb08201c2",
+  "archiveBytes": 2863715,
+  "version": 11,
+  "bundleId": "29932177596379493",
+  "status": "Testing",
+  "processingComplete": true,
+  "providerDownloadSha256": "b520e2763bef9d50d5e9eb9a5e5883475e68a24f47d9ebb3d75550eeb08201c2",
+  "sdk": "8.0 [Network Enabled Zero Permissions]",
+  "productionUnchanged": {
+    "version": 9,
+    "bundleId": "29168977262783270"
+  },
+  "firebaseChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "evidence": "Authenticated Meta Web Hosting row, Testing confirmation, independently downloaded archive SHA-256 match",
+  "hostedSmoke": {
+    "startup": "passed: real SDK startup, authenticated account and game rendered",
+    "unsupportedContextPicker": "passed: host rejection hides Choose friends and shows translated unavailable status; no generic race error",
+    "refresh": "passed: the unsupported picker stays absent after refresh",
+    "existingContextChooser": "passed: Play with friends opens the native chooser; Close cancels and re-enables controls",
+    "returnToGame": "passed: race dialog closed and Multiplayer remains available",
+    "externalSideEffects": "No invitation, message, purchase, notification opt-in or review submission"
+  },
+  "limitations": "Desktop smoke coverage only; supported mobile hosts and conditional provider integrations remain open in the API checklist"
+}
