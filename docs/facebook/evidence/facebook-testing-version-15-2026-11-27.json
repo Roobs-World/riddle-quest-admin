@@ -53,5 +53,15 @@
     "canonicalPreflight": "passed",
     "qwordlyArchiveMatches": 0
   },
-  "limitations": "Local external-boundary fixtures prove banner layout, native-dialog serialization, gameplay hiding and no-fill recovery. The inspected desktop host does not advertise loadBannerAdAsync and therefore fails the existing banner admission guard. Real banner display/hide acceptance on a supported host, mobile, two-account co-play, approvals and other submission gates remain open."
+  "limitations": "Local external-boundary fixtures prove banner layout, native-dialog serialization, gameplay hiding and no-fill recovery. The inspected desktop host does not advertise loadBannerAdAsync and therefore fails the existing banner admission guard. Real banner display/hide acceptance on a supported host, mobile, two-account co-play, approvals and other submission gates remain open.",
+  "hostedFollowup": {
+    "evidence": "facebook-native-settings-version-15-2026-11-27.md",
+    "legalLinkCancellation": "Privacy and Terms native confirmations named Riddle Quest and the correct roobsworld.com paths; Go back restored enabled controls.",
+    "preferencePersistence": "Reduced motion On survived quit/relaunch; original Off restored and persisted through a second quit/relaunch.",
+    "displayMode": "Rendered data-facebook-display-mode changed normal to expanded to normal through host Collapse/Expand; controls remained usable.",
+    "startupLimitation": "First immediate navigation timed out on the Games landing. Relaunch from the exact candidate row briefly showed service unavailable before recovering without another reload; request cause not captured. Second relaunch restored normally.",
+    "finalState": "Coconut puzzle, 920 coins, Reduced motion Off, enabled Settings and first answer cell.",
+    "newUpload": false,
+    "firebaseChanged": false
+  }
 }
