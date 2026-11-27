@@ -2,6 +2,7 @@ import {useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSPropertie
 import {parseHostToGameMessage} from "../../../platform/bridge/messages";
 import {ListRaceCategoriesResponseSchema, type LiveRaceCapability, type RaceCategoryId, type RaceLocale} from "../../contracts/index";
 import "../../styles/lobby.css";
+import "../../styles/intro.css";
 import "../../styles/gameplay.css";
 import {tr} from "../../../localization/browser/i18n";
 import {HOST_TO_GAME_EVENT} from "../../../platform/bridge/browser/localBridge";
@@ -197,7 +198,7 @@ function LiveRaceIntro({locale, coins, challengeId, initialCategories = EMPTY_RA
     } catch {if (!signal.aborted && choiceProvider.current === provider) setChooseFailed(true);}
     finally {choosing.current = false; if (!signal.aborted) setChoosingFriends(false);}
   };
-  return <section ref={dialogRef} className="race-screen" role="dialog" aria-modal="true" aria-labelledby="race-title"
+  return <section ref={dialogRef} className="race-screen race-screen-intro" role="dialog" aria-modal="true" aria-labelledby="race-title"
     tabIndex={-1} data-analytics-screen="multiplayer_live_intro">
     <RaceTopbar live coins={coins} onClose={onClose} />
     {introNavigation}
