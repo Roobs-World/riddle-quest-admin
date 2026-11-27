@@ -5,6 +5,7 @@
 - [Live dashboard prerequisites](evidence/facebook-dashboard-api-prerequisites-2026-11-27.md)
 - [Expanded API candidate and local build evidence](evidence/facebook-expanded-api-build-2026-11-27.md)
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md)
+- [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)
 - [Messenger bot consent and stored-content boundary](evidence/facebook-messenger-consent-2026-11-27.md)
 - [Generic profile overlay alternatives](evidence/facebook-generic-overlays-2026-11-27.md)
 - [Get Riddle Quest working on Facebook](facebook-setup-guide.md)

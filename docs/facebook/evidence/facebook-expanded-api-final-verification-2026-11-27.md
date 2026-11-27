@@ -40,4 +40,4 @@ The [79-entry API matrix](../facebook-api-submission-checklist-2026-11-27.md) re
 
 Meta still serves the historical version 9 recorded in the [dashboard evidence](facebook-dashboard-api-prerequisites-2026-11-27.md). Final native journeys, real device/accessibility checks, partner approvals and exact uploaded-artifact acceptance remain open. No upload, Testing/Production assignment, backend deployment, permission change, real bot subscription, message, group invitation, purchase or review submission was performed for this candidate.
 
-The upload CLI currently requires `main`; this candidate is on the owner-requested `facebook` branch. Packaging is local, but an upload needs an explicit owner request and resolution of that branch requirement. No branch gate has been bypassed.
+At this snapshot the upload CLI required `main` and upload permission was pending. The owner subsequently authorized Facebook test uploads and required Firebase to stay unchanged. The [testing follow-up](facebook-client-testing-2026-11-27.md) records that later scope and validation.

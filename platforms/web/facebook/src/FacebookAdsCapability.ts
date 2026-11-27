@@ -17,6 +17,16 @@ const failure = (error: unknown): PlatformResult<void> => ({
   message: error instanceof Error ? error.message : "facebook-ad-failed",
 });
 
+/** Native ad handles must remain bound to the configured format's approved placement. */
+const assertPlacement = (ad: unknown, expected: string): void => {
+  let matches = false;
+  try {
+    matches = typeof ad === "object" && ad !== null && "getPlacementID" in ad &&
+      typeof ad.getPlacementID === "function" && ad.getPlacementID() === expected;
+  } catch { /* Provider errors and identifiers never become game diagnostics. */ }
+  if (!matches) throw new Error("facebook-ad-placement-invalid");
+};
+
 /** Creates a result-only interstitial adapter whose in-memory state is scoped to one game session. */
 export function createFacebookAdsCapability({
   sdk,
@@ -110,8 +120,16 @@ export function createFacebookAdsCapability({
           trackEvent("ad_requested", {ad_format: "interstitial", placement});
           const ad = await sdk.getInterstitialAdAsync!(normalizedPlacement);
           if (!isActive() || !isPlacementCurrent()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+          assertPlacement(ad, normalizedPlacement);
+          if (!isActive() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
+            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+          }
           await ad.loadAsync();
           if (!await refreshEligibility("interstitial") || !isActive() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
+            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+          }
+          assertPlacement(ad, normalizedPlacement);
+          if (!isActive() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
             return {status: "unavailable", message: "facebook-interstitial-suppressed"};
           }
           await ad.showAsync();
@@ -155,10 +173,14 @@ export function createFacebookAdsCapability({
           /** Provides ad behavior. */
           const ad = await sdk.getRewardedVideoAsync!(normalizedRewardedPlacement);
           if (!isActive() || !isRewardedEnabled()) return {status: "unavailable", message: "facebook-rewarded-unavailable"};
+          assertPlacement(ad, normalizedRewardedPlacement);
+          if (!isActive() || !isRewardedEnabled()) return {status: "unavailable", message: "facebook-rewarded-unavailable"};
           await ad.loadAsync();
           if (!await refreshEligibility("rewarded") || !isActive() || !isRewardedEnabled()) {
             return {status: "unavailable", message: "facebook-rewarded-unavailable"};
           }
+          assertPlacement(ad, normalizedRewardedPlacement);
+          if (!isActive() || !isRewardedEnabled()) return {status: "unavailable", message: "facebook-rewarded-unavailable"};
           await ad.showAsync();
           if (isActive()) trackEvent("ad_completed", {ad_format: "rewarded", placement});
           /** Provides completed at ms behavior. */

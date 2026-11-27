@@ -34,7 +34,7 @@ remains a fallback. These paths still require Meta-hosted acceptance.
 
 ## Facebook branch API coverage
 
-The owner-requested `facebook` branch was based on `web`. Its client uses Facebook SDK capabilities and contains no Jest registration, subscription checkout, milestone or notification-plan implementation. All [Jest backend integrations](../jest/jest-backend-operations.md), including subscriptions and notifications for existing Jest consumers, remain supported. The Jest test runner remains. Older client-release documents under `docs/jest/` are historical for this checkout; backend documentation is current.
+The owner-requested `facebook` branch was based on `web`. Its client uses Facebook SDK capabilities and contains no Jest registration, subscription checkout, milestone or notification-plan implementation. The owner explicitly required Firebase and all provider server modules to remain unchanged. Existing [Jest backend source](../jest/jest-backend-operations.md) is therefore preserved outside the game artifact. Non-Firebase Jest manager routes and monitoring probes have been removed locally; deployed services remain unchanged. The Jest test runner remains. Older client-release documents under `docs/jest/` are historical for this checkout; backend documentation is current.
 
 | Responsibility | Facebook implementation | Provider contract |
 | --- | --- | --- |
@@ -266,6 +266,8 @@ The later [notification signup fix upload](evidence/facebook-notification-signup
 The [November 26 registration-only release attempt](evidence/facebook-registration-only-upload-2026-11-26.json) reconciled version 8's exact provider-visible draft identity through its immutable archive, successful receipt and complete inventories. Its local handoff is accepted; that transition does not claim processing readiness or activate the older client. The current registration-only Facebook artifact from clean source `c14ad8248` passed preflight, but Meta rejected session creation with HTTP 401 and OAuth error 190. No archive request or activation occurred, and unchanged complete inventories still contain only versions 1 through 8. The rejected attempt is reconciled absent with its archive and receipts preserved.
 
 After the owner refreshed the upload credential, Meta accepted a single upload of the Facebook campaign build and confirmed production assignment for version 9. All 418 runtime files matched the previously prepared notification client. [Version 9 release evidence](evidence/facebook-campaign-activation-2026-11-26.json)
+
+On 27 November the owner explicitly authorized Facebook test uploads from this checkout. The upload command accepts `main` or `facebook`; it still rejects dirty/changed source, mismatched archives and unresolved handoffs. This authorization does not promote Production or submit a review. Firebase changes and deployments are prohibited for this task.
 
 With the token saved in the root `.env`:
 

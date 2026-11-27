@@ -9,11 +9,12 @@ import type {FacebookInstantSdk} from "../fbinstant";
 
 /** Provides sdk with ad behavior. */
 const sdkWithAd = () => {
+  let requestedPlacement = "";
   /** Provides ad behavior. */
-  const ad = {loadAsync: jest.fn<() => Promise<void>>(async () => undefined),
+  const ad = {getPlacementID: jest.fn(() => requestedPlacement), loadAsync: jest.fn<() => Promise<void>>(async () => undefined),
     showAsync: jest.fn<() => Promise<void>>(async () => undefined)};
   /** Gets interstitial ad async. */
-  const getInterstitialAdAsync = jest.fn(async () => ad);
+  const getInterstitialAdAsync = jest.fn(async (placement: string) => {requestedPlacement = placement; return ad;});
   return {ad, getInterstitialAdAsync, sdk: {
     getInterstitialAdAsync, getSupportedAPIs: () => ["getInterstitialAdAsync"],
   } as unknown as FacebookInstantSdk};
@@ -21,11 +22,12 @@ const sdkWithAd = () => {
 
 /** Provides SDK with an opt-in rewarded video placement. */
 const sdkWithRewardedAd = () => {
+  let requestedPlacement = "";
   /** Provides ad behavior. */
-  const ad = {loadAsync: jest.fn<() => Promise<void>>(async () => undefined),
+  const ad = {getPlacementID: jest.fn(() => requestedPlacement), loadAsync: jest.fn<() => Promise<void>>(async () => undefined),
     showAsync: jest.fn<() => Promise<void>>(async () => undefined)};
   /** Gets rewarded video async. */
-  const getRewardedVideoAsync = jest.fn(async () => ad);
+  const getRewardedVideoAsync = jest.fn(async (placement: string) => {requestedPlacement = placement; return ad;});
   return {ad, getRewardedVideoAsync, sdk: {
     getRewardedVideoAsync, getSupportedAPIs: () => ["getRewardedVideoAsync"],
   } as unknown as FacebookInstantSdk};
@@ -46,6 +48,69 @@ const deferred = () => {
 };
 
 const adFormats: FacebookAdFormat[] = ["interstitial", "rewarded"];
+
+describe.each(adFormats)("Facebook %s returned placement binding", format => {
+  const fixture = () => {
+    const harness = format === "interstitial" ? sdkWithAd() : sdkWithRewardedAd();
+    let active = true;
+    const expected = format === "interstitial" ? "result-placement" : "continue-placement";
+    const ads = requireAds({sdk: harness.sdk, placementId: " result-placement ", rewardedPlacementId: " continue-placement ",
+      rewardedEnabled: true, adFree: false, isActive: () => active, now: () => 1_000_000});
+    return {...harness, expected, setActive: (value: boolean) => {active = value;},
+      show: () => format === "interstitial" ? ads.showInterstitial("result") : ads.showRewarded("continue")};
+  };
+
+  it.each(["missing", "non-callable", "malformed", "mismatched", "padded", "throwing"])(
+    "rejects a %s placement getter before loading and allows a valid retry without consuming cooldown",
+    async fault => {
+      const harness = fixture();
+      if (fault === "missing") Reflect.deleteProperty(harness.ad, "getPlacementID");
+      else Object.defineProperty(harness.ad, "getPlacementID", {configurable: true, value:
+        fault === "non-callable" ? harness.expected :
+          fault === "malformed" ? () => 42 :
+            fault === "mismatched" ? () => "another-format-placement" :
+              fault === "padded" ? () => ` ${harness.expected} ` :
+                () => {throw {code: "USER_INPUT", message: "Private provider failure"};}});
+
+      expect(await harness.show()).toEqual({status: "retryable-failure", message: "facebook-ad-placement-invalid"});
+      expect(harness.ad.loadAsync).not.toHaveBeenCalled();
+      expect(harness.ad.showAsync).not.toHaveBeenCalled();
+      Object.defineProperty(harness.ad, "getPlacementID", {configurable: true, value: () => harness.expected});
+      expect(await harness.show()).toEqual({status: "success", value: undefined});
+      expect(harness.ad.loadAsync).toHaveBeenCalledTimes(1);
+      expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+    },
+  );
+
+  it("refuses to display a placement that changes during loading and preserves retry eligibility", async () => {
+    const harness = fixture();
+    harness.ad.loadAsync.mockImplementationOnce(async () => {harness.ad.getPlacementID.mockReturnValue("replacement-placement");});
+    expect(await harness.show()).toEqual({status: "retryable-failure", message: "facebook-ad-placement-invalid"});
+    expect(harness.ad.loadAsync).toHaveBeenCalledTimes(1);
+    expect(harness.ad.showAsync).not.toHaveBeenCalled();
+    harness.ad.getPlacementID.mockReturnValue(harness.expected);
+    expect(await harness.show()).toEqual({status: "success", value: undefined});
+    expect(harness.ad.loadAsync).toHaveBeenCalledTimes(2);
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it.each(["load", "show"])("does not admit %s if the native placement getter retires its account", async phase => {
+    const harness = fixture();
+    let reads = 0;
+    harness.ad.getPlacementID.mockImplementation(() => {
+      reads++;
+      if (reads === (phase === "load" ? 1 : 2)) harness.setActive(false);
+      return harness.expected;
+    });
+    expect(await harness.show()).toMatchObject({status: "unavailable"});
+    expect(harness.ad.loadAsync).toHaveBeenCalledTimes(phase === "load" ? 0 : 1);
+    expect(harness.ad.showAsync).not.toHaveBeenCalled();
+    harness.setActive(true);
+    harness.ad.getPlacementID.mockReturnValue(harness.expected);
+    expect(await harness.show()).toEqual({status: "success", value: undefined});
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+  });
+});
 
 describe("Facebook ads capability", () => {
   it("does not expose formats that the current Meta host fails to advertise", () => {

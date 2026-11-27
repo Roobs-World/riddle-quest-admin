@@ -430,6 +430,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           async getRewardedVideoAsync(placementId) {
             window.__facebookEvents.push(`rewarded:placement:${placementId}`);
             return {
+              getPlacementID: () => placementId,
               /** Mock Meta video load resolves before the completion adapter is used. */
               async loadAsync() {
                 window.__facebookEvents.push("rewarded:load");
@@ -468,6 +469,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
           async getInterstitialAdAsync(placementId) {
             window.__facebookEvents.push(`ads:interstitial:${placementId}`);
             return {
+              getPlacementID: () => placementId,
               /** Models Meta's required load before display. */
               async loadAsync() {window.__facebookEvents.push("ads:load");},
               /** Models a completed provider impression. */

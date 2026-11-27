@@ -18,7 +18,7 @@ test("health reports actual configuration presence without exposing credentials"
   assert.equal(body.status, "not_configured");
   assert.equal(body.workerEnabled, false);
   assert.equal(body.targetBranch, "main");
-  assert.deepEqual(body.authorityConfigured, {jestProduction: "public-live-iframe", jestPreviews: false, functions: false});
+  assert.deepEqual(body.authorityConfigured, {functions: false});
 });
 test("legacy branch configuration and repair contexts fail closed before upstream calls", async (context) => {
   const previousTarget = process.env.TARGET_BRANCH;
@@ -219,7 +219,7 @@ test("an exhausted global budget stops selection without claiming other issues",
   assert.deepEqual(seen, ["first"]);
 });
 
-test("signed webhook reports unavailable authority and never creates a repair branch", async (context) => {
+test("signed webhook rejects removed runtime without provider calls or a repair branch", async (context) => {
   const originalFetch = globalThis.fetch;
   const keys = ["SENTRY_AUTH_TOKEN", "SENTRY_WEBHOOK_SECRET", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"];
   const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
@@ -228,7 +228,6 @@ test("signed webhook reports unavailable authority and never creates a repair br
   const requests = [];
   globalThis.fetch = async (url, options = {}) => {
     requests.push({url: String(url), method: options.method ?? "GET"});
-    if (String(url) === "https://jest.com/g/riddle-q") return new Response(null, {status: 503});
     assert.match(String(url), /^https:\/\/sentry.io\//u);
     return Response.json(String(url).includes("/events/latest/") ? {eventID: "event", dateCreated: new Date().toISOString(), release: {version: "riddle-quest@test"}, tags: [{key: "runtime", value: "jest-html5"}, {key: "environment", value: "production"}]} : [{id: "123", title: "issue"}]);
   };
@@ -237,8 +236,8 @@ test("signed webhook reports unavailable authority and never creates a repair br
   const response = {setHeader() {}, end(value) {this.body = value;}};
   await handler({method: "POST", headers: {"sentry-hook-signature": signature}, body}, response);
   assert.equal(response.statusCode, 202);
-  assert.equal(JSON.parse(response.body).reason, "deployment_authority_unavailable");
-  assert.equal(requests.length, 3);
+  assert.equal(JSON.parse(response.body).reason, "runtime_out_of_scope");
+  assert.equal(requests.length, 2);
   assert.ok(requests.every((item) => item.method === "GET"));
 });
 

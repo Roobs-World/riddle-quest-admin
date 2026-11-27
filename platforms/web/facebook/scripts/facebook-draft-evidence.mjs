@@ -122,7 +122,9 @@ await withFacebookReleaseLock(receiptDirectory, async () => {
     if (!options.has("--archive-hash") || [...options.keys()].some((name) => !["--archive-hash", "--dry-run"].includes(name))) {
       fail("upload requires --archive-hash and accepts optional --dry-run.");
     }
-    if (runGit(["branch", "--show-current"]) !== "main") fail("Facebook uploads require main.");
+    if (!["main", "facebook"].includes(runGit(["branch", "--show-current"]))) {
+      fail("Facebook test uploads require main or the owner-authorized facebook branch.");
+    }
     await assertFacebookHandoffsSettled(receiptDirectory);
     const {gated, verified} = await readGatedState();
     const hash = options.get("--archive-hash");

@@ -48,6 +48,24 @@ function acceptance(hash) {
     archiveSha256: hash, dashboardEvidenceSha256: "a".repeat(64), acceptedAt: "2026-10-01T00:00:00.000Z"};
 }
 
+test("test upload accepts only main or facebook and preserves exact-source gates", async context => {
+  const f = await fixture(context);
+  const command = (...args) => run(process.execPath, [path.join(f.root, "platforms/web/facebook/scripts/facebook-draft-evidence.mjs"), ...args], {
+    env: {...process.env, FACEBOOK_APP_ACCESS_TOKEN: "GG|1748953042991569|fixture-not-a-real-credential"},
+  });
+  const upload = () => command("upload", "--archive-hash", f.hash, "--dry-run");
+  for (const branch of ["main", "facebook"]) {
+    await run("/usr/bin/git", ["checkout", "-B", branch], {cwd: f.root});
+    assert.match((await upload()).stdout, /Dry run: no handoff opened/u);
+  }
+  await run("/usr/bin/git", ["checkout", "-B", "unreviewed-feature"], {cwd: f.root});
+  await assert.rejects(upload(), /require main or the owner-authorized facebook branch/u);
+  await run("/usr/bin/git", ["checkout", "facebook"], {cwd: f.root});
+  await writeFile(path.join(f.root, "uncommitted.txt"), "not reviewed");
+  await assert.rejects(upload(), /artifact source changed after gating/iu);
+  await assert.rejects(readFile(path.join(f.receipts, `upload-${f.hash}.json`)), {code: "ENOENT"});
+});
+
 test("one global lock prevents concurrent commands and releases on ordinary failure", async context => {
   const f = await fixture(context);
   await withFacebookReleaseLock(f.receipts, async () => {

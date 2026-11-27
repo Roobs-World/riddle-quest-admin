@@ -2,6 +2,10 @@
 
 The current source policy uses `main` for worker development and repair PR bases. Dated deployment observations below record the service revision that was actually checked; updating source does not update the deployed worker or its environment. Verify the deployed configuration before relying on the main-only policy in production.
 
+The Facebook branch removes the Jest gaming-platform deployment probes, credentials and repair paths. Current source admits only verified `firebase-functions` events; Jest, Facebook browser and other unsupported runtimes fail closed. This source change does not deploy the worker. Signed `main` bases and current Functions revision checks remain required.
+
+## Historical deployment observations
+
 On 2026-11-22 the documented endpoint returned HTTP 404
 `DEPLOYMENT_NOT_FOUND`. Authenticated lookup of the old project ID and name also
 returned 404, and team-scoped project search was empty. There was no deployed
@@ -77,18 +81,7 @@ timestamp, exception type/message and up to 20 application frames. Player contex
 requests, breadcrumbs, frame query strings and local variables are omitted.
 Diagnostic text remains untrusted input, never agent instructions.
 
-For active `jest-html5` production, the service fetches the public game page at
-`https://jest.com/g/riddle-q` without a version query or credentials. It requires
-exactly one server-rendered iframe on the game's exact `builds.jest.com` origin,
-an immutable version path, and a successfully served HTML index. Bodies are
-bounded and redirects, foreign hosts, unexpected query keys and ambiguous pages
-fail closed. The iframe session query is discarded. The event's full
-`riddle-quest@<version>` release must match that active immutable version.
-
-Inactive previews additionally require the documented authenticated
-`list_game_versions` MCP tool, an exact READY version, and explicit authorization
-in `SENTRY_WORKER_JEST_PREVIEW_IDS`. The MCP active version must agree with the
-public production page. Preview IDs alone never establish current deployment.
+Browser-runtime events are outside the current deployment-authority scope and are rejected before any provider request. There is no Jest public-hosting or MCP probe, preview allowlist, or synthetic Facebook browser authority.
 
 For `firebase-functions`, the service reads partial Cloud Functions v2 inventory
 for `riddle-quest-ec2b2`. Event release must exactly match an ACTIVE runtime revision
@@ -106,14 +99,14 @@ three-hour repair and required CI pipeline. Deployment and base are rechecked
 before coding, completion and merge.
 
 The Vercel function downloads the pinned private-repository archive and sends
-only source bytes to an empty Sandbox. No GitHub, Sentry, Google or Jest credential
+only source bytes to an empty Sandbox. No GitHub, Sentry or Google credential
 enters the Sandbox, its parent environment, Git metadata or source URL. The agent
 has its OpenAI key; the wrapper has a scoped, expiring repair ticket. The runner
 returns a bounded UTF-8 source patch and summary to the service. The service
 rechecks authority and source, then creates GitHub blobs/tree/commit and a PR.
 
 Automatic patches are limited to 12 files and 256 KiB under shared feature folders in `src/`, shared `firebase-functions/src`, and
-`platforms/web/jest` or `platforms/web/facebook` in their `src`, `server` or
+`platforms/web/facebook` in its `src`, `server` or
 `scripts` directories. Native and every other provider root are rejected.
 Deletions, symlinks, binary
 files, dot paths, package manifests and nested agent instruction files are rejected. Repairs needing
@@ -124,31 +117,14 @@ PR head after fresh deployment/base checks. Production explicitly sets
 stale tickets block merging. Without that flag the code defaults to
 `ready_for_review` and `releaseWorkPending: true`.
 
-The merge flag does not perform the required Jest upload or applicable backend
-release. Repairs merge into `main`; release commands use that same source branch. These remain separate release
+The merge flag does not perform a Facebook upload or backend release. Repairs merge into `main`; release commands use that same source branch. These remain separate release
 operations; no post-merge coordinator is currently configured.
 
-## Jest and Facebook verification scope
+## Facebook verification scope
 
-The owner's 2026-11-23 scope is Jest and Facebook. Their Production readiness
-workflow uses `check:types:jest-facebook`, `test:coverage:jest-facebook`,
-`build:jest-facebook`, and `test:e2e:jest-facebook`. Shared unit coverage and
-security checks remain required; backend emulator coverage runs on Node 22.
-Android coverage thresholds and the default full-platform commands are unchanged,
-but parked client targets do not gate these web repairs.
+Current repairs build the isolated Facebook artifact and shared backend, preserving target isolation and authoritative account/commerce boundaries. Use the current root `pnpm build:facebook` and `pnpm preflight:facebook-backend` commands. Focused tests and browser harnesses require an explicit owner request; the Jest test runner remains development tooling, unrelated to the removed gaming platform.
 
-The scoped browser plan selects the hosted/Facebook portions of mixed harnesses
-and rejects unknown command leaves until their scope is reviewed. The manual
-readiness workflow runs the complete browser suite once, without a shard matrix.
-The plan command can still list one shard without launching it:
-
-```sh
-pnpm exec node scripts/web/run-jest-facebook-browser.mjs --shard 1/4 --dry-run
-```
-
-Only the two production artifacts are built and passed to HTML validation.
-Changing this workflow does not change the worker's exact successful PR-head,
-current-deployment, base-SHA, ticket or merge-SHA checks.
+Changing verification scope does not change the worker's exact successful PR-head, current-deployment, base-SHA, ticket or merge-SHA checks.
 
 Repository Actions and workflows remain disabled unless a hosted run is explicitly
 authorized. Source workflows accept only manual dispatch with the runner-usage
@@ -163,7 +139,7 @@ repair PRs use `main`, with a signed main base. The repair
 agent follows `AGENTS.md`, including the requirement that tests and browser harnesses
 run only when explicitly requested.
 
-The service never deploys Functions, uploads or activates Jest, publishes the game,
+The service never deploys Functions, uploads or activates games, publishes the game,
 submits review, or marks Sentry issues resolved. Release operations remain separate.
 
 ## Configuration
@@ -178,8 +154,6 @@ Store secrets only in the dedicated service project. Never log their values.
 | `OPENAI_API_KEY` | Paid isolated repair execution. |
 | `CRON_SECRET` | Cron authentication and scoped repair-ticket signatures. |
 | `SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT` | Dedicated reader account JSON. `sentry-deployment-reader@riddle-quest-ec2b2.iam.gserviceaccount.com` needs only `roles/cloudfunctions.viewer`. OAuth uses the API's documented `cloud-platform` scope; IAM enforces read access. |
-| `JEST_MCP_ACCESS_TOKEN` | Optional separately authorized OAuth access token for a dedicated Jest account with read-only MCP access. Needed for previews, not active production. Never reuse the connected assistant's credentials. |
-| `SENTRY_WORKER_JEST_PREVIEW_IDS` | Comma-separated explicitly authorized preview IDs, empty by default. |
 | `WORKER_NOT_BEFORE` | Poll issue `lastSeen` cutoff. Default `2026-09-20T00:00:00Z`; set deliberately on restoration. |
 | `SENTRY_WORKER_URL` | Canonical HTTPS webhook/check endpoint. Defaults to Vercel's production project URL plus `/api/sentry-webhook`. |
 | `NODEJS_HELPERS` | Set `0` to preserve raw webhook bytes. |
@@ -187,16 +161,11 @@ Store secrets only in the dedicated service project. Never log their values.
 | `TARGET_BRANCH` | Optional, only `main` is accepted. |
 | `SENTRY_WORKER_AUTO_MERGE` | Production is `1`, explicitly authorized on 2026-11-23. Merges only after the exact CI head and current deployment/base checks pass. Unset defaults to review-only. Release operations remain separate. |
 
-Jest access tokens expire after one hour. This service does not store or rotate
-OAuth refresh credentials. Preview repairs expire closed when their token expires;
-continuous preview repair needs a separately authorized renewable OAuth setup.
-Active Jest production and Functions authority operate independently of that token.
-
 ## Verification and restoration
 
 Run `npm run check:configuration` from `tooling/sentry-worker`, providing credentials
 through the process environment. It performs read-only Sentry issue/event, GitHub
-workflow, Functions and Jest authority probes. It prints presence booleans,
+workflow and Functions authority probes. It prints presence booleans,
 availability and deployment identifiers, never credentials or raw events/HTML.
 Exit 1 means incomplete required configuration. It does not spend model credits
 or test write access by mutating anything.
@@ -226,9 +195,7 @@ Blocked checks and webhooks must not create branches or paid runs. Inspect Verce
 logs and PR/workflow records for blocked repairs. Review stale PRs rather than
 bypassing their deployment checks. Revoke superseded credentials after verification.
 
-Official contracts: [Jest MCP](https://docs.jest.com/dev-console/mcp.md),
-[Jest builds](https://docs.jest.com/dev-console/builds.md),
-[Functions list](https://docs.cloud.google.com/functions/docs/reference/rest/v2/projects.locations.functions/list),
+Official contracts: [Functions list](https://docs.cloud.google.com/functions/docs/reference/rest/v2/projects.locations.functions/list),
 [Function revision fields](https://docs.cloud.google.com/functions/docs/reference/rest/v2/projects.locations.functions),
 [Sentry issue event](https://docs.sentry.io/api/events/retrieve-an-issue-event/),
 [Vercel raw request configuration](https://vercel.com/docs/functions/runtimes/node-js/advanced-node-configuration).

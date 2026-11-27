@@ -18,7 +18,7 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 | Yahoo candidate | [Candidate build guide](yahoo/README.md) |
 | GameSnacks | [Build and handoff guide](gamesnacks/README.md) |
 
-This `facebook` branch uses the Facebook entry and excludes the Jest browser client/SDK. All [Jest backend integrations](jest/jest-backend-operations.md) remain active in source. Older browser build/upload commands are unavailable here; dated client evidence retains its historical scope. Jest unit-test tooling remains.
+This `facebook` branch uses the Facebook entry and excludes the Jest browser client/SDK. The owner requires Firebase and all provider server modules to remain unchanged, so the existing [Jest backend source](jest/jest-backend-operations.md) is preserved outside the Facebook artifact. Non-Firebase Jest manager routes and monitoring probes have been removed from this branch without deploying those services. Older browser build/upload commands are unavailable here; dated client evidence retains its historical scope. Jest unit-test tooling remains.
 
 Other web destinations use the [shared release guides](common/releases/README.md) and [platform integration matrix](common/architecture/platform-integration-matrix.md).
 

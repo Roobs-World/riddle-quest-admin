@@ -313,7 +313,7 @@ The 79-row count covers SDK entry points, not methods on returned objects. Verif
 
 | Object | Needed evidence |
 | --- | --- |
-| AdInstance | Actual `loadAsync`/`showAsync` outcomes and placement binding. A declared `getPlacementID` accessor is not evidence it is consumed or needed. |
+| AdInstance | `getPlacementID` must exactly match the configured placement before loading and again before showing. Invalid/missing/throwing getters fail closed; current-owner and entitlement checks follow both reads. Actual Meta `loadAsync`/`showAsync` acceptance remains required. |
 | SignedPlayerInfo | Server-verified player ID/signature bound to the issued nonce. |
 | SignedASID / SignedAssociatedAppASID | Still part of the missing migration/association authority; no identity merge based only on a browser-returned ID. |
 | ConnectedPlayer / ContextPlayer | Validated IDs stay within the Facebook boundary; UI exposes counts, not extracted names/photos. |
@@ -333,8 +333,8 @@ The rewarded-video IAP fallback pilot is also not completed: it requires separat
 - [ ] Reinspect the final source after concurrent integration work, including session-score wiring, teardown, locale keys, dialog ownership, optional banners and cross-target boundaries.
 - [ ] Complete the final Facebook build and required static/backend packaging checks. Record the exact commands/results and any limitations. Repeat the owner-authorized focused tests and browser journey for the final source changes.
 - [ ] Prepare a clean immutable archive from the agreed release source; record commit, SHA-256, byte count, contents and matching backend revisions/configuration. A package from version 9 or an earlier dirty source does not qualify.
-- [ ] Reconcile the requested `facebook` development branch with the uploader's `main` branch gate before any authorized upload. Do not bypass the existing release-authority check silently.
-- [ ] Obtain explicit authorization for the new Facebook upload/review/publication actions as required; previous release evidence does not authorize a different payload or action.
+- [x] The owner explicitly authorized Facebook test uploads from this checkout on 27 November. The upload CLI now accepts `main` or `facebook`, retaining clean-source, exact-archive and unresolved-handoff gates; other branches are rejected.
+- [x] Authorization covers the Facebook uploads needed for testing. Production promotion, review submission and publication remain separate actions requiring their own authorization.
 - [ ] After an authorized upload, confirm the exact new bundle/version has finished processing, the intended Testing/Production assignment, SDK selector/configuration and exact archive identity. Current dashboard Production version 9 and Testing version 6 do not contain this candidate.
 - [ ] Verify the deployed backend revision and feature flags for every server-owned integration; the client archive alone cannot establish receipt, identity, context, tournament, ad-entitlement or notification authority.
 - [ ] Finish/reconcile all applicable approvals: Approved Partner Program, Zero Permission Access, Policy, Quality, IAP/payout/payment callbacks, Bot if added, App Property if required, and format-specific ads eligibility. Business Verified and In App Ads Approved cover only those named gates.

@@ -12,14 +12,10 @@ Production checks cover the Firebase, Supabase and Vercel endpoints. [Backend ve
 
 An isolated Android installation received a live FCM campaign, displayed the authored text, and opened the game on tap. [Android notification check](../../android/evidence/native-notification-tap-2026-11-26.md)
 
-## Jest
+## Retired platform history
 
-Jest requires scheduling through its SDK for the current registered player. The manager owns an English daily plan (`jest-daily-v4`) and returns it from the private `/api/devices/jest/registration` bridge. It supplies seven different bodies of at most 100 ASCII characters, CTAs, D1–D7 offsets, stable `riddle-quest-dN-v4` identifiers and the approved `riddle-q-notification` image reference. The plan is authored in `notification-manager/server/jest/plan.ts`; it is not part of the generic calendar campaign audience.
+The notification-manager workspace no longer contains the Jest gaming-platform registration API, authored notification plan or active declarative registration schema. Firebase source and deployed backend remain unchanged; this manager-only removal does not retire the existing Firebase callable. Facebook delivery continues through its own manager registration and Meta A2U dispatcher.
 
-The `getJestNotificationPlan` Firebase callable verifies App Check, signed-account claims, the live account, deletion guards and its saved Notifications preference. It sends only an opaque recipient hash, ordered revision, English locale and expiring consent to the manager. A server-only Supabase table mirrors those registrations. Stale revisions cannot overwrite later opt-outs. The manager returns an empty plan for disabled accounts; the callable validates the response and rechecks consent before returning it.
+The already-applied [26 November SQL migration](../../../notification-manager/supabase/migrations/20261126201858_jest_manager_registration.sql) is retained as immutable migration history. It does not supply an active route or campaign audience in this source. No remote table, function, registration or consent tombstone was changed by this removal. Any database retirement requires a separate reviewed migration and deployment; do not replay history as a new integration or drop retained consent state merely to remove a name.
 
-The Jest adapter fetches the plan at registered startup and when the setting changes. It validates the complete plan before replacing schedules, checks current account and consent at each SDK call, and serializes cancellation with scheduling. Opt-out and account deletion remove current and legacy identifiers. Manager outages leave existing valid schedules in place and retry without inventing local content. The adapter adds no entry payload, notification tap handling or reward.
-
-Deploy the reviewed Supabase migration and manager API, then the Firebase callable, before activating a client that consumes this handoff. A manager production deployment requires explicit owner authorization under [manager operations](service.md#vercel-setup). The Jest build remains covered by its standing upload and activation authorization. Hosted Simulator acceptance must be recorded separately from build checks.
-
-The [November 26 rollout](../../jest/evidence/growth-fund-fixes-2026-11-26.json) records the applied migration, ready manager deployment, deployed Firebase callable and active Jest version. Both bridge endpoints reject unauthenticated requests. Simulator acceptance and messaging delivery remain unverified.
+The [November 26 rollout](../../jest/evidence/growth-fund-fixes-2026-11-26.json) describes the prior deployed system, not this branch's supported integrations.

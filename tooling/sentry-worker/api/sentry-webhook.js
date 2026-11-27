@@ -246,7 +246,7 @@ export default async function handler(request, response) {
   const required = ["SENTRY_AUTH_TOKEN", "SENTRY_WEBHOOK_SECRET", "SENTRY_WORKER_GITHUB_TOKEN", "OPENAI_API_KEY", "CRON_SECRET"];
   const targetBranch = process.env.TARGET_BRANCH ?? REPAIR_BASE_BRANCH;
   const configured = required.every((key) => Boolean(process.env[key])) && targetBranch === REPAIR_BASE_BRANCH;
-  if (request.method === "GET" && !header(request, "authorization")) return send(response, 200, {service: "riddle-quest-sentry-worker", status: configured ? "configured" : "not_configured", workerEnabled: configured, targetBranch, autoMergeEnabled: process.env.SENTRY_WORKER_AUTO_MERGE === "1", revision: process.env.VERCEL_GIT_COMMIT_SHA || process.env.SENTRY_WORKER_SOURCE_SHA || null, authorityConfigured: {jestProduction: "public-live-iframe", jestPreviews: Boolean(process.env.JEST_MCP_ACCESS_TOKEN), functions: Boolean(process.env.SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT)}});
+  if (request.method === "GET" && !header(request, "authorization")) return send(response, 200, {service: "riddle-quest-sentry-worker", status: configured ? "configured" : "not_configured", workerEnabled: configured, targetBranch, autoMergeEnabled: process.env.SENTRY_WORKER_AUTO_MERGE === "1", revision: process.env.VERCEL_GIT_COMMIT_SHA || process.env.SENTRY_WORKER_SOURCE_SHA || null, authorityConfigured: {functions: Boolean(process.env.SENTRY_WORKER_GOOGLE_SERVICE_ACCOUNT)}});
   if (request.method === "HEAD") return send(response, 200);
   if (request.method !== "POST" && request.method !== "GET") {
     response.setHeader("Allow", "GET, HEAD, POST");

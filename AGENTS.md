@@ -1,5 +1,7 @@
 # Repository instructions
 
+- Owner instruction for this `facebook` checkout: keep the game client and uploaded artifact on Facebook APIs with no Jest gaming-platform integration. Jest unit-test tooling is unrelated and remains available. Do not change Firebase, its configuration or provider server modules; the owner explicitly required restoring and preserving that backend. Facebook test uploads are authorized for this task. Production promotion, publication and review submission remain separate actions.
+
 - The client is a React HTML5 game built with Vite for separate Jest, Facebook Instant Games, Reddit Devvit Web, YouTube Playables, Netflix candidate, Yahoo candidate and GameSnacks targets, plus one bare React Native Android app for Google Play.
 - Store project documentation in `docs/<platform>/` for platform modules and `docs/common/<module>/` for shared modules and operations. Keep evidence and documentation assets with their module, update links and tooling paths when moving documents, and use `docs/README.md` as the index. Root discovery files and agent tooling retain their required locations.
 - Platform-only source, tests, SDK adapters, views, device bridges, server integrations and release scripts belong in `platforms/native/<provider>` or `platforms/web/<provider>`. Android lives in `platforms/native/android`; every web target has its own `platforms/web/<provider>` root. Organise shared source by feature under `src`, with components, controllers, contracts, rules and runtime adapters inside the feature that owns them. Feature roots include `gameplay`, `races`, `accounts`, `commerce`, `progression` and `content`; shared browser build tooling lives in `scripts/web`. These are ordinary folders using root dependencies and configuration. Shared authoritative server code stays in `firebase-functions`. Read `docs/common/architecture/platform-layout.md` before adding or moving platform code. Move callers and remove the old source location together; preserve one canonical implementation.
@@ -21,6 +23,8 @@
 - After completing a Jest game build, upload and activate it through `pnpm release:jest` under the user's standing authorization. Treat the command's internal gate and rebuilds as one release, without recursive or duplicate uploads. Honor an explicit build-only, dry-run or inactive-build request. Confirm the exact uploaded version has finished processing and has the requested activation state before reporting completion. Other game uploads, game publication and review submission require an explicit user request. See `docs/jest/jest-html5-operations.md`.
 
 ## Branches
+
+- This owner-requested `facebook` checkout is an explicit exception for Facebook client work and test uploads; commit and push that work to `origin/facebook`. The automated monitoring repair authority remains `main` with all its existing signed checks.
 
 - Use `main` for all development, releases, Jest uploads and monitoring repairs. Platform ownership follows `platforms/native/android` and `platforms/web/<provider>` folders. There are no separate maintained platform, deployment or worker branches.
 - Confirm `git branch --show-current` returns `main` before editing or releasing. Commit and push each completed unit to `origin/main` as work progresses. Preserve unrelated edits and coordinate file ownership before parallel changes.
