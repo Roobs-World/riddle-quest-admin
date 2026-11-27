@@ -19,6 +19,14 @@ Twenty focused banner/ad-configuration tests passed. The full injected-SDK brows
 3. Closed Settings. **Settings**, **Multiplayer** and the first answer cell were enabled, with **920 coins** unchanged. No stale reservation or blocking recovery surface remained.
 4. Refreshed the exact placement row in Monetisation Manager. It still showed **Banner**, the expected placement ID and **Ready to publish**.
 
-The compiled enablement and placement are verified. No direct SDK support list or banner request/result trace was captured, so the precise admission prerequisite that failed is not independently established. In particular, do not claim which advertised method was absent, that Meta returned no-fill, or that a real banner was loaded or hidden. The observed result establishes usable desktop fallback with no banner surface; native banner acceptance remains open on a supported host.
+The compiled enablement and placement are verified. This initial check did not capture a direct SDK support list or banner request/result trace, so it established only usable desktop fallback. The subsequent read-only diagnostic below resolves the advertised-method gate; it still does not establish no-fill, a real impression or successful native hiding.
 
 No SDK replacement, HTTP fixtures, runtime injection, live account replacement, purchase, message, invitation, account deletion or notification opt-in was used in this native check. The only new provider configuration was the dedicated test ad space/placement. Firebase source, configuration and deployment remained unchanged. Earlier H12/H13/H14 observations retain their original versions; this check does not recertify their ads, sharing or quit journeys.
+
+## Follow-up: native advertised capability gate
+
+Opened Meta's built-in **IGDebug → SDK Info → Supported APIs** on this same version-15 session. The rendered panel identified SDK 8.0 and the exact app/bundle, and listed 49 advertised API names. It included **`hideBannerAdAsync`** but omitted **`loadBannerAdAsync`**. The [redacted names-only record](facebook-native-sdk-capabilities-version-15-2026-11-27.json) preserves the observation.
+
+The existing banner factory requires both names in the advertised list. This host therefore fails that admission requirement even with the verified enabled flag and placement. It is appropriate for the client to omit the banner wrapper; no source fix or forced SDK invocation is warranted. This is evidence about the inspected desktop host, not a claim that banners are unavailable on every Meta host.
+
+Only the rendered diagnostic panel was read. No JavaScript console command or SDK ad method was invoked, and no player or URL-parameter payload is retained in the evidence. The panel was closed afterward and Settings remained enabled. Real display/hide acceptance still requires a host that advertises both banner methods and satisfies the other existing gates.
