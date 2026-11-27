@@ -1,0 +1,154 @@
+{
+  "recordedOn": "2026-11-27",
+  "game": "Riddle Quest",
+  "status": {
+    "staticHosting": "passed",
+    "fullVercelGameplay": "not established; identity preflights reject both Vercel origins",
+    "authenticatedFacebookEmbed": "not verified"
+  },
+  "account": {
+    "cliUser": "grindheadgames-8804",
+    "selection": "Owner explicitly selected this authenticated account and team"
+  },
+  "project": {
+    "id": "prj_DFWSVByFLrqzheCWpnkQdQeASHEk",
+    "name": "riddle-quest-facebook-testing",
+    "teamId": "team_Q3bXo2jPBKdjs3tuoKLtqUe2",
+    "teamSlug": "craig-beswethericks-projects-d44935d2",
+    "ssoProtection": null,
+    "passwordProtection": null,
+    "gitLink": null,
+    "envCount": 0
+  },
+  "deployment": {
+    "id": "dpl_5VMsHRZyAmM6LXeumHpeQxH6tyMj",
+    "url": "https://riddle-quest-facebook-testing-ceutg3wxg.vercel.app",
+    "readyState": "READY",
+    "requestedTarget": "preview",
+    "actualTarget": "production",
+    "aliases": [
+      "https://riddle-quest-facebook-testing.vercel.app",
+      "https://riddle-quest-facebook-tes-craig-beswethericks-projects-d44935d2.vercel.app"
+    ],
+    "readyAt": "2026-11-27T23:25:19.407000+00:00",
+    "builds": [],
+    "deploymentCount": 1,
+    "stableAlias": "https://riddle-quest-facebook-testing.vercel.app"
+  },
+  "artifact": {
+    "metaAppId": "1748953042991569",
+    "metaTestingVersion": 15,
+    "metaBundleId": "30470981679157112",
+    "sourceCommit": "66de0e9da202b5889da5bbf1dd54a98b03bb6bc0",
+    "archiveSha256": "5803b051ff965b97b7ea1e8669d816172983a7c7a1ae8ab8a44ba9a630cbf824",
+    "archiveBytes": 2865675,
+    "runtimeFiles": 420,
+    "runtimeBytes": 4727397,
+    "hostingConfigSha256": "7a4c7b6b8ac86a9a2f8ff775104dbcf7ad50ac68884489f8444b4f02733039b9",
+    "totalStagedFiles": 421,
+    "excluded": "ZIP, receipts, source, env files, functions, root Vercel linkage"
+  },
+  "staticValidation": {
+    "method": "Unauthenticated HTTP reads compared with exact accepted archive bytes",
+    "exactDeployment": "https://riddle-quest-facebook-testing-ceutg3wxg.vercel.app",
+    "runtimeFiles": 420,
+    "http200Files": 420,
+    "byteIdenticalFiles": 420,
+    "runtimeBytes": 4727397,
+    "allStaticCorsWildcard": true,
+    "allNoindex": true,
+    "framingRestrictionHeaders": [],
+    "stableAliasCheckedFiles": [
+      {
+        "path": "index.html",
+        "status": 200,
+        "byteIdentical": true,
+        "contentType": "text/html; charset=utf-8",
+        "cors": "*"
+      },
+      {
+        "path": "assets/index-BTdZDU9N.js",
+        "status": 200,
+        "byteIdentical": true,
+        "contentType": "application/javascript; charset=utf-8",
+        "cors": "*"
+      }
+    ]
+  },
+  "identityPreflights": [
+    {
+      "origin": "https://riddle-quest-facebook-testing-ceutg3wxg.vercel.app",
+      "endpoint": "issueFacebookIdentityNonce",
+      "method": "OPTIONS",
+      "status": 403,
+      "accessControlAllowOrigin": null,
+      "error": "forbidden-origin"
+    },
+    {
+      "origin": "https://riddle-quest-facebook-testing-ceutg3wxg.vercel.app",
+      "endpoint": "exchangeFacebookIdentity",
+      "method": "OPTIONS",
+      "status": 403,
+      "accessControlAllowOrigin": null,
+      "error": "forbidden-origin"
+    },
+    {
+      "origin": "https://apps-1748953042991569.apps.fbsbx.com",
+      "endpoint": "issueFacebookIdentityNonce",
+      "method": "OPTIONS",
+      "status": 204,
+      "accessControlAllowOrigin": "https://apps-1748953042991569.apps.fbsbx.com",
+      "error": null
+    },
+    {
+      "origin": "https://apps-1748953042991569.apps.fbsbx.com",
+      "endpoint": "exchangeFacebookIdentity",
+      "method": "OPTIONS",
+      "status": 204,
+      "accessControlAllowOrigin": "https://apps-1748953042991569.apps.fbsbx.com",
+      "error": null
+    },
+    {
+      "origin": "https://riddle-quest-facebook-testing.vercel.app",
+      "endpoint": "issueFacebookIdentityNonce",
+      "method": "OPTIONS",
+      "status": 403,
+      "accessControlAllowOrigin": null,
+      "error": "forbidden-origin"
+    },
+    {
+      "origin": "https://riddle-quest-facebook-testing.vercel.app",
+      "endpoint": "exchangeFacebookIdentity",
+      "method": "OPTIONS",
+      "status": 403,
+      "accessControlAllowOrigin": null,
+      "error": "forbidden-origin"
+    }
+  ],
+  "browser": {
+    "host": "Firefox automation profile",
+    "title": "Riddle Quest",
+    "initialBody": "Loading 5%",
+    "laterBody": "Loading 5%",
+    "observationInterval": "more than one minute",
+    "realSdkScript": "fbinstant.8.0.js",
+    "fbInstantType": "object",
+    "sdkMockUsed": false,
+    "backendResourcePathsObserved": [],
+    "loadingCause": "Not established; the separate preflight failures are not attributed as the cause of this standalone loading state.",
+    "officialEmbedResult": "Facebook login in the automation profile; no authenticated external-host acceptance"
+  },
+  "preserved": {
+    "firebaseSourceConfigurationDeployment": true,
+    "existingRepositoryVercelLinkage": true,
+    "metaProductionVersion": 9,
+    "metaTestingVersion": 15
+  },
+  "limitations": [
+    "Static hosting success does not establish authenticated gameplay or every SDK integration.",
+    "All 420 runtime files were compared at the exact deployment; only index.html and the entry JavaScript were rechecked at the stable alias.",
+    "Identity checks used OPTIONS only; they did not perform identity exchange.",
+    "Vercel reported production despite the explicit preview target; this was one new isolated authorized project, not a Meta production promotion.",
+    "No credentials, authentication URLs, private launch parameters or personal content are retained."
+  ]
+}

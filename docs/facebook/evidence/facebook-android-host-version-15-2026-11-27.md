@@ -44,9 +44,11 @@ From Settings, selecting **Privacy Policy** opened the Facebook app's native **O
 
 This establishes a real native background/return transition and usable input after return. It does not independently trace `onPause`, `onResume`, save flushing or presence callbacks. The Backspace obstruction came from the provider's developer overlay; this observation does not establish a client keyboard defect. The game was left playable with the answer cleared and **1,035 coins** unchanged.
 
-## Separate Vercel hosting status
+## Historical Vercel authentication blocker
 
 The owner authorized hosting Riddle Quest in **Craig Beswetherick's projects** on Vercel, with intended project `riddle-quest-facebook-testing`. An isolated static payload containing the accepted artifact's **420 runtime files** was prepared in temporary storage only. Project creation returned: **“Vercel API request failed (403: forbidden). You don't have permission to create the project.”** Both consent links were reported expired, including a fresh link that failed immediately. Browser **Continue with ChatGPT** reached a password prompt, so authentication still required the owner. No Vercel project URL, file upload or deployment was obtained. This limitation does not change the observed Facebook-hosted candidate.
+
+That paragraph records the state at the time of this phone check. The owner subsequently selected another authenticated Vercel account/team and authorized the isolated deployment. [The later hosting validation](facebook-vercel-host-validation-2026-11-27.md) records successful public static delivery and the separate unresolved gameplay/origin limits.
 
 ## Scope and remaining acceptance
 
