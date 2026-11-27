@@ -1,6 +1,6 @@
 # Facebook client review and preparation recovery — 27 November 2026
 
-This follow-up reviews the expanded Riddle Quest integrations against the repository rules and the [API submission checklist](../facebook-api-submission-checklist-2026-11-27.md). The review baseline is `62ae0e4003d4fdb00b93c987aad0b1fda2ec6b59`; version 11's exact uploaded source is `85b8c43d72bca17280592b33eec690c23756c78c`. These corrections require a new candidate before they can be claimed on Meta.
+This follow-up reviews the expanded Riddle Quest integrations against the repository rules and the [API submission checklist](../facebook-api-submission-checklist-2026-11-27.md). The review baseline is `62ae0e4003d4fdb00b93c987aad0b1fda2ec6b59`. The corrections are uploaded in **Testing version 12**, from clean source `8e3b7d2ef942ea387e7370c23ff4f1c1448fa108`. [Exact acceptance and hosted evidence](facebook-testing-version-12-2026-11-27.json).
 
 ## Standards review
 
@@ -30,8 +30,18 @@ Ad acquisition and loading now each have a **30-second observation deadline**. A
 - Final combined focused run: **136 tests across nine suites passed**.
 - Combined browser: **one suite, one journey passed in 28.698 seconds**. It covers held acquisition/loading, restored coin/skip controls, no duplicate preparation or late show/claim, a fresh retry through the same visible button, existing cancellation/no-fill/completion/claim-delivery recovery, and native tournament navigation with and without the current-tournament getter.
 - The browser harness built an isolated Facebook artifact: **420 files, 4.50 MB total, 0.71 MB initial resources**, with no Jest gaming SDK, native modules or credential leakage. The [tournament locale guidance](expanded-api-2026-11-27/tournament-join-locale-mobile.png) was visually inspected.
-- Canonical archive identity and exact hosted acceptance are recorded separately after the new candidate is uploaded.
+- Canonical `pnpm preflight:facebook-upload` passed: **420 files, 4.50 MB total, 0.71 MB initial resources**. It performed the client build and archive audits without changing or deploying Firebase.
 
 Logs are `/tmp/facebook-ad-preparation-red.log`, `/tmp/facebook-ad-preparation-final.log`, `/tmp/facebook-settings-boundary-tests.log`, `/tmp/facebook-integration-review-focused.log`, and `/tmp/facebook-browser-timeout-and-tournament.log`. The earlier desktop ad attempt is not evidence of successful new-candidate ad loading or reward delivery.
 
 Firebase Functions, configuration and provider server modules remain unchanged from `2834dc910a39aa9add734440ddfb8dfd533d30dc`. No backend deployment is part of this correction. The six documented API gaps and provider prerequisites remain open; this review does not declare the overall submission complete.
+
+## Version 12 Testing acceptance
+
+Meta processed one upload as **version 12**, bundle **29781063778191740**, and it is assigned to **Testing**. Version 11 is now Standby; Production remains version 9. The independently downloaded archive matches SHA-256 `a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28`, **2,864,259 bytes** and **422 entries**. The local upload record is accepted; it must not be retransmitted.
+
+The exact hosted candidate started and restored the saved Classic loss state. Its real rewarded video displayed, reached 100% playback and showed an end card. Closing that completed ad returned to Riddle Quest, dismissed the loss modal and restored seven editable answer cells. The balance stayed **625 coins**. This establishes native acquisition, configured-placement validation, loading/display and normal continuation on this desktop host. It does not prove every failure path or interstitial cadence.
+
+The updated Settings descriptors rendered the expected labels. Privacy Policy opened Meta's confirmation for `https://roobsworld.com/riddle-quest/privacy`; **Go back** cancelled it and restored controls. The game was left ready with Multiplayer enabled. No SDK replacement, native-result fixture, invitation, purchase, notification opt-in or review submission was used in this version-12 hosted check. Meta also displayed an Internet-connection-restored notice during the session; that does not establish the exact cause of the earlier version-11 pending operation.
+
+Standards review: one documented ownership finding resolved; one non-blocking duplication judgement retained. Spec review: one tournament-routing finding resolved, including fresh-list fallback; independent re-review found no blocking issue.

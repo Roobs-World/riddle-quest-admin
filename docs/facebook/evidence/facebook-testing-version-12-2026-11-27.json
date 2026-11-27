@@ -1,0 +1,40 @@
+{
+  "recordedAt": "2026-11-27T12:26:09.877931+00:00",
+  "appId": "1748953042991569",
+  "sourceCommit": "8e3b7d2ef942ea387e7370c23ff4f1c1448fa108",
+  "archiveSha256": "a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28",
+  "archiveBytes": 2864259,
+  "archiveEntries": 422,
+  "version": 12,
+  "bundleId": "29781063778191740",
+  "status": "Testing",
+  "processingComplete": true,
+  "providerDownloadSha256": "a2780de4ed9ac7856f447b4f19d6d7940c0b5067ba87c2436b4fcab524ddac28",
+  "sdk": "8.0 [Network Enabled Zero Permissions]",
+  "productionUnchanged": {
+    "version": 9,
+    "bundleId": "29168977262783270"
+  },
+  "firebaseChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "evidence": "Authenticated Meta Web Hosting row, Testing confirmation, independently downloaded archive SHA-256 and byte-count match",
+  "hostedSmoke": {
+    "startup": "passed: exact version 12 started and restored saved Classic loss state",
+    "rewardedAd": "passed: real native video displayed, progress reached 100, completed end-card closed",
+    "continuation": "passed: loss modal dismissed and seven editable answer cells restored; coin balance stayed at 625",
+    "settings": "passed: provider action labels rendered; Privacy Policy opened the fixed roobsworld.com/riddle-quest/privacy confirmation; Go back restored control",
+    "returnToGame": "passed: game ready with Multiplayer enabled and 625 coins",
+    "diagnosticChanges": "No SDK monkey-patching or runtime fixture injection used for version 12 verification",
+    "externalSideEffects": "One completed rewarded ad and its normal continuation; no invitation, message, purchase, notification opt-in or review submission"
+  },
+  "localVerification": {
+    "focusedTests": 136,
+    "focusedSuites": 9,
+    "browserSuites": 1,
+    "browserJourneys": 1,
+    "browserSeconds": 28.698,
+    "artifactFiles": 420
+  },
+  "limitations": "Hosted desktop ad completion and Settings smoke only; timeout recovery and tournament join routing verified locally. Native mobile, conditional provider integrations and remaining checklist journeys stay open."
+}
