@@ -60,15 +60,19 @@ export function ContinueModalPage({
   return (
     <div className="modal-actions continue-actions">
       {(pending || recoveryPending) && <p role="status">{tr("Accessibility.LOADING")}</p>}
+      {isFacebookWebTarget && onRecoverAttempt ? (
+        <button type="button" className="play-primary loss-video-action" disabled={pending || recoveryPending} aria-busy={pending} onClick={onRecoverAttempt}>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <rect x="2" y="4" width="20" height="16" rx="4" fill="none" stroke="currentColor" strokeWidth="2" />
+            <path d="m10 8 6 4-6 4Z" fill="currentColor" />
+          </svg>
+          <span>{tr("LossModal.VIDEO_EXTRA_GO_BUTTON")}</span>
+        </button>
+      ) : null}
       <div className="continue-balance">
         <strong>{tr("Profile.TOTAL_COINS_LABEL")}</strong>
         <span>{balance.toLocaleString()}</span>
       </div>
-      {isFacebookWebTarget && onRecoverAttempt ? (
-        <button className="play-primary loss-video-action" disabled={pending || recoveryPending} aria-busy={pending} onClick={onRecoverAttempt}>
-          {tr("LossModal.VIDEO_EXTRA_GO_BUTTON")}
-        </button>
-      ) : null}
       <button className="play-primary loss-continue-action" disabled={!canAfford || pending} onClick={() => onContinue(CONTINUE_COIN_COST)}>
         {tr("LossModal.USE_COINS_PREFIX")}
         {CONTINUE_COIN_COST}

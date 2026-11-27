@@ -224,10 +224,30 @@
     "Poppins",
     sans-serif;
 }
-.continue-actions .loss-continue-action {
+.continue-actions .loss-continue-action,
+.continue-actions .loss-video-action {
   background: var(--play-gold);
   color: #401f40;
   box-shadow: 3px 3px 0 #916812;
+}
+.continue-actions .loss-video-action {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  line-height: 1.2;
+}
+.loss-video-action svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.continue-actions .loss-video-action ~ .loss-continue-action {
+  background: #401f40;
+  color: #fff;
+  box-shadow: 3px 3px 0 #2b152b;
 }
 .continue-actions .loss-shop-action {
   background: #401f40;
