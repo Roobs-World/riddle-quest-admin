@@ -6,9 +6,7 @@
     "COLOR_WRONG": "文字は単語にありません",
     "GOAL_DESCRIPTION": "色のヒントを使って5回の挑戦で隠れたなぞなぞを当てましょう。",
     "GOAL_TITLE": "目標",
-    "GOT_IT_BUTTON": "わかった！",
-    "TIPS_DESCRIPTION": "よく使われる文字から始めて、色のフィードバックで絞り込みましょう。チャンスは5回だけです！",
-    "TIPS_TITLE": "コツ"
+    "GOT_IT_BUTTON": "わかった！"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "タップして続行",

@@ -1,0 +1,55 @@
+{
+  "date": "2026-11-26",
+  "scope": "Jest Fund D1-D7 reminders through the client HTML5 SDK and approved portal asset",
+  "sourceCommit": "58c3d1899cb590b9e9f838100fec915f2d99780a",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "versionId": "01a2188e-58f4-7231-9cc7-994c3ea439e5",
+  "version": "1.0.0-dev.20261126155116.58c3d1899cb5.0bb76265",
+  "buildStatus": "ready",
+  "isActive": true,
+  "activatedAt": "2026-11-26T15:51:59.587Z",
+  "confirmation": "Jest list_game_versions returned the exact uploaded version ready and active",
+  "archiveSha256": "d30ee9fea83072b7e71dffe409efa3f28d41719a3c65017154827d88c84a45af",
+  "archiveBytes": 2571717,
+  "artifact": {
+    "files": 97,
+    "totalMiB": 3.99,
+    "initialResourcesMiB": 0.55
+  },
+  "notificationAsset": {
+    "id": "01a09700-5868-719a-aa89-af8b581731e7",
+    "reference": "riddle-q-notification",
+    "moderationStatus": "pass",
+    "processingStatus": "complete",
+    "archivedAt": null,
+    "confirmation": "Jest get_game_image_details on 2026-11-26"
+  },
+  "behavior": {
+    "schedule": "Seven distinct D1-D7 SDK notifications after registered identity, persisted consent and deletion state are committed",
+    "content": "English ASCII bodies at most 100 characters, approved image, bounded CTAs and Daily return payloads",
+    "consent": "Guests do not schedule; saved opt-outs cancel owned identifiers; successful account preference saves survive temporary SDK failures",
+    "recovery": "Serialized same-tab operations, successful-operation deduplication, bounded partial retries and online/visibility recovery",
+    "refresh": "Stable identifiers replace prior schedules on later visits or reconciliation on a new UTC day",
+    "deletion": "Existing deletion gate drains in-flight operations and removes every owned current and legacy identifier",
+    "delivery": "Jest owns delivery and display; SDK schedule acceptance does not prove delivery"
+  },
+  "checks": {
+    "productionReleaseGate": "passed",
+    "dependencyAudit": "Production dependencies: no known vulnerabilities; complete workspace: three moderate advisories, below the configured high-severity release threshold",
+    "jestProductionBuild": "passed",
+    "jestArtifactAudit": "passed",
+    "notificationContentAudit": "passed",
+    "w3cHtmlValidation": "passed with zero findings",
+    "productionTypeChecks": "passed",
+    "codeReview": "consent rollback issue fixed; no remaining concrete blockers",
+    "backendSourceAndConfiguration": "unchanged from 67c3cda5a"
+  },
+  "backendDeployed": false,
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "hostedGameplayAcceptanceRun": false,
+  "notificationDeliveryVerified": false,
+  "physicalDeviceAcceptanceRun": false,
+  "fundApprovalVerified": false,
+  "publicationOrReviewSubmitted": false
+}

@@ -39,7 +39,7 @@ export function useJestProductCatalog({
   const catalog = useState<ProductSummary[]>([]);
   /** Provides [, set products] behavior. */
   const [, setProducts] = catalog;
-  /** Confirmed consumables remain owned by one platform player across transient failures. */
+  /** Confirmed presentation remains owned by one platform player across transient failures. */
   const confirmed = useRef({playerId: session?.player.playerId, firebaseUid: session?.firebaseUid, products: catalog[0]});
   if (confirmed.current.playerId === session?.player.playerId && confirmed.current.firebaseUid === session?.firebaseUid) {
     confirmed.current.products = catalog[0];
@@ -89,7 +89,8 @@ export function useJestProductCatalog({
       const nextProducts = products.status === "success" ? products.value :
         confirmed.current.products.filter((product) => product.productType !== "subscription");
       /** Provides next subscriptions behavior. */
-      const nextSubscriptions = subscriptions.status === "success" ? subscriptions.value : [];
+      const nextSubscriptions = subscriptions.status === "success" ? subscriptions.value :
+        confirmed.current.products.filter((product) => product.productType === "subscription");
       /** Combines confirmed subscription offers with the current consumable catalog. */
       const nextCatalog = [...nextSubscriptions, ...nextProducts];
       confirmed.current.products = nextCatalog;
@@ -101,10 +102,8 @@ export function useJestProductCatalog({
       }
     }).catch(() => {
       if (request === generation.current) {
-        /** Preserves confirmed consumables while hiding unconfirmed subscription offers. */
-        const consumables = confirmed.current.products.filter((product) => product.productType !== "subscription");
-        confirmed.current.products = consumables;
-        setProducts(consumables);
+        /** Keep known details readable; catalogError prevents a new checkout offer. */
+        setProducts(confirmed.current.products);
         setCatalogState({loading: false, error: true});
       }
       trackFunnel("subscriptions_load_failed", {status: "retryable-failure"});

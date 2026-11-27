@@ -41,7 +41,7 @@ const keys={
   statistics:['StatsModal.GAMES_PLAYED','StatsModal.TOTAL_WINS','StatsModal.AVG_GUESSES'],
   ranks:['Ranks.CURRENT_RANK','Ranks.SUBTITLE'],
   achievements:['Achievements.UNLOCKED_LABEL'],
-  instructions:['Instructions.GOAL_DESCRIPTION','Instructions.TIPS_TITLE'],
+  instructions:['Instructions.GOAL_DESCRIPTION','Instructions.COLOR_CLUES_TITLE'],
   credits:['Credits.SUBTITLE','Credits.THANK_YOU_TITLE'],
   about:['AboutLegal.ACCOUNT_DELETION','AboutLegal.DATA_EXPORT'],
   treasure:['CoinShop.COINS_SUFFIX','Navigation.BUY_COINS_BUTTON'],

@@ -6,9 +6,7 @@
     "COLOR_WRONG": "A letra não está na palavra",
     "GOAL_DESCRIPTION": "Adivinhe o enigma oculto em 5 tentativas usando as pistas de cor.",
     "GOAL_TITLE": "O Objetivo",
-    "GOT_IT_BUTTON": "Entendi!",
-    "TIPS_DESCRIPTION": "Comece com letras comuns e use as cores para reduzir suas tentativas. Lembre-se, você tem apenas 5 tentativas!",
-    "TIPS_TITLE": "Dicas"
+    "GOT_IT_BUTTON": "Entendi!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Toque para continuar",

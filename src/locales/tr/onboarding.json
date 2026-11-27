@@ -6,9 +6,7 @@
     "COLOR_WRONG": "Harf kelimede yok",
     "GOAL_DESCRIPTION": "Renk ipuçlarını kullanarak 5 denemede gizli bilmecenin yanıtını bulun.",
     "GOAL_TITLE": "Amaç",
-    "GOT_IT_BUTTON": "Anladım!",
-    "TIPS_DESCRIPTION": "Yaygın harflerle başlayın ve renk geri bildirimini kullanın. Unutmayın, sadece 5 deneme hakkınız var!",
-    "TIPS_TITLE": "İpuçları"
+    "GOT_IT_BUTTON": "Anladım!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Devam etmek için dokun",

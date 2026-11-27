@@ -119,7 +119,7 @@ describeBrowser("instructions modal without scrolling", () => {
             direction: document.documentElement.dir};
         });
         for (const key of ["GOAL_DESCRIPTION", "COLOR_CLUES_TITLE", "COLOR_CORRECT", "COLOR_MISPLACED",
-          "COLOR_WRONG", "TIPS_TITLE", "TIPS_DESCRIPTION", "GOT_IT_BUTTON"]) {
+          "COLOR_WRONG", "GOT_IT_BUTTON"]) {
           expect(measurements.text).toContain(copy[key]);
         }
         expect(measurements.modalScroll).toBeLessThanOrEqual(measurements.modalClient + 1);

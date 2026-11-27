@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-26",
+  "platform": "jest",
+  "sourceCommit": "d01c3b98ca3c9e648c6f21f4e740296fda656b39",
+  "problem": "The Jest provider profile made the profile image inert and masked saved game avatars.",
+  "change": "Pressing the profile image opens the existing photo picker for registered players or registration for guests. Profile and the local multiplayer player prefer the saved game avatar, with the Jest photo as a fallback.",
+  "verification": {
+    "sharedTypeCheck": "passed",
+    "productionReleaseGate": "passed",
+    "jestProductionBuild": "passed",
+    "jestArtifactAudit": "passed",
+    "w3cHtmlValidation": "passed",
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "hostedAvatarUploadVerified": false
+  },
+  "release": {
+    "versionId": "01a2193e-f9a4-734e-a149-a50ae15385a9",
+    "version": "1.0.0-dev.20261126190359.d01c3b98ca3c.e3766e91",
+    "sourceCommit": "d01c3b98ca3c9e648c6f21f4e740296fda656b39",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T19:04:55.302Z",
+    "fileSizeBytes": 4224407,
+    "archiveSha256": "84cc2e8c2fcf20d80a0b65a775e8a93d36d4f37bc2b151fd38e8ff9be5468ce7",
+    "verificationSource": "Official Jest list_game_versions tool",
+    "command": "pnpm release:jest",
+    "uploadCount": 1,
+    "cleanCheckout": true
+  }
+}

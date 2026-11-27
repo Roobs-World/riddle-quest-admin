@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-26",
+  "scope": "Read-only diagnosis of hosted Premium cancellation availability",
+  "runtimeSource": "54179b9a9da6c356e00b357c52574df7bfc91588",
+  "observedUi": "Premium active; clicking Cancel subscription opens no confirmation and shows Cancellation is unavailable for this subscription.",
+  "providerCodeInference": {
+    "code": "not_active",
+    "basis": "JestPlayApp maps only result.status unavailable AND result.message not_active to the unavailable UI state. Wrong SKU, missing API, guest_not_allowed, timeout and other failures map to generic error instead.",
+    "rawSdkResponseCapturedByThisAgent": false
+  },
+  "liveRecord": {
+    "matchedLatestHostedSandboxTransaction": true,
+    "matchedTransactionId": "01a218e6-65b5-72a9-a973-594419ba4b88",
+    "sku": "com.roobsworld.riddlequest.premium.monthly",
+    "status": "ending",
+    "startedAt": "2026-11-22T21:25:22.949Z",
+    "currentPeriodEnd": "2026-12-22T21:25:20.000Z"
+  },
+  "interpretation": "This sandbox subscription was already ending before the current test. Premium remains entitled through period end, while the repeat cancellation attempt reports not_active. This does not establish a fresh successful cancellation or a wrong-SKU/unsupported-SDK defect.",
+  "docs": {
+    "subscriptionLifecycle": "https://docs.jest.com/sdk/html5/subscriptions",
+    "cancellation": "Cancellation schedules expiry; entitlement remains active through the billing period. Official not_active guidance asks the app to refresh subscription state, which the client already does."
+  },
+  "sourceEvidence": [
+    "platforms/web/jest/src/JestSdkPlatform.ts:494",
+    "platforms/web/jest/src/JestPlayApp.tsx:296",
+    "src/commerce/browser/useSubscriptionManagement.ts:65",
+    "platforms/web/jest/src/JestProfileSubscriptions.tsx:18",
+    "platforms/web/jest/src/subscriptionCatalog.ts:43"
+  ],
+  "minimumNextAction": "Use a fresh sandbox account with no active or ending Premium entitlement to verify zero-charge activation, 3,400-coin grant, cancellation confirmation and continued access through period end. Keep the current ending entitlement active and suppress duplicate checkout.",
+  "sourceChanged": false,
+  "backendChanged": false,
+  "testsRun": false,
+  "browserAccessed": false,
+  "portalMutated": false
+}

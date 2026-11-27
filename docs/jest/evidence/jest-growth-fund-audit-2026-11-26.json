@@ -1,0 +1,122 @@
+{
+  "date": "2026-11-26",
+  "reviewedCommit": "c3b3cf7749302994743bceb13f70b0c3e494ef01",
+  "gameId": "019faa68-f3ec-755d-9ab5-c887fb426801",
+  "status": "not-ready",
+  "activeBuild": {
+    "id": "01a21849-8d19-778a-a400-0934df0bddc0",
+    "version": "1.0.0-dev.20261126143608.4ed687dbcd8a.3e83d0bb",
+    "description": null,
+    "isActive": true
+  },
+  "activeBuildEvidence": "jest-native-guest-login-2026-11-26.json",
+  "publication": {
+    "isPublished": false,
+    "revisionStatus": "draft",
+    "inReview": false
+  },
+  "liveConfiguration": {
+    "loadingScreenMode": "manual",
+    "supportedOrientation": "portrait",
+    "publisher": "RoobsWorld"
+  },
+  "products": [
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack6",
+      "price": 19.99,
+      "currency": "USD"
+    },
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack5",
+      "price": 9.99,
+      "currency": "USD"
+    },
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack4",
+      "price": 4.99,
+      "currency": "USD"
+    },
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack3",
+      "price": 2.99,
+      "currency": "USD"
+    },
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack2",
+      "price": 1.99,
+      "currency": "USD"
+    },
+    {
+      "sku": "com.roobsworld.riddlequest.coinpack1",
+      "price": 0.99,
+      "currency": "USD"
+    }
+  ],
+  "subscriptions": [
+    {
+      "sku": "com.roobsworld.riddlequest.premium.monthly",
+      "priceCents": 499,
+      "billingPeriod": "monthly"
+    }
+  ],
+  "notificationAsset": {
+    "id": "01a09700-5868-719a-aa89-af8b581731e7",
+    "reference": "riddle-q-notification",
+    "moderationStatus": "pass",
+    "processingStatus": "complete",
+    "archived": false
+  },
+  "sdkEventLog": {
+    "returnedEvents": 0,
+    "limit": 25,
+    "notProofOfCurrentBuildExecution": true
+  },
+  "openPlayerFeedback": {
+    "returnedItems": 0,
+    "limit": 20,
+    "notProofOfNoBugs": true
+  },
+  "commercialEvidence": {
+    "transactionCounts": "API returned zero all-time product and subscription transactions",
+    "retentionCohorts": "All 30 returned cohorts have zero users",
+    "adCampaigns": "No campaigns returned",
+    "positiveRoas": "not established"
+  },
+  "blockers": [
+    {
+      "id": "jest-notification-delivery",
+      "kind": "implementation",
+      "detail": "The frontend cancels legacy schedules and saves consent. The manager has Android/Facebook delivery only; no Jest D1-D7 sequence is sent."
+    },
+    {
+      "id": "exact-build-acceptance",
+      "kind": "verification",
+      "detail": "No current Simulator, sandbox checkout/recovery, real-device loading/layout/stability, screenshot or multiplayer acceptance evidence."
+    }
+  ],
+  "checks": {
+    "existingArtifactAudit": "passed",
+    "localConsoleManifest": "passed; does not compare live Console state",
+    "securityAudit": "passed",
+    "productionReleaseGate": "passed in immediately preceding exact-build release",
+    "sourceReview": "completed"
+  },
+  "scope": {
+    "backendChanged": false,
+    "testsRun": false,
+    "browserHarnessesRun": false,
+    "buildCreated": false,
+    "reviewSubmitted": false,
+    "publicationChanged": false,
+    "messagesSent": false,
+    "adSpendAuthorized": false,
+    "termsAccepted": false
+  },
+  "sources": [
+    "https://about.jest.com/fund/",
+    "https://docs.jest.com/launch-checklist",
+    "https://docs.jest.com/requirements/technical",
+    "https://docs.jest.com/testing/simulator",
+    "https://docs.jest.com/sdk/html5/notifications"
+  ]
+}

@@ -1,0 +1,168 @@
+{
+  "date": "2026-11-26",
+  "sourceCommit": "5dc561a38eda7fbb59aa0e1ca6b986fbd09017a4",
+  "scope": "Narrow local client regression tests; not hosted Jest Simulator or sandbox acceptance",
+  "totals": {
+    "suites": 12,
+    "passedSuites": 10,
+    "failedSuites": 2,
+    "tests": 275,
+    "passedTests": 263,
+    "failedTests": 12
+  },
+  "runs": [
+    {
+      "resultFile": "/tmp/jest-fund-client-regressions-results.json",
+      "totalTests": 251,
+      "passedTests": 239,
+      "failedTests": 12,
+      "suites": [
+        {
+          "file": "platforms/web/jest/src/__tests__/JestSdkPlatform.test.ts",
+          "status": "passed",
+          "passed": 129,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/purchases.test.ts",
+          "status": "failed",
+          "passed": 30,
+          "failed": [
+            "durably grants before completing a purchase",
+            "verifies a subscription before applying the active entitlement and never completes it as an IAP",
+            "reports the Premium coins granted when a new subscription is verified",
+            "preserves checkout cancellation and confirmed grants after completion failure",
+            "presents a durable grant and reconciles its pending confirmation once: returned",
+            "presents a durable grant and reconciles its pending confirmation once: thrown",
+            "presents a durable grant and reconciles its pending confirmation once: cancelled",
+            "normalizes verifier errors and omitted blocked subscription lists",
+            "preserves the provider sandbox marker alongside an authoritative consumable grant"
+          ]
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/useJestPurchase.test.ts",
+          "status": "passed",
+          "passed": 20,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/useJestProductCatalog.test.ts",
+          "status": "passed",
+          "passed": 21,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/useJestPurchaseRecovery.test.ts",
+          "status": "passed",
+          "passed": 19,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/useJestNotifications.test.ts",
+          "status": "passed",
+          "passed": 10,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/commitJestStartupSession.test.ts",
+          "status": "passed",
+          "passed": 4,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/notificationOperationGate.test.ts",
+          "status": "passed",
+          "passed": 4,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/useSubscriptionManagement.test.ts",
+          "status": "failed",
+          "passed": 0,
+          "failed": [
+            "keeps a visible modal comfortably below the backend’s 30 requests per minute",
+            "does not poll a hidden or closed modal",
+            "avoids competing refreshes while a cancellation is awaiting the provider"
+          ]
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/registrationAttribution.test.ts",
+          "status": "passed",
+          "passed": 2,
+          "failed": []
+        }
+      ]
+    },
+    {
+      "resultFile": "/tmp/jest-fund-guest-contracts-results.json",
+      "totalTests": 24,
+      "passedTests": 24,
+      "failedTests": 0,
+      "suites": [
+        {
+          "file": "platforms/web/jest/src/__tests__/useJestPlayerStateWrites.test.ts",
+          "status": "passed",
+          "passed": 15,
+          "failed": []
+        },
+        {
+          "file": "platforms/web/jest/src/__tests__/milestone.test.ts",
+          "status": "passed",
+          "passed": 9,
+          "failed": []
+        }
+      ]
+    }
+  ],
+  "failureClassification": [
+    {
+      "file": "platforms/web/jest/src/__tests__/purchases.test.ts",
+      "failedTests": 9,
+      "classification": "Stale exact-object expectations",
+      "evidence": "All nine failures are extra analyticsTransactionId fields; two also show optional newCoins undefined and one optional newlyUnlockedAchievementIds undefined. Production checkout intentionally returns these fields. No coin amount/order mismatch was reported, but later assertions in these tests are not established because their first equality assertion fails."
+    },
+    {
+      "file": "platforms/web/jest/src/__tests__/useSubscriptionManagement.test.ts",
+      "failedTests": 3,
+      "classification": "Stale direct-hook harness",
+      "evidence": "The test invokes the hook outside a React renderer and mocks useContext/useEffect/useRef/useState only. Runtime hook now calls useMemo and useLayoutEffect; real useMemo has no dispatcher and fails before polling/cancellation assertions execute. This does not demonstrate invalid hook use in production components."
+    }
+  ],
+  "notificationCampaignContentAudit": "passed",
+  "confirmedPassingAreas": [
+    "D1-D7 scheduling, guest suppression, opt-out cancellation, deduplication, partial retry and operation gate",
+    "Product catalog and purchase hooks/recovery",
+    "Jest SDK contracts and signed/guest interactions",
+    "Registration attribution, combined guest win prompts at 3/6/9, saved preference writes"
+  ],
+  "limitations": [
+    "No hosted browser, Simulator, live sandbox or physical-device tests performed by this agent",
+    "No real payment/subscription settlement or message delivery verified",
+    "Native onboarding modal presentation still requires root hosted browser check",
+    "Final local tests describe current runtime plus test-only corrections; they do not replace hosted Simulator or sandbox acceptance."
+  ],
+  "sourceChanged": "Two test files changed by root; no runtime source changed",
+  "backendChanged": false,
+  "buildRun": false,
+  "releaseRun": false,
+  "finalVerification": {
+    "suites": 12,
+    "passedSuites": 12,
+    "failedSuites": 0,
+    "tests": 281,
+    "passedTests": 281,
+    "failedTests": 0,
+    "success": true,
+    "resultFile": "/tmp/jest-fund-client-regressions-rerun-results.json",
+    "logFile": "/tmp/jest-fund-client-regressions-rerun.log"
+  },
+  "testOnlyChanges": {
+    "appliedBy": "root",
+    "patch": "/tmp/jest-fund-test-fixes.patch",
+    "files": [
+      "platforms/web/jest/src/__tests__/purchases.test.ts",
+      "platforms/web/jest/src/__tests__/useSubscriptionManagement.test.ts"
+    ],
+    "description": "Preserved exact purchase outputs with valid hashed analytics IDs, retained existing checks, repaired lifecycle hook fixture, added six observable subscription grant refresh cases."
+  }
+}

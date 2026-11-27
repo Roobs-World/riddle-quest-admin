@@ -356,11 +356,11 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {customName: "Nova", scenario});
     await enterRegisteredGame(page);
     expect(await page.locator(".game-header .coin-pill strong").innerText()).toBe("300");
-    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
     expect(await page.getByText("Keep your progress", {exact: true}).count()).toBe(0);
     await page.locator(".keyboard").getByRole("button", {name: /^P$/}).click();
     expect(await page.getByRole("button", {name: /^letter 1: p$/i}).isVisible()).toBe(true);
-    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
     for (const letter of ["I", "A", "N", "O"]) {
       await page.locator(".keyboard").getByRole("button", {name: letter, exact: true}).click();
     }
@@ -380,7 +380,7 @@ describeBrowser("Jest authentication integration", () => {
         ? state.calls.includes("sdk.markFirstMilestone")
         : state.preferenceWrites.some((value) => value.firstMilestoneMarked === true);
     }, scenario.endsWith("milestone-failure"));
-    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
     await page.locator(".modal-victory").waitFor();
     await page.locator(".modal-victory .coin-award").waitFor();
     expect(await page.locator(".modal-victory").innerText()).toContain("NICE JOB!");
@@ -392,7 +392,7 @@ describeBrowser("Jest authentication integration", () => {
     await page.locator(".modal-victory").waitFor({state: "detached"});
     if (!shouldPrompt) {
       await dismissDailyCompletionGuidance(page);
-      expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+      expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
       expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
       await context.close();
       return;
@@ -416,9 +416,56 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
-    expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
+    expect(state.overlayOptions).toEqual([
+      expect.objectContaining({source: "post_instructions", registeredAtOpen: false}),
+      expect.objectContaining({source: "authoritative_win", registeredAtOpen: false}),
+    ]);
     await dialog.locator(".play-text-button").click();
     await dialog.waitFor({state: "detached"});
+    await context.close();
+  });
+
+  it.each(["success", "overlay-failure"])("offers one dismissible guest registration after the first instructions (%s)", async scenario => {
+    const {context, page} = await openHarness(browser, {scenario});
+    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await page.getByRole("button", {name: /let's play/i}).click();
+    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    await page.getByRole("button", {name: /got it/i}).click();
+    const dialog = page.locator(".jest-registration-dialog");
+    await dialog.waitFor();
+    await page.evaluate(() => {
+      window.dispatchEvent(new CustomEvent("riddle-quest:onboarding-completed"));
+      window.dispatchEvent(new CustomEvent("riddle-quest:registration-prompt-opened"));
+    });
+    expect((await getHarnessState(page)).overlayOptions).toEqual([
+      expect.objectContaining({source: "post_instructions", registeredAtOpen: false}),
+    ]);
+    await dialog.getByRole("button", {name: /play as guest/i}).click();
+    await dialog.waitFor({state: "detached"});
+    const state = await getHarnessState(page);
+    expect(state.calls.filter(call => call === "sdk.registration.closeButtonAction")).toHaveLength(scenario === "success" ? 1 : 0);
+    expect(state.calls).not.toContain("sdk.registration.loginButtonAction");
+    expect(state.calls).not.toContain("sdk.login");
+    expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
+    await context.close();
+  });
+
+  it("refreshes a newly registered SDK player without prompting a stale guest session", async () => {
+    const {context, page} = await openHarness(browser);
+    await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
+    await page.getByRole("button", {name: /let's play/i}).click();
+    await page.evaluate(() => window.dispatchEvent(new CustomEvent("test:registration-state", {detail: true})));
+    await page.getByRole("button", {name: /got it/i}).click();
+    await page.waitForFunction(() => window.__RIDDLE_QUEST_JEST_AUTH_TEST__?.backendExchanges.length === 2);
+    await page.locator(".game-app:not([inert])").waitFor();
+    const state = await getHarnessState(page);
+    expect(state.overlayOptions).toEqual([]);
+    expect(state.calls).not.toContain("sdk.login");
+    expect(state.backendExchanges).toEqual([
+      "signed:jest-auth-player-stable:false",
+      "signed:jest-auth-player-stable:true",
+    ]);
+    expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
     await context.close();
   });
 
@@ -471,7 +518,7 @@ describeBrowser("Jest authentication integration", () => {
       .click();
     await page.locator(".modal-victory").waitFor();
     await page.locator(".modal-victory .coin-award").waitFor();
-    expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+    expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
     expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
     for (let step = 0; step < 6 && (await page.locator(".modal-victory").count()); step += 1) {
       await page.locator(".reward-continue").waitFor();
@@ -493,7 +540,10 @@ describeBrowser("Jest authentication integration", () => {
     /** Provides state behavior. */
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.markFirstMilestone")).toHaveLength(1);
-    expect(state.overlayOptions).toEqual([expect.objectContaining({source: "authoritative_win"})]);
+    expect(state.overlayOptions).toEqual([
+      expect.objectContaining({source: "post_instructions", registeredAtOpen: false}),
+      expect.objectContaining({source: "authoritative_win", registeredAtOpen: false}),
+    ]);
     expect(await page.locator(".jest-registration-dialog").isVisible()).toBe(true);
     await context.close();
   });
@@ -584,9 +634,12 @@ describeBrowser("Jest authentication integration", () => {
       );
       if (shouldPrompt) {
         await page.getByText("Keep your progress", {exact: true}).waitFor();
-        expect((await getHarnessState(page)).overlayOptions).toHaveLength(1);
+        expect((await getHarnessState(page)).overlayOptions).toEqual([
+          expect.objectContaining({source: "post_instructions", registeredAtOpen: false}),
+          expect.objectContaining({source: "authoritative_win", registeredAtOpen: false}),
+        ]);
       } else {
-        expect((await getHarnessState(page)).overlayOptions).toEqual([]);
+        expect((await getHarnessState(page)).overlayOptions).toEqual([expect.objectContaining({source: "post_instructions", registeredAtOpen: false})]);
         expect(await page.locator(".jest-registration-dialog").count()).toBe(0);
       }
     } finally {
@@ -1099,6 +1152,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "overlay-login-failure"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
+    const previousDismissals = (await getHarnessState(page)).preferenceWrites.filter(value => typeof value.registrationPromptDismissedAt === "number");
     await page.getByRole("button", {name: /^register \/ login$/i}).click();
 
     await page
@@ -1113,7 +1167,7 @@ describeBrowser("Jest authentication integration", () => {
     let state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.login")).toHaveLength(1);
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
-    expect(state.preferenceWrites.some((value) => typeof value.registrationPromptDismissedAt === "number")).toBe(false);
+    expect(state.preferenceWrites.filter(value => typeof value.registrationPromptDismissedAt === "number")).toEqual(previousDismissals);
 
     await registerButton.click();
     await page.waitForFunction(
@@ -1127,7 +1181,7 @@ describeBrowser("Jest authentication integration", () => {
     );
     state = await getHarnessState(page);
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
-    expect(state.preferenceWrites.some((value) => typeof value.registrationPromptDismissedAt === "number")).toBe(false);
+    expect(state.preferenceWrites.filter(value => typeof value.registrationPromptDismissedAt === "number")).toEqual(previousDismissals);
     expect(await page.getByRole("button", {name: /^register \/ login$/i}).isVisible()).toBe(true);
     await context.close();
   });
@@ -1137,6 +1191,7 @@ describeBrowser("Jest authentication integration", () => {
     const {context, page} = await openHarness(browser, {scenario: "overlay-action-failure"});
     await page.getByRole("button", {name: /let's play/i}).waitFor({timeout: 15_000});
     await advanceToRegistration(page);
+    const previousDismissals = (await getHarnessState(page)).preferenceWrites.filter(value => typeof value.registrationPromptDismissedAt === "number");
     /** Provides register button behavior. */
     const registerButton = page.getByRole("button", {name: /^register \/ login$/i});
     await registerButton.click();
@@ -1150,7 +1205,7 @@ describeBrowser("Jest authentication integration", () => {
     const state = await getHarnessState(page);
     expect(state.calls.filter((call) => call === "sdk.registration.loginButtonAction")).toHaveLength(1);
     expect(state.backendExchanges).toEqual(["signed:jest-auth-player-stable:false"]);
-    expect(state.preferenceWrites.some((value) => typeof value.registrationPromptDismissedAt === "number")).toBe(false);
+    expect(state.preferenceWrites.filter(value => typeof value.registrationPromptDismissedAt === "number")).toEqual(previousDismissals);
     await context.close();
   });
 

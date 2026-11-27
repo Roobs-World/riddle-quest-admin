@@ -254,12 +254,20 @@ export function useJestSharing({
   }): Promise<ReferralShareOutcome> => {
     if (!session || !sharingEnabled() || !/^live_[a-f0-9]{64}$/.test(challengeId)) return "error";
     try {
+      const shareImage = sizeCheckedShareImage(
+        captureVictoryShareImage({
+          title: tr("RaceTo10.CHALLENGE_FRIEND"),
+          summary: `${inviterName} · ${tr("RaceTo10.FIRST_TO_TEN")}`,
+          emojiGrid: "🏁 10/10",
+        }),
+      );
       // Jest opens its platform-owned dialog through the SDK bridge after lobby reservation.
       /** Provider outcome for sharing this private lobby, independent of recipient acceptance. */
       const result = await platform.shareReferral({
         reference: createUniqueJestReferralReference("race"),
         shareTitle: tr("RaceTo10.CHALLENGE_FRIEND"),
         shareText: tr("RaceTo10.LIVE_INVITE_MESSAGE", {name: inviterName}),
+        ...(shareImage ? {shareImage} : {}),
         entryPayload: {inviteKind: "race", campaign: "live_pvp_v1", challengeDestination: "multiplayer", challengeId, inviterName},
       });
       return result.status === "success" ? "success" : result.status === "cancelled" ? "cancelled" : "error";

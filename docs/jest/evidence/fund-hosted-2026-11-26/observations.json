@@ -1,0 +1,85 @@
+{
+  "recordScope": "Historical observations from 26 November 2026. Version and active-status fields describe the recorded checkpoints, not current live status or acceptance of the 27 November main-into-jest integration.",
+  "date": "2026-11-26",
+  "versionId": "01a218ad-89d6-73c9-b0b9-44aaedbd5ef4",
+  "version": "1.0.0-dev.20261126162520.f0a4ecbb034f.0e9adbba",
+  "runtimeSource": "f0a4ecbb034ffcf92bf494d2f51a89539b7a4040",
+  "environment": {
+    "browser": "Firefox 161 headless",
+    "viewport": {
+      "width": 500,
+      "height": 682
+    },
+    "gameFrame": {
+      "width": 424,
+      "height": 452
+    },
+    "host": "https://jest.com/g/riddle-q?versionId=01a218ad-89d6-73c9-b0b9-44aaedbd5ef4",
+    "sandboxBanner": true,
+    "simulator": false,
+    "physicalDevice": false
+  },
+  "observedPasses": [
+    "Registered sandbox first-play welcome and 5-step gameplay guidance completed with keyboard",
+    "Classic TOASTER: 55 coins; balance 4,435 to 4,490; next STAPLER riddle",
+    "Classic STAPLER: 45 coins; balance 4,490 to 4,535; next PENGUIN riddle",
+    "Classic PENGUIN: 25 coins; balance 4,535 to 4,560; next SNAIL clue",
+    "Next Level transitions and rewards/achievement panels completed",
+    "Active Premium displayed with no duplicate subscribe offer",
+    "Coin pack 6 checkout opened with explicit sandbox/no-charge banner; closed without balance change",
+    "Multiplayer category menu opens without error; opponent joined; Play game enters race",
+    "Race accepted four correct answers and ended Opponent wins, 4/10 versus 10/10; Close Race works",
+    "Reload restored 4,560 coins and the same next Classic SNAIL riddle",
+    "Jest screenshot provider rendered gameplay and shop correctly and downloaded PNGs; Profile guidance capture also observed",
+    "Desktop sandbox remained usable during more than 10 minutes of gameplay and dialogs"
+  ],
+  "issues": [
+    {
+      "id": "short-profile-guidance",
+      "status": "fixed in released source; exact uploaded-build retest passed",
+      "description": "Profile tutorial 9/9, Your Treasure Chest, has a tiny scrolling tooltip (about 112 pixels high) on the short game viewport, leaving the action and most copy initially hidden",
+      "evidence": "profile-guidance-clipped-before.png",
+      "fix": "Keep full card within viewport instead of limiting its height to the room beside the target.",
+      "afterEvidence": "profile-guidance-visible-after.png"
+    }
+  ],
+  "notVerified": [
+    "fresh live sandbox subscription activation and renewal",
+    "actual D1-D7 message delivery",
+    "two-user referrals",
+    "physical iPhone/Android browser and installed modes",
+    "standardized mobile loading under 10 seconds",
+    "agreement acceptance",
+    "Fund submission and approval"
+  ],
+  "pendingUser": [],
+  "backendChanged": false,
+  "localTests": {
+    "suites": 13,
+    "testsPassed": 291,
+    "failures": 0,
+    "details": "12 client suites / 281 tests plus guidanceConfig 1 suite / 10 tests. Browser harness not executed; hosted sandbox observations recorded separately."
+  },
+  "sdkEventsAfterHostedChecks": {
+    "events": [],
+    "nextCursor": null
+  },
+  "followUpRelease": {
+    "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+    "version": "1.0.0-dev.20261126171348.54179b9a9da6.71ce691b",
+    "runtimeSource": "54179b9a9da6c356e00b357c52574df7bfc91588",
+    "buildStatus": "ready",
+    "isActive": true,
+    "profileTourRetest": "All nine steps completed in the same 424x452 frame; steps 5, 7 and 9 title, body and Got it visibly fit; 4,560 starting balance retained.",
+    "simulatorEvidence": "simulator-checklist-2026-11-26.json",
+    "sandboxPurchasesEvidence": "sandbox-purchases.json",
+    "simulatorChecks": {
+      "basicLaunch": "17/17 passing",
+      "fund": "6/6 passing",
+      "recommended": "3/4; race invite preview warning under investigation",
+      "publicationOrReviewSubmitted": false
+    }
+  },
+  "browserConnection": "Authenticated Chrome access established through the browser extension; separate DevTools connection timed out.",
+  "checkoutAuthorization": "User explicitly approved six zero-charge sandbox coin-pack tests and subscription under displayed Jest terms."
+}

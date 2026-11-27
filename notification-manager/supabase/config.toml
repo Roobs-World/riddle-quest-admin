@@ -5,7 +5,7 @@ enabled = true
 schemas = ["public", "graphql_public"]
 
 [db.migrations]
-schema_paths = ["./schemas/notifications.sql", "./schemas/subscriptions.sql", "./schemas/provider-registration.sql", "./schemas/firebase.sql", "./schemas/campaigns.sql", "./schemas/delivery.sql"]
+schema_paths = ["./schemas/notifications.sql", "./schemas/subscriptions.sql", "./schemas/provider-registration.sql", "./schemas/jest-registration.sql", "./schemas/firebase.sql", "./schemas/campaigns.sql", "./schemas/delivery.sql"]
 
 [db.seed]
 enabled = true

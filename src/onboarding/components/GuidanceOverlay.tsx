@@ -58,6 +58,8 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
   const hasWon = (state.profile?.totalWins ?? state.profile?.wins ?? 0) > 0;
   /** Completion releases this view even when browser storage rejects its marker; accounts have separate owners. */
   const seenMarkers = useMemo(() => new GuidanceSeenMarkers(), [userId]);
+  /** Announce readiness again when the mounted view changes to another player. */
+  const readyOwnerRef = useRef<string | null>(null);
   /** Provides [onboarding step, set onboarding step] behavior. */
   const [onboardingStep, setOnboardingStep] = useState<number | null>(null);
   /** Provides [welcome only, set welcome only] behavior. */
@@ -248,8 +250,17 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
       setSequence(getGameTour(state.gameMode, commerceAvailable, economyAvailable, multiplayerAvailable, hasWon));
       setSequenceName("gameTour");
       setSequenceIndex(0);
+      return;
     }
-  }, [commerceAvailable, economyAvailable, hasWon, multiplayerAvailable, onboardingStep, seenMarkers, sequence.length, state.gameMode, state.riddle, userId]);
+    if (!userId || suspended || interactionBlocked || modal !== null || readyOwnerRef.current === userId) return;
+    if (getContextualTooltipCandidates(state, modal, economyAvailable).some(
+      ({id, when}) => when && !hasSeenContextualTooltip(seenMarkers, id, userId),
+    )) return;
+    readyOwnerRef.current = userId;
+    window.dispatchEvent(new CustomEvent("riddle-quest:guidance-ready", {detail: {uid: userId}}));
+  }, [commerceAvailable, economyAvailable, hasWon, interactionBlocked, modal, multiplayerAvailable,
+    onboardingStep, seenMarkers, sequence.length, state.gameMode, state.guesses.length, state.lastOutcome,
+    state.lastRewards, state.products, state.profile, state.riddle, suspended, userId]);
 
   useEffect(() => {
     if (
@@ -441,6 +452,7 @@ export function GuidanceOverlay({state, modal, onActiveChange, interactionBlocke
           completePlayerOnboarding(createGuidanceStorageKey("onboarding", userId));
           trackEvent("tutorial_complete");
           setOnboardingStep(null);
+          window.dispatchEvent(new CustomEvent("riddle-quest:onboarding-completed"));
         }}
       />
     );

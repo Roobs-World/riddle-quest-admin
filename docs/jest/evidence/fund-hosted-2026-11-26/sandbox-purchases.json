@@ -1,0 +1,175 @@
+{
+  "date": "2026-11-26",
+  "versionId": "01a218d9-ece2-71dd-ad32-b9ff1a979532",
+  "version": "1.0.0-dev.20261126171348.54179b9a9da6.71ce691b",
+  "sandbox": true,
+  "startingBalance": 4560,
+  "purchases": [
+    {
+      "pack": 6,
+      "coins": 7000,
+      "after": 11560
+    },
+    {
+      "pack": 5,
+      "coins": 3400,
+      "after": 14960
+    },
+    {
+      "pack": 4,
+      "coins": 1600,
+      "after": 16560
+    },
+    {
+      "pack": 3,
+      "coins": 900,
+      "after": 17460
+    },
+    {
+      "pack": 2,
+      "coins": 550,
+      "after": 18010
+    },
+    {
+      "pack": 1,
+      "coins": 250,
+      "after": 18260
+    }
+  ],
+  "allDisplayedGrantsCorrect": true,
+  "totalCoinsAwarded": 13700,
+  "endingBalance": 18260,
+  "transactions": [
+    {
+      "id": "01a218e6-65b5-72a9-a973-594419ba4b88",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:28:02.229Z",
+      "completedAt": "2026-11-26T17:28:03.163Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack1",
+          "displayName": "coin pack 1",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 99
+        }
+      ],
+      "subscription": null
+    },
+    {
+      "id": "01a218e5-6d3c-717d-b65f-2a3a6e4bc92a",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:26:58.620Z",
+      "completedAt": "2026-11-26T17:26:59.544Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack2",
+          "displayName": "coin pack 2",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 199
+        }
+      ],
+      "subscription": null
+    },
+    {
+      "id": "01a218e4-bb93-76a8-933d-e983c8864a10",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:26:13.139Z",
+      "completedAt": "2026-11-26T17:26:15.214Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack3",
+          "displayName": "coin pack 3",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 299
+        }
+      ],
+      "subscription": null
+    },
+    {
+      "id": "01a218e4-1e64-7749-9552-50e193b056c1",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:25:32.900Z",
+      "completedAt": "2026-11-26T17:25:35.323Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack4",
+          "displayName": "coin pack 4",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 499
+        }
+      ],
+      "subscription": null
+    },
+    {
+      "id": "01a218e3-8f99-712c-8b2a-6e4c4237e023",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:24:56.345Z",
+      "completedAt": "2026-11-26T17:24:57.444Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack5",
+          "displayName": "coin pack 5",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 999
+        }
+      ],
+      "subscription": null
+    },
+    {
+      "id": "01a218e2-2c6c-76cc-8678-b888617ca98b",
+      "type": "product_purchase",
+      "state": "complete",
+      "credits": 0,
+      "revenueTotal": 0,
+      "createdAt": "2026-11-26T17:23:25.420Z",
+      "completedAt": "2026-11-26T17:23:33.999Z",
+      "playerFromSandboxUser": true,
+      "lineItems": [
+        {
+          "sku": "com.roobsworld.riddlequest.coinpack6",
+          "displayName": "coin pack 6",
+          "quantity": 1,
+          "totalPrice": 0,
+          "price": 1999
+        }
+      ],
+      "subscription": null
+    }
+  ],
+  "limitations": [
+    "Interrupted-purchase recovery not yet exercised",
+    "Subscription lifecycle not yet completed",
+    "Not proof of live paid settlement"
+  ],
+  "reloadVerification": {
+    "balance": 18260,
+    "riddle": "SNAIL",
+    "duplicatedGrant": false,
+    "evidence": "six-purchases-retained-after-reload.png"
+  }
+}

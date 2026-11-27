@@ -1,0 +1,911 @@
+{
+  "date": "2026-11-26",
+  "branch": "jest",
+  "scope": "Frontend-only fixes found during authenticated Jest Fund testing",
+  "backendChanged": false,
+  "sourceChanges": {
+    "privateWaitingPoll": "Use existing search timeout, first-timeout grace and guarded late receipt recovery for private as well as public searching lobbies. Active racing and command deadlines are unchanged.",
+    "raceInvitations": "Send a size-checked 1200x630 PNG preview with initial and retried live race invitations; preserve canonical lobby entry payload."
+  },
+  "baselineFailures": [
+    "Private waiting poll held for 3 seconds showed .race-error before the fix.",
+    "Outgoing live-race invitation had undefined shareImage before the fix."
+  ],
+  "checks": {
+    "privateLobbyBrowserScenarios": 48,
+    "privateLobbyPassed": 48,
+    "inviteBrowserCases": 6,
+    "inviteImagesValidated": 30,
+    "pngDimensions": [
+      1200,
+      630
+    ],
+    "maxDataUrlBytes": 1175282,
+    "imageLimitBytes": 2097152
+  },
+  "commands": [
+    "LIVE_SEARCH_CLOSE_REPORT_DIR=/tmp/jest-private-poll-fixed node scripts/web/verify-live-search-close-browser.mjs",
+    "node platforms/web/jest/scripts/verify-jest-live-invite-browser.mjs"
+  ],
+  "newReleaseStatus": "Pending production release and exact uploaded-build retest",
+  "raceScenarios": [
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-join",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "searching",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "pending-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 1
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "retry-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "public-friend",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "public-friend",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "friend-public",
+      "method": "click",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "terminal-retirement",
+      "direction": "friend-public",
+      "method": "escape",
+      "passed": true,
+      "retirements": 2
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "cold-private-16s",
+      "passed": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "cold-private-16s",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "private-poll-slow",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "private-poll-late",
+      "passed": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "scenario": "private-poll-outage",
+      "passed": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "private-poll-slow",
+      "passed": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "private-poll-late",
+      "passed": true
+    },
+    {
+      "width": 1280,
+      "height": 844,
+      "scenario": "private-poll-outage",
+      "passed": true
+    }
+  ],
+  "inviteCases": [
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 320,
+      "registered": false,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 268,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        }
+      ]
+    },
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 320,
+      "registered": true,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 268,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        }
+      ]
+    },
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 390,
+      "registered": false,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 326,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        }
+      ]
+    },
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 390,
+      "registered": true,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 326,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        }
+      ]
+    },
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 1280,
+      "registered": false,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 360,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1175282,
+          "pngBytes": 881445,
+          "width": 1200,
+          "height": 630,
+          "sha256": "a245facf38d4260b721f3915d06426d4042e01b3a5a01fd56b4ad5d4e6269221"
+        }
+      ]
+    },
+    {
+      "mode": "development",
+      "sdkMode": "adapter-stub",
+      "sdkVersion": null,
+      "sdkSha256": null,
+      "sdkSource": null,
+      "width": 1280,
+      "registered": true,
+      "outcomes": [
+        "cancelled",
+        "error",
+        "success"
+      ],
+      "firstClickOpensJestSdk": true,
+      "publicMatchmakingDoesNotShare": true,
+      "privateReservationBeforeShare": true,
+      "automaticFailureCanRetry": true,
+      "immutableInvites": true,
+      "recipientJoinedOriginalLobby": true,
+      "accountDeletionBlocked": true,
+      "matchingInviteStyles": {
+        "minHeight": "50px",
+        "padding": "12px 22px",
+        "border": "2px solid rgb(254, 200, 128)",
+        "borderRadius": "16px",
+        "color": "rgb(64, 31, 64)",
+        "backgroundColor": "rgb(255, 253, 247)",
+        "boxShadow": "rgb(214, 182, 138) 0px 3px 0px 0px",
+        "fontFamily": "\"Poetsen One\", Poppins, ui-sans-serif, system-ui, sans-serif",
+        "fontSize": "16.8px",
+        "fontWeight": "400",
+        "lineHeight": "21px",
+        "cursor": "pointer"
+      },
+      "lobbyInviteWidth": 360,
+      "shareImages": [
+        {
+          "index": 0,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 1,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 2,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 3,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        },
+        {
+          "index": 4,
+          "dataUrlBytes": 1174250,
+          "pngBytes": 880670,
+          "width": 1200,
+          "height": 630,
+          "sha256": "9d0286685be49364d098fe6192139ffb31e9550ace26e29510a298de468136d8"
+        }
+      ]
+    }
+  ]
+}

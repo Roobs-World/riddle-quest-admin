@@ -74,7 +74,6 @@ export function OnboardingOverlay({
                 {tr("Instructions.COLOR_WRONG")}
               </span>
             </div>
-            <p>{tr("Instructions.TIPS_DESCRIPTION")}</p>
           </>
         )}
         <button className="play-primary" onClick={onAdvance}>

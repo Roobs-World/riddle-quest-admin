@@ -4,7 +4,6 @@ import {completionPresentationKey} from "../../../../src/gameplay/session/comple
 import {ProviderProfileContext} from "../../../../src/accounts/components/ProviderProfileContext";
 import {ShopSubscriptionContext} from "../../../../src/commerce/browser/ShopSubscriptionContext";
 import {Suspense, lazy, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState} from "react";
-import {PlayHostApp} from "../../../../src/app/components/PlayHostApp";
 import {JestSdkPlatform} from "./JestSdkPlatform";
 import {JestPurchaseCoordinator} from "./purchases";
 import {
@@ -63,6 +62,10 @@ import type {NotificationRegistrationCommands} from "../../../../src/notificatio
 import {createManagerNotificationProvider} from "../../../../src/notifications/controllers/managerNotificationProvider";
 import {isPlayerNotificationsEnabled, setPlayerNotificationsEnabled, subscribeToPlayerNotifications} from "../../../../src/settings/browser/playerPreferences";
 
+/** Gameplay presentation loads after the signed platform session is ready. */
+const PlayHostApp = lazy(() => import("../../../../src/app/components/PlayHostApp")
+  .then(module => ({default: module.PlayHostApp})));
+
 /** Account registration controls load after the playable session mounts. */
 const JestNotifications = lazy(() => import("./notifications/JestNotifications")
   .then(module => ({default: module.JestNotifications})));
@@ -112,6 +115,8 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
   const deletedUidRef = useRef(deletedUid);
   /** Continues the saved guest Classic count while completion rewards are still syncing. */
   const guestCompletedClassicRiddlesRef = useRef<number | null>(null);
+  /** Keeps completion counting and deduplication scoped to the active account. */
+  const guestCompletionOwnerRef = useRef<string | null>(null);
   /** Prevents retried answers from counting the same win twice. */
   const countedGuestWinIdsRef = useRef(new Set<string>());
   /** Prevents concurrent completion callbacks from duplicating the first-milestone funnel event. */
@@ -155,9 +160,12 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
   /** Provides [session, set session] behavior. */
   const [session, setSession] = useState<JestSession | null>(null);
   useLayoutEffect(() => {
-    if (session && guestCompletedClassicRiddlesRef.current === null) {
-      guestCompletedClassicRiddlesRef.current = session.preferences.jestGuestCompletedRiddles ?? 0;
-    }
+    if (!session) return;
+    const owner = JSON.stringify([session.player.playerId, session.firebaseUid]);
+    if (guestCompletionOwnerRef.current === owner) return;
+    guestCompletionOwnerRef.current = owner;
+    guestCompletedClassicRiddlesRef.current = session.preferences.jestGuestCompletedRiddles ?? 0;
+    countedGuestWinIdsRef.current.clear();
   }, [session]);
   /** Avoids duplicate avatar syncs while the same Jest session rerenders. */
   const syncedAvatarRef = useRef<string | null>(null);
@@ -191,7 +199,6 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
   );
   /** Provides [error, set error] behavior. */
   const [error, setError] = useState<string | null>(null);
-  /** Provides [account deleted, set account deleted] behavior. */
   /** Provides [startup, set startup] behavior. */
   const [startup, setStartup] = useState<JestStartupUpdate>({stage: "connecting", progress: 5});
   /** Provides [notification operation gate] behavior. */
@@ -287,6 +294,7 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
   const subscriptionActions = useMemo(
     () => ({
       products: jestProducts,
+      subscriptionsEnabled,
       catalogLoading: catalogState.loading,
       catalogError: catalogState.error,
       refresh: refreshProducts,
@@ -298,17 +306,8 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
         return result.status === "success" || result.status === "cancelled" ? result.status : "error";
       },
     }),
-    [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState],
+    [platform, refreshProducts, withPlatformActivity, jestProducts, catalogState, subscriptionsEnabled],
   );
-  /** Provides purchase product behavior. */
-  const purchaseProduct = useJestPurchase({
-    products: jestProducts,
-    purchases,
-    session,
-    setProducts: setJestProducts,
-    subscriptionsEnabled,
-    trackFunnel,
-  });
   useJestPurchaseRecovery({
     purchases, session, sessionRef, gate: notificationOperationGate, refreshProducts, refreshBackgroundProducts, hostServices,
   });
@@ -559,6 +558,18 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
     withPlatformActivity,
     trackFunnel,
   });
+  const requestSubscriptionRegistration = useCallback(() => {
+    openRegistrationPrompt("subscription", true);
+  }, [openRegistrationPrompt]);
+  const purchaseProduct = useJestPurchase({
+    products: jestProducts,
+    purchases,
+    session,
+    setProducts: setJestProducts,
+    subscriptionsEnabled,
+    requestRegistration: requestSubscriptionRegistration,
+    trackFunnel,
+  });
   /** Queues the guest prompt as soon as the correct answer is confirmed. */
   const handleAuthoritativeGuessWin = useCallback(
     (input: {
@@ -690,6 +701,7 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
       >
         <ShopSubscriptionContext.Provider value={subscriptionActions}>
           <ProfileSubscriptionContext.Provider value={subscriptionsEnabled ? <Suspense fallback={null}><JestProfileSubscriptions /></Suspense> : null}>
+          <Suspense fallback={<JestStartupProgress startup={startup} />}>
           <PlayHostApp
             session={createJestHostedPlaySession({
               hostServices,
@@ -725,6 +737,7 @@ function JestPlaySession({freshStart, deletedUid, onAccountReset}: {
             }}
             onAccountDeleted={clearPlayerState}
           />
+          </Suspense>
           </ProfileSubscriptionContext.Provider>
         </ShopSubscriptionContext.Provider>
       </ProviderProfileContext.Provider>

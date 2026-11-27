@@ -6,9 +6,7 @@
     "COLOR_WRONG": "Litery w ogóle nie ma w słowie",
     "GOAL_DESCRIPTION": "Odgadnij ukrytą zagadkę w 5 próbach, korzystając z kolorowych wskazówek.",
     "GOAL_TITLE": "Cel",
-    "GOT_IT_BUTTON": "Rozumiem!",
-    "TIPS_DESCRIPTION": "Zacznij od typowych liter i skorzystaj z informacji o kolorze, aby zawęzić swoje domysły. Pamiętaj, masz tylko 5 prób!",
-    "TIPS_TITLE": "Wskazówki dotyczące sukcesu"
+    "GOT_IT_BUTTON": "Rozumiem!"
   },
   "WelcomeBackModal": {
     "TAP_TO_CONTINUE": "Kliknij, aby kontynuować",

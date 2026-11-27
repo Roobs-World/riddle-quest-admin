@@ -49,8 +49,6 @@ export function InstructionsModalPage({
         <i className="clue red">C</i>
         {tr("Instructions.COLOR_WRONG")}
       </p>
-      <h3>{tr("Instructions.TIPS_TITLE")}</h3>
-      <p>{tr("Instructions.TIPS_DESCRIPTION")}</p>
       <button className="play-primary" onClick={onClose}>
         {tr("Instructions.GOT_IT_BUTTON")}
       </button>

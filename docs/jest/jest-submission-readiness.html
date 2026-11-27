@@ -10,61 +10,38 @@
   </style>
 </head>
 <body><main>
-  <section class="hero">
-    <p class="eyebrow">Jest submission evidence · verified 3 November 2026</p>
-    <h1>Riddle-Q meets the locally testable Jest launch requirements</h1>
-    <p class="lead">The released clean source passed the extended production gate, W3C validation, isolated Jest browser tests, and a ten-minute mobile soak. Jest processed the exact verified artifact as an inactive draft; activation, authenticated sandbox acceptance and the Developer Console Simulator review remain human-operated release steps.</p>
+  <section class="panel"><h2>Integration status — 27 November 2026</h2>
+    <p>This main-into-jest merge has not been built, uploaded or run through hosted acceptance. The latest recorded live verification is the <a href="evidence/returning-guest-registration-2026-11-26.json">returning-guest release</a>: version <code>01a219c2-33c8-7139-928a-db76b271ee36</code>, source <code>f5d18e58c2cc</code>, ready and active on 26 November at 21:28:14 UTC. No new Jest status query was made for this merge; Simulator acceptance was not run for that release.</p>
+    <p>The historical findings below describe earlier November 26 builds, with “current” and “new” referring to the 17:55 UTC invitation release at that checkpoint. Basic 17/17 and Fund 6/6 belong to guidance build <code>54179b9a9da6</code>; they do not certify later releases or this integration. Current notifications use the <a href="jest-notification-testing.md">manager-owned seven-day plan</a> and contain no gameplay entry payload. The <a href="evidence/jest-submission-readiness-2026-11-03.html">November 3 report</a> is retained as historical evidence.</p>
   </section>
-  <section class="facts" aria-label="Artifact facts">
-    <div class="fact"><strong>2.81 MB</strong><span>uploaded ZIP</span></div>
-    <div class="fact"><strong>4.71 MB</strong><span>expanded artifact</span></div>
-    <div class="fact"><strong>0.55 MB</strong><span>initial resources</span></div>
-    <div class="fact"><strong>423</strong><span>archive entries</span></div>
+  <p>Reviewed 26 November 2026</p>
+  <h1>Historical Fund acceptance checkpoint</h1>
+  <p class="notice">The preceding guidance build passed Basic Launch 17/17 and Fund 6/6 in the authenticated Simulator and displayed “Eligible to apply.” Six live sandbox coin packs also passed on that build. The new race/invitation release is ready and active, with its exact-version hosted retest pending. Recommended checks are 3/4; manual review, remaining live-platform checks and physical-device acceptance are pending. Funding has not been awarded.</p>
+  <p>The <a href="jest-growth-fund-readiness.md">current requirement matrix and acceptance plan</a> contains the full review. The earlier <a href="evidence/jest-growth-fund-audit-2026-11-26.json">audit snapshot</a> records live configuration and evidence limits; its missing-notification finding predates this client update.</p>
+  <section class="panel"><h2>Release evidence</h2>
+    <p>Jest confirmed current build <code>1.0.0-dev.20261126175458.47bcd335e3d9.e99db118</code>, version <code>01a218ff-992c-7775-9adc-7ac38d761c30</code>, ready and active at 17:55:41 UTC. <a href="evidence/jest-fund-invitations-2026-11-26.json">Release evidence</a> records the race/invitation fixes and exact source commit. The earlier Profile guidance fix remains included. The build retains the subscription balance refresh and D1-D7 notification integration. No review submission or publication was made.</p>
+    <p>The artifact audit reports 3.99 MB total and 0.55 MB initial resources. The production gate, campaign content audit and W3C validation passed; the race/invitation changes passed 48 race scenarios and six invitation cases producing 30 PNGs. The preceding guidance build separately passed 291 local tests across 13 suites. The <a href="evidence/fund-hosted-2026-11-26/observations.json">hosted observation log</a> separates tested versions. On the guidance build, Profile steps 1–9 passed in a 424×452 game frame, with readable inspected cards and a reachable final action. All six authorized coin pack checkouts passed; their complete zero-charge sandbox transactions and the 18,260 balance retained after reload are recorded in <a href="evidence/fund-hosted-2026-11-26/sandbox-purchases.json">purchase evidence</a>. The <a href="evidence/fund-hosted-2026-11-26/simulator-checklist-2026-11-26.json">authenticated Simulator record</a> verifies guest flow, seeded recovery, mock subscription lifecycle, reminders and screenshots. Real interrupted recovery, the pending live subscription checkout/lifecycle and physical-device acceptance remain pending. Backend source/configuration are unchanged and no backend was deployed.</p>
   </section>
-  <section class="panel"><h2>Latest uploaded build</h2>
-    <p><strong>Build:</strong> <code>1.0.0-dev.20261103094407.04d8189707f0.c8f23162</code><br><strong>Version ID:</strong> <code>01a1a184-e645-71d7-a208-2b5bba40f192</code><br><strong>ZIP SHA-256:</strong> <code>62e6cd9f45e00fb948324d082be7ebb05da49203536d9bfb8e6ed070f25f7f43</code><br><strong>Source commit:</strong> <code>04d8189707f02d351ed36bb362b977ecaa307f02</code> (clean)<br><strong>Game ID:</strong> <code>019faa68-f3ec-755d-9ab5-c887fb426801</code><br><strong>Jest status:</strong> processed and ready as an inactive draft (Jest &ldquo;Build ready&rdquo; notice, 3 November 2026). The previously active build stays active until the owner activates this one; the game remains an unpublished draft pending Developer Console review submission.</p>
-  </section>
-  <section class="panel"><h2>Verified source</h2>
-    <p><strong>Source commit:</strong> <code>04d8189707f02d351ed36bb362b977ecaa307f02</code> (clean)<br><strong>ZIP SHA-256:</strong> <code>62e6cd9f45e00fb948324d082be7ebb05da49203536d9bfb8e6ed070f25f7f43</code><br><strong>ZIP:</strong> 2.81 MB, 423 entries<br><strong>Expanded artifact:</strong> 4.71 MB, 422 files; 0.55 MB initial resources<br><strong>Result:</strong> canonical <code>pnpm verify:production:extended</code>, and exact-byte archive checks completed successfully; the upload ran with <code>JEST_RELEASE_INACTIVE=true</code>.</p>
-  </section>
-  <section class="panel"><h2>Basic launch requirements</h2><table><thead><tr><th>Requirement</th><th>Status</th><th>Evidence</th></tr></thead><tbody>
-    <tr><td>Mobile-browser build, touch, responsive layouts</td><td class="pass">Passed locally</td><td>Injected mobile/iframe journeys and the 602-second constrained-device soak passed.</td></tr>
-    <tr><td>Fast, bounded initial load</td><td class="pass">Passed locally</td><td>0.55 MB initial resources; the 4.71 MB expanded artifact remains below Jest's 5 MiB web-native target.</td></tr>
-    <tr><td>All required assets local and paths relative</td><td class="pass">Passed locally</td><td>Artifact audit permits only the asynchronous official Jest SDK entry script; all other entry resources resolve inside the ZIP.</td></tr>
-    <tr><td>No dependence on arbitrary URL/location data</td><td class="pass">Passed locally</td><td>Production entry intent uses Jest entry payloads; URL harness parsing is development/test gated.</td></tr>
-    <tr><td>No external links, ads, app-install prompts, external auth, or unsupported native features</td><td class="pass">Passed locally</td><td>Artifact and injected-DOM audits reject these markers and cross-platform SDK contamination.</td></tr>
-    <tr><td>Guest play and stable progress through registration</td><td class="pass">Passed locally</td><td><code>getPlayer()</code>/<code>getPlayerSigned()</code> identity, guest persistence, registration dismissal/completion, and stable-player flows are covered.</td></tr>
-    <tr><td>Contextual Jest login</td><td class="pass">Passed locally</td><td>Guest prompt occurs after an authoritative solved riddle, with a seven-day dismissal cooldown.</td></tr>
-    <tr><td>First meaningful milestone</td><td class="pass">Passed locally</td><td><code>markFirstMilestone()</code> is called after the first authoritative correct solve and deduplicated in player preferences.</td></tr>
-    <tr><td>Manual loading lifecycle</td><td class="pass">Passed locally</td><td>Progress phases plus a 10-second watchdog heartbeat; <code>markGameLoaded()</code> fires only when interactive.</td></tr>
-    <tr><td>Notifications only for registered users</td><td class="pass">Passed locally</td><td>Fuzzy schedules, stable identifiers, personalized copy, replacement/unscheduling, and invalid/error paths are tested.</td></tr>
-    <tr><td>Purchases and interrupted-purchase recovery</td><td class="pass">Passed in code</td><td>Signed server verification, token-idempotent durable grant before <code>completePurchase()</code>, pagination, retry and startup reconciliation are tested.</td></tr>
-    <tr><td>W3C-valid HTML and software notices</td><td class="pass">Passed locally</td><td>Zero W3C findings; UTF-8, HTML5 doctype, language, third-party notices and source-map exclusion verified.</td></tr>
-  </tbody></table></section>
-  <section class="panel"><h2>Developer Console values and assets</h2><table><thead><tr><th>Item</th><th>Ready value</th><th>Status</th></tr></thead><tbody>
-    <tr><td>Display name / slug</td><td>Riddle-Q / <code>riddle-q</code></td><td class="pass">Validated</td></tr>
-    <tr><td>Short description</td><td>Solve multilingual riddles with Wordle-style color clues in Riddle Quest, an HTML5 word puzzle on Jest.</td><td class="pass">Validated</td></tr>
-    <tr><td>Keyword</td><td><code>riddles</code></td><td class="pass">Owner-approved and validated</td></tr>
-    <tr><td>Publisher / privacy</td><td>Jest / <code>https://roobsworld.com/privacy</code></td><td class="pass">Owner-approved manifest values present</td></tr>
-    <tr><td>Loading / orientation</td><td>Manual / both</td><td class="pass">Validated</td></tr>
-    <tr><td>Logo</td><td><code>assets/images/icon.png</code>, 1254×1254</td><td class="pass">Dimensions and hash validated</td></tr>
-    <tr><td>Hero</td><td><code>docs/jest/assets/riddle-quest-hero.png</code>, 1280×720</td><td class="pass">Dimensions and hash validated</td></tr>
-    <tr><td>Consumables</td><td>Six approved coin-pack SKU definitions</td><td class="pass">Client/server manifest alignment validated</td></tr>
-    <tr><td>Subscription</td><td>Monthly SKU remains sandbox-only</td><td class="optional">Correctly withheld from production</td></tr>
+  <section class="panel"><h2>Recorded findings</h2><p>Runtime passes below describe the guidance-build baseline unless stated otherwise; they do not certify the new invitation release.</p><table><thead><tr><th>Area</th><th>Finding</th></tr></thead><tbody>
+    <tr><td>Registration and saved progress</td><td>Guidance-build Simulator native guest prompts appeared after onboarding and three completed riddles. Dismissal preserved play; registration retained 7,835 coins and progress. Live guest migration remains separate.</td></tr>
+    <tr><td>Notifications</td><td>Seven D1–D7 reminders appeared three seconds after Simulator registration. Off removed all seven and On restored them; automated content/asset checks passed. Actual delivery and live return routing remain unverified.</td></tr>
+    <tr><td>Monetization</td><td>All six coin packs completed in sandbox with correct grants and reload persistence. Premium correctly retains access until 22 December after previously cancelled renewal and hides duplicate offers; repeated cancellation is unavailable as expected. The Simulator verified subscription checkout/grant/reload/cancellation and seeded purchase recovery. Live subscription checkout/lifecycle and actual crash recovery remain unverified. An inactive Sandbox User reached the £0.00/month Stripe form; its required full name and US shipping address were left for manual entry at that checkpoint; the current browser state is unverified. The empty form was rejected and no subscription was created.</td></tr>
+    <tr><td>Mobile and screenshots</td><td>Profile guidance, six key SDK captures and iPhone SE/Safari, Galaxy S25/Chrome and unfolded Z Fold 7/Installed device presets passed desktop visual checks. Game controls were visible and the multiplayer menu scrolled. These are not physical-phone or Safari-engine tests; mobile loading/stability remain pending. Capture downloads were blocked.</td></tr>
+    <tr><td>Referrals and race</td><td>The recorded Recommended score is 3/4. Race/referral fixes passed 48 race scenarios and six invite cases with 30 PNG renders locally. Those fixes are now active; their exact-version hosted retest and live two-user reward checks remain pending.</td></tr>
+    <tr><td>Team agreements</td><td>Live Team Settings showed the Developer Agreement and AUP versions dated 2026-10-11 already Signed, displayed as one month ago. This session accepted no agreement; Fund Terms and submission remain separate.</td></tr>
+    <tr><td>Growth evidence</td><td>The earlier pre-checkout audit found no transactions, empty retention cohorts and no ad campaigns. Six later sandbox purchases have zero charge and revenue; they are not paid conversion or ROAS evidence.</td></tr>
   </tbody></table></section>
   <section class="panel"><h2>Required before submission</h2>
-    <div class="notice"><strong>Automated requirements pass; review evidence is still required.</strong> Activate the build to be reviewed, then use that active build for sandbox and Simulator checks.</div>
+    <div class="notice"><strong>Current-build acceptance remains unverified.</strong> Resolve the exact ready, active version from Jest before any separately authorized acceptance session; historical pass counts do not transfer.</div>
     <p><strong>Release-host readiness:</strong> <code>/usr/bin/bwrap</code> is available and the external Jest credential file is a regular owner-only <code>0600</code> file. Release credentials remain outside the repository and are exposed only to the sandboxed upload leaf. Receipt counts are intentionally omitted because they change after every release and must be reconciled from the owner-only receipt store.</p>
     <ol>
-      <li>Sign in to Jest Developer Console and reconcile every historical unresolved or accepted-pending receipt. Never delete barriers merely to retry.</li>
-      <li>Resolve the current active version from Jest immediately before gathering review evidence; do not rely on a version ID copied into this report.</li>
-      <li>Run the deployed registered-sandbox browser gate against that exact active version.</li>
-      <li>Exercise sandbox purchase success/cancel/error/recovery, notification delivery, and a two-player referral conversion. Confirm the signed server-side grants and idempotent replay behavior.</li>
-      <li>Use Simulator on the exact active version for onboarding, guest play, registration, first solve, shop, multiplayer, portrait/landscape, audio, and background/foreground recovery.</li>
-      <li>Verify metadata, approved images, visibility and review settings in Developer Console, then submit the exact active build for review.</li>
+      <li>Resolve the current ready, active version from Jest immediately before gathering acceptance evidence; do not rely on historical IDs in this report. Reconcile any unresolved upload receipt before another release.</li>
+      <li>Preserve the passing baseline Simulator session; retest the newly active race/invitation release before reporting its score. Finish the pending live subscription checkout/lifecycle, actual interrupted purchase recovery, two-user referral and physical-device checks.</li>
+      <li>D1–D7 scheduling and Off/On consent passed in Simulator. Verify remaining live delivery, return routing and failure/deletion behavior separately.</li>
+      <li>Use the current notification verification guide for the manager-supplied SDK plan; do not reuse the historical Daily-routing campaign as current acceptance evidence.</li>
+      <li>After submission is explicitly requested and acceptance evidence is complete, submit the verified build with the Fund option. Publication, live messages, paid campaigns and acceptance of terms remain separate actions.</li>
     </ol>
   </section>
-  <section class="panel"><h2>Optional Jest Apps Fund enhancements</h2><p>The current implementation already contains direct-to-app onboarding, personalized fuzzy notifications, referral virality, and consumable monetization. These strengthen a Fund application but are not all part of the minimum publishing bar. Production subscriptions remain disabled because the sandbox integration has not settled successfully.</p></section>
   <section class="panel sources"><h2>Official requirements reviewed</h2><ul>
     <li><a href="https://docs.jest.com/requirements/technical">Technical requirements</a></li>
     <li><a href="https://docs.jest.com/requirements/gameplay">Gameplay requirements</a></li>
@@ -72,5 +49,5 @@
     <li><a href="https://docs.jest.com/content-review-and-moderation">Review and moderation</a></li>
     <li><a href="https://docs.jest.com/sdk/html5/player">Player identity</a>, <a href="https://docs.jest.com/sdk/html5/payments">payments</a>, and <a href="https://docs.jest.com/sdk/html5/loading-screen">loading lifecycle</a></li>
   </ul></section>
-  <p class="stamp">Evidence: the canonical <code>pnpm verify:production:extended</code> workflow, and exact-byte upload gate exited 0 on 3 November 2026 from clean commit <code>04d81897</code>; Jest accepted the build as an inactive draft and reported it ready. Final sandbox transactions, Simulator recording, metadata confirmation, and review submission require an authenticated Developer Console session.</p>
+  <p class="stamp">Historical evidence remains attached to its exact version. No review submission, publication, live sends, ad spending or terms acceptance was performed for this integration.</p>
 </main></body></html>
