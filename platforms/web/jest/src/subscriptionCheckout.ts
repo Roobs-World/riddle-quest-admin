@@ -9,7 +9,7 @@ type SubscriptionCheckoutOptions = {
   /** Jest SDK adapter owning checkout and wallet reads. */
   platform: JestPlatformPort;
   /** Verifies signed provider holdings and purchase results. */
-  backend: Pick<JestBackendPort, "syncSubscriptions">;
+  backend: JestBackendPort;
   /** Requested subscription from the current provider catalog. */
   subscriptionSku: string;
   /** Provider identity used to scope cross-tab exclusion. */
@@ -26,6 +26,7 @@ async function subscribeWithPreflight({
   playerId,
   getSubscriptions,
 }: SubscriptionCheckoutOptions): ReturnType<JestPurchaseCoordinator["subscribe"]> {
+  if (!platform.getPlayer().registered) return {status: "unavailable", message: "guest_not_allowed"};
   /** Verified holdings refreshed inside the cross-tab checkout lock. */
   const catalog = await getSubscriptions();
   if (catalog.status !== "success") return catalog;

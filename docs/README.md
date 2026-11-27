@@ -1,7 +1,5 @@
 # Riddle Quest documentation
 
-This branch has a [Jest-only game frontend](jest/jest-only-frontend.md). Other provider backends and the notification manager remain intact. Other platform frontend runbooks and dated evidence are historical references.
-
 Project documentation lives in this folder. Platform documentation belongs in `docs/<platform>/`. Documentation for shared modules and operations belongs in `docs/common/<module>/`. Keep each module's evidence and documentation assets with its documents.
 
 Start with the [project setup guide](common/project/README.md), [platform source ownership](common/architecture/platform-layout.md), [shared feature folders](common/architecture/shared-source-layout.md), [Functions source organisation](common/architecture/functions-source-layout.md), or [shared module index](common/README.md).
@@ -12,13 +10,16 @@ The [security policy](common/security/SECURITY.md) describes transport encryptio
 
 | Platform | Documentation |
 | --- | --- |
-| Jest frontend | [Jest documentation](jest/README.md), [frontend source boundary](jest/jest-only-frontend.md), [Fund readiness](jest/jest-growth-fund-readiness.md), [Fund self-review draft](jest/jest-fund-self-review-draft.md) |
-| Retained Android backend | [Android backend operations and historical app documentation](android/README.md) |
-| Facebook server integration | [Retained backend and historical Facebook documentation](facebook/README.md) |
-| Retained Reddit backend | [Backend operations and historical game documentation](reddit/README.md) |
-| Retained Yahoo backend | [Yahoo documentation](yahoo/README.md) |
+| Android / Google Play | [Android documentation](android/README.md) |
+| Jest | [Jest documentation](jest/README.md) |
+| Facebook Instant Games | [Setup guide](facebook/facebook-setup-guide.md), [Facebook documentation](facebook/README.md) |
+| Reddit Devvit Web | [Game and review guide](reddit/README.md), [operations](reddit/reddit-games-operations.md), [progress](reddit/reddit-games-progress.html) |
+| YouTube Playables | [YouTube documentation](youtube/README.md) |
+| Netflix candidate | [Candidate build guide](netflix/README.md) |
+| Yahoo candidate | [Candidate build guide](yahoo/README.md) |
+| GameSnacks | [Build and handoff guide](gamesnacks/README.md) |
 
-The [shared release guides](common/releases/README.md) describe Jest release operations. Previous destination research remains available as historical evidence.
+Other web destinations use the [shared release guides](common/releases/README.md) and [platform integration matrix](common/architecture/platform-integration-matrix.md).
 
 ## Monitoring
 
@@ -26,13 +27,15 @@ The background Sentry worker has its own [runbook](sentry-worker/README.md) and 
 
 Game action events, Google Analytics consent and platform reporting boundaries are documented in [Google Analytics and action events](common/observability/google-analytics.md).
 
-The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling. [Supabase FCM delivery](common/notifications/supabase-fcm.md) describes the Edge Function transport and its rollout.
+The Settings toggle and universal provider contract are documented in [Notifications](common/notifications/README.md). [Firebase enrollment](common/notifications/firebase-enrollment.md) covers account-owned device registration across platform adapters. The [management service guide](common/notifications/service.md) covers the Vercel website and API, Supabase database and calendar scheduling. [Jest SDK delivery](common/notifications/platform-delivery.md#jest) describes the manager-owned daily plan. [Supabase FCM delivery](common/notifications/supabase-fcm.md) describes the Edge Function transport and its rollout.
 
 Multiplayer fallback names and AI leaderboard totals are documented in [Multiplayer AI opponents](common/hosted/multiplayer-ai-opponents.md).
 
 Leaderboard requests, page caching and loading behavior are documented in [Leaderboard pages](common/leaderboards/README.md).
 
 The shared catalog, localized collections and unlock authority are documented in [Achievements](common/progression/achievements.md).
+
+Coin earnings, help prices and balance evaluation are documented in [Coin economy](common/core/game-economy.md), including the [Jest sandbox balance reconciliation](jest/evidence/coin-balance-reconciliation-2026-11-26.md).
 
 ## Documentation placement
 

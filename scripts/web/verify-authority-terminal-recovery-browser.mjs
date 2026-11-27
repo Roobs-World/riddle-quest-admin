@@ -7,7 +7,7 @@ import {build} from 'vite';
 import {chromium} from '@playwright/test';
 
 const browserScope=process.env.PORTAL_BROWSER_SCOPE;
-assert.ok(browserScope===undefined||browserScope==='jest','PORTAL_BROWSER_SCOPE must be jest or unset');
+assert.ok(browserScope===undefined||browserScope==='jest-facebook','PORTAL_BROWSER_SCOPE must be jest-facebook or unset');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.AUTHORITY_TERMINAL_REACT_MODE??'development';
 const handlerMode=process.env.AUTHORITY_TERMINAL_HANDLER_ONLY??null;assert([null,'modal','fallback'].includes(handlerMode));
@@ -25,6 +25,7 @@ import React from 'react';import {createRoot} from 'react-dom/client';
 import {PlayHostApp} from ${JSON.stringify(path.join(root,"src/app/components/PlayHostApp.tsx"))};
 import {createHostedPlaySession} from ${JSON.stringify(path.join(root,"src/app/session/HostedPlaySession.ts"))};
 import {createFakeHostServices} from ${JSON.stringify(path.join(root,"src/gameplay/fixtures/fakeServices.ts"))};
+${browserScope==='jest-facebook'?'':`import {createRedditGuestHostServices} from ${JSON.stringify(path.join(root,'platforms/web/reddit/src/RedditGuestHostServices.ts'))};`}
 import {createInitialGameSession,gameSessionReducer} from ${JSON.stringify(path.join(root,"src/gameplay/session/gameSession.ts"))};
 import {createSavedGame} from ${JSON.stringify(path.join(root,"src/gameplay/session/checkpoints/GameSessionCheckpoints.ts"))};
 import {writePendingGuessJournal,pendingPlayScope} from ${JSON.stringify(path.join(root,"src/gameplay/session/journal/pendingGuessJournal.ts"))};
@@ -34,9 +35,10 @@ import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
 window.__RIDDLE_QUEST_BROWSER_TEST__=true;
 applyPlayerPreferences({locale:'en',muted:true,reducedMotion:true,onboardingComplete:true});localStorage.setItem('appLanguage','en');
 const params=new URL(location.href).searchParams,attempts=Number(params.get('attempts')??1),provider=params.get('provider')??'missing',negative=params.has('negative'),prepare=params.has('prepare');
-const fixtureAuthority=createFakeHostServices(),completionReceipts=new Map();
+${browserScope==='jest-facebook'?`const fixtureAuthority=createFakeHostServices(),completionReceipts=new Map();
 const source={...fixtureAuthority,completeGame:input=>{const key=input.gameMode+':'+input.riddleId+':'+input.sessionToken;if(!completionReceipts.has(key))completionReceipts.set(key,fixtureAuthority.completeGame(input));return completionReceipts.get(key);}};
-const uid='jest-guest';
+const uid='jest-guest';`:`const source=attempts===6?createFakeHostServices():createRedditGuestHostServices();
+const uid=attempts===6?'jest-guest':'reddit-guest';`}
 sessionStorage.setItem(createGuidanceStorageKey('welcomeSession',uid),'seen');
 for(const tour of ['gameTour','profileTour'])localStorage.setItem(createTooltipTourStorageKey(tour,uid),'seen');
 for(const id of Object.keys(TOOLTIP_KEYS))localStorage.setItem(createGuidanceStorageKey('tooltipSeen:'+id,uid),'seen');
@@ -103,7 +105,7 @@ createRoot(document.querySelector('#root')).render(<React.StrictMode><PlayHostAp
 window.profile=()=>source.loadProfile(uid);window.probe.ready=true;
  `);
  await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'original-authority-terminal',async load(id){
-if(browserScope==='jest')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');
+if(browserScope==='jest-facebook')assert.ok(!/(?:\/src\/reddit\/|\/@devvit\/)/u.test(id),'Reddit modules are outside PORTAL_BROWSER_SCOPE');
 if(handlerMode==='modal'&&id.endsWith('/VictoryModalContent.tsx'))return 'export function VictoryModalContent({state,onAdvance}){return <button data-force-next data-profile-index={state.profile?.classicIndex} onClick={onAdvance}>Attempt next</button>}';
 if(handlerMode==='fallback'&&id.endsWith('/GameModalView.tsx'))return 'export function GameModalView(){throw new Error("fixture-modal-unavailable")}';
 if(handlerMode==='fallback'&&id.endsWith('/GameSurfaceRecovery.tsx')){const source=await readFile(id,'utf8');assert.equal(source.split('export function GameSurfaceRecovery(').length,2);return source.replace('export function GameSurfaceRecovery(','export function OriginalGameSurfaceRecovery(')+'\nexport function GameSurfaceRecovery({onNext,nextBlocked}){return <button data-force-next data-blocked={String(nextBlocked)} onClick={onNext}>Attempt next</button>}';}

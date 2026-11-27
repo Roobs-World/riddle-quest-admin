@@ -15,6 +15,7 @@
     "SHARE_CLASSIC_MODE_LABEL": "クラシックモード",
     "SHARE_DAILY_CHALLENGE_LABEL": "デイリーチャレンジ",
     "SHARE_MESSAGE_TEMPLATE": "今日のRiddle Quest {gameType}を{attempts}回の{attemptLabel}で解きました！\n\n{emojiGrid}\n\n私のスコアを超えられますか？\n\n#Riddle Quest #WordPuzzle #BrainGame",
-    "SHARE_RESULT_TITLE": "Riddle Quest の結果を確認してください。"
+    "SHARE_RESULT_TITLE": "Riddle Quest の結果を確認してください。",
+    "INVITE_FRIEND": "友達を招待"
   }
 }

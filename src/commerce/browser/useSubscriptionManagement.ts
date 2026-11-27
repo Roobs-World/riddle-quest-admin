@@ -77,6 +77,7 @@ export function useSubscriptionManagement() {
     }
   };
   return {loading: loading || Boolean(subscriptions?.catalogLoading), pending, cancelled, unavailable, error, cancel,
+    subscriptionsEnabled: Boolean(subscriptions?.subscriptionsEnabled),
     catalogError: Boolean(subscriptions?.catalogError), retryCatalog: subscriptions?.refresh,
     products: subscriptions?.products ?? []};
 }

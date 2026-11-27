@@ -1,7 +1,5 @@
 # One-shot target release
 
-This is a historical multi-target release guide. The `jest` branch now exposes only the Jest game release; use [current release operations](release-operations.md). Retained backend services are outside the frontend cleanup.
-
 Run every release target from the repository root:
 
 ```bash
@@ -22,7 +20,7 @@ Review the complete plan without building, uploading, packaging, or publishing:
 pnpm release:all --dry-run
 ```
 
-Each adapter preserves the provider's current delivery boundary. Jest uploads and activates automatically. YouTube and Reddit produce their existing immutable portal handoffs. Netflix and Yahoo produce validated isolated artifact directories until their private partner upload tools are available. Every supported HTML5 distributor receives a distinct ZIP and SHA-256 manifest. The configured itch.io Butler stage can publish after the initial project exists; the other public portals retain manual account, contract, upload, or review steps unless their release plan explicitly says otherwise. Facebook has no frontend release target on this branch.
+Each adapter preserves the provider's current delivery boundary. Jest uploads and activates automatically. Facebook, YouTube, and Reddit produce their existing immutable portal handoffs. Netflix and Yahoo produce validated isolated artifact directories until their private partner upload tools are available. Every supported HTML5 distributor receives a distinct ZIP and SHA-256 manifest. The configured itch.io Butler stage can publish after the initial project exists; the other public portals retain manual account, contract, upload, or review steps unless their release plan explicitly says otherwise.
 
 The `Release all platforms` GitHub Actions workflow is manual-only and requires the explicit runner-usage confirmation gate. A tag or push does not authorize hosted runner usage. It executes `pnpm release:all`, including Jest's build upload and activation without game publication and every current target's validated handoff, packages the audited provider-neutral and distribution-specific builds, builds the release dashboard, and retains the complete handoff as one immutable Actions artifact. It uses the existing `jest-production` environment so the established Jest release credentials and any environment protection rules remain authoritative.
 

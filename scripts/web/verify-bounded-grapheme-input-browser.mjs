@@ -11,6 +11,7 @@ const {RACE_RULES,LiveRaceViewSchema}=require("../../firebase-functions/lib/src/
 const {computeFeedback}=require('../../firebase-functions/lib/src/gameplay/rules/computeFeedback.js');
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'../..');
 const mode=process.env.BOUNDED_GRAPHEME_REACT_MODE??'development';
+const fixture=path.join(root,'firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json');
 const output=path.resolve(process.env.BOUNDED_GRAPHEME_REPORT_DIR??path.join(root,'builds/test-evidence/bounded-grapheme-input-2026-10-04',mode));
 await mkdir(output,{recursive:true});await mkdir(path.join(root,'node_modules/.cache'),{recursive:true});
 const scratch=await mkdtemp(path.join(root,'node_modules/.cache/bounded-grapheme-input-'));
@@ -21,6 +22,7 @@ try{
  await writeFile(path.join(scratch,'main.tsx'),`
 import React from 'react';import {createRoot} from 'react-dom/client';
 import ${JSON.stringify(path.join(root,"src/app/styles/game.css"))};
+import {YouTubePlayableApp} from ${JSON.stringify(path.join(root,"src/gameplay/components/local/LocalGameApp.tsx"))};import ${JSON.stringify(path.join(root,"src/gameplay/styles/local-game.css"))};
 import {RaceTo10Game} from ${JSON.stringify(path.join(root,"src/races/components/recorded/RaceTo10Game.tsx"))};
 import {createFakeRaceServices} from ${JSON.stringify(path.join(root,"src/races/testing/browser/fakeRaceServices.ts"))};
 const services=createFakeRaceServices(),user=new URLSearchParams(location.search).get('user')??'Alice';
@@ -38,9 +40,10 @@ async function call(owner,operation,input){window.probe.calls.push({owner,operat
 async function postToHost(message){if(message.type==='game:listRaceCategories')window.dispatchEvent(new CustomEvent('riddle-quest:host-to-game',{detail:{type:'host:operationResult',requestId:message.requestId,payload:{operation:'raceCategories',ok:true,data:await services.listRaceCategories({locale:'en'})}}}));}
 window.otherTab=(action,guess='test')=>fetch('/live/update',{method:'POST',body:JSON.stringify({user,ticketId:'a'.repeat(64),action,riddleId:'q0',guess,requestId:'other-tab-'+action+'-'+Date.now()})}).then(r=>r.json());
 const app=createRoot(document.querySelector('#root'));
-app.render(<React.StrictMode>{<RaceTo10Game locale="en" ownerId={user} coins={100} matchmaking={adapter(user)} postToHost={postToHost} onClose={()=>{}}/>}</React.StrictMode>);
+const sdk={inPlayablesEnvironment:true,firstFrameReady(){},gameReady(){},async loadData(){window.probe.loads++;return '';},async saveData(data){if(!window.probe.loads)throw Error('Save before load');window.probe.saves.push(data);},async getLanguage(){return 'en';},isAudioEnabled(){return false;},onAudioEnabledChange(){return ()=>{};},onPause(){return ()=>{};},onResume(){return ()=>{};},logError(){},logWarning(){}};
+app.render(<React.StrictMode>{new URLSearchParams(location.search).has('playable')?<YouTubePlayableApp sdk={sdk}/>:<RaceTo10Game locale="en" ownerId={user} coins={100} matchmaking={adapter(user)} postToHost={postToHost} onClose={()=>{}}/>}</React.StrictMode>);
  `);
- await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'bounded-grapheme-baseline',async load(id){if(process.env.BOUNDED_GRAPHEME_BASELINE_DIR&&['/NativeAnswerInput.tsx','/raceInput.ts'].some(name=>id.endsWith(name)))return readFile(path.join(process.env.BOUNDED_GRAPHEME_BASELINE_DIR,id.endsWith('/raceInput.ts')?'raceInput.before.txt':'NativeAnswerInput.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
+ await build({root:scratch,configFile:false,publicDir:path.join(root,'public'),logLevel:'error',resolve:{alias:{'#youtube-content':fixture}},define:{'process.env.NODE_ENV':JSON.stringify(mode)},plugins:[{name:'bounded-grapheme-baseline',async load(id){if(process.env.BOUNDED_GRAPHEME_BASELINE_DIR&&['/NativeAnswerInput.tsx','/raceInput.ts','/localInput.ts'].some(name=>id.endsWith(name)))return readFile(path.join(process.env.BOUNDED_GRAPHEME_BASELINE_DIR,id.endsWith('/raceInput.ts')?'raceInput.before.txt':id.endsWith('/localInput.ts')?'playable-input.before.txt':'NativeAnswerInput.before.txt'),'utf8');}}],build:{outDir:'dist',minify:false,target:'esnext'}});
  const state=user=>{
   const ticket=tickets.get(user),rival=[...tickets.values()].find(t=>t.user!==user),now=Date.now(),phase=ticket.left?'cancelled':started?'racing':'searching';
   const identity=t=>({displayName:t.user,avatarUrl:null,bot:false,correctCount:t.count});
@@ -76,24 +79,26 @@ app.render(<React.StrictMode>{<RaceTo10Game locale="en" ownerId={user} coins={10
  else{
   browser=await chromium.launch({headless:true});const quick=process.env.BOUNDED_GRAPHEME_QUICK==='1';
 
-  for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const target of process.env.BOUNDED_GRAPHEME_TARGETS?.split(',')??['live'])for(const scenario of quick?['paste']:['paste','composition','hint']){
+  for(const [width,height] of quick?[[390,568]]:[[390,568],[390,844],[1280,844]])for(const target of process.env.BOUNDED_GRAPHEME_TARGETS?.split(',')??['playable','live'])for(const scenario of quick?['paste']:['paste','composition','hint']){
    tickets=new Map();started=null;const context=await browser.newContext({viewport:{width,height}}),a=await context.newPage();
    const metric=(name,actual,expected,measurement)=>{observations.push({width,height,target,scenario,name,actual,expected,...(measurement?{measurement}: {})});assert.deepEqual(actual,expected,name);};
-   {const b=await context.newPage();for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}await a.locator('.race-gameplay .guess-board').waitFor();}
-   const selector='.race-native-answer-input',answer='test',text=answer+'x'.repeat(20000);
-   const letters=()=>a.locator('.guess-row button').allTextContents().then(values=>values.slice(0,4).join('').toLowerCase());
+   if(target==='playable'){await a.goto(baseUrl+'/?playable=1');await a.getByRole('button',{name:/Classic/}).click();await a.locator('.yt-answer-native').waitFor();await a.waitForFunction(()=>window.probe.saves.length===1&&document.querySelector('.yt-puzzle')?.getAttribute('aria-busy')!=='true');}
+   else {const b=await context.newPage();for(const [page,user] of [[a,'Alice'],[b,'Bob']]){await page.goto(baseUrl+'/?user='+user);await page.getByRole('button',{name:'Start PvP match',exact:true}).click();}await a.locator('.race-gameplay .guess-board').waitFor();}
+   const selector=target==='playable'?'.yt-answer-native':'.race-native-answer-input',answer=target==='playable'?'rome':'test',text=answer+'x'.repeat(20000);
+   const letters=()=>a.locator(target==='playable'?'.yt-guess-row.current .yt-tile':'.guess-row button').allTextContents().then(values=>values.slice(0,4).join('').toLowerCase());
    await a.locator(selector).focus();
-   if(scenario==='hint'){await a.getByRole('button',{name:/Hint/}).click();await a.waitForFunction(target=>document.querySelector('.guess-row button[disabled].green')?.textContent.toLowerCase()===('t'),target);await a.locator(selector).focus();}
+   if(scenario==='hint'){await a.getByRole('button',{name:/Hint/}).click();await a.waitForFunction(target=>document.querySelector(target==='playable'?'.yt-tile.hinted':'.guess-row button[disabled].green')?.textContent.toLowerCase()===(target==='playable'?'r':'t'),target);await a.locator(selector).focus();}
    const work=await a.evaluate(({selector,text,scenario})=>{const input=document.querySelector(selector);window.probe.segmentYields=0;window.probe.countSegments=true;const inputText=scenario==='hint'?text.slice(1):text;input.value=inputText;if(scenario==='composition'){input.dispatchEvent(new CompositionEvent('compositionstart',{bubbles:true}));input.dispatchEvent(new CompositionEvent('compositionend',{bubbles:true,data:input.value}));}else input.dispatchEvent(new InputEvent('input',{bubbles:true,data:input.value,inputType:'insertFromPaste'}));window.probe.countSegments=false;return {inputLength:inputText.length,segments:window.probe.segmentYields};},{selector,text,scenario});
    metric('long committed text preserves the bounded answer',await letters(),answer);
    const timing=await a.evaluate(({selector,text})=>{const input=document.querySelector(selector),samples=[];window.probe.countSegments=false;for(let repeat=0;repeat<9;repeat++){for(let index=0;index<4;index++)input.dispatchEvent(new KeyboardEvent('keydown',{key:'Backspace',bubbles:true,cancelable:true}));const start=performance.now();input.value=text;input.dispatchEvent(new InputEvent('input',{bubbles:true,data:text,inputType:'insertFromPaste'}));samples.push(performance.now()-start);}samples.shift();return {samplesMs:samples,medianMs:[...samples].sort((a,b)=>a-b)[Math.floor(samples.length/2)]};},{selector,text:scenario==='hint'?text.slice(1):text});
    metric('ignored suffix does not require full grapheme enumeration',work.segments<=64,true,{...work,...timing});
    metric('input cannot submit a guess',await a.evaluate(()=>window.probe.calls.filter(call=>call.action==='guess').length),0);
-   metric('input cannot add a material save',await a.evaluate(()=>window.probe.saves.length),0);
+   metric('input cannot add a material save',await a.evaluate(()=>window.probe.saves.length),target==='playable'?(scenario==='hint'?2:1):0);
    metric('consumed native value is empty',await a.locator(selector).inputValue(),'');
    for(let index=0;index<4;index++)await a.keyboard.press('Backspace');
-   await a.locator('.guess-row button:not([disabled])').first().click();await a.keyboard.type(scenario==='hint'?answer.slice(1):answer);await a.keyboard.press('Enter');
-   {await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('fresh explicit answer advances once',tickets.get('Alice').count,1);metric('fresh explicit answer is sent once',await a.evaluate(()=>window.probe.calls.filter(call=>call.action==='guess').map(call=>call.guess)),[answer]);}
+   await a.locator(target==='playable'?'.yt-guess-row.current .yt-tile:not([disabled])':'.guess-row button:not([disabled])').first().click();await a.keyboard.type(scenario==='hint'?answer.slice(1):answer);await a.keyboard.press('Enter');
+   if(target==='playable'){await a.locator('.yt-result').waitFor();metric('fresh explicit answer wins once',await a.evaluate(()=>JSON.parse(window.probe.saves.at(-1)).progression.totalWins),1);metric('fresh explicit answer is scored once',await a.evaluate(()=>JSON.parse(window.probe.saves.at(-1)).progression.totalGuessesInWins),1);}
+   else {await a.waitForFunction(()=>document.querySelector('.race-progress > div:first-child strong')?.textContent.includes('1 / 10'));metric('fresh explicit answer advances once',tickets.get('Alice').count,1);metric('fresh explicit answer is sent once',await a.evaluate(()=>window.probe.calls.filter(call=>call.action==='guess').map(call=>call.guess)),[answer]);}
    metric('no page errors',await a.evaluate(()=>window.probe.errors),[]);metric('no unhandled rejection',await a.evaluate(()=>window.probe.unhandled),[]);
    await a.screenshot({path:path.join(output,[width,height,target,scenario,'settled.png'].join('-'))});await context.close();
   }

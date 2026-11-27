@@ -360,16 +360,16 @@ it("preserves confirmed consumables on a transient refresh failure and clears th
   expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: false});
 });
 
-it("preserves consumables when the SDK throws while keeping subscription offers closed", async () => {
-  /** A previously confirmed consumable survives a transient SDK refresh failure. */
+it("preserves same-account subscription details and consumables while marking a thrown refresh unavailable", async () => {
   const coin = product("coins-250", "consumable");
+  const subscription = product("premium", "subscription");
   /** Exercises registered catalog refreshes with subscriptions enabled. */
   const {getProducts, getSubscriptions, state} = createHarness(session(true), true);
   getProducts.mockResolvedValueOnce({status: "success", value: [coin]}).mockRejectedValueOnce(new Error("offline"));
-  getSubscriptions.mockResolvedValue({status: "success", value: [product("premium", "subscription")]});
+  getSubscriptions.mockResolvedValue({status: "success", value: [subscription]});
   await state[2]();
   await state[2]();
-  expect(mockSetProducts).toHaveBeenLastCalledWith([coin]);
+  expect(mockSetProducts).toHaveBeenLastCalledWith([subscription, coin]);
   expect(mockSetCatalogState).toHaveBeenLastCalledWith({loading: false, error: true});
 });
 

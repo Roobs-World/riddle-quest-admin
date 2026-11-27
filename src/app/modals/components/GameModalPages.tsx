@@ -22,6 +22,8 @@ export type GameModalPagesProps = {
   onClose: () => void;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Optional target-funded extra attempt; absent on unsupported targets. */
+  onRecoverAttempt?: () => void;
   /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
   /** Stores on purchase. */
@@ -53,6 +55,7 @@ export function GameModalPages({
   state,
   onClose,
   onContinue,
+  onRecoverAttempt,
   continuationPending = false,
   onPurchase,
   onOpenModal,
@@ -89,6 +92,7 @@ export function GameModalPages({
         <ContinueModalPage
           balance={balance}
           onContinue={onContinue}
+          onRecoverAttempt={onRecoverAttempt}
           pending={continuationPending}
           recoveryPending={state.guessPending}
           onSkip={onRequestSkip}

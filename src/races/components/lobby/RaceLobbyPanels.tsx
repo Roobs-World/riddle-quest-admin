@@ -7,6 +7,8 @@ import type {
   RaceEntryResponse,
   RaceInboxItem,
   SocialReportCategory,
+  ListFacebookTournamentResponse,
+  ListFacebookContextBoardResponse,
 } from "../../contracts/index";
 import {tr} from "../../../localization/browser/i18n";
 import {canCancelRaceInvitation} from "../../matchmaking/raceEntrySelection";
@@ -56,11 +58,58 @@ export function RaceCategoriesPanel({
   );
 }
 
+/** Displays identity-free server-authoritative tournament standings. */
+export function RaceTournamentPanel({
+  tournament,
+  loading,
+  sharing = false,
+  onShare,
+}: {
+  /** Stores tournament. */
+  tournament: ListFacebookTournamentResponse | null;
+  /** Stores loading. */
+  loading: boolean;
+  /** One player-requested native share is pending. */
+  sharing?: boolean;
+  /** Present only when the target exposes a real native tournament dialog. */
+  onShare?: () => void;
+}) {
+  return (
+    <div className="race-panel race-tournaments" data-rewards-enabled="false">
+      <h2>{tr("RaceTo10.HUB_TOURNAMENTS")}</h2>
+      {loading ? (
+        <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
+      ) : !tournament || tournament.standings.length === 0 ? (
+        <p>{tr("RaceTo10.RESULTS_EMPTY")}</p>
+      ) : (
+        <ol>
+          {tournament.standings.map((standing, index) => (
+            <li
+              key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
+              aria-current={standing.isCurrentPlayer || undefined}
+            >
+              <strong dir="ltr">#{standing.rank}</strong>
+              <span dir="ltr">{formatRaceTime(standing.adjustedTimeMs)}</span>
+            </li>
+          ))}
+        </ol>
+      )}
+      {!loading && tournament?.currentPlayer && onShare && (
+        <button className="race-secondary" disabled={sharing} aria-busy={sharing} onClick={onShare}>
+          {tr("RaceTo10.SHARE_TOURNAMENT")}
+        </button>
+      )}
+    </div>
+  );
+}
+
 /** Displays completed multiplayer results and rematch controls. */
 export function RaceInboxPanel({
   items,
   loading,
   safetyPending,
+  contextBoard,
+  contextBoardLoading,
   onRematch,
   onBlock,
   onReport,
@@ -77,6 +126,10 @@ export function RaceInboxPanel({
     /** Rival whose safety mutation is in flight. */
     targetUserId: string;
   } | null;
+  /** Stores context board. */
+  contextBoard?: ListFacebookContextBoardResponse | null;
+  /** Stores context board loading. */
+  contextBoardLoading?: boolean;
   /** Stores on rematch. */
   onRematch: (item: RaceInboxItem) => void;
   /** Stores on block. */
@@ -91,6 +144,21 @@ export function RaceInboxPanel({
   return (
     <div className="race-panel race-inbox">
       <h2>{tr("RaceTo10.RESULTS_TITLE")}</h2>
+      {contextBoardLoading ? (
+        <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
+      ) : contextBoard && contextBoard.standings.length > 0 ? (
+        <ol className="race-context-board" aria-label={tr("RaceTo10.HUB_ACTIVITY")} data-rewards-enabled="false">
+          {contextBoard.standings.map((standing, index) => (
+            <li
+              key={`${standing.rank}-${standing.adjustedTimeMs}-${index}`}
+              aria-current={standing.isCurrentPlayer || undefined}
+            >
+              <strong>#{standing.rank}</strong>
+              <span>{formatRaceTime(standing.adjustedTimeMs)}</span>
+            </li>
+          ))}
+        </ol>
+      ) : null}
       {loading && items.length === 0 ? (
         <p aria-live="polite">{tr("RaceTo10.RESULTS_LOADING")}</p>
       ) : items.length === 0 ? (

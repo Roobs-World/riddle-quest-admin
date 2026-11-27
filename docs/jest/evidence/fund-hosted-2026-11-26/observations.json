@@ -1,4 +1,5 @@
 {
+  "recordScope": "Historical observations from 26 November 2026. Version and active-status fields describe the recorded checkpoints, not current live status or acceptance of the 27 November main-into-jest integration.",
   "date": "2026-11-26",
   "versionId": "01a218ad-89d6-73c9-b0b9-44aaedbd5ef4",
   "version": "1.0.0-dev.20261126162520.f0a4ecbb034f.0e9adbba",

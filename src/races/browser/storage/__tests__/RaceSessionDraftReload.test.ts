@@ -228,7 +228,7 @@ describe("server-confirmed multiplayer draft reload", () => {
     h.session.retry(); h.respond("raceResume", {run: {...run, status: "abandoned", currentRiddle: null}});
     store.deny("");
     if (replacement === "replacement") store.replace(JSON.stringify({...JSON.parse(store.read()!), savedAtMs: 100001, letters: ["n", "e", "w", "", ""]}));
-    else if (replacement === "account") h.session.enter({locale: "en", ownerId: "other-owner", openInbox: true});
+    else if (replacement === "account") h.session.enter({locale: "en", ownerId: "other-owner", tournamentLocale: "en"});
     else h.session.dispose();
     /** Clock activity after replacement retains the exact newer or inaccessible bytes. */
     const expected = store.read(); h.advance(2000); expect(store.read()).toBe(expected); h.session.dispose();

@@ -8,7 +8,7 @@ import {chromium} from '@playwright/test';
 // Cold browser contexts, local uncompressed artifacts, 4x CPU slowdown and a
 // deterministic 300ms host SDK response. No live provider/backend timing noise.
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
-const supportedTargets = ['jest'];
+const supportedTargets = ['jest', 'facebook', 'reddit', 'youtube', 'netflix', 'yahoo'];
 const targets = process.env.LOAD_TARGETS?.split(',') ?? supportedTargets;
 assert.ok(targets.every(target => supportedTargets.includes(target)), 'Unknown measurement target');
 const results = [];
@@ -45,6 +45,7 @@ try {
           window.__RIDDLE_QUEST_BROWSER_TEST__ = true;
           window.devvit = {context:{}, entrypoints:{game:'/index.html'}, token:'browser-test-token', webViewMode:1};
           window.ytgame = {IN_PLAYABLES_ENV:true, game:{firstFrameReady(){}, gameReady(){window.__gameReadyAt=performance.now();}, async loadData(){return '';}, async saveData(){}}, system:{async getLanguage(){return 'fr-CA';}, isAudioEnabled(){return false;}, onAudioEnabledChange(){return ()=>{};}, onPause(){return ()=>{};}, onResume(){return ()=>{};}}, health:{logError(){}, logWarning(){}}};
+          window.FBInstant = {async initializeAsync(){}, setLoadingProgress(){}, async startGameAsync(){}, getSupportedAPIs(){return [];}, onPause(){}, onResume(){}, player:{getID(){return 'load-test';}, getName(){return 'Solver';}, getPhoto(){return null;}, async getDataAsync(){return {};}, async setDataAsync(){}, async getSignedPlayerInfoAsync(){throw Error('offline measurement');}}};
         });
         const session = await context.newCDPSession(page);
         await session.send('Emulation.setCPUThrottlingRate', {rate:4});
@@ -55,7 +56,8 @@ try {
         }
         await page.goto(`http://127.0.0.1:${server.address().port}/?harness=jest`);
         await page.waitForFunction(() => performance.getEntriesByName('first-contentful-paint').length > 0);
-        await page.locator('#root button').first().waitFor();
+        if (['youtube','netflix','yahoo'].includes(target)) await page.getByRole('button', {name:/classique|classic/i}).waitFor();
+        else await page.locator('#root button').first().waitFor();
         const metrics = await page.evaluate(() => ({
           fcpMs: performance.getEntriesByName('first-contentful-paint')[0].startTime,
           domContentLoadedMs: performance.getEntriesByType('navigation')[0].domContentLoadedEventEnd,
@@ -65,6 +67,14 @@ try {
           contentChunks: performance.getEntriesByType('resource').filter(item => /playable-pack-/.test(item.name)).map(item => item.name.split('/').pop()),
         }));
         assert.deepEqual(errors, [], `${target} browser errors`);
+        if (process.argv.includes('--expect-split-content') && ['youtube','netflix','yahoo'].includes(target)) {
+          assert.equal(metrics.contentChunks.length, 1, `${target} loaded extra locale packs`);
+          assert.ok(metrics.contentChunks[0].includes(`playable-pack-${target === 'youtube' ? 'fr' : 'en'}-`), `${target} loaded the wrong locale pack`);
+        }
+        if (process.argv.includes('--expect-monolithic-content') && ['youtube','netflix','yahoo'].includes(target)) {
+          assert.equal(metrics.contentChunks.length, 0, `${target} baseline unexpectedly contains split packs`);
+          assert.ok(initialJsBytes > 1_000_000, `${target} baseline is missing the monolithic content`);
+        }
         runs.push(metrics);
         if (run === 0 && process.env.LOAD_SCREENSHOT_DIR) await page.screenshot({path:path.join(process.env.LOAD_SCREENSHOT_DIR, `${target}.png`)});
         await context.close();

@@ -143,7 +143,31 @@
   outline: 3px solid #fff;
   outline-offset: 2px;
 }
+.race-hub-social-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
 
+.race-platform-player-overlay {
+  width: min(100%, 300px);
+  min-height: 64px;
+  margin: 0 auto 0.75rem;
+  overflow: hidden;
+}
+.race-hub-social-actions button {
+  min-height: 44px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 12px;
+  color: #fff;
+  background: rgba(2, 14, 20, 0.62);
+  font-weight: 800;
+}
+.race-hub-social-actions button:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
 
 .race-category-panel {
   max-width: 780px;
@@ -222,6 +246,39 @@
 .race-panel > .race-secondary {
   width: 100%;
   margin-top: 14px;
+}
+.race-tournaments ol {
+  display: grid;
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+.race-tournaments li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 14px;
+  border: 1px solid #c7d8d3;
+  border-radius: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.race-tournaments li[aria-current="true"] {
+  background: #edf7f3;
+}
+.race-tournaments > button {
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid #247147;
+  border-radius: 12px;
+  color: #17252c;
+  background: #edf7f3;
+  font: inherit;
+  font-weight: 700;
+}
+.race-tournaments > button:focus-visible {
+  outline: 3px solid #247147;
+  outline-offset: 2px;
 }
 .race-result-score {
   display: grid;
@@ -346,6 +403,8 @@
 }
 .race-primary[aria-busy="true"]::after,
 .live-race-invite-share button[aria-busy="true"]::after,
+.race-tournaments > button[aria-busy="true"]::after,
+.race-hub-social-actions button[aria-busy="true"]::after,
 .race-safety-actions button[aria-busy="true"]::after,
 .live-race-safety button[aria-busy="true"]::after,
 .race-quit-confirm[aria-busy="true"]::after {
@@ -513,6 +572,27 @@
 .live-race-direct-invite label { display: grid; gap: .4rem; text-align: start; }
 .live-race-direct-invite input { min-height: 48px; padding: .6rem; border-radius: .7rem; border: 1px solid currentColor; color: inherit; background: transparent; font: inherit; width: 100%; box-sizing: border-box; }
 .live-race-direct-invite input:focus-visible { outline: 3px solid #ffe380; outline-offset: 3px; }
+
+/* Context standings carry explicit competition ranks rather than HTML list counters. */
+.race-context-panel > .race-context-board {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.race-context-panel > .race-context-board > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(128, 213, 163, 0.16);
+}
+.race-context-panel > .race-context-board > li > span {
+  font-variant-numeric: tabular-nums;
+}
 
 .live-race-safety {
   flex: none;

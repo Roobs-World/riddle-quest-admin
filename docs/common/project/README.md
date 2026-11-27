@@ -1,7 +1,5 @@
 # Riddle Quest
 
-This branch has a [Jest-only frontend](../../jest/jest-only-frontend.md). Other provider client setup sections below are historical references. Backend operations and shared contracts remain available. Use `pnpm build:jest` and `pnpm release:jest` for the game.
-
 Riddle Quest is a word game with isolated React HTML5 targets for Jest, Facebook Instant Games, Reddit Devvit Web, YouTube Playables, Netflix, Yahoo and GameSnacks, plus a bare React Native Android app. Shared gameplay remains server-authoritative where a trusted backend contract exists; self-contained targets use their permitted local save authority. Provider identity, storage, commerce, social, notification, and lifecycle capabilities appear only where their platform contracts support them.
 
 All development, releases, Jest uploads and monitoring repairs use `main`. Confirm the current branch is `main` and push completed work to `origin/main`. Platform-specific source lives below `platforms/native/<provider>` or `platforms/web/<provider>`. Ads are permitted only in the Facebook artifact. See [platform ownership and build contracts](../architecture/platform-layout.md) before adding or moving code.
@@ -331,6 +329,7 @@ Build one isolated shipping target:
 
 ```bash
 pnpm build:jest
+pnpm build:facebook
 pnpm build:youtube
 pnpm build:reddit
 ```
@@ -343,7 +342,7 @@ Build the established backend and non-YouTube production path:
 pnpm build
 ```
 
-Build the established Jest and Reddit web targets plus the Reddit App package:
+Build the established Jest, Facebook, and Reddit web targets plus the Reddit App package:
 
 ```bash
 pnpm build:web

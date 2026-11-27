@@ -1,4 +1,4 @@
-import {completionPresentationKey, getVisibleGameModal, isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "../../../gameplay/session/completion/completionPresentation";
 import {useEffect, useId, useLayoutEffect, useRef} from "react";
 import "../styles/modal-shell.css";
 import "../../../progression/styles/rewards.css";
@@ -32,6 +32,8 @@ export type GameModalViewProps = {
   onClose: () => void;
   /** Stores on continue. */
   onContinue: (amount?: number) => void;
+  /** Optional target-funded continuation and its exclusive operation lock. */
+  onRecoverAttempt?: () => void;
   /** Disables competing loss actions while continuation is awaiting completion. */
   continuationPending?: boolean;
   /** Suspends modal focus and keyboard ownership while its parent is inert. */
@@ -70,6 +72,7 @@ export function GameModalView({
   state,
   onClose,
   onContinue,
+  onRecoverAttempt,
   continuationPending = false,
   interactionBlocked = false,
   onPurchase,
@@ -87,8 +90,7 @@ export function GameModalView({
   onCoinBalancePreview,
   onCompletionMilestonesPresented,
 }: GameModalViewProps) {
-  /** Pending completion keeps the solved board visible until the full dialog is ready. */
-  const modal = getVisibleGameModal(state);
+  const {modal} = state;
   /** Copy changes invalidate compiler caches while preserving local page state. */
   const tr = useTranslator();
   /** Keeps status announcements inside the active dialog's accessible reading scope. */
@@ -144,6 +146,7 @@ export function GameModalView({
       const focusable = getModalFocusable(activeDialog);
       if (focusable.length === 0) {
         event.preventDefault();
+        activeDialog?.focus({preventScroll: true});
         return;
       }
       /** Provides first behavior. */
@@ -200,7 +203,7 @@ export function GameModalView({
       if (previous && focusable.includes(previous)) {
         previous.focus({preventScroll: true});
       } else {
-        focusable[0]?.focus();
+        (focusable[0] ?? modal).focus({preventScroll: true});
       }
     });
     return () => {
@@ -265,6 +268,7 @@ export function GameModalView({
         ref={modalRef}
         className={`game-modal modal-${modal}`}
         role="dialog"
+        tabIndex={-1}
         aria-modal="true"
         aria-labelledby="game-modal-title"
         aria-owns={completionTabs ? completionTabsId : undefined}
@@ -293,6 +297,7 @@ export function GameModalView({
           state={state}
           onClose={onClose}
           onContinue={onContinue}
+          onRecoverAttempt={onRecoverAttempt}
           continuationPending={continuationPending}
           onPurchase={onPurchase}
           onOpenModal={onOpenModal}

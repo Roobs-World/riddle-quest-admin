@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Credits",
     "DATA_EXPORT_BUTTON": "Export My Data",
     "HELP_BUTTON": "Help",
+    "LANGUAGE_LABEL": "Language",
     "LANGUAGE_SELECTED": "Selected",
     "LICENSES_BUTTON": "Licenses",
     "LOGOUT_BUTTON": "Logout",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Terms of Use",
     "TITLE": "Settings",
     "TOGGLE_OFF": "Off",
-    "TOGGLE_ON": "On",
-    "REDUCED_MOTION": "Reduced motion",
-    "NOTIFICATION_SAVE_FAILED": "Notification settings could not be saved. Please try again."
+    "TOGGLE_ON": "On"
   }
 }

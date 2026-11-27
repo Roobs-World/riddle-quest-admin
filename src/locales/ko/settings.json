@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "크레딧",
     "DATA_EXPORT_BUTTON": "내 데이터 내보내기",
     "HELP_BUTTON": "돕다",
+    "LANGUAGE_LABEL": "언어",
     "LANGUAGE_SELECTED": "선택된",
     "LICENSES_BUTTON": "라이센스",
     "LOGOUT_BUTTON": "로그아웃",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "이용 약관",
     "TITLE": "설정",
     "TOGGLE_OFF": "끄기",
-    "TOGGLE_ON": "켜기",
-    "REDUCED_MOTION": "모션 줄이기",
-    "NOTIFICATION_SAVE_FAILED": "알림 설정을 저장하지 못했습니다. 다시 시도해 주세요."
+    "TOGGLE_ON": "켜기"
   }
 }

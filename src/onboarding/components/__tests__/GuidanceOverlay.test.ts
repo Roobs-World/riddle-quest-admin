@@ -1,6 +1,6 @@
 import {expect, it} from "@jest/globals";
 import {getOnboardingTotalSteps} from "../GuidanceOverlay";
 
-it("ends onboarding after welcome and instructions without requesting signup", () => {
+it("keeps shared onboarding to welcome and instructions", () => {
   expect(getOnboardingTotalSteps()).toBe(2);
 });

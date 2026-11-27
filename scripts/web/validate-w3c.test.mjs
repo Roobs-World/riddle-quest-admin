@@ -69,7 +69,7 @@ test("the default gate requires all six artifacts in their project build folders
     mkdirSync(portal, {recursive: true});
     writeFileSync(path.join(portal, "package.json"), "{}");
     symlinkSync(path.join(packageDirectory, "node_modules"), path.join(portal, "node_modules"), "dir");
-    for (const target of ["jest", "reddit", "youtube", "netflix", "yahoo"]) {
+    for (const target of ["jest", "facebook", "reddit", "youtube", "netflix", "yahoo"]) {
       const directory = path.join(repository, "platforms", "web", target, "build", "dist");
       mkdirSync(directory, {recursive: true});
       writeFileSync(path.join(directory, "index.html"), '<!doctype html><html lang="en"><head><title>Game</title></head><body><main>Game</main></body></html>');

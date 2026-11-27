@@ -32,6 +32,9 @@
     "paths": {
       "#shop-modal-page": [
         "./src/commerce/components/ShopModalPage.tsx"
+      ],
+      "#youtube-content": [
+        "./firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json"
       ]
     },
     "resolveJsonModule": true,
@@ -43,8 +46,8 @@
     "src",
     "vite.config.ts",
     "scripts/web/build",
-    "platforms/web/jest/src",
-    "platforms/web/jest/tooling"
+    "platforms/web/*/src",
+    "platforms/web/*/tooling"
   ],
   "exclude": [
     "platforms/web/*/build",

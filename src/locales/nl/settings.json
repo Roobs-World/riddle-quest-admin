@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Credits",
     "DATA_EXPORT_BUTTON": "Mijn gegevens exporteren",
     "HELP_BUTTON": "Hulp",
+    "LANGUAGE_LABEL": "Taal",
     "LANGUAGE_SELECTED": "Geselecteerd",
     "LICENSES_BUTTON": "Licenties",
     "LOGOUT_BUTTON": "Uitloggen",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Gebruiksvoorwaarden",
     "TITLE": "Instellingen",
     "TOGGLE_OFF": "Uit",
-    "TOGGLE_ON": "Aan",
-    "REDUCED_MOTION": "Verminderde beweging",
-    "NOTIFICATION_SAVE_FAILED": "De meldingsinstellingen konden niet worden opgeslagen. Probeer het opnieuw."
+    "TOGGLE_ON": "Aan"
   }
 }

@@ -3,14 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Riddle-Q Jest Fund readiness</title>
+  <title>Riddle-Q Jest submission readiness</title>
   <style>
-    :root{font-family:system-ui,sans-serif;color:#182032;background:#f5f7fb;line-height:1.6}body{margin:0}main{max-width:900px;margin:40px auto;padding:0 20px}h1{line-height:1.15}.panel{background:white;border:1px solid #dfe5ef;border-radius:12px;margin:20px 0;padding:24px}.notice{border-left:5px solid #a45d00;padding:16px;background:#fff3dc}a{color:#145ab3}code{overflow-wrap:anywhere}td,th{padding:12px;text-align:left;vertical-align:top;border-bottom:1px solid #dfe5ef}table{border-collapse:collapse;width:100%}@media(max-width:600px){.panel{padding:16px;overflow:auto}main{margin:20px auto}}
+    :root{color-scheme:light dark;font-family:Inter,ui-sans-serif,system-ui,sans-serif;background:#f5f7fb;color:#182032}*{box-sizing:border-box}body{margin:0}main{width:min(1120px,calc(100% - 32px));margin:48px auto 96px}.hero{padding:32px;border-radius:24px;background:#17223a;color:#fff}.eyebrow{margin:0 0 10px;color:#a9c7ff;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}h1{margin:0;font-size:clamp(34px,5vw,58px);line-height:1.05;letter-spacing:-.035em}.lead{max-width:780px;margin:18px 0 0;color:#d7e2f5;font-size:18px;line-height:1.6}.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:24px 0}.fact,.panel{border:1px solid #dfe5ef;border-radius:18px;background:#fff;box-shadow:0 6px 24px #1a31570d}.fact{padding:20px}.fact strong{display:block;font-size:27px}.fact span{color:#5e687b;font-size:13px}.panel{margin:20px 0;padding:24px}h2{margin:0 0 14px;font-size:22px}p,li{line-height:1.6}table{width:100%;border-collapse:collapse;font-size:14px}th,td{padding:12px;border-bottom:1px solid #e5e9f0;text-align:left;vertical-align:top}th{color:#687286;font-size:12px;text-transform:uppercase;letter-spacing:.05em}.pass{color:#137a4b;font-weight:700}.block{color:#a15c00;font-weight:700}.optional{color:#526077;font-weight:700}code{overflow-wrap:anywhere}.notice{border-left:4px solid #d48200;padding:12px 16px;background:#fff6df}.sources a{color:#1b63c6}.stamp{margin-top:26px;color:#687286;font-size:13px}@media(max-width:780px){.facts{grid-template-columns:repeat(2,1fr)}.panel{overflow-x:auto}}@media(max-width:460px){.facts{grid-template-columns:1fr}main{width:min(100% - 20px,1120px);margin-top:20px}.hero,.panel{padding:18px}}
+    @media(prefers-color-scheme:dark){:root{background:#111620;color:#edf2fc}.fact,.panel{background:#1a2230;border-color:#303c50}.fact span,th,.stamp{color:#aebbd0}th,td{border-color:#303c50}.notice{background:#302817}.sources a{color:#8db9ff}}
   </style>
 </head>
 <body><main>
+  <section class="panel"><h2>Integration status — 27 November 2026</h2>
+    <p>This main-into-jest merge has not been built, uploaded or run through hosted acceptance. The latest recorded live verification is the <a href="evidence/returning-guest-registration-2026-11-26.json">returning-guest release</a>: version <code>01a219c2-33c8-7139-928a-db76b271ee36</code>, source <code>f5d18e58c2cc</code>, ready and active on 26 November at 21:28:14 UTC. No new Jest status query was made for this merge; Simulator acceptance was not run for that release.</p>
+    <p>The historical findings below describe earlier November 26 builds, with “current” and “new” referring to the 17:55 UTC invitation release at that checkpoint. Basic 17/17 and Fund 6/6 belong to guidance build <code>54179b9a9da6</code>; they do not certify later releases or this integration. Current notifications use the <a href="jest-notification-testing.md">manager-owned seven-day plan</a> and contain no gameplay entry payload. The <a href="evidence/jest-submission-readiness-2026-11-03.html">November 3 report</a> is retained as historical evidence.</p>
+  </section>
   <p>Reviewed 26 November 2026</p>
-  <h1>Prior build passed; latest release retest pending</h1>
+  <h1>Historical Fund acceptance checkpoint</h1>
   <p class="notice">The preceding guidance build passed Basic Launch 17/17 and Fund 6/6 in the authenticated Simulator and displayed “Eligible to apply.” Six live sandbox coin packs also passed on that build. The new race/invitation release is ready and active, with its exact-version hosted retest pending. Recommended checks are 3/4; manual review, remaining live-platform checks and physical-device acceptance are pending. Funding has not been awarded.</p>
   <p>The <a href="jest-growth-fund-readiness.md">current requirement matrix and acceptance plan</a> contains the full review. The earlier <a href="evidence/jest-growth-fund-audit-2026-11-26.json">audit snapshot</a> records live configuration and evidence limits; its missing-notification finding predates this client update.</p>
   <section class="panel"><h2>Release evidence</h2>
@@ -20,24 +25,29 @@
   <section class="panel"><h2>Recorded findings</h2><p>Runtime passes below describe the guidance-build baseline unless stated otherwise; they do not certify the new invitation release.</p><table><thead><tr><th>Area</th><th>Finding</th></tr></thead><tbody>
     <tr><td>Registration and saved progress</td><td>Guidance-build Simulator native guest prompts appeared after onboarding and three completed riddles. Dismissal preserved play; registration retained 7,835 coins and progress. Live guest migration remains separate.</td></tr>
     <tr><td>Notifications</td><td>Seven D1–D7 reminders appeared three seconds after Simulator registration. Off removed all seven and On restored them; automated content/asset checks passed. Actual delivery and live return routing remain unverified.</td></tr>
-    <tr><td>Monetization</td><td>All six coin packs completed in sandbox with correct grants and reload persistence. Premium correctly retains access until 22 December after previously cancelled renewal and hides duplicate offers; repeated cancellation is unavailable as expected. The Simulator verified subscription checkout/grant/reload/cancellation and seeded purchase recovery. Live subscription checkout/lifecycle and actual crash recovery remain unverified. An inactive Sandbox User reached the £0.00/month Stripe form; its required full name and US shipping address await user entry in Firefox. The empty form was rejected and no subscription was created.</td></tr>
+    <tr><td>Monetization</td><td>All six coin packs completed in sandbox with correct grants and reload persistence. Premium correctly retains access until 22 December after previously cancelled renewal and hides duplicate offers; repeated cancellation is unavailable as expected. The Simulator verified subscription checkout/grant/reload/cancellation and seeded purchase recovery. Live subscription checkout/lifecycle and actual crash recovery remain unverified. An inactive Sandbox User reached the £0.00/month Stripe form; its required full name and US shipping address were left for manual entry at that checkpoint; the current browser state is unverified. The empty form was rejected and no subscription was created.</td></tr>
     <tr><td>Mobile and screenshots</td><td>Profile guidance, six key SDK captures and iPhone SE/Safari, Galaxy S25/Chrome and unfolded Z Fold 7/Installed device presets passed desktop visual checks. Game controls were visible and the multiplayer menu scrolled. These are not physical-phone or Safari-engine tests; mobile loading/stability remain pending. Capture downloads were blocked.</td></tr>
     <tr><td>Referrals and race</td><td>The recorded Recommended score is 3/4. Race/referral fixes passed 48 race scenarios and six invite cases with 30 PNG renders locally. Those fixes are now active; their exact-version hosted retest and live two-user reward checks remain pending.</td></tr>
     <tr><td>Team agreements</td><td>Live Team Settings showed the Developer Agreement and AUP versions dated 2026-10-11 already Signed, displayed as one month ago. This session accepted no agreement; Fund Terms and submission remain separate.</td></tr>
     <tr><td>Growth evidence</td><td>The earlier pre-checkout audit found no transactions, empty retention cohorts and no ad campaigns. Six later sandbox purchases have zero charge and revenue; they are not paid conversion or ROAS evidence.</td></tr>
   </tbody></table></section>
   <section class="panel"><h2>Required before submission</h2>
+    <div class="notice"><strong>Current-build acceptance remains unverified.</strong> Resolve the exact ready, active version from Jest before any separately authorized acceptance session; historical pass counts do not transfer.</div>
+    <p><strong>Release-host readiness:</strong> <code>/usr/bin/bwrap</code> is available and the external Jest credential file is a regular owner-only <code>0600</code> file. Release credentials remain outside the repository and are exposed only to the sandboxed upload leaf. Receipt counts are intentionally omitted because they change after every release and must be reconciled from the owner-only receipt store.</p>
     <ol>
-      <li>Use the exact ready, active version recorded above when gathering acceptance evidence.</li>
+      <li>Resolve the current ready, active version from Jest immediately before gathering acceptance evidence; do not rely on historical IDs in this report. Reconcile any unresolved upload receipt before another release.</li>
       <li>Preserve the passing baseline Simulator session; retest the newly active race/invitation release before reporting its score. Finish the pending live subscription checkout/lifecycle, actual interrupted purchase recovery, two-user referral and physical-device checks.</li>
       <li>D1–D7 scheduling and Off/On consent passed in Simulator. Verify remaining live delivery, return routing and failure/deletion behavior separately.</li>
-      <li>Keep the server-to-server notification declaration off: this integration uses the client SDK.</li>
+      <li>Use the current notification verification guide for the manager-supplied SDK plan; do not reuse the historical Daily-routing campaign as current acceptance evidence.</li>
       <li>After submission is explicitly requested and acceptance evidence is complete, submit the verified build with the Fund option. Publication, live messages, paid campaigns and acceptance of terms remain separate actions.</li>
     </ol>
   </section>
-  <section class="panel"><h2>Program and history</h2>
-    <p><a href="https://about.jest.com/fund/">Jest Fund II</a> lists an Explore deadline of 15 December 2026. Consult the <a href="https://docs.jest.com/launch-checklist">current launch checklist</a> and <a href="https://docs.jest.com/testing/simulator">Simulator guidance</a>.</p>
-    <p>The <a href="evidence/jest-submission-readiness-2026-11-03.html">3 November readiness report</a> is retained as historical evidence. Its browser checks, soak results and inactive-build status do not certify the current release.</p>
-  </section>
-</main></body>
-</html>
+  <section class="panel sources"><h2>Official requirements reviewed</h2><ul>
+    <li><a href="https://docs.jest.com/requirements/technical">Technical requirements</a></li>
+    <li><a href="https://docs.jest.com/requirements/gameplay">Gameplay requirements</a></li>
+    <li><a href="https://docs.jest.com/launch-checklist">Launch checklist</a></li>
+    <li><a href="https://docs.jest.com/content-review-and-moderation">Review and moderation</a></li>
+    <li><a href="https://docs.jest.com/sdk/html5/player">Player identity</a>, <a href="https://docs.jest.com/sdk/html5/payments">payments</a>, and <a href="https://docs.jest.com/sdk/html5/loading-screen">loading lifecycle</a></li>
+  </ul></section>
+  <p class="stamp">Historical evidence remains attached to its exact version. No review submission, publication, live sends, ad spending or terms acceptance was performed for this integration.</p>
+</main></body></html>

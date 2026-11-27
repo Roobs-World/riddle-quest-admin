@@ -1,6 +1,6 @@
 import {createFirebaseRaceMatchmaking} from "../firebaseRaceMatchmaking";
 
-it("exposes retained live history through the explicitly enabled hosted live surface", () => {
+it("exposes retained live history through the explicitly enabled Facebook live surface", () => {
   /** The owning target opts into live social features; the default adapter stays unchanged. */
   const options = {liveSafety: true, liveHistory: true, liveRematch: true};
   /** Target-owned capability surface under inspection. */
@@ -62,7 +62,7 @@ it("preserves default platform behavior while explicitly enabling live safety on
   const ordinary = createFirebaseRaceMatchmaking();
   expect(ordinary.live?.blockOpponent).toBeUndefined();
   expect(ordinary.live?.reportOpponent).toBeUndefined();
-  /** hosted explicitly opts into the server-resolved live safety capability. */
+  /** Facebook explicitly opts into the server-resolved live safety capability. */
   const enabled = createFirebaseRaceMatchmaking(undefined, {liveSafety: true});
   expect(typeof enabled.live?.blockOpponent).toBe("function");
   expect(typeof enabled.live?.reportOpponent).toBe("function");

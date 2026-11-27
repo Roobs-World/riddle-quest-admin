@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Emeği Geçenler",
     "DATA_EXPORT_BUTTON": "Verilerimi Dışa Aktar",
     "HELP_BUTTON": "Yardım",
+    "LANGUAGE_LABEL": "Dil",
     "LANGUAGE_SELECTED": "Seçili",
     "LICENSES_BUTTON": "Lisanslar",
     "LOGOUT_BUTTON": "Oturumu Kapat",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Kullanım Koşulları",
     "TITLE": "Ayarlar",
     "TOGGLE_OFF": "Kapalı",
-    "TOGGLE_ON": "Açık",
-    "REDUCED_MOTION": "Azaltılmış hareket",
-    "NOTIFICATION_SAVE_FAILED": "Bildirim ayarları kaydedilemedi. Lütfen tekrar deneyin."
+    "TOGGLE_ON": "Açık"
   }
 }

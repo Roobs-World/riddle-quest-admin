@@ -5,6 +5,8 @@ import type {ProductSummary} from "../../platform/contracts/hostServices";
 export const ShopSubscriptionContext = createContext<{
   /** Latest provider-owned catalog, including active entitlements. */
   products: readonly ProductSummary[];
+  /** Whether this platform supports subscription information before its catalog loads. */
+  subscriptionsEnabled?: boolean;
   /** Whether a provider catalog refresh is pending. */ catalogLoading?: boolean;
   /** Whether the latest provider catalog refresh was unavailable. */ catalogError?: boolean;
   /** Reconciles the provider catalog before displaying offers. */

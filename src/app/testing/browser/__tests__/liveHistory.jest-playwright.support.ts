@@ -2,7 +2,7 @@ import {expect} from "@jest/globals";
 import type {Page, Route} from "@playwright/test";
 
 /** Exercises target transport, locale validation, bounded read retirement and current Activity presentation. */
-export async function installLiveHistoryJourney(page: Page, target: "Reddit", requestUrls: string[]) {
+export async function installLiveHistoryJourney(page: Page, target: "Facebook" | "Reddit", requestUrls: string[]) {
   /** Existing context tests see a valid empty history until this dedicated journey begins. */
   let mode: "empty" | "failure" | "results" | "blocked" | "wrong-locale" | "late" | "guest" | "legacy-bot" = "empty";
   /** The original HTTP observer can finish after the player retires its tab. */
@@ -69,7 +69,7 @@ export async function installLiveHistoryJourney(page: Page, target: "Reddit", re
     expect(await page.locator(".live-race-history .live-race-rematch").count()).toBe(0);
     /** Literal oracles cover the actual French and Arabic adapter journeys independently of production translation code. */
     const legacyOpponentLabel = locale === "fr" ? "Adversaire" : locale === "ar" ? "الخصم" : "Opponent";
-    /** Real Reddit adapters preserve assigned guests and localise retained legacy labels. */
+    /** Real Facebook and Reddit adapters preserve assigned guests and localise retained legacy labels. */
     for (const [botMode, label] of [["guest", "Guest_ABC123"], ["legacy-bot", legacyOpponentLabel]] as const) {
       await page.locator('.race-hub-tabs [role="tab"]').first().click();
       mode = botMode;

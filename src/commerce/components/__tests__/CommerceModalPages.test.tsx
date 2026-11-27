@@ -85,7 +85,7 @@ describe("commerce modal pages", () => {
     expect(populatedHtml).toContain("shop-subscription-card");
   });
 
-  it("shows a cached subscription offer on the shop's first render", () => {
+  it("shows cached subscription details immediately while withholding checkout during ownership refresh", () => {
     /** Subscription actions activate the Jest shop refresh path. */
     const subscriptionActions = {
       products,
@@ -99,7 +99,13 @@ describe("commerce modal pages", () => {
       </ShopSubscriptionContext.Provider>,
     );
 
-    expect(html).toContain("START FREE TRIAL");
+    expect(html).toContain("Premium Trial");
+    expect(html).toContain("Monthly premium access");
+    expect(html).toContain("£2.99 / month");
+    for (const key of SUBSCRIPTION_BENEFIT_KEYS)
+      expect(html).toContain(tr(key, {coins: PREMIUM_SUBSCRIPTION_MONTHLY_COINS.toLocaleString()}));
+    expect(html).not.toContain("START FREE TRIAL");
+    expect(html).not.toContain(">SUBSCRIBE<");
     expect(html).toContain("shop-subscription-card");
   });
 

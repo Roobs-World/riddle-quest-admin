@@ -35,7 +35,7 @@ export function assertTargetDependency(target: string, id: string): void {
   }
   /** Provides name behavior. */
   const name = runtimePackage(id);
-  if (target === "jest" && (name === "@firebase/messaging" || name === "@firebase/messaging-compat" ||
+  if ((target === "jest" || target === "facebook") && (name === "@firebase/messaging" || name === "@firebase/messaging-compat" ||
       /\/node_modules\/firebase\/(?:compat\/)?messaging(?:\/|\?|$)/u.test(portable))) {
     throw new Error(`${target} must enroll push devices on the separate notification page; Firebase Messaging cannot enter the game artifact: ${id}`);
   }
@@ -118,7 +118,7 @@ export function webTargetDependencyPlugin(
       /** Runtime packages that need target-specific license notices. */
       const packages = [...new Set(modules.map(runtimePackage).filter((name): name is string => name !== null))].sort();
       /** License text contains only packages in this artifact. */
-      const notice = createNotice(new Set(packages), {includeHomepages: true});
+      const notice = createNotice(new Set(packages), {includeHomepages: target !== "youtube"});
       this.emitFile({type: "asset", fileName: "third-party-licenses.txt", source: notice});
       pendingInventory = JSON.stringify({
         schemaVersion: 1,

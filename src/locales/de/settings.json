@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Mitwirkende",
     "DATA_EXPORT_BUTTON": "Meine Daten exportieren",
     "HELP_BUTTON": "Hilfe",
+    "LANGUAGE_LABEL": "Sprache",
     "LANGUAGE_SELECTED": "Ausgewählt",
     "LICENSES_BUTTON": "Lizenzen",
     "LOGOUT_BUTTON": "Abmelden",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Nutzungsbedingungen",
     "TITLE": "Einstellungen",
     "TOGGLE_OFF": "Aus",
-    "TOGGLE_ON": "Ein",
-    "REDUCED_MOTION": "Reduzierte Bewegung",
-    "NOTIFICATION_SAVE_FAILED": "Die Benachrichtigungseinstellungen konnten nicht gespeichert werden. Versuche es erneut."
+    "TOGGLE_ON": "Ein"
   }
 }

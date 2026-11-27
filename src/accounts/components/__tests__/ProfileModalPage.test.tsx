@@ -36,16 +36,19 @@ const profile: BridgeProfile = {
 };
 
 describe("ProfileModalPage", () => {
-  it("shows the current game username with the provider avatar and authoritative balance", () => {
+  it("shows the saved game avatar and its picker when the provider supplies a profile", () => {
     /** Captures html for this regression check. */
     const html = renderToString(<ProviderProfileContext.Provider value={{username: "Jest Solver", avatarUrl: "https://example.com/jest.webp"}}>
       <ProfileModalPage profile={profile} platformRegistered onOpenModal={noop} onUpdateAvatar={updateAvatar} onDeleteAccount={noop} />
     </ProviderProfileContext.Provider>);
     expect(html).toContain("Nova");
-    expect(html).toContain("jest.webp");
+    expect(html).toContain("avatar.webp");
+    expect(html).not.toContain("jest.webp");
     expect(html).toContain("250");
     expect(html).not.toContain("Jest Solver");
-    expect(html).not.toContain('type="file"');
+    expect(html).toContain('type="file"');
+    expect(html).toContain('aria-label="Upload from Photo Library"');
+    expect(html).toContain("profile-avatar-edit");
     expect(html).not.toContain('class="play-text-button"');
   });
   it("preserves the game username when the provider has no configured profile", () => {

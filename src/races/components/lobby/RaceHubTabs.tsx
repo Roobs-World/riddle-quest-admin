@@ -2,15 +2,17 @@ import {useRef, type KeyboardEvent} from "react";
 import {tr} from "../../../localization/browser/i18n";
 
 /** Describes race hub tab. */
-export type RaceHubTab = "play" | "activity";
+export type RaceHubTab = "play" | "activity" | "tournaments";
 
 /** Accessible, capability-aware navigation for the shared social hub. */
 export function RaceHubTabs({
   active,
   onPlay,
   onActivity,
+  onTournaments,
+  onChooseContext,
   onMatchPlayer,
-  matchPending = false,
+  socialPending = null,
 }: {
   /** Stores active. */
   active: RaceHubTab;
@@ -18,17 +20,25 @@ export function RaceHubTabs({
   onPlay: () => void;
   /** Stores on activity. */
   onActivity: () => void;
-  /** Starts the target-owned recorded opponent search. */
+  /** Stores on tournaments. */
+  onTournaments?: () => void;
+  /** Stores on choose context. */
+  onChooseContext?: () => void;
+  /** Stores on match player. */
   onMatchPlayer?: () => void;
-  /** Disables discovery while its owned operation is pending. */
-  matchPending?: boolean;
+  /** Stores social pending. */
+  socialPending?: "context" | "match" | null;
 }) {
   /** Provides tabs behavior. */
   const tabs = [
     {id: "play" as const, label: tr("RaceTo10.HUB_PLAY"), onSelect: onPlay},
     {id: "activity" as const, label: tr("RaceTo10.HUB_ACTIVITY"), onSelect: onActivity},
+    ...(onTournaments
+      ? [{id: "tournaments" as const, label: tr("RaceTo10.HUB_TOURNAMENTS"), onSelect: onTournaments}]
+      : []),
   ];
-  const selected = active;
+  /** Capability removal must leave a reachable supported tab before parent navigation settles. */
+  const selected = active === "tournaments" && !onTournaments ? "play" : active;
   /** Provides tab refs behavior. */
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
   /** Handles tab key. */
@@ -65,9 +75,30 @@ export function RaceHubTabs({
           </button>
         ))}
       </div>
-      {onMatchPlayer && <button className="race-match-player" type="button" onClick={onMatchPlayer} disabled={matchPending} aria-busy={matchPending}>
-        {tr("RaceTo10.MATCH_PLAYER")}
-      </button>}
+      {onChooseContext || onMatchPlayer ? (
+        <div className="race-hub-social-actions" role="group" aria-label={tr("RaceTo10.MULTIPLAYER_BUTTON")}>
+          {onMatchPlayer ? (
+            <button
+              type="button"
+              onClick={onMatchPlayer}
+              disabled={socialPending !== null}
+              aria-busy={socialPending === "match"}
+            >
+              {tr("RaceTo10.MATCH_PLAYER")}
+            </button>
+          ) : null}
+          {onChooseContext ? (
+            <button
+              type="button"
+              onClick={onChooseContext}
+              disabled={socialPending !== null}
+              aria-busy={socialPending === "context"}
+            >
+              {tr("RaceTo10.CHOOSE_CONTEXT")}
+            </button>
+          ) : null}
+        </div>
+      ) : null}
     </nav>
   );
 }

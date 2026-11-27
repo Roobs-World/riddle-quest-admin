@@ -1,0 +1,21 @@
+{
+  "target": "world",
+  "title": "World App Mini Apps review",
+  "boundary": "local-manual-handoff",
+  "publicCommand": "pnpm release:world",
+  "summary": "Create a neutral hosted-web archive for World App eligibility and commercial review.",
+  "externalEffect": "None; portal setup, payment decision, MiniKit integration, review and release remain manual.",
+  "command": {
+    "executable": "node",
+    "args": [
+      "scripts/release/package-html5-platform.mjs",
+      "world"
+    ]
+  },
+  "handoff": "Verify UK eligibility and choose free-only or legally reviewed wallet payments before MiniKit integration.",
+  "runbook": "docs/common/releases/research/additional-release-targets-round-5-2026-09-21.md",
+  "displayName": "World App Mini Apps",
+  "delivery": "neutral-html5",
+  "artifact": "build-world-mini-app-review.zip",
+  "releaseGate": "World Developer Portal setup, commercial review, MiniKit integration, listing review and release remain manual."
+}

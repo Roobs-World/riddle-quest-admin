@@ -11,6 +11,8 @@ export function withLiveRaceAnalytics(provider: LiveRaceCapability, isActive: ()
   const inbox = provider.inbox?.bind(provider);
   const history = provider.history?.bind(provider);
   const sendChallenge = provider.sendChallenge?.bind(provider);
+  const shareChallenge = provider.shareChallenge?.bind(provider);
+  const chooseChallenge = provider.chooseChallenge?.bind(provider);
   const blockOpponent = provider.blockOpponent?.bind(provider);
   const reportOpponent = provider.reportOpponent?.bind(provider);
   /** Private receipt identities suppress retries without becoming analytics dimensions. */
@@ -110,6 +112,18 @@ export function withLiveRaceAnalytics(provider: LiveRaceCapability, isActive: ()
       const result = await sendChallenge(input);
       if (isActive()) trackEvent("live_race_invitation_sent", {status: result.status});
       return result;
+    }} : {}),
+    ...(shareChallenge ? {shareChallenge: async (input: Parameters<NonNullable<LiveRaceCapability["shareChallenge"]>>[0]) => {
+      if (isActive()) trackEvent("live_race_share_requested");
+      const status = await shareChallenge(input);
+      if (isActive()) trackEvent("live_race_share_result", {status});
+      return status;
+    }} : {}),
+    ...(chooseChallenge ? {chooseChallenge: async () => {
+      if (isActive()) trackEvent("live_race_audience_requested");
+      const result = await chooseChallenge();
+      if (isActive()) trackEvent("live_race_audience_result", {status: result.status});
+      return result.status === "success" ? {...result, value: withLiveRaceAnalytics(result.value, isActive)} : result;
     }} : {}),
     ...(blockOpponent ? {blockOpponent: async (input: Parameters<NonNullable<LiveRaceCapability["blockOpponent"]>>[0]) => {
       const result = await blockOpponent(input);

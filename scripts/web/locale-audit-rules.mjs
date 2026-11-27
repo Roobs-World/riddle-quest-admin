@@ -8,8 +8,12 @@ export const hasQuestionMarkReplacementText = (value) =>
 
 /** Locale keys from removed features that Jest's launch requirements do not permit. */
 export const unsupportedJestLocaleKeys = Object.freeze([
+  "Accessibility.SHARE_TO_FACEBOOK",
   "Accessibility.SHARE_TO_X",
+  "Profile.ALERT_AVATAR_UPDATE_FACEBOOK_SUCCESS",
+  "Profile.ALERT_FACEBOOK_AVATAR_SET_FAIL",
   "Profile.ALERT_INVALID_CURRENT_PASSWORD",
+  "Profile.ALERT_NO_FACEBOOK_PHOTO",
   "Profile.ALERT_PASSWORD_CHANGE_ERROR",
   "Profile.ALERT_PASSWORD_FIELDS_EMPTY",
   "Profile.ALERT_PASSWORD_TOO_SHORT",
@@ -30,6 +34,7 @@ export const unsupportedJestLocaleKeys = Object.freeze([
   "Profile.UPGRADE_ACCOUNT_PROVIDER_IN_USE",
   "Profile.UPGRADE_ACCOUNT_SUCCESS",
   "Profile.UPGRADE_ACCOUNT_TITLE",
+  "Profile.USE_FACEBOOK_PHOTO_BUTTON",
   "Settings.HAPTICS_TOGGLE",
   "Settings.PRIVACY_POLICY_BUTTON",
   "Settings.TEST_CRASH_ALERT_CANCEL",

@@ -1,5 +1,6 @@
 {
   "LossModal": {
+    "VIDEO_EXTRA_GO_BUTTON": "Regarde une vidéo pour obtenir un essai supplémentaire",
     "COIN_EXTRA_GO_BUTTON": "{coins} pièces pour un essai supplémentaire",
     "OPEN_SHOP_BUTTON": "Ouvrir la boutique",
     "OUT_OF_ATTEMPTS": "Plus d'essais.",

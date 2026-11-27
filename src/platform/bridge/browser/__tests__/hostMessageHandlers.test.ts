@@ -537,9 +537,9 @@ describe("play host message handlers", () => {
     await harness.handlers.blockRival({
       type: "game:blockRival",
       requestId: "block-message-1",
-      payload: {targetUserId: "jest_1111111111111111111111111111111111111111"},
+      payload: {targetUserId: "facebook_1111111111111111111111111111111111111111"},
     });
-    expect(blockRival).toHaveBeenCalledWith("jest_1111111111111111111111111111111111111111");
+    expect(blockRival).toHaveBeenCalledWith("facebook_1111111111111111111111111111111111111111");
     expect(harness.runRaceOperation).toHaveBeenCalledWith("block-message-1", "raceBlock", expect.any(Function));
 
     await harness.handlers.reportRival({
@@ -604,6 +604,22 @@ describe("play host message handlers", () => {
     expect(deleted).not.toHaveBeenCalled();
     expect(harness.postOperation).toHaveBeenCalledWith("denied", "accountDeletion", false, undefined,
       "host-account-capability-unavailable");
+  });
+
+  it("deletes a Facebook account through explicit account permissions without a Jest upgrade", async () => {
+    /** Isolated game services for account-operation regression checks. */
+    const services = createFakeHostServices();
+    /** Records whether deletion preparation starts. */
+    const requested = jest.fn();
+    /** Records calls to the authoritative deletion service. */
+    const deleted = jest.spyOn(services, "deleteAccount");
+    /** Uses actual capability-shaped account authority. */
+    const harness = createHarness(services, undefined, requested, undefined, undefined,
+      createHostAuthorityModules(services, {accountManagement: {username: true, avatar: false, deletion: true}}));
+    await harness.handlers.deleteAccount({type: "game:deleteAccount", requestId: "facebook", payload: {}});
+    expect(requested).toHaveBeenCalledTimes(1);
+    expect(deleted).toHaveBeenCalledTimes(1);
+    expect(harness.postOperation).toHaveBeenCalledWith("facebook", "accountDeletion", true, {success: true});
   });
 
   it("reports account deletion as failed when post-server client cleanup must be retried", async () => {

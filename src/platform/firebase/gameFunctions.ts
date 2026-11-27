@@ -1,6 +1,6 @@
 import {encryptedHttpsCallable} from "./encryptedCallable";
 import type {RaceEntryResponse, CancelRaceInviteRequest, RaceLocale} from "../../races/contracts/index";
-import type {Functions} from "firebase/functions";
+import {httpsCallable as rawHttpsCallable, type Functions} from "firebase/functions";
 import {type ClassicRiddleBufferResponse, type SkipRiddleResponse, type SpendCoinsRequest, type GetLeaderboardRequest, type GetLeaderboardResponse} from "../contracts/requestSchemas";
 import {type CompleteGameInput, type CompleteGameOutput, type SubmitSinglePlayerGuessInput, type SubmitSinglePlayerGuessOutput} from "../../gameplay/contracts/cloudFunctionsSchemas";
 import type {
@@ -37,6 +37,19 @@ import type {
 export const DEFAULT_GAMEPLAY_REGION = "europe-west1";
 /** Region that hosts account, profile, and provider callables unless a target overrides it. */
 export const DEFAULT_ACCOUNT_REGION = "us-central1";
+
+/** Host choices for how the client talks to the backend. */
+export type GameFunctionsOptions = Readonly<{
+  /**
+   * Whether app-owned request and response bodies use AES-GCM envelopes to deter casual inspection.
+   * Native Android opts out until its runtime provides Web Crypto. HTTPS remains required.
+   */
+  contentProtection?: boolean;
+}>;
+/** Builds the callable wrapper for one host's protection choice. */
+function createCallableFactory(options: GameFunctionsOptions) {
+  return options.contentProtection === false ? rawHttpsCallable : encryptedHttpsCallable;
+}
 
 /** Region-bound Functions handles a host prepares before creating the client. */
 export type GameFunctionRegions = Readonly<{
@@ -149,9 +162,33 @@ export type GetHintOutput = {
  * Hosts own Firebase app initialization, auth persistence, App Check, and emulator
  * wiring; this factory only binds callables to the regions a host prepared.
  */
-export function createGameFunctionsClient(regions: GameFunctionRegions) {
-  /** Browser gameplay uses the existing encrypted request boundary. */
-  const httpsCallable = encryptedHttpsCallable;
+export function createGameFunctionsClient(regions: GameFunctionRegions, options: GameFunctionsOptions = {}) {
+  /** Callable wrapper honouring the host's protection choice. */
+  const httpsCallable = createCallableFactory(options);
+  /** Creates a server-authorized Stripe Checkout Session for Yahoo. */
+  const createYahooStripeCheckout = httpsCallable<
+    {
+      /** Stores product id. */
+      productId: string;
+      /** Stores checkout attempt id. */
+      checkoutAttemptId: string;
+    },
+    {
+      /** Stores checkout url. */
+      checkoutUrl: string;
+    }
+  >(regions.account, "createYahooStripeCheckout");
+  /** Confirms and idempotently grants a paid Yahoo Stripe Checkout Session. */
+  const confirmYahooStripeCheckout = httpsCallable<
+    {
+      /** Stores session id. */
+      sessionId: string;
+    },
+    {
+      /** Stores coins. */
+      coins: number;
+    }
+  >(regions.account, "confirmYahooStripeCheckout");
   /** Gets current daily challenge. */
   const getCurrentDailyChallenge = httpsCallable<
     | {
@@ -430,6 +467,8 @@ export function createGameFunctionsClient(regions: GameFunctionRegions) {
     regions.race, "setNotificationPreference",
   );
   return {
+    createYahooStripeCheckout,
+    confirmYahooStripeCheckout,
     getCurrentDailyChallenge,
     getCurrentClassicRiddle,
     getClassicRiddleBuffer,

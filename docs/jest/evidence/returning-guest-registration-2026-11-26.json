@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-26",
+  "sourceCommit": "f5d18e58c2ccb652f9300b2036e0eefdb88ded6e",
+  "sourceDirty": false,
+  "changes": [
+    "Prompt returning guests after opening guidance clears, including reloads that retain completed welcome and onboarding markers.",
+    "Check the live SDK player before registration instead of trusting the cached registered flag.",
+    "Restart signed startup when a host logout or guest identity change is detected, suppressing the triggering input and stale registration writes.",
+    "Remember successful or dismissed automatic prompts for the current guest so subsequent input does not reopen registration.",
+    "Load gameplay presentation after identity setup to retain the existing initial-resource budget."
+  ],
+  "jest": {
+    "versionId": "01a219c2-33c8-7139-928a-db76b271ee36",
+    "buildVersion": "1.0.0-dev.20261126212718.f5d18e58c2cc.a61b8aa1",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T21:28:14.838Z",
+    "confirmationSource": "Jest list_game_versions",
+    "archiveBytes": 2593040,
+    "archiveSha256": "71d541b93ce78e676be49cabae66f23da742c6ebfbae5bbd3e69a9836d843af4"
+  },
+  "checksPassed": [
+    "Shared TypeScript",
+    "Static source review of guest, registered, dismissal and changed-player paths",
+    "pnpm release:jest production gate",
+    "Immutable Jest artifact audit: 0.39 MiB initial resources within the unchanged 0.55 MiB budget",
+    "W3C validation with zero findings"
+  ],
+  "earlierReleaseAttempt": "Stopped before upload because initial resources exceeded the budget by 758 bytes; the gameplay split corrected the failure.",
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "simulatorAcceptance": "not-run",
+  "simulatorReplay": [
+    "Refresh the full Simulator browser page or reopen the submission flow to clear retained checklist history.",
+    "Select the exact uploaded version and log out in Config.",
+    "Play through any welcome, instructions and guidance; let the app invoke registration before changing the player to registered."
+  ],
+  "publicationOrReviewSubmitted": false
+}

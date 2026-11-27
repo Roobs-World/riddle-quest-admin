@@ -138,7 +138,7 @@ export function createRejectedPlayDraft(journal: PendingGuessJournal,
     draftRevision: sameQuestion ? current.draftRevision : journal.draftRevision,
     draftActiveSlotIndex: selected !== undefined && Number.isInteger(selected) && selected >= 0 && selected < draft.length ? selected : undefined};
 }
-/** The provider UID identifies the current account generation. */
+/** The provider UID changes with account generation except on Reddit. */
 export const pendingPlayScope = (uid: string, generation: number | undefined, locale: string) =>
   `${encodeURIComponent(uid)}:${generation ?? 1}:${encodeURIComponent(locale)}`;
 /** Persists exact requests before local feedback is acknowledged. */

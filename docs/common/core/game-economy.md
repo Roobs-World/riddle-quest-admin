@@ -39,6 +39,8 @@ The action counts are alternatives that each spend the entire pack. The shop cal
 
 ## Validation and tuning
 
+Exclude sandbox checkout grants from ordinary-play balance analysis. The [26 November Jest reconciliation](../../jest/evidence/coin-balance-reconciliation-2026-11-26.md) attributed 17,350 of an 18,295-coin balance to test coin packs and Premium, then removed those grants with the owner's approval. Sandbox purchases exercise real game fulfillment and persist in that player's save despite charging no money. Use separate sandbox accounts for checkout acceptance and economy playtesting; preserve purchase receipts when correcting a test balance so startup recovery cannot grant them again.
+
 The balance is a starting policy grounded in the game's existing coin scale, rather than a claim about observed player behavior. Track hint usage, continued-win rates, coins earned/spent per completed riddle, depleted balances and bundle conversion by authored difficulty before further tuning. In particular, assess whether players using multiple hints can replenish their balance through ordinary play.
 
 Tests cover conservative difficulty fallback, increasing rewards, action price ratios, pack purchasing power, increasing bundle value, server-only difficulty, immutable session difficulty, generated-content metadata and replay-safe settlement. Injected browser checks cover the rendered shop and coin actions at mobile and desktop widths. Build and artifact audits cover all six supported targets.

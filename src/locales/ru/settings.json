@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "Авторы",
     "DATA_EXPORT_BUTTON": "Экспортировать мои данные",
     "HELP_BUTTON": "Справка",
+    "LANGUAGE_LABEL": "Язык",
     "LANGUAGE_SELECTED": "Выбрано",
     "LICENSES_BUTTON": "Лицензии",
     "LOGOUT_BUTTON": "Выход",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "Условия использования",
     "TITLE": "Настройки",
     "TOGGLE_OFF": "Выкл.",
-    "TOGGLE_ON": "Вкл.",
-    "REDUCED_MOTION": "Уменьшение движения",
-    "NOTIFICATION_SAVE_FAILED": "Не удалось сохранить настройки уведомлений. Попробуйте ещё раз."
+    "TOGGLE_ON": "Вкл."
   }
 }

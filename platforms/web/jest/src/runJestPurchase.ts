@@ -4,7 +4,7 @@ import type {PurchaseResult} from "../../../../src/platform/contracts/hostServic
 import type {JestPurchaseOptions} from "./useJestPurchase";
 
 /** Loads the paid flow only after a player explicitly requests checkout. */
-export async function runJestPurchase({productId, products, purchases, session, setProducts, subscriptionsEnabled = false, trackFunnel}: JestPurchaseOptions & {productId: string}): Promise<PurchaseResult> {
+export async function runJestPurchase({productId, products, purchases, session, setProducts, subscriptionsEnabled = false, requestRegistration, trackFunnel}: JestPurchaseOptions & {productId: string}): Promise<PurchaseResult> {
   if (!session) throw new Error("Jest session is not ready.");
   /** Provides product behavior. */
   const product = products.find((candidate) => candidate.productId === productId);
@@ -28,6 +28,10 @@ export async function runJestPurchase({productId, products, purchases, session, 
     if (product.subscriptionStatus === "active") {
       return {success: false, cancelled: true, productId, purchaseType: "subscription"};
     }
+    if (!session.player.registered) {
+      requestRegistration?.();
+      return {success: false, cancelled: true, productId, purchaseType: "subscription"};
+    }
     /** Distinguishes catalog verification failure from a later checkout failure. */
     let catalogVerified = false;
     /** Allows cancellation telemetry only when a payable offer was presented. */
@@ -48,6 +52,7 @@ export async function runJestPurchase({productId, products, purchases, session, 
     });
     if (subscribed.status === "cancelled" ||
       (subscribed.status === "unavailable" && subscribed.message === "guest_not_allowed")) {
+      if (subscribed.status === "unavailable") requestRegistration?.();
       if (checkoutAvailable) trackFunnel("subscription_cancelled", {productId});
       return {success: false, cancelled: true, productId, purchaseType: "subscription"};
     }

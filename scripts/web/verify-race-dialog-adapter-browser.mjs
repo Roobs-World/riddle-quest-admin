@@ -19,9 +19,10 @@ import {RACE_RULES} from ${JSON.stringify(path.join(root, "src/races/contracts")
 import {RetainedRaceHarness as RaceTo10Game} from ${JSON.stringify(path.join(root,"scripts/web/fixtures/RetainedRaceHarness.tsx"))};
 import {ReferralSharingProvider} from ${JSON.stringify(path.join(root,"src/sharing/components/ReferralSharingCapability.tsx"))};
 import {projectRaceOutcome} from ${JSON.stringify(path.join(root,"src/races/presentation/racePresentation.ts"))};
+import {tr} from ${JSON.stringify(path.join(root,"src/localization/browser/i18n.ts"))};
 const mode=new URLSearchParams(location.search).get('mode'),now=Date.now();
 window.calls=[];window.commands=[];window.sessionSetups=0;window.sessionCleanups=0;window.liveSessions=0;
-window.labels={referral:'Fixture share'};
+window.labels={context:tr('RaceTo10.CHOOSE_CONTEXT'),match:tr('RaceTo10.MATCH_PLAYER'),tournament:tr('RaceTo10.SHARE_TOURNAMENT'),referral:'Fixture share'};
 const run={runId:'owned-run',role:'creator',status:'completed',categoryId:'mixed',locale:'en',rules:RACE_RULES,correctCount:10,wallElapsedMs:60000,totalPenaltyMs:0,adjustedElapsedMs:60000,currentRiddle:null,events:[],serverNowMs:now,startsAtMs:now-60000};
 if(mode==='referral')localStorage.setItem('riddleQuest:activeRaceRun',JSON.stringify({ownerId:'owner-1',runId:run.runId}));
 const preview={challengeId:'published',categoryId:'mixed',locale:'en',rulesVersion:'race10_v1',targetCorrect:10,adjustedTimeToBeatMs:60000,creator:{displayName:'Nova'},status:'active',expiresAtMs:now+60000};
@@ -33,11 +34,11 @@ function postToHost(message){window.commands.push(message);
  if(message.type==='game:publishRace')reply(message,'racePublish',{challengeId:'published',preview});
 }
 const dialog=(provider,kind)=>new Promise((resolve,reject)=>window.calls.push({provider,kind,resolve,reject}));
-const adapters=name=>({tournaments:{record:async()=>({}),list:async()=>({tournamentId:'daily',locale:'en',startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,currentPlayer:{rank:1,adjustedTimeMs:60000},standings:[]})},referral:{rewardCoins:25,raceShareLabel:'Fixture share',shareResult:()=>{},shareInvite:()=>{},shareRace:()=>dialog(name,'referral')}});
+const adapters=name=>({native:{chooseContext:()=>dialog(name,'context'),matchPlayer:()=>dialog(name,'match')},tournaments:{record:async()=>({}),share:()=>dialog(name,'tournament'),list:async()=>({tournamentId:'daily',locale:'en',startsAtMs:now,endsAtMs:now+60000,sortOrder:'LOWER_IS_BETTER',rewardsEnabled:false,currentPlayer:{rank:1,adjustedTimeMs:60000},standings:[]})},referral:{rewardCoins:25,raceShareLabel:'Fixture share',shareResult:()=>{},shareInvite:()=>{},shareRace:()=>dialog(name,'referral')}});
 const first=adapters('first'),second=adapters('second');
 function App(){const [provider,setProvider]=React.useState(first);window.replaceProvider=()=>{window.oldSession=globalThis.testRaceSession;setProvider(second);};
- window.replaceUnrelatedProvider=()=>setProvider(current=>({...current,tournaments:second.tournaments}));
- return <ReferralSharingProvider capability={provider.referral}><RaceTo10Game ownerId="owner-1" locale="en" coins={100} tournaments={provider.tournaments} postToHost={postToHost} onClose={()=>{}}/></ReferralSharingProvider>;}
+ window.replaceUnrelatedProvider=()=>setProvider(current=>({...current,...(mode==='tournament'?{referral:second.referral}:{tournaments:second.tournaments})}));
+ return <ReferralSharingProvider capability={provider.referral}><RaceTo10Game ownerId="owner-1" locale="en" coins={100} nativeSocial={provider.native} tournaments={provider.tournaments} postToHost={postToHost} onClose={()=>{}}/></ReferralSharingProvider>;}
 const app=<App/>;window.root=createRoot(document.getElementById('root'));window.root.render(new URLSearchParams(location.search).get('strict')==='true'?<React.StrictMode>{app}</React.StrictMode>:app);
 `);
 let browser,server;const failures=[];
@@ -51,7 +52,7 @@ try{
  server=createServer(async(request,response)=>{try{const url=new URL(request.url,'http://localhost'),file=path.join(scratch,'dist',url.pathname==='/'?'index.html':url.pathname);response.setHeader('Content-Type',file.endsWith('.js')?'text/javascript':file.endsWith('.css')?'text/css':'text/html');response.end(await readFile(file));}catch{response.writeHead(404).end();}});
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH}:{})});
- for(const strict of [false,true])for(const width of [1280,390])for(const mode of ['referral'])for(const ending of ['success','failure','unrelated']){
+ for(const strict of [false,true])for(const width of [1280,390])for(const mode of ['context','match','tournament','referral'])for(const ending of ['success','failure','unrelated']){
   const context=await browser.newContext({viewport:{width,height:844}}),page=await context.newPage(),errors=[];page.on('pageerror',error=>errors.push(error.message));
   try{
    await page.goto('http://127.0.0.1:'+server.address().port+'/?mode='+mode+'&strict='+strict);
@@ -60,6 +61,7 @@ try{
    assert.equal(await page.evaluate(()=>window.sessionSetups),setups,'expected session setup replay did not occur');
    assert.equal(await page.evaluate(()=>window.sessionCleanups),setups-1,'StrictMode session cleanup did not occur');
    assert.equal(await page.evaluate(()=>window.liveSessions),1,'StrictMode left duplicate live sessions');
+   if(mode==='tournament')await page.evaluate(()=>globalThis.testRaceSession.navigate('tournaments'));
    if(mode==='referral'){
     await page.waitForFunction(()=>globalThis.testRaceSession.getConfirmedOutcomeRunId()==='owned-run');
     await page.evaluate(()=>globalThis.testRaceSession.publish());

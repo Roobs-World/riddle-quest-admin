@@ -1,7 +1,8 @@
-import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore} from "react";
+import {Suspense, useCallback, useContext, useEffect, useMemo, useReducer, useRef, useState, useSyncExternalStore, type ComponentType} from "react";
 import type {GameToHostMessage} from "../../platform/bridge/messages";
 import {BRIDGE_PROTOCOL_VERSION} from "../../platform/bridge/constants";
 import musicUrl from "../../../assets/audio-web/music.webm";
+import {isFacebookWebTarget} from "../../platform/browser/webTargetEnvironment";
 import {canDraftWhileConfirming, canEditCurrentGuess, createInitialGameSession, gameSessionReducer, isBlockingGameModal} from "../session/gameSession";
 import {tr} from "../../localization/browser/i18n";
 import {createRequestId} from "../session/requestIds";
@@ -11,8 +12,12 @@ import {useProviderProfile} from "../../accounts/components/ProviderProfileConte
 import {GuidanceOverlay} from "../../onboarding/components/GuidanceOverlay";
 import {SpinningWheel, SpinningWheelLoader} from "../../app/components/feedback/SpinningWheelLoader";
 import type {
+  ContextBoardCapability,
   MatchmakingCapability,
+  NativeSocialCapability,
+  OverlayCapability,
   SavedGame,
+  TournamentCapability,
 } from "../../platform/contracts/capabilities";
 import {
   ForwardIcon,
@@ -41,15 +46,18 @@ import type {ListRaceCategoriesResponse, RaceLocale} from "../../races/contracts
 import type {ActivePresenceState} from "../../presence/PlatformPresenceSession";
 import {useGameSurfaceCoordination} from "../../app/hooks/useGameSurfaceCoordination";
 import {useClassicQuestionPreparation} from "../hooks/browser/useClassicQuestionPreparation";
+import {useAttemptRecovery} from "../hooks/browser/useAttemptRecovery";
 import type {RaceTo10GameProps} from "../../races/components/recorded/RaceTo10Game.types.ts";
+import type {AttemptRecoveryCapability} from "../../platform/contracts/capabilities";
 
 import {DecorativeSolarSystem} from "../../scenery/solar/components/DecorativeSolarSystem";
 import {GameSurfaceBoundary, GameSurfaceRecovery} from "../../app/components/recovery/GameSurfaceRecovery";
-import {completionPresentationKey, getVisibleGameModal, isCompletionAdvancePending} from "../session/completion/completionPresentation";
+import {completionPresentationKey, isCompletionAdvancePending} from "../session/completion/completionPresentation";
 import {isPlayerReducedMotionEnabled, subscribeToPlayerReducedMotion} from "../../settings/browser/playerPreferences";
 
 /** Provides game frame app behavior. */
 export function GameFrameApp({
+  raceSurface,
   localBridge = false,
   economyAvailable = true,
   prepareClassicQuestions = false,
@@ -64,11 +72,21 @@ export function GameFrameApp({
   initialRaceChallengeId,
   initialRaceInbox = false,
   initialRaceLobby = false,
+  initialRaceTournamentLocale,
   raceFeatureEnabled = false,
   prefetchedRaceCategories = [],
+  nativeSocial,
   matchmaking,
+  playerOverlay,
+  platformPlayerId,
+  tournaments,
+  contextBoard,
+  attemptRecovery,
+  raceLocalePolicy = "english-only",
   onPresenceStateChange,
 }: {
+  /** Target-owned multiplayer presentation; provider modules stay outside shared imports. */
+  raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores local bridge. */
   localBridge?: boolean;
   /** Presentation exposes paid actions only when the host has an economy authority. */
@@ -97,20 +115,33 @@ export function GameFrameApp({
   initialRaceInbox?: boolean;
   /** Opens the multiplayer lobby for an incoming platform invitation. */
   initialRaceLobby?: boolean;
+  /** Incoming native tournament language; never changes the selected content locale. */
+  initialRaceTournamentLocale?: RaceLocale;
   /** Stores race feature enabled. */
   raceFeatureEnabled?: boolean;
   /** Stores prefetched race categories. */
   prefetchedRaceCategories?: ListRaceCategoriesResponse["categories"];
+  /** Stores native social. */
+  nativeSocial?: NativeSocialCapability;
   /** Stores matchmaking. */
   matchmaking?: MatchmakingCapability;
+  /** Stores player overlay. */
+  playerOverlay?: OverlayCapability;
+  /** Stores platform player id. */
+  platformPlayerId?: string;
+  /** Stores tournaments. */
+  tournaments?: TournamentCapability;
+  /** Stores context board. */
+  contextBoard?: ContextBoardCapability;
+  /** Optional target-owned continuation; never supplied to non-Facebook builds. */
+  attemptRecovery?: AttemptRecoveryCapability;
+  /** Stores race locale policy. */
+  raceLocalePolicy?: "english-only" | "all";
   /** Stores on presence state change. */
   onPresenceStateChange?: (state: ActivePresenceState) => void;
 } = {}) {
   /** Provides [state, dispatch] behavior. */
   const [state, dispatch] = useReducer(gameSessionReducer, undefined, createInitialGameSession);
-  /** Presentation waits for the receipt while reducer ownership still protects the solved round. */
-  const visibleModal = getVisibleGameModal(state);
-  const victoryPending = state.modal === "victory" && visibleModal === null;
   const providerProfile = useProviderProfile();
   /** Keeps catalog recovery reachable when the provider read failed before any offers loaded. */
   const shopCatalog = useContext(ShopSubscriptionContext);
@@ -141,13 +172,15 @@ export function GameFrameApp({
   /** Provides [animated coin balance, set animated coin balance] behavior. */
   const [animatedCoinBalance, setAnimatedCoinBalance] = useState<number | null>(null);
   /** Overlay lifecycle, multiplayer eligibility, analytics, and presence coordination. */
-  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, guidanceActive, setGuidanceActive} =
+  const {raceLocale, raceEnabled, raceOpen, setRaceOpen, raceChallengeId, raceInbox, raceTournamentLocale, guidanceActive, setGuidanceActive} =
     useGameSurfaceCoordination({
-      session: {...state, modal: visibleModal},
+      session: state,
       raceFeatureEnabled,
+      raceLocalePolicy,
       initialRaceChallengeId,
       initialRaceInbox,
       initialRaceLobby,
+      initialRaceTournamentLocale: tournaments ? initialRaceTournamentLocale : undefined,
       onPresenceStateChange,
     });
   /** Provides offline dialog ref behavior. */
@@ -155,11 +188,15 @@ export function GameFrameApp({
   /** Provides state ref behavior. */
   const stateRef = useRef(state);
   stateRef.current = state;
+  /** Current target continuation hook supplies modal pending state and its guarded action. */
+  const recovery = useAttemptRecovery({capability: isFacebookWebTarget ? attemptRecovery : undefined, state, dispatch});
 
   useOfflineDialog(online, offlineDialogRef);
 
   /** Provides {game modal view, race to10 game} behavior. */
-  const {GameModalView, RaceTo10Game} = useGameSurfaces(raceEnabled);
+  const {GameModalView, RaceTo10Game: SharedRaceTo10Game} = useGameSurfaces(raceEnabled && raceSurface === undefined);
+  /** Supplied by the target entry rather than imported across platform boundaries. */
+  const RaceTo10Game = raceSurface ?? SharedRaceTo10Game;
   /** Exact account visit owning interactive surface retirement. */
   const surfaceOwner = JSON.stringify([state.user?.uid ?? null, state.user?.accountGeneration ?? null]);
   /** Failed modal code must not leave an acknowledged outcome without its Next action. */
@@ -173,7 +210,9 @@ export function GameFrameApp({
   /** Provides post to host behavior. */
   const postToHost = useCallback(
     (message: GameToHostMessage) => {
-      if (localBridge || window.parent === window) {
+      // Facebook's host communication belongs to FBInstant. Its game shell uses
+      // the local bridge, so remove the iframe fallback from that artifact.
+      if (isFacebookWebTarget || localBridge || window.parent === window) {
         dispatchLocalBridge(GAME_TO_HOST_EVENT, {...message, sentAt: Date.now()});
         return;
       }
@@ -320,7 +359,7 @@ export function GameFrameApp({
       ref={shellRef}
       className={state.paused ? "game-app paused" : "game-app"}
       inert={interactionBlocked && online !== false ? true : undefined}
-      data-analytics-screen={raceOpen ? "multiplayer" : visibleModal ? `modal_${visibleModal}` : `game_${state.gameMode}`}
+      data-analytics-screen={raceOpen ? "multiplayer" : state.modal ? `modal_${state.modal}` : `game_${state.gameMode}`}
     >
       {solarReady && <DecorativeSolarSystem enabled={!reducedMotion} paused={state.paused || raceOpen} />}
       <audio ref={musicRef} loop preload="none" aria-hidden="true">
@@ -421,19 +460,16 @@ export function GameFrameApp({
 
         {state.paused && <div className="pause-banner">{tr("WebPortal.PAUSED")}</div>}
       </div>
-      <div className="game-completion-status" role="status">
-        {victoryPending ? tr("Accessibility.LOADING") : ""}
-      </div>
       <div className="game-overlay-surfaces" inert={!online ? true : undefined}>
-        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((visibleModal || terminalSurfaceRecovery || state.completionMilestones.some(entry => entry.confirmed)) && !raceOpen)}
+        <GameSurfaceBoundary key={`modal-${surfaceOwner}`} surface="modal" visible={Boolean((state.modal || terminalSurfaceRecovery || state.completionMilestones.some(entry => entry.confirmed)) && !raceOpen)}
           onUnavailable={() => setFailedModalOwner(surfaceOwner)}
           recovery={<GameSurfaceRecovery
-            onClose={() => {if (!stateRef.current.pendingCoinSpend) dispatch(stateRef.current.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
-            closeBlocked={state.lastOutcome?.kind === "win" || (state.modal === "continue" && (state.guessPending || Boolean(state.pendingCoinSpend)))}
+            onClose={() => {if (!recovery.isPending() && !stateRef.current.pendingCoinSpend) dispatch(stateRef.current.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
+            closeBlocked={state.lastOutcome?.kind === "win" || (state.modal === "continue" && (state.guessPending || recovery.pending || Boolean(state.pendingCoinSpend)))}
             onNext={state.lastOutcome?.kind === "win" ? () => {
               /** Explicit Next releases the normal victory-load guard before asking authority. */
               const current = stateRef.current;
-              if (!current.lastOutcome || current.guessPending || current.pendingCoinSpend ||
+              if (!current.lastOutcome || current.guessPending || current.pendingCoinSpend || recovery.isPending() ||
                 isCompletionAdvancePending(current)) return;
               dispatch({type: "closeModal"});
               if (current.lastOutcome.kind === "win") window.dispatchEvent(new CustomEvent("riddle-quest:victory-dismissed", {
@@ -444,12 +480,13 @@ export function GameFrameApp({
             nextBlocked={state.guessPending || isCompletionAdvancePending(state)}
             continuation={state.modal === "continue" ? {
               economyAvailable,
-              onDecline: () => {if (!stateRef.current.guessPending && !stateRef.current.pendingCoinSpend) dispatch({type: "declineContinue"});},
+              onDecline: () => {if (!recovery.isPending() && !stateRef.current.guessPending && !stateRef.current.pendingCoinSpend) dispatch({type: "declineContinue"});},
               balance: state.profile?.coins ?? 0,
-              onContinue: requestContinue,
-              pending: !coinActionsReady,
+              onContinue: (amount) => {if (!recovery.isPending()) requestContinue(amount);},
+              onRecoverAttempt: isFacebookWebTarget && attemptRecovery ? recovery.request : undefined,
+              pending: recovery.pending || !coinActionsReady,
               recoveryPending: state.guessPending,
-              onSkip: requestSkip,
+              onSkip: () => {if (!recovery.isPending()) requestSkip();},
               onOpenModal: (modal) => dispatch({type: "openModal", modal}),
               commerceAvailable: false,
             } : undefined}
@@ -457,9 +494,9 @@ export function GameFrameApp({
               kind: state.modal,
               gameMode: state.gameMode,
               balance: state.profile?.coins ?? 0,
-              pending: !coinActionsReady || (state.modal === "hint" && Boolean(state.engineSnapshot?.gameOver)),
+              pending: recovery.pending || !coinActionsReady || (state.modal === "hint" && Boolean(state.engineSnapshot?.gameOver)),
               onClose: () => dispatch({type: "closeModal"}),
-              onRequestAction: () => {state.modal === "hint" ? requestHint() : requestSkip();},
+              onRequestAction: () => {if (!recovery.isPending()) state.modal === "hint" ? requestHint() : requestSkip();},
               onOpenModal: (modal) => dispatch({type: "openModal", modal}),
               commerceAvailable: false,
             } : undefined}
@@ -471,9 +508,10 @@ export function GameFrameApp({
               state={state}
               onCoinBalancePreview={setAnimatedCoinBalance}
               onCompletionMilestonesPresented={outcomeKey => dispatch({type: "completionMilestonesPresented", outcomeKey})}
-              onClose={() => dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"})}
-              onContinue={requestContinue}
-              continuationPending={!coinActionsReady}
+              onClose={() => {if (!recovery.isPending()) dispatch(state.modal === "continue" ? {type: "declineContinue"} : {type: "closeModal"});}}
+              onContinue={(amount) => {if (!recovery.isPending()) requestContinue(amount);}}
+              onRecoverAttempt={isFacebookWebTarget && attemptRecovery ? recovery.request : undefined}
+              continuationPending={recovery.pending || !coinActionsReady}
               onPurchase={requestPurchase}
               onNext={requestRiddle}
               onOpenModal={(modal) => dispatch({type: "openModal", modal})}
@@ -481,7 +519,7 @@ export function GameFrameApp({
               commerceAvailable={commerceAvailable}
               economyAvailable={economyAvailable}
               onRequestHint={requestHint}
-              onRequestSkip={requestSkip}
+              onRequestSkip={() => {if (!recovery.isPending()) requestSkip();}}
               onRequestLeaderboard={requestLeaderboard}
               onUpdateUsername={updateUsername}
               onUpdateAvatar={updateAvatar}
@@ -510,19 +548,25 @@ export function GameFrameApp({
               ownerId={raceOwnerId}
               localPlayer={{
                 displayName: state.profile?.username ?? providerProfile?.username ?? state.user?.displayName ?? tr("Profile.GUEST_USERNAME"),
-                avatarUrl: providerProfile ? providerProfile.avatarUrl : state.profile?.avatarUrl ?? state.user?.photoURL ?? null,
+                avatarUrl: state.profile?.avatarUrl ?? providerProfile?.avatarUrl ?? state.user?.photoURL ?? null,
                 level: state.profile?.level ?? 1,
                 bot: false,
               }}
               locale={raceLocale ?? "en"}
               challengeId={raceChallengeId}
               openInbox={raceInbox}
+              tournamentLocale={tournaments ? raceTournamentLocale : undefined}
               initialCategories={prefetchedRaceCategories}
               coins={state.profile?.coins ?? 0}
               postToHost={postToHost}
               onLiveResult={acceptLiveRaceBalance}
               onClose={() => setRaceOpen(false)}
+              nativeSocial={nativeSocial}
               matchmaking={matchmaking}
+              playerOverlay={playerOverlay}
+              platformPlayerId={platformPlayerId}
+              tournaments={tournaments}
+              contextBoard={contextBoard}
             />
           </Suspense>
         </GameSurfaceBoundary>

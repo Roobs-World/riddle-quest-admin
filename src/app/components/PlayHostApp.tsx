@@ -1,6 +1,6 @@
 import {deliverHostRaceResult} from "../../races/browser/hostRaceResultEffects";
 import {createHostCoinActionEffects, createHostCompletionEffects, createHostGuessEffects, type HostCompletionInput} from "../../progression/browser/hostCompletionEffects";
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState, type ComponentType} from "react";
 import type {BridgeProfile, HostToGameMessage} from "../../platform/bridge/messages";
 import {BRIDGE_PROTOCOL_VERSION} from "../../platform/bridge/constants";
 import {detectDeviceLanguage, tr, useLocale} from "../../localization/browser/i18n";
@@ -27,7 +27,7 @@ import type {HostedPlaySession} from "../session/HostedPlaySession";
 /** Creates host message. */
 const createHostMessage = <Message extends HostToGameMessage>(message: Message): Message => ({
   ...message,
-  sentAt: Date.now()
+  sentAt: Date.now(),
 });
 /** Provides play host app behavior. */
 export function PlayHostApp({
@@ -38,6 +38,7 @@ export function PlayHostApp({
     hostConfigurationWarning,
     initialGameMode,
     platformCapabilities,
+    platformPlayerId,
     externalInteractionBlocked,
     initialPlayerData,
     onPlayerDataChange,
@@ -46,10 +47,13 @@ export function PlayHostApp({
     initialRaceChallengeId,
     initialRaceInbox,
     initialRaceLobby,
+    initialRaceTournamentLocale,
+    raceLocalePolicy,
     onPresenceStateChange,
     referralSharing,
     notificationProvider,
   },
+  raceSurface,
   onPlayable,
   onStartupUnavailable,
   onAuthoritativeGuessWin,
@@ -61,6 +65,8 @@ export function PlayHostApp({
 }: {
   /** Target-owned hosted-play session. */
   session: HostedPlaySession;
+  /** Target-owned multiplayer presentation; omitted for shared live PvP. */
+  raceSurface?: ComponentType<RaceTo10GameProps>;
   /** Stores on playable. */
   onPlayable?: () => void;
   /** Reports that a recoverable startup error surface is ready to be shown. */
@@ -277,6 +283,7 @@ export function PlayHostApp({
     race: authority.race,
     identity: authority.identity,
     initialRaceChallengeId,
+    raceLocalePolicy,
     applyCoinBalance,
     replaceProfile,
     ownsAccount,
@@ -379,8 +386,8 @@ export function PlayHostApp({
   );
   /** Stable local message routing and document visibility projection. */
   useHostBridgeLifecycle({router: commands.execute, postToGame, setNotice,
-    ownsMessage: captureAccount(authSnapshot.user?.uid), onUnavailable: () => setBridgeUnavailable(true)
-});
+    ownsMessage: captureAccount(authSnapshot.user?.uid), onUnavailable: () => setBridgeUnavailable(true),
+    lifecycle: platformCapabilities?.lifecycle});
 
   useEffect(() => {
     if (!authSnapshot.user) {
@@ -416,6 +423,7 @@ export function PlayHostApp({
       <div className="play-game-shell">
         {notice && <div className="play-alert game-shell-alert">{getHostNoticeMessage(notice)}</div>}
         <GameFrameApp
+          raceSurface={raceSurface}
           raceOwnerId={authSnapshot.user?.uid}
           onLiveRaceBalance={applyCoinBalance}
           localBridge
@@ -430,9 +438,17 @@ export function PlayHostApp({
           initialRaceChallengeId={initialRaceChallengeId}
           initialRaceInbox={initialRaceInbox}
           initialRaceLobby={initialRaceLobby}
+          initialRaceTournamentLocale={platformCapabilities?.tournaments ? initialRaceTournamentLocale : undefined}
           raceFeatureEnabled={raceBuildEnabled}
           prefetchedRaceCategories={prefetchedRaceCategories}
+          nativeSocial={platformCapabilities?.nativeSocial}
           matchmaking={platformCapabilities?.matchmaking}
+          playerOverlay={platformCapabilities?.overlay}
+          platformPlayerId={platformCapabilities?.overlay ? platformPlayerId : undefined}
+          tournaments={platformCapabilities?.tournaments}
+          contextBoard={platformCapabilities?.contextBoard}
+          attemptRecovery={platformCapabilities?.attemptRecovery}
+          raceLocalePolicy={raceLocalePolicy}
           onPresenceStateChange={onPresenceStateChange}
         />
         {!startupComplete && !startupUnavailable ? (

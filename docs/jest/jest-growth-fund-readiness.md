@@ -1,5 +1,13 @@
 # Jest Fund readiness
 
+Integration note — 27 November 2026: this `main`-into-`jest` merge has not been built, uploaded or run through hosted acceptance. The latest recorded live verification is [the returning-guest release](evidence/returning-guest-registration-2026-11-26.json), version `01a219c2-33c8-7139-928a-db76b271ee36`, source `f5d18e58c2cc`, ready and active on 26 November at 21:28:14 UTC. No new Jest status query was made for this merge. Its Simulator acceptance was not run. The Basic 17/17, Fund 6/6 and Recommended 3/4 results below are historical evidence for guidance build `54179b9a9da6`, not acceptance of the later main releases or this integration. Nothing has been submitted or awarded.
+
+Current notification ownership follows [manager-owned platform delivery](../common/notifications/platform-delivery.md#jest) and [notification verification](jest-notification-testing.md): the manager supplies the seven-day plan; Firebase verifies identity and consent; the Jest adapter schedules it through the SDK. The later [Growth Fund release](evidence/growth-fund-fixes-2026-11-26.json) deployed the manager handoff with v4 identifiers and no gameplay entry payload. Earlier Daily-routing/v3 observations below remain historical. The merge also retains generation-based account reset as described in [production operations](jest-html5-operations.md).
+
+## Historical review checkpoint — 26 November 2026
+
+Everything below records the stated November 26 builds and observations. References to “current” or “new” within this checkpoint refer to the invitation release at 17:55 UTC, before the later main releases.
+
 Updated 26 November 2026 after authenticated Jest Simulator and hosted sandbox checks. **The guidance build passed automated Fund eligibility; the new release awaits its exact-version retest. Funding has not been awarded.** Guidance build `54179b9a9da6` passed all 17 Basic Launch and all 6 Fund checks and displayed “Eligible to apply.” Its observed Recommended checkpoint is 3/4. Referral imagery and race fixes are now released in build `47bcd335e3d9` after targeted checks passed; its hosted retest is pending. Manual review, remaining live-platform checks and physical-device acceptance are still pending.
 
 ## Hosted checks on 26 November
@@ -10,7 +18,7 @@ The final Profile tutorial step exposed an undersized scrolling card in the 424�
 
 On the guidance build `54179b9a9da6`, all six authorized zero-charge coin pack checkouts completed and awarded the displayed amounts: 7,000, 3,400, 1,600, 900, 550 and 250 coins. The balance rose from 4,560 to 18,260; reload preserved 18,260 and the same SNAIL riddle. Jest returned six complete sandbox transactions, each with zero credits and revenue. See [purchase evidence](evidence/fund-hosted-2026-11-26/sandbox-purchases.json). Live interrupted-purchase recovery remains unverified; Simulator seeded recovery completed 1/1.
 
-The existing Premium offer remains hidden while active. [Exact-account verification](evidence/fund-hosted-2026-11-26/sandbox-existing-subscription.json) established that this sandbox subscription was already ending: it started on 22 November and retains access until 22 December 2026 at 21:25:20 UTC. Renewal had been cancelled before this session, so a repeated cancellation returned `not_active` and the unavailable UI was expected; this is not an application defect. No new live sandbox subscription completed. An existing inactive Sandbox User reached the live Stripe checkout at pay.jest.com, showing £0.00/month. It requires a full name and US shipping address; the empty form was rejected and no subscription was created. At the user’s request, the £0.00/month checkout is open in Firefox for manual entry; live activation, grant, cancellation and recurring-grant checks remain pending.
+The existing Premium offer remains hidden while active. [Exact-account verification](evidence/fund-hosted-2026-11-26/sandbox-existing-subscription.json) established that this sandbox subscription was already ending: it started on 22 November and retains access until 22 December 2026 at 21:25:20 UTC. Renewal had been cancelled before this session, so a repeated cancellation returned `not_active` and the unavailable UI was expected; this is not an application defect. No new live sandbox subscription completed. An existing inactive Sandbox User reached the live Stripe checkout at pay.jest.com, showing £0.00/month. It requires a full name and US shipping address; the empty form was rejected and no subscription was created. At that checkpoint, the £0.00/month checkout was left open in Firefox for manual entry; its current browser state has not been rechecked, and live activation, grant, cancellation and recurring-grant checks remain pending.
 
 The user configured Chrome correctly; the connected browser extension now provides authenticated Simulator access. All applicable Basic Launch and Fund automated checks passed on the guidance build; the newly activated invitation build needs its own retest. The game is still an unpublished draft; these results do not establish agreement acceptance, review submission, publication or Fund approval. The [self-review draft](jest-fund-self-review-draft.md) separates factual results from proposed commercial experiments and remaining work.
 
@@ -28,7 +36,7 @@ SDK captures of gameplay, shop, Profile, settings, results and multiplayer were 
 
 Desktop Simulator device previews also passed on iPhone SE 375×667/Safari, Galaxy S25 360×780/Chrome and unfolded Galaxy Z Fold 7 984×1092/Installed presets. The clue, board, keyboard and navigation were visible; the multiplayer menu scrolled vertically. These are Chrome-hosted previews, not physical-device or Safari-engine tests.
 
-## Current program
+## Program as recorded on 26 November
 
 [Jest Fund II](https://about.jest.com/fund/) lists an Explore application deadline of 15 December 2026. Explore offers up to $5,000 in Jest Ads credits; publishing partnerships have separately negotiated funding up to $1 million per app. Apply through app review with the Fund checkbox selected. Acceptance and any required terms remain owner/platform decisions.
 
@@ -62,7 +70,7 @@ The [launch checklist](https://docs.jest.com/launch-checklist) separates Basic L
 
 The most recent Console rejection describes matchmaking, friend-invite errors, delayed Next Level, duplicate loss text, redundant coin-pack text and a retry pause. Source fixes exist, but a new successful play-through is required to close that review evidence gap.
 
-## Client notification implementation
+## Historical client notification implementation (superseded)
 
 Jest reminders use its [HTML5 notification API](https://docs.jest.com/sdk/html5/notifications) and Developer Console assets, as clarified in [notification ownership](../common/notifications/README.md). The existing account-preference callable and Android/Facebook notification manager retain their behavior and wire contracts; this integration requires no backend change.
 
@@ -78,7 +86,7 @@ Keep the Simulator's server-to-server notification declaration off for this clie
 
 ## Acceptance work and commercial plan
 
-Testing was explicitly authorized. Preserve the passing Simulator session and complete the remaining evidence against the newly active release:
+Testing was explicitly authorized for the historical session. No tests or browser harnesses were run for this integration. The remaining acceptance plan was:
 
 - Simulator: all applicable Basic and Fund checks passed on the recorded build. Preserve its session/SDK log; retest the now-released race/referral fixes on that exact new version and recheck counts before any separately authorized submission.
 - Live sandbox remaining work: interrupted purchase recovery, guest checkout, subscription lifecycle/cancellation/retry, guest identity continuity, two-user multiplayer/invitations and referral conversion. All six registered-player coin pack success paths and post-purchase reload persistence passed. Sandbox identity must remain confirmed before further transactions.

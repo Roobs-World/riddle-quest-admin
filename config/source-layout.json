@@ -226,11 +226,14 @@
       "coverageExcludes": [
         "src/app/testing/mocks/fileMock.cjs",
         "src/app/testing/mocks/firebaseEnvironmentMock.ts",
+        "src/app/testing/mocks/localeModulesMock.ts",
         "src/app/testing/mocks/styleMock.cjs",
         "src/app/testing/mocks/webTargetEnvironmentMock.ts"
       ],
       "mocks": {
         "^(?:\\.\\.?/)+(?:[^/]+/)*webTargetEnvironment(?:\\.ts)?$": "<rootDir>/src/app/testing/mocks/webTargetEnvironmentMock.ts",
+        "^#youtube-content$": "<rootDir>/firebase-functions/content/youtube-fixtures/youtube-content-fixture-v1.json",
+        "^\\./localeModules$": "<rootDir>/src/app/testing/mocks/localeModulesMock.ts",
         "^(?:\\.\\.?/)+(?:[^/]+/)*browserEnvironment(?:\\.ts)?$": "<rootDir>/src/app/testing/mocks/firebaseEnvironmentMock.ts",
         "\\.(css|less|scss)$": "<rootDir>/src/app/testing/mocks/styleMock.cjs",
         "\\.(svg|png|jpg|jpeg|webp|webm|ogg|mp3|wav)$": "<rootDir>/src/app/testing/mocks/fileMock.cjs"
@@ -440,6 +443,18 @@
         "lines": 100
       },
       "src/races/hooks/useRaceGameplayFit.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/facebook/src/commerce/facebookCatalog.ts": {
+        "statements": 100,
+        "branches": 100,
+        "functions": 100,
+        "lines": 100
+      },
+      "platforms/web/reddit/src/shared/redditCatalog.ts": {
         "statements": 100,
         "branches": 100,
         "functions": 100,

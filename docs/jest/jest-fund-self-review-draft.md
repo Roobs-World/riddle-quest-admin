@@ -1,5 +1,13 @@
 # Riddle-Q — Jest Fund self-review draft
 
+Integration note — 27 November 2026: this `main`-into-`jest` merge has not been built, uploaded or run through hosted acceptance. The latest recorded live verification is [the returning-guest release](evidence/returning-guest-registration-2026-11-26.json), version `01a219c2-33c8-7139-928a-db76b271ee36`, source `f5d18e58c2cc`, ready and active on 26 November at 21:28:14 UTC. No new Jest status query was made for this merge. Its Simulator acceptance was not run. The Basic 17/17, Fund 6/6 and Recommended 3/4 results below are historical evidence for guidance build `54179b9a9da6`, not acceptance of the later main releases or this integration. Nothing has been submitted or awarded.
+
+Current notification ownership follows [manager-owned platform delivery](../common/notifications/platform-delivery.md#jest) and [notification verification](jest-notification-testing.md): the manager supplies the seven-day plan; Firebase verifies identity and consent; the Jest adapter schedules it through the SDK. The later [Growth Fund release](evidence/growth-fund-fixes-2026-11-26.json) deployed the manager handoff with v4 identifiers and no gameplay entry payload. Earlier Daily-routing/v3 observations below remain historical. The merge also retains generation-based account reset as described in [production operations](jest-html5-operations.md).
+
+## Historical review checkpoint — 26 November 2026
+
+Everything below records the stated November 26 builds and observations. References to “current” or “new” within this checkpoint refer to the invitation release at 17:55 UTC, before the later main releases.
+
 Draft only; nothing has been submitted. The preceding guidance build `54179b9a9da6` passed all automated Basic Launch (17/17) and Fund (6/6) checks and displayed “Eligible to apply.” The newly active race/invitation build `47bcd335e3d9` awaits its exact-version hosted retest. Manual review, remaining live-platform coverage and physical-device acceptance are pending. The recorded Recommended score is 3/4. Referral/race fixes passed targeted checks and are now released; exact-version hosted retesting is pending.
 
 ## Build and evidence scope
@@ -16,7 +24,7 @@ Draft only; nothing has been submitted. The preceding guidance build `54179b9a9d
 
 The production gate passed type, artifact and HTML checks. Hosted observations are separate. Recent client releases did not change the backend.
 
-## Suggested application summary
+## Historical application-summary draft (update before submission)
 
 Riddle-Q is an English-language word game with Classic riddles, a Daily challenge and competitive races. Players solve using riddles and color clues, earn coins and save progress. Guest play is supported, with Jest registration after onboarding and at completed-riddle milestones.
 
@@ -59,7 +67,7 @@ Proposed experiments: clearer first-play guidance, truthful Daily reminder varia
 
 - Manual Fund review and final session handoff. All applicable automated Basic/Fund checks passed; preserve the SDK session and recheck counts before submission or after any build change.
 - Live interrupted-purchase recovery, retry duplicate prevention and broader failure handling. Simulator seeded recovery and guest checkout passed; all six live sandbox packs and reload persistence passed.
-- Live sandbox Premium activation, grant, cancellation, restoration and recurring timing. An existing inactive Sandbox User reached the live Stripe checkout at pay.jest.com, showing £0.00/month. It requires a full name and US shipping address; the empty form was rejected and no subscription was created. At the user’s request, the £0.00/month checkout is open in Firefox for manual entry; live activation, grant, cancellation and recurring-grant checks remain pending. Mock checkout/grant/reload/cancellation and existing live ending-entitlement behavior passed. Do not promise billing-period catch-up under the current grant policy.
+- Live sandbox Premium activation, grant, cancellation, restoration and recurring timing. An existing inactive Sandbox User reached the live Stripe checkout at pay.jest.com, showing £0.00/month. It requires a full name and US shipping address; the empty form was rejected and no subscription was created. At that checkpoint, the £0.00/month checkout was left open in Firefox for manual entry; its current browser state has not been rechecked, and live activation, grant, cancellation and recurring-grant checks remain pending. Mock checkout/grant/reload/cancellation and existing live ending-entitlement behavior passed. Do not promise billing-period catch-up under the current grant policy.
 - Live-host guest registration and migration continuity. Guidance-build Simulator onboarding/dismissal, every-three-riddles prompt, guest purchase and registration continuity passed.
 - Live notification delivery/entry routing and remaining failure/deletion paths. Simulator D1–D7 timing/content/assets and Off/On consent passed.
 - Retest the released race/referral fixes on the exact new build, then recheck Recommended status. The recorded checkpoint remains 3/4. Complete live two-user arrival and exactly-once rewards.

@@ -8,6 +8,7 @@
     "CREDITS_BUTTON": "क्रेडिट",
     "DATA_EXPORT_BUTTON": "मेरा डेटा निर्यात करें",
     "HELP_BUTTON": "सहायता",
+    "LANGUAGE_LABEL": "भाषा",
     "LANGUAGE_SELECTED": "चयनित",
     "LICENSES_BUTTON": "लाइसेंस",
     "LOGOUT_BUTTON": "लॉगआउट",
@@ -18,8 +19,6 @@
     "TERMS_BUTTON": "उपयोग की शर्तें",
     "TITLE": "सेटिंग्स",
     "TOGGLE_OFF": "बंद",
-    "TOGGLE_ON": "चालू",
-    "REDUCED_MOTION": "कम गति प्रभाव",
-    "NOTIFICATION_SAVE_FAILED": "सूचना सेटिंग सहेजी नहीं जा सकीं। कृपया फिर से कोशिश करें।"
+    "TOGGLE_ON": "चालू"
   }
 }

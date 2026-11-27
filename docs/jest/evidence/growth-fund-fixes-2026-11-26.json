@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-26",
+  "verifiedAt": "2026-11-26T20:26:01Z",
+  "implementationCommit": "89fddfc4ab11c3fbc3d0603ef88c7c9222f2bb9c",
+  "jestRelease": {
+    "sourceCommit": "3a59d62f1541580bb09a9c46122b0e8273ce5bad",
+    "sourceDirty": false,
+    "versionId": "01a21988-b3e9-75d9-89ab-8518bd6d5c34",
+    "buildVersion": "1.0.0-dev.20261126202429.3a59d62f1541.46760467",
+    "buildStatus": "ready",
+    "isActive": true,
+    "activatedAt": "2026-11-26T20:25:27.915Z",
+    "confirmationSource": "Jest list_game_versions",
+    "archiveBytes": 2590066,
+    "archiveSha256": "cb9c46a90ca826eb0466e21ab35bbed6686b1ef45c08263680b83b0258de7964",
+    "uploadCount": 1
+  },
+  "changes": [
+    "Prompt first-time guests after instructions and recheck live guest status before registration calls.",
+    "Open registration before guest subscription checkout and hide unconfirmed offers during entitlement refresh.",
+    "Apply the notification manager's seven unique D1-D7 reminders after registered startup or registration.",
+    "Preserve explicit opt-out, serialize SDK cleanup, and retry incomplete scheduling on return."
+  ],
+  "backend": {
+    "supabaseProject": "vqyjgcqyudqonfhgymoy",
+    "migration": "20261126201858_jest_manager_registration",
+    "registrationTableRls": true,
+    "registrationTableClientAccess": false,
+    "registrationRpcClientExecute": false,
+    "registrationRpcServiceRoleExecute": true,
+    "vercelDeploymentId": "dpl_EY3qRk4VQuZaz3xwTRqT978EFSYu",
+    "vercelDeploymentUrl": "https://riddle-quest-admin-q8kgi08oz.vercel.app",
+    "vercelProductionAlias": "https://riddle-quest-admin.vercel.app",
+    "vercelState": "READY",
+    "managerUnauthenticatedHttpStatus": 401,
+    "firebaseProject": "riddle-quest-ec2b2",
+    "firebaseFunction": "getJestNotificationPlan",
+    "firebaseRegion": "europe-west1",
+    "firebaseRuntime": "nodejs22",
+    "firebaseDeploymentStatus": "successful-create",
+    "firebaseUnauthenticatedHttpStatus": 401
+  },
+  "notifications": {
+    "planId": "jest-daily-v4",
+    "days": [1, 2, 3, 4, 5, 6, 7],
+    "bodyCharacterCounts": [73, 75, 83, 73, 69, 75, 84],
+    "planSourceSha256": "615c99f855769e5a77d57f8f55e51f1cefe9db3b98d2d688cbf839f645e3f7d8",
+    "assetReference": "riddle-q-notification",
+    "assetId": "01a09700-5868-719a-aa89-af8b581731e7",
+    "assetModerationStatus": "pass",
+    "assetProcessingStatus": "complete",
+    "assetArchived": false
+  },
+  "checksPassed": [
+    "Shared TypeScript and Functions layout checks",
+    "Firebase Functions production build, artifact audit and deployment",
+    "Notification manager production build and Vercel prebuilt deployment",
+    "pnpm release:jest production gate and immutable Jest artifact audit",
+    "Pinned W3C HTML validation with zero findings"
+  ],
+  "releasePreparation": "Clean main clone preserved unrelated working-tree changes. Explicit existing home pnpm store and required standalone HTML artifacts were prepared before the successful release. Earlier attempts stopped before upload.",
+  "testsRun": false,
+  "browserHarnessesRun": false,
+  "simulatorAcceptance": "not-run",
+  "notificationSendRequestsMade": 0,
+  "publicationOrReviewSubmitted": false
+}
