@@ -1,6 +1,6 @@
 # Facebook rewarded-ad setup — 27 November 2026
 
-The existing Meta rewarded placement is approved and the two deployed Functions now enable rewarded continuation. Actual ad display and the resulting extra attempt remain unverified: the browser connection became unavailable before the hosted game could reload its startup configuration. This is not a no-fill result.
+The approved Meta rewarded placement now displays a real ad in the hosted version 9 game. After video playback, the continuation callable succeeded and the same Classic riddle resumed with an active input row and the balance unchanged at **625 coins**. The existing client and server continuation logic provides one additional attempt. Broader device and failure acceptance remains open.
 
 ## Meta configuration observed
 
@@ -33,17 +33,35 @@ Google regenerated build metadata and source generations during the updates. Ind
 
 The source bucket is `gcf-v2-sources-329028367192-us-central1`; each object is `<FunctionName>/function-source.zip`. The original checkout's ignored local Functions environment was also updated to retain only `commerce` in the disabled-feature list. These observations verify the two named functions, not every deployed function's environment.
 
-## Hosted observation and remaining acceptance
+## Hosted display and continuation observed
 
-The real app-role session reached the Classic **Out of Attempts** modal on version 9 with **625 coins** and a **50-coin** continue option. It showed no ad choice because that running tab had loaded the earlier disabled startup projection. Browser access was lost before a reload and ad request. No ad impression, completed video, server reward claim or restored attempt was observed. The newer modal wording on the `facebook` branch was not uploaded during this setup.
+The first role-account session showed only coin options because it had loaded the earlier disabled startup projection. After browser access returned, a fresh **Play** launch from the Meta dashboard resolved a stale outer loader stuck at 0%. The existing version 9 game then showed **Watch a video for an extra try** in the Classic **Out of Attempts** modal, alongside the **50-coin** continue option, with a balance of **625 coins**.
 
-When browser access returns:
+One invocation of the game's video button displayed a real sponsored Meta rewarded video and reached a 100% progress endcard. Meta still presented a generic **Skip ad** / lose-reward warning. Choosing **Continue watching** replayed the same video once; the game's ad button was not invoked again. A subsequent media inspection confirmed **23.728 seconds** elapsed out of **23.728 seconds**, with `ended=true`. **Return to Game** then resumed the same Classic riddle with an active fresh input row and **625 coins**. No console errors were observed. The warning did not disappear during this observation; this does not establish that skipping before completion earns a reward or that an SDK cancellation occurred. See [Meta's rewarded-ad flow](https://developers.facebook.com/documentation/games/monetize/in-app-ads/rewarded-ads).
 
-1. Reload the authorized role-account game session to obtain the enabled startup projection and resume the exhausted riddle.
-2. Record the balance and choose the rewarded-video option once. Follow [Meta's rewarded-ad flow](https://developers.facebook.com/documentation/games/monetize/in-app-ads/rewarded-ads); allow the ad to complete normally without clicking its destination.
-3. Confirm the game returns to the same riddle with exactly one additional attempt and an unchanged coin balance. Confirm the server continuation records `facebook-rewarded` funding.
-4. Complete the authorized cancellation/failure checks: no completed video means no extra attempt or coin change. Record an actual provider error if one occurs; do not infer no-fill from missing browser access.
+A narrow production log inspection of `grantFacebookRewardedContinue` since 07:10 UTC found one preflight and one successful grant response on revision `grantfacebookrewardedcontinue-00022-moq`:
 
-The [existing implementation evidence](facebook-rewarded-continue-2026-10-02.md) describes the bounded SDK-mediated reward and retry behavior. `showAsync()` success is not an independently verifiable ad receipt; the server controls session eligibility and one-use accounting, and this path never grants coins. The broader device, failure and emergency-switch acceptance in [launch checklist P5-05](../facebook-launch-todo.md) remains open.
+| Request | UTC timestamp | HTTP status |
+| --- | --- | --- |
+| Preflight | `2026-11-27T07:21:20.241121Z` | 204 |
+| Continuation grant | `2026-11-27T07:21:24.509906Z` | 200 |
+
+### Why the resumed grid has five empty rows
+
+The visible grid always renders five rows. A successful `continueGranted` transition clears displayed guesses but preserves the cumulative `attemptsUsed` count of five and sets `hasUsedContinue=true`. The server's next-guess limit is five plus one continued attempt. The empty grid therefore does not award five new attempts.
+
+This behavior is present in hosted source `af20085bce70fbe73aedebce68975a414d9dac20` and current `main` at `4d96e6cf5`:
+
+- [GameFrameControls.tsx](../../../src/gameplay/components/GameFrameControls.tsx), line 187 in both revisions: fixed five-row presentation.
+- [gameSession.ts](../../../src/gameplay/session/gameSession.ts), hosted line 842 / main line 884: continuation clears visible guesses while retaining the snapshot's attempt count.
+- [useAttemptRecovery.ts](../../../src/gameplay/hooks/browser/useAttemptRecovery.ts), line 85 in both revisions: successful authority response dispatches `continueGranted`.
+- [singlePlayerSession.ts](../../../firebase-functions/src/gameplay/sessions/singlePlayerSession.ts), lines 392 and 403 in both revisions: rewarded continuation costs zero, preserves submitted-attempt count and records the consumed continuation.
+- [singlePlayerGuessTransition.ts](../../../firebase-functions/src/gameplay/sessions/singlePlayerGuessTransition.ts), line 59 in both revisions: the server caps the continued session at six total attempts.
+
+These source semantics, the successful hosted grant response and the resumed game establish the one-attempt continuation path. No private player/session document was inspected, and the restored attempt was left unused; a seventh-guess rejection was not exercised. The newer modal wording on the `facebook` branch was not uploaded during this setup.
+
+## Remaining acceptance
+
+The [existing implementation evidence](facebook-rewarded-continue-2026-10-02.md) describes the bounded SDK-mediated reward and retry behavior. `showAsync()` success is not an independently verifiable ad receipt; the server controls session eligibility and one-use accounting, and this path never grants coins. Mobile, early cancellation, no-fill, other failure and emergency-switch checks in [launch checklist P5-05](../facebook-launch-todo.md) remain open. The generic endcard warning observed after completed playback is not a cancellation/failure acceptance result.
 
 No test suite, browser harness, new game upload, publication or review submission was performed for this configuration update. Existing Jest backend integrations and payment readiness were not changed.
