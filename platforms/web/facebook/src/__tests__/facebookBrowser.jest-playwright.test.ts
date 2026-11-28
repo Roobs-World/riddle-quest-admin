@@ -14,6 +14,7 @@ import {installExpandedOptionalApis, verifyGenericProfileOverlay} from "./expand
 import {verifyCommerceOwnership} from "./commerceOwnership.jest-playwright.support.ts";
 import {verifyBannerActivation} from "./bannerActivation.jest-playwright.support.ts";
 import {verifyAdLifecycle} from "./adLifecycle.jest-playwright.support.ts";
+import {verifyNativeAdPlacement} from "./nativeAdPlacement.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -70,6 +71,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED: "false",
         VITE_FACEBOOK_BANNER_ENABLED: "true",
         VITE_FACEBOOK_BANNER_PLACEMENT_ID: "browser-banner-placement",
+        VITE_FACEBOOK_REWARDED_PLACEMENT_ID: "browser-rewarded-placement",
         VITE_NOTIFICATION_SERVICE_URL: "",
       },
       stdio: "inherit",
@@ -591,6 +593,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await installRaceContextDialogs(successPage, nativeMatching, process.env.FACEBOOK_BROWSER_CONTEXT_EVENTS !== "0",
         process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1");
       await installTournamentPresentation(successPage);
+      if (process.env.FACEBOOK_BROWSER_NATIVE_AD_PLACEMENT === "1") {
+        await verifyNativeAdPlacement(successPage, origin, subscription);
+        return;
+      }
       if (process.env.FACEBOOK_BROWSER_AD_LIFECYCLE === "1") {
         await verifyAdLifecycle(successPage, origin, subscription);
         return;
@@ -943,6 +949,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
       await verifyBannerActivation(successPage, origin, subscription);
       await verifyAdLifecycle(successPage, origin, subscription);
+      await verifyNativeAdPlacement(successPage, origin, subscription);
       await verifyCommerceOwnership(successPage, origin);
     } finally {
       await browser.close();

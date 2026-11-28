@@ -33,7 +33,7 @@ const sdkWithRewardedAd = () => {
   } as unknown as FacebookInstantSdk};
 };
 
-/** Valid test hosts always expose their configured placement. */
+/** Test hosts advertise the native ad format under examination. */
 const requireAds = (options: Parameters<typeof createFacebookAdsCapability>[0]) => {
   const ads = createFacebookAdsCapability(options);
   if (!ads) throw new Error("Expected the test host to expose its ad capability.");
@@ -60,17 +60,52 @@ describe.each(adFormats)("Facebook %s returned placement binding", format => {
       show: () => format === "interstitial" ? ads.showInterstitial("result") : ads.showRewarded("continue")};
   };
 
-  it.each(["missing", "non-callable", "malformed", "mismatched", "padded", "throwing"])(
+  const inheritAdMethods = (ad: ReturnType<typeof sdkWithAd>["ad"], getPlacementID: () => unknown) => {
+    const prototype = {getPlacementID, loadAsync: ad.loadAsync, showAsync: ad.showAsync};
+    for (const method of ["getPlacementID", "loadAsync", "showAsync"]) Reflect.deleteProperty(ad, method);
+    Object.setPrototypeOf(ad, prototype);
+    return prototype;
+  };
+
+  it("loads and shows a native inherited-method handle whose placement metadata is undefined", async () => {
+    const harness = fixture();
+    const getPlacementID = jest.fn<() => unknown>(() => undefined);
+    const native = inheritAdMethods(harness.ad, getPlacementID);
+    expect(await harness.show()).toEqual({status: "success", value: undefined});
+    expect(format === "interstitial" ? harness.sdk.getInterstitialAdAsync : harness.sdk.getRewardedVideoAsync)
+      .toHaveBeenCalledWith(harness.expected);
+    expect(getPlacementID).toHaveBeenCalledTimes(2);
+    expect(getPlacementID.mock.contexts).toEqual([harness.ad, harness.ad]);
+    expect(native.loadAsync).toHaveBeenCalledTimes(1);
+    expect(native.showAsync).toHaveBeenCalledTimes(1);
+    expect(getPlacementID.mock.invocationCallOrder[0]).toBeLessThan(native.loadAsync.mock.invocationCallOrder[0]!);
+    expect(native.loadAsync.mock.invocationCallOrder[0]).toBeLessThan(getPlacementID.mock.invocationCallOrder[1]!);
+    expect(getPlacementID.mock.invocationCallOrder[1]).toBeLessThan(native.showAsync.mock.invocationCallOrder[0]!);
+  });
+
+  it("rejects reported placement mismatch after initially omitted metadata before display", async () => {
+    const harness = fixture();
+    const getPlacementID = jest.fn<() => unknown>(() => "replacement-placement").mockReturnValueOnce(undefined);
+    const native = inheritAdMethods(harness.ad, getPlacementID);
+    expect(await harness.show()).toEqual({status: "retryable-failure", message: "facebook-ad-placement-invalid"});
+    expect(getPlacementID).toHaveBeenCalledTimes(2);
+    expect(native.loadAsync).toHaveBeenCalledTimes(1);
+    expect(native.showAsync).not.toHaveBeenCalled();
+  });
+
+  it.each(["missing", "non-callable", "null", "malformed", "empty", "mismatched", "padded", "throwing"])(
     "rejects a %s placement getter before loading and allows a valid retry without consuming cooldown",
     async fault => {
       const harness = fixture();
       if (fault === "missing") Reflect.deleteProperty(harness.ad, "getPlacementID");
       else Object.defineProperty(harness.ad, "getPlacementID", {configurable: true, value:
         fault === "non-callable" ? harness.expected :
-          fault === "malformed" ? () => 42 :
-            fault === "mismatched" ? () => "another-format-placement" :
-              fault === "padded" ? () => ` ${harness.expected} ` :
-                () => {throw {code: "USER_INPUT", message: "Private provider failure"};}});
+          fault === "null" ? () => null :
+            fault === "malformed" ? () => 42 :
+              fault === "empty" ? () => "" :
+                fault === "mismatched" ? () => "another-format-placement" :
+                  fault === "padded" ? () => ` ${harness.expected} ` :
+                    () => {throw {code: "USER_INPUT", message: "Private provider failure"};}});
 
       expect(await harness.show()).toEqual({status: "retryable-failure", message: "facebook-ad-placement-invalid"});
       expect(harness.ad.loadAsync).not.toHaveBeenCalled();

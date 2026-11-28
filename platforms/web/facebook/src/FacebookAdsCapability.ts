@@ -18,12 +18,16 @@ const failure = (error: unknown): PlatformResult<void> => ({
   message: error instanceof Error ? error.message : "facebook-ad-failed",
 });
 
-/** Native ad handles must remain bound to the configured format's approved placement. */
+/** Validates metadata on the handle returned by the requested native ad factory. */
 const assertPlacement = (ad: unknown, expected: string): void => {
   let matches = false;
   try {
-    matches = typeof ad === "object" && ad !== null && "getPlacementID" in ad &&
-      typeof ad.getPlacementID === "function" && ad.getPlacementID() === expected;
+    if (typeof ad === "object" && ad !== null && "getPlacementID" in ad &&
+        typeof ad.getPlacementID === "function") {
+      const reported: unknown = ad.getPlacementID();
+      // Native Android handles can omit placement metadata even for the requested factory placement.
+      matches = reported === undefined || reported === expected;
+    }
   } catch { /* Provider errors and identifiers never become game diagnostics. */ }
   if (!matches) throw new Error("facebook-ad-placement-invalid");
 };
