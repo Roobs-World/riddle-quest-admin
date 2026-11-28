@@ -313,6 +313,8 @@ Record the final source commit, archive SHA-256, Meta version/bundle, host/OS, a
 
 ### J01 — Startup, identity, save and profile
 
+The [version 22 preference check](evidence/facebook-android-preference-version-22-2026-11-28.md) independently identified three fresh launches and observed Reduced Motion Off→On surviving normal app Quit/relaunch, then restored Off surviving a second Quit and third launch. GUITAR/five empty rows/1,180 coins remained unchanged. The phase ended in gameplay without a third Quit. This establishes visible preference persistence, without tracing its storage mechanism, a new gameplay-progress save or account separation.
+
 [Version 19 Android](evidence/facebook-android-version-19-2026-11-28.md) confirmed exact identity and restored GUITAR/five empty rows/1,180 coins from previous saved progress. Normal Settings Quit exited to Facebook main; no second launch after that exit, new preference write or account replacement was performed. These observations do not prove the inactive-owner cleanup branch or complete this journey.
 
 [Version 18 Android](evidence/facebook-android-version-18-2026-11-28.md) restored PENCIL/1,155 coins after ordinary Quit/relaunch. Reduced motion On persisted after another Quit selected five seconds after changing the preference. The final exact-version-18 launch reconfirmed restored Off at 02:00:10 UTC, PENCIL and 1,155 coins; normal Quit at 02:00:39 reached Facebook main by 02:00:41. These narrow single-account observations do not establish account separation, a new version 18 Classic reward, or direct save-call tracing.
@@ -332,6 +334,8 @@ On [version 18 Android](evidence/facebook-android-version-18-2026-11-28.md), Pro
 Use the general Invite action, a completed-result Share action and a live-race invitation with consenting testers. Verify native dialogs use the expected card and bounded opaque data. Close each dialog without sending, then complete a separately authorized send. A resolved invite promise alone is not delivery evidence and must not grant coins. Open the recipient link and confirm referral or challenge parsing, explicit acceptance where required, correct locale/session binding and no duplicate referral reward. Exercise unsupported invite with supported share fallback, rejected images, stale account ownership and delayed dialog completion.
 
 ### J04 — Settings native actions and fixed legal links
+
+The separate [version 22 preference check](evidence/facebook-android-preference-version-22-2026-11-28.md) observed two normal app-Quit exits after changing Reduced Motion, with On and restored Off confirmed on subsequent launches. It used ordinary UI without Terms navigation, console, probes or SDK patches; the post-Terms save/exit issue below remains unresolved.
 
 An [unmodified version 22 Home/Recents check](evidence/facebook-android-home-recovery-version-22-2026-11-28.md) reproduced the post-Terms unsaved warning in a 47-API session without banner-load support or a visible banner. Returning through the existing Facebook card retained Settings and the warning. One retry cleared the warning while pending, then restored enabled controls and the warning by 19.399 seconds after the tap. This cycle did not restore observable app exit; host-only Quit performed cleanup. No new-save persistence or cause is established.
 
