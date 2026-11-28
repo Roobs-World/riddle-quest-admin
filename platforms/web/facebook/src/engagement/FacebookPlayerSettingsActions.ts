@@ -90,8 +90,18 @@ export function createFacebookPlayerSettingsActions({
   const listeners = new Set<() => void>();
   const describeAction = ({id}: NativeAction): PlayerSettingsAction => ({id, labelKey: ACTION_LABELS[id]});
   let snapshot: PlayerSettingsActionsSnapshot = {actions: nativeActions.filter(action => available.has(action.id)).map(describeAction), pendingAction: null};
+  const retire = () => {
+    if (retired) return;
+    retired = true;
+    actionLifetime.abort();
+    botConsent?.retire();
+    ++revision;
+    snapshot = {actions: [], pendingAction: null};
+    listeners.forEach(listener => listener());
+    listeners.clear();
+  };
   const publish = (pendingAction: FacebookPlayerSettingsAction | null) => {
-    if (!current()) return;
+    if (!current()) {retire(); return;}
     snapshot = {actions: nativeActions.filter(action => available.has(action.id) || action.id === pendingAction).map(describeAction), pendingAction};
     listeners.forEach(listener => listener());
   };
@@ -226,14 +236,6 @@ export function createFacebookPlayerSettingsActions({
         publish(null);
       }
     },
-    retire: () => {
-      retired = true;
-      actionLifetime.abort();
-      botConsent?.retire();
-      ++revision;
-      snapshot = {actions: [], pendingAction: null};
-      listeners.forEach(listener => listener());
-      listeners.clear();
-    },
+    retire,
   };
 }

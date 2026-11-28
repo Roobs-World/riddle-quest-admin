@@ -620,20 +620,90 @@ describe("Facebook player Settings actions", () => {
     }
   });
 
-  it.each(["retired", "account-replaced"])("does not quit after becoming %s while saving", async condition => {
+  it.each(["retired", "account-replaced"])("clears pending Quit without restoring actions after becoming %s while saving", async condition => {
     const harness = fixture();
     const actions = requireActions(harness.options);
     const saving = deferred<void>();
     const saved = deferred<void>();
+    const eligible = deferred<boolean>();
+    harness.canCreateShortcutAsync.mockReturnValueOnce(eligible.promise);
+    const refreshing = actions.refresh();
+    const published: ReturnType<typeof actions.getSnapshot>[] = [];
+    const unsubscribe = actions.subscribe(() => published.push(actions.getSnapshot()));
     harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
     const quitting = actions.run("quit");
-    await saving.promise;
-    expect(harness.quit).not.toHaveBeenCalled();
-    if (condition === "retired") actions.retire();
-    else harness.setActive(false);
-    saved.resolve();
-    await expect(quitting).resolves.toBe("cancelled");
-    expect(harness.quit).not.toHaveBeenCalled();
+    try {
+      await saving.promise;
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      expect(harness.quit).not.toHaveBeenCalled();
+      if (condition === "retired") actions.retire();
+      else harness.setActive(false);
+      saved.resolve();
+      await expect(quitting).resolves.toBe("cancelled");
+      expect(actions.getSnapshot()).toEqual({actions: [], pendingAction: null});
+      expect(published.at(-1)).toEqual({actions: [], pendingAction: null});
+
+      const clearedSnapshot = actions.getSnapshot();
+      const notificationsAfterCancellation = published.length;
+      harness.setActive(true);
+      eligible.resolve(true);
+      await refreshing;
+      await actions.refresh();
+      await expect(actions.run("quit")).resolves.toBe("unavailable");
+      expect(actions.getSnapshot()).toBe(clearedSnapshot);
+      expect(published).toHaveLength(notificationsAfterCancellation);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      expect(harness.quit).not.toHaveBeenCalled();
+      expect(harness.createShortcutAsync).not.toHaveBeenCalled();
+      expect(harness.reportFailure).not.toHaveBeenCalled();
+    } finally {
+      saved.resolve();
+      eligible.resolve(true);
+      await quitting;
+      await refreshing;
+      unsubscribe();
+    }
+  });
+
+  it.each(["panel-closed", "deadline"])("clears inactive-owner Quit on %s while retaining the unfinished save", async condition => {
+    const harness = fixture();
+    const actions = requireActions(harness.options);
+    const saving = deferred<void>();
+    const saved = deferred<void>();
+    let saveSettled = false;
+    void saved.promise.then(() => {saveSettled = true;});
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
+    const published: ReturnType<typeof actions.getSnapshot>[] = [];
+    const unsubscribe = actions.subscribe(() => published.push(actions.getSnapshot()));
+    const panel = new AbortController();
+    jest.useFakeTimers();
+    const quitting = actions.run("quit", panel.signal);
+    try {
+      await saving.promise;
+      harness.setActive(false);
+      if (condition === "panel-closed") panel.abort();
+      else await jest.advanceTimersByTimeAsync(15_000);
+      await expect(quitting).resolves.toBe("cancelled");
+      expect(saveSettled).toBe(false);
+      expect(actions.getSnapshot()).toEqual({actions: [], pendingAction: null});
+      expect(published.at(-1)).toEqual({actions: [], pendingAction: null});
+
+      harness.setActive(true);
+      await expect(actions.run("quit")).resolves.toBe("unavailable");
+      saved.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(saveSettled).toBe(true);
+      expect(actions.getSnapshot()).toEqual({actions: [], pendingAction: null});
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      expect(harness.quit).not.toHaveBeenCalled();
+      expect(harness.reportFailure).not.toHaveBeenCalled();
+    } finally {
+      panel.abort();
+      saved.resolve();
+      await quitting;
+      unsubscribe();
+      jest.useRealTimers();
+    }
   });
 
   it("does not open or consume the shortcut after retirement during its final eligibility probe", async () => {

@@ -21,6 +21,7 @@
 - [Version 18 Android rewarded cancellation, failed retry and normal exit](evidence/facebook-android-ad-cancellation-version-18-2026-11-28.md)
 - [Version 18 Android result-share cancellation and progress persistence](evidence/facebook-android-result-share-version-18-2026-11-28.md)
 - [Version 18 Terms-return stall: Quit ownership and callback observations](evidence/facebook-android-terms-quit-followup-version-18-2026-11-28.md)
+- [Inactive Settings owner cleanup and focused verification](evidence/facebook-inactive-settings-owner-cleanup-2026-11-28.md)
 - [Historical version 17 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-17-2026-11-28.json)
 - [Version 17 Android rewarded continuation, Privacy navigation and host-relaunch recovery](evidence/facebook-android-version-17-2026-11-28.md)
 - [Version 17 read-only SDK capabilities and inactive banner guard](evidence/facebook-android-sdk-capabilities-version-17-2026-11-28.json)
