@@ -1,0 +1,337 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "scope": "Unmodified single-account Android rewarded-video return, three ordinary wins, bounded interstitial observation and normal Quit/relaunch progress restoration.",
+  "artifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "archiveSha256": "d1b55275070597cdc6478ecae7879d414bbc57eb499f5cb9f71515019a1074b6",
+    "receipt": "facebook-testing-version-22-2026-11-28.json",
+    "unchanged": true
+  },
+  "clock": "Controller action and observation timestamps; guarded submission receipts have whole-second precision. No exact SDK callback timing is inferred.",
+  "initialSession": {
+    "phaseStartedAt": "2026-11-28T05:16:48.923908+00:00",
+    "carriedFromPreferenceThirdSession": true,
+    "preferenceEvidence": "facebook-android-preference-version-22-2026-11-28.json",
+    "sdkInfo": {
+      "observedAt": "2026-11-28T05:15:30.198614+00:00",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "sdkVersion": "8.0",
+      "supportedApiCount": 48,
+      "bannerLoadAdvertised": true,
+      "supportedApis": [
+        "canCreateShortcutAsync",
+        "changeContextAsync",
+        "checkCanPlayerMatchAsync",
+        "context.chooseAsync",
+        "context.createAsync",
+        "context.getID",
+        "context.getPlayersAsync",
+        "context.getType",
+        "context.switchAsync",
+        "createShortcutAsync",
+        "getEntryPointAsync",
+        "getEntryPointData",
+        "getInterstitialAdAsync",
+        "getLocale",
+        "getPlatform",
+        "getRewardedVideoAsync",
+        "getSDKVersion",
+        "getSupportedAPIs",
+        "hideBannerAdAsync",
+        "initializeAsync",
+        "inviteAsync",
+        "loadBannerAdAsync",
+        "matchPlayerAsync",
+        "onPause",
+        "onResume",
+        "openExternalLinkAsync",
+        "player.createNEZPNotificationContentAsync",
+        "player.flushDataAsync",
+        "player.getASIDAsync",
+        "player.getConnectedPlayersAsync",
+        "player.getDataAsync",
+        "player.getSignedASIDAsync",
+        "player.getSignedAssociatedAppsASIDAsync",
+        "player.getSignedPlayerInfoAsync",
+        "player.setDataAsync",
+        "player.subscribeBotAsync",
+        "quit",
+        "room.getCurrentMatchAsync",
+        "setLoadingProgress",
+        "shareAsync",
+        "startGameAsync",
+        "switchGameAsync",
+        "tournament.createAsync",
+        "tournament.getTournamentsAsync",
+        "tournament.joinAsync",
+        "tournament.postScoreAsync",
+        "tournament.shareAsync",
+        "updateAsync"
+      ]
+    },
+    "freshSdkInfoDuringAdPhase": false,
+    "interveningLaunch": false,
+    "initialGameplay": {
+      "riddle": "GUITAR",
+      "emptyRows": 5,
+      "coins": 1180
+    }
+  },
+  "rewarded": {
+    "incorrectGuesses": [
+      {
+        "answer": "PLANET",
+        "submittedAt": "2026-11-28T05:16:55Z"
+      },
+      {
+        "answer": "BANANA",
+        "submittedAt": "2026-11-28T05:17:11Z"
+      },
+      {
+        "answer": "ROCKET",
+        "submittedAt": "2026-11-28T05:17:26Z"
+      },
+      {
+        "answer": "ORANGE",
+        "submittedAt": "2026-11-28T05:17:45Z"
+      },
+      {
+        "answer": "PENCIL",
+        "submittedAt": "2026-11-28T05:17:59Z"
+      }
+    ],
+    "lossOfferObservedAt": "2026-11-28T05:18:04.537667+00:00",
+    "request": {
+      "label": "Watch an ad for another attempt",
+      "tappedAt": "2026-11-28T05:18:13.456920+00:00"
+    },
+    "nativeVideo": {
+      "observedAt": "2026-11-28T05:18:18.975784+00:00",
+      "advertiser": "Litesport",
+      "countdownText": "Reward in 21s",
+      "completedEndCardObservedAt": "2026-11-28T05:18:54.172602+00:00",
+      "closeControlTappedAt": "2026-11-28T05:19:02.268494+00:00",
+      "advertiserCtaClicked": false
+    },
+    "return": {
+      "observedAt": "2026-11-28T05:19:10.050166+00:00",
+      "surface": "Full-height gameplay",
+      "riddle": "GUITAR",
+      "emptyRows": 5,
+      "coins": 1180,
+      "coinChangeObserved": false,
+      "inputRecoveryEstablishedByLaterCorrectSubmission": true
+    },
+    "rawSdkOutcomeCaptured": false,
+    "serverGrantTraceCaptured": false,
+    "sixthAttemptCounterEstablished": false
+  },
+  "normalWins": [
+    {
+      "answer": "GUITAR",
+      "submittedAt": "2026-11-28T05:19:34Z",
+      "displayedReward": 25,
+      "confirmedDisplayedCoins": 1205,
+      "balanceObservedAt": "2026-11-28T05:19:52.336241+00:00"
+    },
+    {
+      "answer": "WAFFLE",
+      "submittedAt": "2026-11-28T05:20:28Z",
+      "displayedReward": 45,
+      "confirmedDisplayedCoins": 1250,
+      "balanceObservedAt": "2026-11-28T05:20:39.035886+00:00"
+    },
+    {
+      "answer": "ZEBRA",
+      "submittedAt": "2026-11-28T05:21:10Z",
+      "displayedReward": 25,
+      "confirmedDisplayedCoins": 1275,
+      "balanceObservedAt": "2026-11-28T05:21:16.517031+00:00"
+    }
+  ],
+  "firstWinPendingPresentation": {
+    "observedAt": "2026-11-28T05:19:36.419380+00:00",
+    "displayedReward": 25,
+    "displayedCoins": 1180,
+    "laterBalanceConfirmed": 1205,
+    "laterObservedAt": "2026-11-28T05:19:52.336241+00:00"
+  },
+  "rewardsInterpretation": "The 25,45,25 displayed rewards accompany ordinary correct gameplay results. No ad coin grant is inferred.",
+  "interstitial": {
+    "thirdSubmissionSecondsAfterRewardedReturnApproximate": 119.95,
+    "resultHeldForegroundWithoutInteraction": true,
+    "capturedAt": [
+      "2026-11-28T05:21:16.517031+00:00",
+      "2026-11-28T05:21:42.676193+00:00",
+      "2026-11-28T05:22:22.615470+00:00",
+      "2026-11-28T05:22:45.873980+00:00"
+    ],
+    "observationWindowSeconds": 89.357,
+    "interstitialObserved": false,
+    "freshUiReceipt": {
+      "observedAt": "2026-11-28T05:22:39.518620+00:00",
+      "nextLevelEnabled": true,
+      "shareEnabled": true
+    },
+    "rawSdkErrorCaptured": false,
+    "requestOrAdmissionOutcome": "Unknown; no request, eligibility, cadence, fill or suppression outcome was traced.",
+    "nativeInterstitialDisplayAccepted": false
+  },
+  "nextPuzzle": {
+    "nextLevelTappedAt": "2026-11-28T05:22:55.455419+00:00",
+    "observedAt": "2026-11-28T05:23:00.405504+00:00",
+    "riddle": "PELICAN",
+    "emptyRows": 5,
+    "coins": 1275
+  },
+  "firstQuit": {
+    "appTappedAt": "2026-11-28T05:23:22.944985+00:00",
+    "facebookMainConfirmedAt": "2026-11-28T05:23:27.740953+00:00",
+    "activity": "FbMainTabActivity"
+  },
+  "relaunch": {
+    "launchedAt": "2026-11-28T05:23:36.213207+00:00",
+    "earlySdkInfoReadEstablishedIdentity": false,
+    "sdkInfo": {
+      "observedAt": "2026-11-28T05:25:08.669414+00:00",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "sdkVersion": "8.0",
+      "supportedApiCount": 47,
+      "bannerLoadAdvertised": false,
+      "supportedApis": [
+        "canCreateShortcutAsync",
+        "changeContextAsync",
+        "checkCanPlayerMatchAsync",
+        "context.chooseAsync",
+        "context.createAsync",
+        "context.getID",
+        "context.getPlayersAsync",
+        "context.getType",
+        "context.switchAsync",
+        "createShortcutAsync",
+        "getEntryPointAsync",
+        "getEntryPointData",
+        "getInterstitialAdAsync",
+        "getLocale",
+        "getPlatform",
+        "getRewardedVideoAsync",
+        "getSDKVersion",
+        "getSupportedAPIs",
+        "hideBannerAdAsync",
+        "initializeAsync",
+        "inviteAsync",
+        "matchPlayerAsync",
+        "onPause",
+        "onResume",
+        "openExternalLinkAsync",
+        "player.createNEZPNotificationContentAsync",
+        "player.flushDataAsync",
+        "player.getASIDAsync",
+        "player.getConnectedPlayersAsync",
+        "player.getDataAsync",
+        "player.getSignedASIDAsync",
+        "player.getSignedAssociatedAppsASIDAsync",
+        "player.getSignedPlayerInfoAsync",
+        "player.setDataAsync",
+        "player.subscribeBotAsync",
+        "quit",
+        "room.getCurrentMatchAsync",
+        "setLoadingProgress",
+        "shareAsync",
+        "startGameAsync",
+        "switchGameAsync",
+        "tournament.createAsync",
+        "tournament.getTournamentsAsync",
+        "tournament.joinAsync",
+        "tournament.postScoreAsync",
+        "tournament.shareAsync",
+        "updateAsync"
+      ]
+    },
+    "letsPlayTappedAt": "2026-11-28T05:25:18.169766+00:00",
+    "progressObservedAt": "2026-11-28T05:25:22.553927+00:00",
+    "riddle": "PELICAN",
+    "answerCells": 7,
+    "emptyRows": 5,
+    "coins": 1275
+  },
+  "cleanup": {
+    "settingsObservedAt": "2026-11-28T05:25:38.251026+00:00",
+    "reducedMotion": "Off",
+    "notifications": "Off",
+    "analyticsChecked": false,
+    "settingsChanged": false,
+    "appQuitTappedAt": "2026-11-28T05:25:47.265675+00:00",
+    "facebookMainConfirmedAt": "2026-11-28T05:25:54.948922+00:00",
+    "activity": "FbMainTabActivity",
+    "temporaryDeviceUiXmlRemovedAt": "2026-11-28T05:25:55.553597+00:00",
+    "outsideGame": true
+  },
+  "acceptance": {
+    "nativeRewardedVideoCompletionAndPlayableReturnObserved": true,
+    "newPuzzleAndDisplayedBalanceRestoredAcrossNormalQuitRelaunch": true,
+    "normalAppExitsObserved": 2,
+    "freshProgressRelaunches": 1,
+    "serverGrantOrIdempotencyVerified": false,
+    "cloudVersusLocalPersistenceEstablished": false,
+    "nativeInterstitialDisplayObserved": false,
+    "postTermsRecoveryEstablished": false,
+    "completeAdJourneyAcceptanceEstablished": false,
+    "sdkInventoryRows": 79,
+    "coverageCountsChanged": false
+  },
+  "limits": [
+    "Initial identity is carried from the preceding preference session; the post-win relaunch was independently identified.",
+    "The 48/47 session-specific capability lists do not establish acceptance of every advertised API or a served banner.",
+    "The empty returned board and successful input establish visible recovery, not a traced grant mechanism or sixth-attempt counter.",
+    "No interstitial was observed in the captured foreground window; this does not establish a request, no-fill, cadence, entitlement or transport outcome.",
+    "Puzzle and balance restoration are observed, without a storage/network trace identifying the persistence mechanism.",
+    "No Terms navigation or Home cycle occurred; this check does not resolve the separate post-Terms stall.",
+    "Subscriber/ad-free eligibility, interruption, cancellation, duplicate claims and the remaining ad matrix were not exercised.",
+    "Raw screenshots, input coordinates and device activity identifiers remain private local evidence."
+  ],
+  "consoleOrProbesUsed": false,
+  "sdkPatchedOrFaked": false,
+  "termsNavigation": false,
+  "androidHomeCycle": false,
+  "advertiserCtaClicked": false,
+  "purchasesPerformed": false,
+  "socialSendsPerformed": false,
+  "preferencesOrConsentChanged": false,
+  "gameplayProgressAndCoinsChanged": true,
+  "sourceChanged": false,
+  "newBuildOrUpload": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-v22-ads-observations.json": "6e104631da67d70d41cd281e5d76c7c47e6c465858b9bffb3136773d3070acda",
+    "riddle-quest-v22-ads-sdk-info-relaunch.json": "6fc358c4a36ffce265b154a9426b19e3946d4f41f504c05fcb470f7076e88155",
+    "riddle-quest-v22-ads-rewarded-request.json": "e15aa9b56355e36eb939abfb8cd9be34824fa64f953c53f9a34669528d6e6ba2",
+    "riddle-quest-v22-ads-win-1.json": "531d4f844f148b11be7554d5564c08834289707b54b2a9306874105dad564e42",
+    "riddle-quest-v22-ads-win-2.json": "ed78db63b4cb74999a64b45ea69c8943fa98cb3a2beb2fe7e0b04e3cfe3eb247",
+    "riddle-quest-v22-ads-win-3.json": "c9a2d1583c43360082e5d2181132292819fb7dc5e62f925ac71dddb31ab0fd10",
+    "riddle-quest-v22-ads-result-controls.json": "60ac4df50892002e48b910eba477f81b2d091045f19216d03ed0097dff0e8040",
+    "riddle-quest-v22-ads-quit-1.json": "e68fcec397f40bb55726306a3a6ef92d99a6ad88a9a565de54df2381b3bd450a",
+    "riddle-quest-v22-ads-quit-2.json": "3c3297efdd953f7ce414d9fa8f029bd6745fd4d4a393a331c47892d0da814742",
+    "riddle-quest-v22-ads-exit-1.txt": "774d1e5fb422e02d93138a0daf5cc423ffc79101ef51250a0cc99e18f6a426af",
+    "riddle-quest-v22-ads-exit-2.txt": "774d1e5fb422e02d93138a0daf5cc423ffc79101ef51250a0cc99e18f6a426af",
+    "riddle-quest-v22-ads-rewarded-start.png": "50521fdf3ac767226677bf1ab9ef2e6cee489da802b5ec9471859808d270c666",
+    "riddle-quest-v22-ads-rewarded-completion-screen.png": "c362f26e73d2ff16773d277f033b7b8fb12c0d0f5a53ece55fa12ce6b0c3db5f",
+    "riddle-quest-v22-ads-rewarded-return.png": "f53df62c776c650fc1e180448df12638f0523fa1a7a9b6fa897e283a896120ec",
+    "riddle-quest-v22-ads-win-1-later.png": "2447741cb8fbd050165bf30d7c3ae20d5260f2286c6c9ce2534664d773113680",
+    "riddle-quest-v22-ads-win-2-result.png": "9e151c49f52a1d0ace7792852ca6b635e24fdc2821ba5386468ef310be9f6c8b",
+    "riddle-quest-v22-ads-win-3-result.png": "6fe55aa52c8cb3540244801e292f392253e04320d22b553679c1b11a4f82f2d6",
+    "riddle-quest-v22-ads-reloaded-progress.png": "0aae0525cfb61300c820d59749d6fc81828457855d79fb526c76249cfa47a1ab",
+    "riddle-quest-v22-save-sdk-info-3.json": "768743a918a778a8760c158156f5a15b4d08913b35397ae297dbc95a59fee11a"
+  },
+  "rawScreenshotsCommitted": false
+}
