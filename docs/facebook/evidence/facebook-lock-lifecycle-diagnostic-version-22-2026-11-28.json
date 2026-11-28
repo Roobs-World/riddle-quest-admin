@@ -1,0 +1,375 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "kind": "Read-only diagnostic; not native acceptance or a fix",
+  "artifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "archiveSha256": "d1b55275070597cdc6478ecae7879d414bbc57eb499f5cb9f71515019a1074b6",
+    "receipt": "facebook-testing-version-22-2026-11-28.json",
+    "unchanged": true
+  },
+  "localControls": {
+    "sourceCommit": "0c3dd65fd7c61f25ea0da4bbab2934119d5f74b7",
+    "seconds": 0.567,
+    "command": "node /tmp/riddle-quest-lock-boundary-diagnostic/run.mjs",
+    "harnessSha256": "cf3b087a5538081e7bbd486950aaf925a334c3f2b2ce22d052c7e6aeb42225c4",
+    "entrySha256": "8fe7053e1afb04e3eb938937e33ce64fa18b6623f3abd60562b65b4050efda96",
+    "nodeVersion": "v24.17.0",
+    "productionSourceSha256": {
+      "platforms/web/facebook/src/FacebookPlatformBootstrap.ts": "8619ffb4230321fe8646749fa011d8fac9eb2edfd1444c3dd10deba691779b2b",
+      "src/accounts/browser/deletion/LocalAccountDeletionGate.ts": "633f993a5cb2f3ddd6a78b83d9096850a0478108403463e05f8bfefad4ad2758",
+      "src/accounts/browser/playerState/PlayerProjectionPersistence.ts": "facf946176d4a5d1eed477e5be27d1c8981ead45047542c50a1d608e6d04a153",
+      "src/gameplay/session/gameSession.ts": "8222f0ebb96aa4e06724ddbc4f67c2012cb895754c4b93320ff96e39797513db",
+      "src/gameplay/session/checkpoints/GameSessionCheckpoints.ts": "6e07f8c1039a58f41b59f6a7f5e880cb39ed80ff4b008a4cf8113a6fbbccd0d6",
+      "src/gameplay/hooks/browser/useGameSessionPersistence.ts": "174a0b5ddc1ba2c5b284b83e9e25cf09ffaa6a15fb78eefd20130e5b0006c8a4",
+      "platforms/web/facebook/src/settleFacebookPause.ts": "9c715034c49b1742da8dd801809fdb1ea8213403015ace6d359a555db8f71d60",
+      "platforms/web/facebook/src/engagement/FacebookPlayerSettingsActions.ts": "4930d7b117a196d8a9793a37bcef53c026aa3430fe603ecf0a8cbf09da9674a4"
+    },
+    "scope": "Private deterministic local differential; not native cause or acceptance. Actual production imports; only SDK calls are fakes. No external requests.",
+    "results": [
+      {
+        "scenario": "baseline",
+        "acceptedCheckpoints": 1,
+        "sdkWrites": 1,
+        "sdkFlushes": 3,
+        "locks": {
+          "held": [],
+          "pending": []
+        },
+        "taskProbeCallbacks": {
+          "micro": 1,
+          "frame": 1,
+          "timer": 1,
+          "channel": 1
+        },
+        "quitOutcomes": [
+          "success"
+        ],
+        "fakeSdkQuitCalls": 1
+      },
+      {
+        "scenario": "held-primitives",
+        "acceptedCheckpoints": 1,
+        "sdkWrites": 1,
+        "sdkFlushes": 3,
+        "locks": {
+          "held": [],
+          "pending": []
+        },
+        "taskProbeCallbacks": {
+          "micro": 1,
+          "frame": 1,
+          "timer": 0,
+          "channel": 0
+        },
+        "quitOutcomes": [
+          "success"
+        ],
+        "fakeSdkQuitCalls": 1
+      },
+      {
+        "scenario": "held-primitives-plus-exclusive-lock",
+        "acceptedCheckpoints": 1,
+        "sdkWrites": 0,
+        "sdkFlushes": 0,
+        "locks": {
+          "held": [
+            {
+              "mode": "exclusive"
+            }
+          ],
+          "pending": [
+            {
+              "mode": "shared"
+            }
+          ]
+        },
+        "taskProbeCallbacks": {
+          "micro": 1,
+          "frame": 1,
+          "timer": 0,
+          "channel": 0
+        },
+        "quitOutcomes": [
+          "unsaved"
+        ],
+        "afterBlockerRelease": {
+          "sdkWrites": 1,
+          "sdkFlushes": 3,
+          "saveSettled": 1,
+          "pauseSettled": 1,
+          "quitOutcomes": [
+            "unsaved"
+          ],
+          "taskProbeCallbacks": {
+            "micro": 1,
+            "frame": 1,
+            "timer": 0,
+            "channel": 0
+          },
+          "fakeSdkQuitCalls": 0
+        }
+      },
+      {
+        "scenario": "held-primitives-plus-prior-gate-work",
+        "acceptedCheckpoints": 1,
+        "sdkWrites": 0,
+        "sdkFlushes": 0,
+        "locks": {
+          "held": [
+            {
+              "mode": "shared"
+            }
+          ],
+          "pending": []
+        },
+        "taskProbeCallbacks": {
+          "micro": 1,
+          "frame": 1,
+          "timer": 0,
+          "channel": 0
+        },
+        "quitOutcomes": [
+          "unsaved"
+        ],
+        "afterBlockerRelease": {
+          "sdkWrites": 1,
+          "sdkFlushes": 3,
+          "saveSettled": 1,
+          "pauseSettled": 1,
+          "quitOutcomes": [
+            "unsaved"
+          ],
+          "taskProbeCallbacks": {
+            "micro": 1,
+            "frame": 1,
+            "timer": 0,
+            "channel": 0
+          },
+          "fakeSdkQuitCalls": 0
+        }
+      }
+    ],
+    "limits": [
+      "The withheld primitive comparison is desktop Chromium with immediate fake SDK responses; it does not establish native task-source behavior.",
+      "Blocked controls deliberately hold legitimate gate ownership; their pre-SDK waiting is a positive diagnostic control, not a discovered product defect.",
+      "The prior-gate-work control deliberately holds a shared lock in the same gate; a held shared lock alone cannot identify the native lock owner or callback delivery.",
+      "No ordinary unblocked local case reproduced the native persistence stall.",
+      "No production edits, SDK calls, external requests or device actions."
+    ],
+    "ordinaryUnblockedReproduction": false,
+    "deliberateBlocksArePositiveControls": true
+  },
+  "nativeDiagnostic": {
+    "controllerClock": {
+      "launch": "2026-11-28T04:34:01.660015+00:00",
+      "sdkInfo": {
+        "observedAt": "2026-11-28T04:35:08.509378+00:00",
+        "version": 22,
+        "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+        "sdkVersion": "8.0",
+        "supportedApiCount": 48,
+        "bannerLoadAdvertised": true,
+        "supportedApis": [
+          "canCreateShortcutAsync",
+          "changeContextAsync",
+          "checkCanPlayerMatchAsync",
+          "context.chooseAsync",
+          "context.createAsync",
+          "context.getID",
+          "context.getPlayersAsync",
+          "context.getType",
+          "context.switchAsync",
+          "createShortcutAsync",
+          "getEntryPointAsync",
+          "getEntryPointData",
+          "getInterstitialAdAsync",
+          "getLocale",
+          "getPlatform",
+          "getRewardedVideoAsync",
+          "getSDKVersion",
+          "getSupportedAPIs",
+          "hideBannerAdAsync",
+          "initializeAsync",
+          "inviteAsync",
+          "loadBannerAdAsync",
+          "matchPlayerAsync",
+          "onPause",
+          "onResume",
+          "openExternalLinkAsync",
+          "player.createNEZPNotificationContentAsync",
+          "player.flushDataAsync",
+          "player.getASIDAsync",
+          "player.getConnectedPlayersAsync",
+          "player.getDataAsync",
+          "player.getSignedASIDAsync",
+          "player.getSignedAssociatedAppsASIDAsync",
+          "player.getSignedPlayerInfoAsync",
+          "player.setDataAsync",
+          "player.subscribeBotAsync",
+          "quit",
+          "room.getCurrentMatchAsync",
+          "setLoadingProgress",
+          "shareAsync",
+          "startGameAsync",
+          "switchGameAsync",
+          "tournament.createAsync",
+          "tournament.getTournamentsAsync",
+          "tournament.joinAsync",
+          "tournament.postScoreAsync",
+          "tournament.shareAsync",
+          "updateAsync"
+        ]
+      },
+      "termsTap": "2026-11-28T04:39:08.538747+00:00",
+      "termsOpen": "2026-11-28T04:39:25.328235+00:00",
+      "androidBack": "2026-11-28T04:39:39.600899+00:00",
+      "baselineExtractedAt": "2026-11-28T04:38:48.318146+00:00",
+      "finalExtractedAt": "2026-11-28T04:42:08.194233+00:00"
+    },
+    "clockLimit": "Controller action/extraction timestamps and device JavaScript timestamps are separate clocks; elapsed comparisons use device times only.",
+    "selection": "Double-decode each quoted console JSON payload and select the latest RQ22_LOCK_READ in each receipt; the final receipt also includes the older baseline.",
+    "deviceClock": {
+      "baselineLock": {
+        "utc": "2026-11-28T04:38:32.919Z",
+        "startedAt": "2026-11-28T04:36:39.569Z",
+        "elapsed": 113350,
+        "exactBundle": true,
+        "visible": "visible",
+        "paused": false,
+        "startVisible": "visible",
+        "startPaused": false,
+        "status": "settled",
+        "settledAt": "2026-11-28T04:36:39.598Z",
+        "settledElapsed": 29,
+        "locks": {
+          "held": {
+            "shared": 0,
+            "exclusive": 0,
+            "other": 0
+          },
+          "pending": {
+            "shared": 0,
+            "exclusive": 0,
+            "other": 0
+          }
+        },
+        "error": null
+      },
+      "postTermsLock": {
+        "utc": "2026-11-28T04:41:57.860Z",
+        "startedAt": "2026-11-28T04:41:03.814Z",
+        "elapsed": 54046,
+        "exactBundle": true,
+        "visible": "visible",
+        "paused": true,
+        "startVisible": "visible",
+        "startPaused": true,
+        "status": "query-started",
+        "settledAt": null,
+        "settledElapsed": null,
+        "locks": null,
+        "error": null
+      },
+      "bridge": {
+        "startedAt": "2026-11-28T04:38:32.919Z",
+        "readAt": "2026-11-28T04:41:57.861Z",
+        "elapsedMs": 204942,
+        "exactBundle": true,
+        "visibility": "visible",
+        "events": [
+          {
+            "type": "host:pause",
+            "source": "visibility",
+            "elapsedMs": 52378,
+            "utc": "2026-11-28T04:39:25.297Z",
+            "visibility": "hidden"
+          },
+          {
+            "type": "host:pause",
+            "source": "platform",
+            "elapsedMs": 52406,
+            "utc": "2026-11-28T04:39:25.325Z",
+            "visibility": "hidden"
+          },
+          {
+            "type": "host:resume",
+            "source": "visibility",
+            "elapsedMs": 66542,
+            "utc": "2026-11-28T04:39:39.461Z",
+            "visibility": "visible"
+          }
+        ],
+        "overflow": 0,
+        "limit": 16,
+        "retains": "latest",
+        "cleaned": true
+      },
+      "pausedReadAfterVisibilityResumeMilliseconds": 138399
+    },
+    "lockScope": {
+      "name": "riddleQuest:facebookPlayerOperations:v1",
+      "retained": "Aggregated held/pending shared, exclusive and other mode counts only",
+      "clientIdentifiersRetained": false,
+      "otherLockNamesRetained": false,
+      "locksAcquired": false
+    },
+    "observerOwnership": {
+      "globalsRemovedBeforeReadLogging": true,
+      "passiveBridgeListenerRemovedBeforeReadLogging": true,
+      "lateLockCallbacksCheckIdentity": true,
+      "lateLockCallbacksInertAfterCleanup": true
+    },
+    "interpretation": {
+      "baseline": "Query completion observed after 29 ms with zero held and pending locks for the exact target name.",
+      "postTerms": "Query completion and rejection remained unobserved at 54,046 ms; lock inventory is unknown.",
+      "bridge": "Visibility-sourced resume was emitted on the shared host bridge; no platform-sourced resume was recorded. This does not establish absence of the SDK callback or execution/commit of a particular subscriber.",
+      "pausedDom": "Paused class remained at the later DOM observation; it does not prove absence of a resume signal."
+    },
+    "appQuitAttempted": false,
+    "syntheticResume": false,
+    "timersInstalled": false,
+    "gameStateMutation": false,
+    "probeSdkCallsOrPatches": false,
+    "probeStorageCallsOrPatches": false
+  },
+  "cleanup": {
+    "hostMenuOpenedAt": "2026-11-28T04:45:27.324426+00:00",
+    "hostMenuConfirmedAt": "2026-11-28T04:45:37.493154+00:00",
+    "menuConfirmationIsExit": false,
+    "hostQuit": "2026-11-28T04:45:55.381200+00:00",
+    "facebookMainConfirmedAt": "2026-11-28T04:46:03.434699+00:00",
+    "activity": "FbMainTabActivity",
+    "temporaryDeviceUiXmlRemovedAt": "2026-11-28T04:46:04.130327+00:00",
+    "incidentalMainMenuDismissedAt": "2026-11-28T04:46:10.637440+00:00",
+    "activityAfterDismissal": "FbMainTabActivity"
+  },
+  "limits": [
+    "A pending query is neither an empty lock snapshot nor proof of a held lock or missing grant.",
+    "The native observation does not identify a blocked projection queue or the cause of an earlier pending Quit.",
+    "No native SDK storage-call trace, app-Quit result, completed save or product fix was established.",
+    "This instrumented session is separate from unmodified version 22 warning and banner acceptance.",
+    "No ordinary unblocked local case reproduced the native persistence stall.",
+    "Raw screenshots and console/device observations remain private local evidence."
+  ],
+  "sourceChanged": false,
+  "newBuildOrUpload": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeChanged": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "published": false,
+  "reviewSubmitted": false,
+  "journeyAcceptanceChanged": false,
+  "sdkInventoryRows": 79,
+  "coverageCountsChanged": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-lock-boundary-diagnostic/result.json": "bd5dd66b832b212652dd70f42a0dd10897dad5307cdeb523f93c2fc596ee362c",
+    "riddle-quest-v22-lock-baseline-result.json": "a51a0da6c3d22edd43fd1b012783a289a5a10cef56b56bcfd143fc7467357aad",
+    "riddle-quest-v22-lockbridge-final-result.json": "4155e4f96769fd4c057b5118613abc37d79d35240d9f6f746c3bc0fe834fa1d2",
+    "riddle-quest-v22-lockbridge-sdk-info.json": "b73bb1c81811bd1c419c72e4df3de1c00314355c0fc0074726ec1783115b3d03",
+    "riddle-quest-v22-lockbridge-observations.json": "2e9bb653b645b1ea32e17b5bb69811e179f0136b4f3ae5a5c1da213e32ab97f4"
+  }
+}
