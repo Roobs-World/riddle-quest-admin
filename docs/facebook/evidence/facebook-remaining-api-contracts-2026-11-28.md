@@ -49,3 +49,24 @@ Fresh source snapshots are private research artifacts under `/tmp/rq-remaining-s
 | [migration](https://developers.facebook.com/documentation/games/build/zero-permissions/onboarding-and-migration/player-identification-post-migration) | `b7f03d6f9f12bb91b414323223552e3e71c086a26071790cac9b8e9a4fe97bfa` |
 | [a2u](https://developers.facebook.com/documentation/games/retain/notifications/a2u-api) | `ad2ed5afa5b51260cbfe98c99225027d126fd8b9364db59d95d6b82ba30f2765` |
 | [cross-play](https://developers.facebook.com/documentation/games/archive/cross-play) | `52393cf7ed019e31d08f929c120ae75ff285dea4b994598b56a37675254174ec` |
+
+## Firefox access and off-platform identity follow-up — 28 November
+
+The 13:05–13:10 UTC Firefox check inspected the signed-in account's existing app screens without changing a configuration or association:
+
+- At 13:05:45.499, the game route displayed an unsupported-browser message. No game iframe was present; only the `maw_proxy_page` frame remained. Sign-in did not establish Firefox gameplay support.
+- At 13:07:18.448, searching app names for **Riddle** returned only the current app, `1748953042991569`. The receipt's `scopeLabels` array is empty, so this is a scoped search result, not proof that every app in the account was searched or that a separate app does not exist.
+- Cross-Play showed **Not Linked** at 13:07:52.248. The initial **Link** button opened the same-game/irreversibility warning at 13:09:44.891. **Continue was never clicked**, no target was selected, and **Cancel** dismissed the warning. At 13:10:27.357, the receipt still showed Not Linked and no open dialog.
+- The two owned Firefox tabs were closed at 13:10:27, preserving the original tab. No app association, upload, source change or review submission occurred.
+
+The inspected Android configuration identifies package `com.roobsworld.riddlequest` in [Gradle](../../../platforms/native/android/android/app/build.gradle); the [Android operations guide](../../android/android-google-play-operations.md) confirms that package and Firebase provisioning. Android manifests, Gradle settings, string resources, dependencies, hosted example configuration and Android documentation supplied no explicit Meta app ID, Facebook Login configuration or ASID association. The `com.facebook.react` references are React Native dependencies. The [Android plan](../../android/android-parity-plan.md) describes optional Google linking with Firebase UID preservation; its Firebase registration ID is not a Meta app ID. This bounded repository search establishes neither the existence nor the absence of a separate Meta app, and the current Facebook app ID is not evidence of one.
+
+Private receipts remain under `/home/craig-beswetherick/.firefox-devtools-mcp/output/`; their hashes bind the observations without publishing profile or contact data:
+
+| Receipt | SHA-256 |
+| --- | --- |
+| `rq-firefox-game-access-final-2026-11-28.json` | `f9b200d1c692aac892b9e2570a580b17e38f8a702f4c6c9f8733d88b00921053` |
+| `rq-firefox-app-search-2026-11-28.json` | `82062c65028e0709d6118130da59905ce6bc7058ae126dd172ff1b6673d11ddf` |
+| `rq-firefox-cross-play-2026-11-28.json` | `189a7632bd1fc02080b3fbf4323a7f1e91794954c8c6215fa81e9d9cf79495fb` |
+| `rq-firefox-cross-play-warning-2026-11-28.json` | `a2307507260e1a19673631d51725a10f54efb3e2d52bf852568851531b5a02d1` |
+| `rq-firefox-cross-play-cancelled-2026-11-28.json` | `d060b94043c4970e0e1010997444eef5f18f0b7007aa901f5835d95c783e97c3` |
