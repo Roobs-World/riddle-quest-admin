@@ -1,4 +1,5 @@
 import {createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode} from "react";
+import {flushSync} from "react-dom";
 import {useTranslator} from "../../localization/browser/i18n";
 import type {PlayerSettingsActionsCapability} from "../contracts/playerSettingsActions";
 
@@ -33,7 +34,10 @@ function AvailablePlayerSettingsActions({capability}: {capability: PlayerSetting
     setNotice(null);
     const result = await capability.run(actionId, current.signal);
     if (owner.current !== current) return;
-    if (result === "error" || result === "unavailable" || result === "unsaved") setNotice(result);
+    if (result === "error" || result === "unavailable" || result === "unsaved") {
+      // Keep the warning visible when controls recover even if scheduled rendering stalls.
+      flushSync(() => setNotice(result));
+    }
   };
 
   return <>

@@ -1,0 +1,130 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "localCorrection": {
+    "baseCommit": "b6ac25d893c39796cb33ae439307c4c580097f15",
+    "source": "src/settings/components/PlayerSettingsActions.tsx",
+    "change": "After the existing owner-identity guard, synchronously commit error/unavailable/unsaved notice state with react-dom flushSync.",
+    "harness": "platforms/web/facebook/scripts/verify-settings-notice-browser.mjs",
+    "canonicalRed": {
+      "seconds": 0.83,
+      "result": "Failed: held scheduler delivered unsaved and enabled controls but no warning.",
+      "evidence": "Verified tool output; canonical red log was not retained."
+    },
+    "initialReproduction": {
+      "record": "/tmp/riddle-quest-settings-notice-scheduler/red-result.json",
+      "log": "/tmp/riddle-quest-settings-notice-scheduler/run.log",
+      "outcome": "unsaved",
+      "pending": null,
+      "disabled": false,
+      "ownerAborts": 0,
+      "status": [],
+      "queuedSchedulerMessages": 1,
+      "afterSchedulerRelease": "Same unsaved warning rendered without another action."
+    },
+    "finalBrowser": {
+      "scenarios": 4,
+      "seconds": 1.136,
+      "result": "passed",
+      "cases": [
+        "normal scheduler and retry",
+        "held MessageChannel scheduler and retry",
+        "owner replacement with late original save",
+        "unmount with late original save"
+      ],
+      "log": "/tmp/riddle-quest-settings-notice-browser-green.log"
+    },
+    "sharedTypecheck": {
+      "result": "passed",
+      "log": "/tmp/riddle-quest-settings-notice-types.log"
+    },
+    "unitTests": "The prior 71-test run belongs to the version 21 deadline correction and was not rerun for this notice change.",
+    "review": "Independent read-only review found no findings.",
+    "officialReference": "https://react.dev/reference/react-dom/flushSync",
+    "nativeAcceptance": "Not established; this source correction has not yet been uploaded."
+  },
+  "nativeDiagnostic": {
+    "version": 21,
+    "bundleId": "29704189249216997",
+    "path": "/instant-bundle/2143220529953108/29704189249216997/index.html",
+    "selection": "Latest RQ21_TASK_READ payload in each receipt; the after-Terms receipt also contains the older baseline log.",
+    "priorStartupFailure": {
+      "launch": "2026-11-28T04:00:14Z",
+      "retry": "2026-11-28T04:01:11Z",
+      "outcome": "Startup failed; cause unknown. This is a different session from the paired diagnostic."
+    },
+    "freshLaunch": "2026-11-28T04:03:24.472986Z",
+    "letsPlay": {
+      "at": "2026-11-28T04:04:25.689838Z",
+      "restored": "GUITAR, five empty rows, 1180 coins"
+    },
+    "settingsBaseline": {
+      "source": "/tmp/riddle-quest-v21-task-baseline-result.json",
+      "extractedAt": "2026-11-28T04:05:36.179546+00:00",
+      "payload": {
+        "utc": "2026-11-28T04:05:22.815Z",
+        "startedAt": "2026-11-28T04:05:05.785Z",
+        "elapsed": 17030,
+        "exactBundle": true,
+        "visible": "visible",
+        "paused": false,
+        "hasSetImmediate": false,
+        "micro": 6,
+        "frame": 8,
+        "timer": 1010,
+        "channel": 26,
+        "immediate": null
+      }
+    },
+    "terms": {
+      "tap": "2026-11-28T04:05:57.380988Z",
+      "open": "2026-11-28T04:06:07.092901Z",
+      "androidBack": "2026-11-28T04:06:19.969007Z",
+      "destination": "Published Riddle Quest Terms on roobsworld.com",
+      "cookieChoicesChanged": false
+    },
+    "settingsAfterTerms": {
+      "source": "/tmp/riddle-quest-v21-task-afterterms-result.json",
+      "extractedAt": "2026-11-28T04:08:07.293250+00:00",
+      "payload": {
+        "utc": "2026-11-28T04:08:00.913Z",
+        "startedAt": "2026-11-28T04:07:26.718Z",
+        "elapsed": 34195,
+        "exactBundle": true,
+        "visible": "visible",
+        "paused": true,
+        "hasSetImmediate": false,
+        "micro": 19,
+        "frame": 21,
+        "timer": null,
+        "channel": null,
+        "immediate": null
+      }
+    },
+    "cleanup": {
+      "ownedChannelClosed": true,
+      "ownedTimerAndFrameCancelled": true,
+      "ownedGlobalDeleted": true,
+      "beforeEachReadLog": true,
+      "hostQuit": "2026-11-28T04:08:46.944743Z",
+      "androidActivity": "FbMainTabActivity",
+      "temporaryDeviceUiXmlRemoved": true
+    },
+    "sdkCallsOrPatches": false,
+    "gameStateMutation": false,
+    "appQuitAttempted": false,
+    "limits": [
+      "Diagnostic-owned one-shots, not native acceptance of the UI correction.",
+      "After Terms, the document remained visible but the game paused class differed from baseline.",
+      "Timer and MessageChannel callbacks remained unrecorded at the after-Terms read while microtask and animation frame callbacks ran.",
+      "The setImmediate primitive was absent in both observations; its null result is not a stalled callback.",
+      "This matches the class of delayed task delivery reproduced locally; it does not directly observe React state or prove the cause of an older Quit attempt.",
+      "The correction does not repair the unresolved persistence operation.",
+      "The full capability list recorded at 04:00:59 belongs to the earlier failed-startup session and is not asserted for this successful paired session."
+    ]
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false
+}

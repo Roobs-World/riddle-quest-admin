@@ -20,6 +20,7 @@
 - [Historical version 20 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-20-2026-11-28.json)
 - [Version 20 Quit phase tracing and Android diagnosis](evidence/facebook-quit-phase-tracing-2026-11-28.md)
 - [Quit deadline recovery when timer delivery stalls](evidence/facebook-quit-frame-deadline-2026-11-28.md)
+- [Settings warning rendering and task-delivery diagnosis](evidence/facebook-settings-warning-rendering-2026-11-28.md)
 - [Version 20 instrumented storage-boundary diagnosis](evidence/facebook-storage-boundary-diagnostic-version-20-2026-11-28.md)
 - [Historical version 19 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-19-2026-11-28.json)
 - [Version 19 Android startup, saved progress and normal Quit](evidence/facebook-android-version-19-2026-11-28.md)
