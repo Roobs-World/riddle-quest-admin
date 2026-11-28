@@ -1,0 +1,111 @@
+{
+  "recordedAt": "2026-11-28T01:19:24.631831+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "95cdbeaacf0933a656d62e38c81fd8608aa5afd9",
+  "archiveSha256": "643ff5e971979847f951c49f2ef0802ce930a8de2ad97f0681c226fc9ab381fa",
+  "archiveBytes": 2865837,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 17,
+  "bundleId": "29511535318440303",
+  "status": "Testing",
+  "uploadCount": 1,
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "29511535318440303",
+    "version": 17,
+    "observedAt": "2026-11-28T01:17:35.191Z",
+    "httpStatus": 200,
+    "responseSha256": "9b30d21b5ffdbca761fc925378f11132dae589492c817d876f3abe5f6bc4316a",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "29511535318440303",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T01:18:24.042931+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "898197543a13e2a60b865fd81855cced56a49d47017a08f63109ade72b5da4d9",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialCheck": "408/420 matched; 12 HTTP 200 responses had empty bodies. A complete recheck matched all 420 without source change or retransmission; cause unknown."
+  },
+  "processingEvidence": "All 420 runtime files served correctly and the Testing-only assignment returned HTTP 200 with exact bundle ID. No separate dashboard processing field read.",
+  "providerArchiveDownloaded": false,
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production dashboard assignment not freshly read."
+  },
+  "localVerification": {
+    "focusedTests": 121,
+    "focusedSuites": 7,
+    "fullBrowserTests": 1,
+    "fullBrowserSeconds": 43.631,
+    "nativePlacementBrowserSeconds": 6.947,
+    "sharedTypecheck": "passed",
+    "canonicalPreflight": "passed",
+    "artifactAudit": "passed; 420 files, 4.51 MB total, 0.71 MB initial; no Jest gaming SDK/native/secret leakage",
+    "standardsReview": "no findings",
+    "specReview": "no findings"
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "vercel": "Existing isolated Vercel deployment remains v15; no v17 Vercel deployment performed.",
+  "hostedMobile": {
+    "evidence": "facebook-android-version-17-2026-11-28.md",
+    "exactVersionVerified": true,
+    "rewarded": "First unmodified normal-UI request completed a real native video. Close at 01:23:37 UTC; by 01:23:51 the kettle continuation had five rows, six empty editable cells and 1,035 coins unchanged. P entry and Android Delete confirmed input recovery.",
+    "claimEvidence": "Existing authoritative claim inferred from reviewed source and visible continuation; no independent network trace.",
+    "privacy": "OPEN LINK at 01:24:57 UTC opened roobsworld.com in the Facebook browser with Riddle Quest on Facebook Privacy Notice visible. Android Back returned to Settings with 1,035 coins unchanged. No optional cookie or analytics consent changed.",
+    "banner": "No banner on initial visits; the 01:29:35 read-only 47-API observation omitted loadBannerAdAsync. A later host quit/relaunch of exact version 17 showed a Meta banner on welcome. Home/Recents return at 01:36:58 removed it and restored full-height welcome with Lets Play reachable. Callback/hide timing and no-fill were not traced; sessions remain distinct.",
+    "classic": "KETTLE at 01:25:58 UTC initially showed NICE JOB, a pending chest and 1,035 coins; next-level spinner persisted through 01:29. After host quit/relaunch, Lets Play at 01:37:07 restored KETTLE NICE JOB with explicit +25 Coins and 1,060 total. Next Level loaded ANCHOR around 01:37:20 with 1,060 coins and input. No duplicate award observed at that transition; no authoritative server trace.",
+    "interstitial": "After the third new win, SPIDER at 01:38:57 UTC, the result stayed foreground without IGDebug or interaction until 01:40:34 UTC (97 seconds). No visible interstitial or captured error; Next Level and Share remained visible. Native display is unproven. No no-fill, failed-request or cadence-bug inference; admission/request/outcome untraced.",
+    "limits": "No IGDebug, observer or runtime modification during the native rewarded attempt/claim. Remaining interruption, cancellation, subscriber, cadence and host variants are open.",
+    "capabilityObservation": {
+      "recordedAt": "2026-11-28T01:29:35.460048+00:00",
+      "evidence": "facebook-android-sdk-capabilities-version-17-2026-11-28.json",
+      "method": "One read-only console expression after the rendered SDK Info list was blank; no runtime patch. Separate from the earlier uninterrupted rewarded attempt.",
+      "advertisedApiCount": 47,
+      "removedFromV16": [
+        "loadBannerAdAsync"
+      ],
+      "documentReadyState": "complete",
+      "documentVisibilityState": "visible",
+      "exactBundleConfirmed": true,
+      "scope": "Earlier pre-relaunch session only; subsequent exact-v17 host relaunch visibly displayed a banner. No later complete API list was captured."
+    },
+    "quit": "App Settings Quit at 01:29:56 UTC did not exit; controls remained disabled through 01:34:01, requiring host top-X Quit/relaunch. Separately, in the recovered session, Settings Quit at 01:41:29 exited by 01:41:32: Android top-resumed activity was Facebook FbMainTabActivity, without host X. This later success does not erase the earlier pending failure.",
+    "relaunchIdentity": "Rendered SDK Info around 01:36:30 reconfirmed version 17 and /instant-bundle/2143220529953108/29511535318440303/index.html. An earlier capture before fields were ready is excluded.",
+    "diagnosticLimits": "A cached getEntryPointAsync resolved but does not prove bridge responsiveness. Fresh getDataAsync([]) produced no observed result or scheduled 10-second timer output during about 30 seconds; inconclusive, not a classified timeout. Relevant 01:24:40\u201301:31 UTC completion/content/auth request-log search had zero entries, which does not prove absence of requests. Native unwind/retry/completion cause remains unknown.",
+    "subsequentWins": [
+      {
+        "answer": "ANCHOR",
+        "submittedAt": "2026-11-28T01:37:37Z",
+        "displayedRewardCoins": 35,
+        "displayedTotalCoins": 1095
+      },
+      {
+        "answer": "KIWI",
+        "submittedAt": "2026-11-28T01:38:10Z",
+        "displayedRewardCoins": 25,
+        "displayedTotalCoins": 1120
+      },
+      {
+        "answer": "SPIDER",
+        "submittedAt": "2026-11-28T01:38:57Z",
+        "displayedRewardCoins": 35,
+        "displayedTotalCoins": 1155
+      }
+    ],
+    "quitCorrection": "Source inspection confirmed the client preparation preceding Quit lacks a deadline. A local correction is in progress for the next Testing candidate, not included in uploaded version 17. This finding does not establish the earlier native stall cause.",
+    "finalNavigation": "After the 97-second result observation, Next Level loaded PENCIL around 01:41 UTC with 1,155 coins and full-height layout. The subsequent normal app Quit left Facebook main with no debug/observer active. No relaunch followed, so persistence of 1,155 coins or pending writes after exit is unverified."
+  }
+}
