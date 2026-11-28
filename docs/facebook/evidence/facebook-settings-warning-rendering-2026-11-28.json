@@ -41,7 +41,16 @@
     "unitTests": "The prior 71-test run belongs to the version 21 deadline correction and was not rerun for this notice change.",
     "review": "Independent read-only review found no findings.",
     "officialReference": "https://react.dev/reference/react-dom/flushSync",
-    "nativeAcceptance": "Not established; this source correction has not yet been uploaded."
+    "nativeAcceptance": {
+      "version": 22,
+      "receipt": "facebook-testing-version-22-2026-11-28.json",
+      "result": "Native normal app Quit exited. After Terms OPEN/Back, the unsaved warning appeared with recovered controls; a later retry visibly cleared the warning while pending and restored it with controls.",
+      "firstWarningRecoveryObserved": "2026-11-28T04:18:04.932519Z",
+      "retryPendingObserved": "2026-11-28T04:19:45.126202Z",
+      "retryWarningRecoveryObserved": "2026-11-28T04:20:03.469614Z",
+      "noConsoleProbesOrSdkMutation": true,
+      "limit": "The post-Terms persistence operation and app exit remain unresolved; no gameplay progress or preference change was made before normal Quit. The separate version 21 task diagnostic below is not part of this unmodified acceptance."
+    }
   },
   "nativeDiagnostic": {
     "version": 21,
@@ -126,5 +135,12 @@
   "firebaseCodeOrConfigurationChanged": false,
   "firebaseDeployed": false,
   "reviewSubmitted": false,
-  "published": false
+  "published": false,
+  "testingArtifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "archiveSha256": "d1b55275070597cdc6478ecae7879d414bbc57eb499f5cb9f71515019a1074b6",
+    "receipt": "facebook-testing-version-22-2026-11-28.json"
+  }
 }
