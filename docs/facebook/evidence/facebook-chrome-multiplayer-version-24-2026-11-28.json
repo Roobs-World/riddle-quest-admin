@@ -1,0 +1,133 @@
+{
+  "appId": "1748953042991569",
+  "version": 24,
+  "bundleId": "29078291508509160",
+  "sdk": "8.0",
+  "platform": "WEB",
+  "device": "Desktop Chrome; no phone",
+  "observations": {
+    "identityAt": "2026-11-28T09:35:50.948Z",
+    "multiplayerTabs": [
+      "Play",
+      "Activity"
+    ],
+    "playOnFacebookDisclosure": false,
+    "tournamentControls": false,
+    "normalControls": [
+      "Find opponent",
+      "Start PvP match",
+      "Play with friends",
+      "Challenge a friend"
+    ],
+    "activityControls": [
+      "Play with friends",
+      "Find opponent"
+    ],
+    "nativeFriendChooser": "Opened from Activity Play with friends; closed without recipient selection or send. Both buttons enabled after cancellation.",
+    "cancelledAt": "2026-11-28T09:37:25.917Z",
+    "balance": 1440,
+    "restoredPuzzle": "Six-letter winter hand covering clue",
+    "firstQuitAt": "2026-11-28T09:38:35.898Z",
+    "freshLaunchAt": "2026-11-28T09:39:30.077Z",
+    "freshLaunchNeededRetry": false,
+    "freshNotices": [],
+    "freshVisual": "Full viewport screenshot showed clean Play/Activity multiplayer layout.",
+    "finalQuitAt": "2026-11-28T09:40:23.769Z",
+    "finalRoute": "/gaming/play/",
+    "finalGameIframes": 0,
+    "ownedGameTabClosed": true,
+    "preexistingTabsPreserved": true
+  },
+  "limits": [
+    "Room/solo controls were correctly absent for this solo desktop context; their outcomes are covered by isolated tests, not a native room/group journey.",
+    "No recipients selected, social delivery, live opponent match, purchase, consent change, new progress award or SDK mutation.",
+    "The first cropped image showed a generic error banner; a later crop was byte-identical despite clean contemporary DOM. Fresh targeted notice selectors and full viewport screenshot did not reproduce it. Capture origin/cause remains unconfirmed; no source fix or universal error-free claim.",
+    "This verifies the changed multiplayer surface and native chooser cancellation, not the full Facebook submission or the separate historical Android issue."
+  ],
+  "receipts": [
+    {
+      "name": "identity",
+      "observedAt": "2026-11-28T09:35:50.948Z",
+      "privateReceiptSha256": "99bb5a9b3c3b8d66213593719dd2d545d3876590e15752ec110bb6baae997811"
+    },
+    {
+      "name": "play",
+      "observedAt": "2026-11-28T09:36:21.143Z",
+      "privateReceiptSha256": "eaa1cdefcc5fef950949faaede16f69a73ea69c0b1da2396c8ec392b768204f1"
+    },
+    {
+      "name": "activity",
+      "observedAt": "2026-11-28T09:36:47.474Z",
+      "privateReceiptSha256": "f84ebdef835102dac3baf4f8c4010fda2f4c88c9b6fbb87ee75d171a4ead70f9"
+    },
+    {
+      "name": "native-chooser",
+      "observedAt": "2026-11-28T09:37:25.355Z",
+      "privateReceiptSha256": "bd46010fef9cf06ffb34e48de3a5cf35c2fdaf4aaa2e9eafa284181978df011b"
+    },
+    {
+      "name": "chooser-cancel",
+      "observedAt": "2026-11-28T09:37:25.917Z",
+      "privateReceiptSha256": "391af614dc31eefa3e63ea938c0777d7d0889cea460fb285b73b0d7cbf8880e8"
+    },
+    {
+      "name": "play-return",
+      "observedAt": "2026-11-28T09:37:41.706Z",
+      "privateReceiptSha256": "2e90143f9ea5b4ce918203b3f1d4eec724b94f4d8ccae866854e5ff6bf5fe3a9"
+    },
+    {
+      "name": "reopen",
+      "observedAt": "2026-11-28T09:37:58.515Z",
+      "privateReceiptSha256": "1633eef4d4d592c871ff21640f0eabf03878acc559629d6a42db5dd51d3a43cc"
+    },
+    {
+      "name": "reopen-settled",
+      "observedAt": "2026-11-28T09:38:09.190Z",
+      "privateReceiptSha256": "a3e9d5a2bf2b4208ea19cf74c08e9e997fb3dae5b45492c56734108857a90d33"
+    },
+    {
+      "name": "settings-notices",
+      "observedAt": "2026-11-28T09:38:27.367Z",
+      "privateReceiptSha256": "225f6cb9ff435734a1c913945536d90b4df1f464dcbb6ea96be48f655c6594cf"
+    },
+    {
+      "name": "quit",
+      "observedAt": "2026-11-28T09:38:35.898Z",
+      "privateReceiptSha256": "9cb48812601349aac232204cfdc35090ddf3bb5d65829782a7ada3bf91dad21b"
+    },
+    {
+      "name": "fresh-launch",
+      "observedAt": "2026-11-28T09:39:30.077Z",
+      "privateReceiptSha256": "5d173dca0787d37679422db73f75250b15071ed03a5ed4f1a62cb0bc046b4c7a"
+    },
+    {
+      "name": "fresh-multiplayer",
+      "observedAt": "2026-11-28T09:39:30.653Z",
+      "privateReceiptSha256": "70153f62cd10fbd9d6a2e931be523f6feff7cdeccfa787b519cc31bb3c3efba9"
+    },
+    {
+      "name": "final-quit-initial",
+      "observedAt": "2026-11-28T09:40:14.797Z",
+      "privateReceiptSha256": "0402cb1b2d5750a73737665e07abd9cba6f0eaf601376c158c425cbb20969e72"
+    },
+    {
+      "name": "final-quit",
+      "observedAt": "2026-11-28T09:40:23.769Z",
+      "privateReceiptSha256": "7aceee834c3dde91ffa7037bef7202b36ff6f43ad9cab97215ab52175285e4cb"
+    }
+  ],
+  "privateScreenshots": [
+    {
+      "name": "riddle-quest-chrome-v24-multiplayer.png",
+      "sha256": "bb81d8c816150bea610e2944c3fc28e93603b60aae917cab1501ca62023ece95"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-multiplayer-reopened.png",
+      "sha256": "bb81d8c816150bea610e2944c3fc28e93603b60aae917cab1501ca62023ece95"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-full-multiplayer.png",
+      "sha256": "b016a560949cb971aa3a01f0c275b76acfc59d24a4e74c76fac24650d0724b6a"
+    }
+  ]
+}

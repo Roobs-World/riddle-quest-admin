@@ -1,0 +1,84 @@
+{
+  "recordedAt": "2026-11-28T09:35:10.348995+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "bcb9898e85988c5dde49a1eb3e043c6403869a94",
+  "archiveSha256": "9fcaf65621109cf04b643f6777eba14af5505ea834bc65d4e7d5cf904bb72e60",
+  "archiveBytes": 2855923,
+  "archiveEntries": 423,
+  "runtimeFiles": 421,
+  "version": 24,
+  "bundleId": "29078291508509160",
+  "status": "Testing",
+  "uploadCount": 1,
+  "uploadedAt": "2026-11-28T09:33:40.313Z",
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "29078291508509160",
+    "version": 24,
+    "observedAt": "2026-11-28T09:35:10.330Z",
+    "httpStatus": 200,
+    "responseSha256": "175509c817f21c3c9bb9887bcbf1d361770474ae6158700e83896df203eb22e2",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "29078291508509160",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T09:34:40.627734+00:00",
+    "fileCount": 421,
+    "matchingFiles": 421,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "c9299b0f522267f328d4b5902a2c6570e0ede45438d92e742e8946382a1e03fe",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialComparison": {
+      "observedAt": "2026-11-28T09:34:22.405563+00:00",
+      "matchingFiles": 392,
+      "emptyHttp200Responses": 29,
+      "resolution": "Full recheck matched all files without source change or retransmission; cause of initial empty responses unknown."
+    }
+  },
+  "providerArchiveDownloaded": false,
+  "productionAssignmentRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseBuildOrPackagingRun": false,
+  "firebaseDeployed": false,
+  "localVerification": {
+    "focusedTests": 33,
+    "suites": 3,
+    "seconds": 0.21,
+    "typecheck": "passed",
+    "localeAudit": "16 locales passed",
+    "independentReview": "No actionable findings",
+    "focusedBrowserSeconds": 17.46,
+    "fullBrowserSeconds": 38.96,
+    "browserScope": "Isolated real built entry with SDK fixture; not provider acceptance. Integrated native controls/cancellation/room/solo, absent tournament surfaces/entry/endpoints, preserved context scoring.",
+    "artifact": "421 files;4.47 MB total;0.58 MB initial;no Jest gaming SDK/native/secret leakage.",
+    "canonicalPreflight": "Build and audits passed; historical screenshot side effects restored before clean preparation. Same bytes prepared with clean source.",
+    "unitLogSha256": "9887e7e6783e5bf7185eb1cc6b2f4a96d29791dacbb7a4c536009c2fff2d6163",
+    "browserLogSha256": "49395009934b817853d14db1c07232f542ce54977fc963c888acbd6334c7dfa6"
+  },
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production assignment was not freshly read for this upload."
+  },
+  "vercel": "Existing isolated version15 deployment unchanged.",
+  "privateAcceptanceSha256": "3f6495297a3aefb2c316cb5b6390bb012c9c6eac9d2856eda3418145e1645ea7",
+  "processingEvidence": "All 421 runtime files served correctly and Testing-only assignment returned HTTP 200 with the exact bundle ID. No separate dashboard processing field was read.",
+  "providerServerCodeOrConfigurationChanged": false,
+  "nativeVerification": "Exact version24/SDK8WEB desktop: no separate disclosure/tournament controls, native friend chooser opened and cancelled without sending, restored buttons,1440 coins/clue retained across normal Quit/relaunch, final normal Quit/tab cleanup. See facebook-chrome-multiplayer-version-24-2026-11-28.json for bounded observations and cropped-image anomaly.",
+  "coverage": {
+    "totalPublicEntries": 79,
+    "W": 51,
+    "C": 10,
+    "G": 6,
+    "X": 12,
+    "scope": "Source classifications, not completed acceptance. X denotes APIs deliberately excluded by the owner-requested removal of tournaments and the redundant native-social panel."
+  }
+}
