@@ -1,4 +1,4 @@
-import {describe, expect, test} from "@jest/globals";
+import {describe, expect, jest, test} from "@jest/globals";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {FacebookPlatformBootstrap} from "../FacebookPlatformBootstrap";
 import {createFacebookAdsCapability} from "../FacebookAdsCapability";
@@ -69,6 +69,214 @@ const createSdk = () => {
 };
 
 describe("FacebookPlatformBootstrap", () => {
+  test.each([
+    ["initialize", "resolve"], ["initialize", "reject"],
+    ["start", "resolve"], ["start", "reject"],
+    ["preferences", "resolve"], ["preferences", "reject"],
+    ["age", "resolve"], ["age", "reject"],
+  ] as const)("recovers a pending %s stage and ignores its late %s", async (stage, settlement) => {
+    jest.useFakeTimers();
+    const harness = createSdk();
+    let resolve!: () => void;
+    let reject!: (reason: Error) => void;
+    const pending = new Promise<void>((accept, decline) => {resolve = accept; reject = decline;});
+    if (stage === "initialize" || stage === "start") {
+      const method = stage === "initialize" ? "initializeAsync" : "startGameAsync";
+      harness.sdk[method] = () => {harness.events.push(stage); return pending;};
+    } else if (stage === "preferences") {
+      harness.sdk.player.getDataAsync = () => {harness.events.push("read:riddleQuestPreferences"); return pending.then(() => ({}));};
+      harness.sdk.getLocale = () => {harness.events.push("locale"); return "en_US";};
+    } else {
+      harness.sdk.getSupportedAPIs = () => ["player.getAgeCategoryAsync"];
+      harness.sdk.player.getAgeCategoryAsync = () => {harness.events.push("age"); return pending.then(() => "AD" as const);};
+    }
+    const reported: number[] = [];
+    const bootstrap = new FacebookPlatformBootstrap(() => harness.sdk, "13_plus");
+    let result: Awaited<ReturnType<FacebookPlatformBootstrap["initialize"]>> | undefined;
+    try {
+      const running = bootstrap.initialize(progress => reported.push(progress)).then(value => {result = value;});
+      await jest.advanceTimersByTimeAsync(29_999);
+      expect(result).toBeUndefined();
+      expect(reported).toEqual(stage === "initialize" ? [] : stage === "start" ? [30, 70] : [30, 70, 100]);
+      await jest.advanceTimersByTimeAsync(1);
+      expect(result).toMatchObject({status: "retryable-failure"});
+      await running;
+      const eventsAtExpiry = [...harness.events];
+      const progressAtExpiry = [...reported];
+      if (settlement === "resolve") resolve();
+      else reject(new Error("late-native-rejection"));
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.events).toEqual(eventsAtExpiry);
+      expect(reported).toEqual(progressAtExpiry);
+      if (stage === "initialize" || stage === "start") {
+        expect(harness.events).not.toContain("player");
+        expect(harness.events.some(event => event.startsWith("read:"))).toBe(false);
+      }
+      expect(bootstrap.resolvedAgeCategory).toBe("unknown");
+      expect(harness.events.filter(event => event === "initialize")).toHaveLength(1);
+      expect(harness.events.filter(event => event === "start")).toHaveLength(stage === "initialize" ? 0 : 1);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      jest.useRealTimers();
+    }
+  });
+
+  test("does not acquire an SDK for an already retired startup owner", async () => {
+    const harness = createSdk();
+    const getSdk = jest.fn(() => harness.sdk);
+    const result = await new FacebookPlatformBootstrap(getSdk, "13_plus", () => false).initialize(() => undefined);
+    expect(result).toMatchObject({status: "cancelled"});
+    expect(getSdk).not.toHaveBeenCalled();
+    expect(harness.events).toEqual([]);
+  });
+
+  test.each(["initialize", "start", "preferences", "age"] as const)("retires before continuing after pending %s settles", async stage => {
+    jest.useFakeTimers();
+    const harness = createSdk();
+    let active = true;
+    let resolve!: () => void;
+    const pending = new Promise<void>(accept => {resolve = accept;});
+    if (stage === "initialize" || stage === "start") {
+      const method = stage === "initialize" ? "initializeAsync" : "startGameAsync";
+      harness.sdk[method] = () => {harness.events.push(stage); return pending;};
+    } else if (stage === "preferences") {
+      harness.sdk.player.getDataAsync = () => {harness.events.push("read:riddleQuestPreferences"); return pending.then(() => ({}));};
+      harness.sdk.getLocale = () => {harness.events.push("locale"); return "en_US";};
+    } else {
+      harness.sdk.getSupportedAPIs = () => ["player.getAgeCategoryAsync"];
+      harness.sdk.player.getAgeCategoryAsync = () => {harness.events.push("age"); return pending.then(() => "AD" as const);};
+    }
+    const reported: number[] = [];
+    const bootstrap = new FacebookPlatformBootstrap(() => harness.sdk, "13_plus", () => active);
+    try {
+      const running = bootstrap.initialize(progress => reported.push(progress));
+      await jest.advanceTimersByTimeAsync(0);
+      const eventsAtRetirement = [...harness.events];
+      const progressAtRetirement = [...reported];
+      active = false;
+      resolve();
+      await expect(running).resolves.toMatchObject({status: "cancelled"});
+      expect(harness.events).toEqual(eventsAtRetirement);
+      expect(reported).toEqual(progressAtRetirement);
+      expect(bootstrap.resolvedAgeCategory).toBe("unknown");
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      jest.useRealTimers();
+    }
+  });
+
+  test("shares one startup budget across initialization and game start", async () => {
+    jest.useFakeTimers();
+    const harness = createSdk();
+    let initialize!: () => void;
+    let start!: () => void;
+    harness.sdk.initializeAsync = () => new Promise<void>(resolve => {initialize = resolve;});
+    harness.sdk.startGameAsync = () => new Promise<void>(resolve => {start = resolve;});
+    let result: Awaited<ReturnType<FacebookPlatformBootstrap["initialize"]>> | undefined;
+    try {
+      const running = new FacebookPlatformBootstrap(() => harness.sdk)
+        .initialize(() => undefined).then(value => {result = value;});
+      await jest.advanceTimersByTimeAsync(20_000);
+      initialize();
+      await jest.advanceTimersByTimeAsync(9_999);
+      expect(result).toBeUndefined();
+      await jest.advanceTimersByTimeAsync(1);
+      await running;
+      expect(result).toMatchObject({status: "retryable-failure"});
+      start();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.events).not.toContain("player");
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      initialize?.(); start?.();
+      await jest.advanceTimersByTimeAsync(0);
+      jest.useRealTimers();
+    }
+  });
+
+  test("does not admit late initialization when the deadline timer has not been delivered", async () => {
+    jest.useFakeTimers();
+    let now = 0;
+    const clock = jest.spyOn(performance, "now").mockImplementation(() => now);
+    const harness = createSdk();
+    let initialize!: () => void;
+    harness.sdk.initializeAsync = () => new Promise<void>(resolve => {initialize = resolve;});
+    const reported: number[] = [];
+    try {
+      const running = new FacebookPlatformBootstrap(() => harness.sdk).initialize(value => reported.push(value));
+      now = 30_000;
+      initialize();
+      await expect(running).resolves.toMatchObject({status: "retryable-failure"});
+      expect(reported).toEqual([]);
+      expect(harness.events).toEqual([]);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      initialize?.();
+      clock.mockRestore();
+      jest.useRealTimers();
+    }
+  });
+
+  test("includes synchronous SDK initialization time in the overall startup budget", async () => {
+    jest.useFakeTimers();
+    const harness = createSdk();
+    let initialize!: () => void;
+    const pending = new Promise<void>(resolve => {initialize = resolve;});
+    harness.sdk.initializeAsync = () => {
+      harness.events.push("initialize");
+      jest.advanceTimersByTime(20_000);
+      return pending;
+    };
+    const reported: number[] = [];
+    let result: Awaited<ReturnType<FacebookPlatformBootstrap["initialize"]>> | undefined;
+    try {
+      const running = new FacebookPlatformBootstrap(() => harness.sdk)
+        .initialize(progress => reported.push(progress)).then(value => {result = value;});
+      await jest.advanceTimersByTimeAsync(9_999);
+      expect(result).toBeUndefined();
+      await jest.advanceTimersByTimeAsync(1);
+      expect(result).toMatchObject({status: "retryable-failure"});
+      await running;
+      initialize();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.events).toEqual(["initialize"]);
+      expect(reported).toEqual([]);
+      expect(jest.getTimerCount()).toBe(0);
+    } finally {
+      initialize();
+      await jest.advanceTimersByTimeAsync(0);
+      jest.useRealTimers();
+    }
+  });
+
+  test("keeps a session that starts just before expiry active after its startup deadline", async () => {
+    jest.useFakeTimers();
+    const harness = createSdk();
+    let initialize!: () => void;
+    harness.sdk.initializeAsync = () => new Promise<void>(resolve => {initialize = resolve;});
+    harness.sdk.getSupportedAPIs = () => ["context.chooseAsync"];
+    harness.sdk.context = {getID: () => "thread-a", getType: () => "GROUP", chooseAsync: jest.fn(async () => undefined)};
+    try {
+      const running = new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
+      await jest.advanceTimersByTimeAsync(29_999);
+      initialize();
+      const result = await running;
+      expect(result.status).toBe("success");
+      expect(jest.getTimerCount()).toBe(0);
+      await jest.advanceTimersByTimeAsync(30_001);
+      if (result.status !== "success") throw new Error("startup did not complete");
+      await expect(result.value.capabilities.nativeSocial?.chooseContext()).resolves.toMatchObject({status: "success"});
+      expect(harness.sdk.context.chooseAsync).toHaveBeenCalledTimes(1);
+    } finally {
+      initialize?.();
+      jest.useRealTimers();
+    }
+  });
+
   test.each(["choose", "match"] as const)("does not admit %s after the account retires during banner cleanup", async operation => {
     const harness = createSdk();
     let active = true;

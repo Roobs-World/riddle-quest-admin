@@ -19,6 +19,7 @@ import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 const PREFERENCES_KEY = "riddleQuestPreferences";
 /** Defines the player data key value. */
 const PLAYER_DATA_KEY = "riddleQuestPlayerState";
+const STARTUP_TIMEOUT_MS = 30_000;
 /** Provides success behavior. */
 const success = <T>(value: T): PlatformResult<T> => ({status: "success", value});
 /** Indicates whether is record. */
@@ -113,9 +114,13 @@ class FacebookStorage implements PlatformStorage {
   }
 
   /** Reads preferences. */
-  async readPreferences(): Promise<PlatformPreferences> {
+  async readPreferences(assertCurrent: () => void = () => undefined): Promise<PlatformPreferences> {
     /** Provides data behavior. */
-    const data = await this.afterPendingOperations(() => this.sdk.player.getDataAsync([PREFERENCES_KEY]));
+    const data = await this.afterPendingOperations(() => {
+      assertCurrent();
+      return this.sdk.player.getDataAsync([PREFERENCES_KEY]);
+    });
+    assertCurrent();
     /** Saved preferences normalized before applying the provider locale fallback. */
     const preferences = parsePreferences(data[PREFERENCES_KEY]);
     if (!LANGUAGE_OPTIONS.some(({code}) => code === preferences.locale)) {
@@ -182,69 +187,138 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
     this.isActive = isActive;
   }
 
-  /** Provides initialize behavior. */
+  /** Bounds observation of native startup without cancelling or repeating admitted SDK calls. */
   async initialize(reportProgress: (progress: number) => void): Promise<PlatformResult<PlatformSession>> {
+    let retired = false;
+    const deadline = performance.now() + STARTUP_TIMEOUT_MS;
+    const timeoutError = new Error("facebook-startup-timeout");
+    const retiredError = new Error("facebook-startup-retired");
+    const isActive = () => !retired && this.isActive();
+    const assertCurrent = () => {
+      if (!isActive()) throw retiredError;
+      if (performance.now() >= deadline) throw timeoutError;
+    };
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
-      /** Provides sdk behavior. */
-      const sdk = this.getSdk();
-      const isActive = this.isActive;
-      await sdk.initializeAsync();
-      sdk.setLoadingProgress(30);
-      reportProgress(30);
-      sdk.setLoadingProgress(70);
-      reportProgress(70);
-      sdk.setLoadingProgress(100);
-      await sdk.startGameAsync();
-      reportProgress(100);
-      /** Provides player id behavior. */
-      const playerId = sdk.player.getID();
-      if (!playerId || playerId.length > 256) {
-        return {status: "terminal-failure", message: "facebook-player-id-invalid"};
-      }
-      /** Provides storage behavior. */
-      const storage = new FacebookStorage(sdk);
-      await storage.readPreferences();
-      /** Provides supported apis behavior. */
-      const supportedApis = new Set(sdk.getSupportedAPIs());
-      this.playerAgeCategory = await resolveFacebookPlayerAgeCategory(sdk, this.ageCategory);
-      /** Provides visibility behavior. */
-      const visibility = resolveFacebookCapabilityVisibility({
-        ageCategory: this.playerAgeCategory,
-        available: {
-          commerce: false,
-          ads: false,
-          notifications: false,
-          nativeSocial:
-            typeof sdk.context?.getID === "function" && typeof sdk.context?.getType === "function",
-        },
+      const timeout = new Promise<never>((_resolve, reject) => {
+        timer = setTimeout(() => {
+          retired = true;
+          reject(timeoutError);
+        }, Math.max(0, deadline - performance.now()));
       });
-      /** Provides native social behavior. */
-      const nativeSocial =
-        sdk.context && visibility.nativeSocial
-          ? {
-              canChooseContext: supportedApis.has("context.chooseAsync") && typeof sdk.context.chooseAsync === "function",
-              ...(supportedApis.has("onContextChange") && typeof sdk.onContextChange === "function" ? {
-                /** Native callbacks have no unregister API; retirement makes them inert. */
-                onContextChange(callback: () => void) {
-                  /** Native callback retirement is local because the SDK has no unsubscribe method. */
-                  let active = true;
-                  sdk.onContextChange!(() => {if (active) callback();}, () => {});
-                  return () => {active = false;};
-                },
-              } : {}),
-              /** Provides current context behavior. */
-              currentContext() {
-                return facebookContextResult(sdk);
+      return await Promise.race([this.initializeSession(reportProgress, assertCurrent, isActive), timeout]);
+    } catch (error) {
+      retired = true;
+      if (error === retiredError) return {status: "cancelled"};
+      return {
+        status: "retryable-failure",
+        message: error instanceof Error ? error.message : "facebook-startup-failed",
+      };
+    } finally {
+      if (timer !== undefined) clearTimeout(timer);
+    }
+  }
+
+  private async initializeSession(reportProgress: (progress: number) => void,
+    assertCurrent: () => void, isActive: () => boolean): Promise<PlatformResult<PlatformSession>> {
+    /** Provides sdk behavior. */
+    assertCurrent();
+    const sdk = this.getSdk();
+    assertCurrent();
+    await sdk.initializeAsync();
+    assertCurrent();
+    sdk.setLoadingProgress(30);
+    reportProgress(30);
+    assertCurrent();
+    sdk.setLoadingProgress(70);
+    reportProgress(70);
+    assertCurrent();
+    sdk.setLoadingProgress(100);
+    assertCurrent();
+    await sdk.startGameAsync();
+    assertCurrent();
+    reportProgress(100);
+    assertCurrent();
+    /** Provides player id behavior. */
+    const playerId = sdk.player.getID();
+    if (!playerId || playerId.length > 256) {
+      return {status: "terminal-failure", message: "facebook-player-id-invalid"};
+    }
+    /** Provides storage behavior. */
+    const storage = new FacebookStorage(sdk);
+    assertCurrent();
+    await storage.readPreferences(assertCurrent);
+    assertCurrent();
+    /** Provides supported apis behavior. */
+    const supportedApis = new Set(sdk.getSupportedAPIs());
+    assertCurrent();
+    const playerAgeCategory = await resolveFacebookPlayerAgeCategory(sdk, this.ageCategory);
+    assertCurrent();
+    this.playerAgeCategory = playerAgeCategory;
+    /** Provides visibility behavior. */
+    const visibility = resolveFacebookCapabilityVisibility({
+      ageCategory: this.playerAgeCategory,
+      available: {
+        commerce: false,
+        ads: false,
+        notifications: false,
+        nativeSocial:
+          typeof sdk.context?.getID === "function" && typeof sdk.context?.getType === "function",
+      },
+    });
+    /** Provides native social behavior. */
+    const nativeSocial =
+      sdk.context && visibility.nativeSocial
+        ? {
+            canChooseContext: supportedApis.has("context.chooseAsync") && typeof sdk.context.chooseAsync === "function",
+            ...(supportedApis.has("onContextChange") && typeof sdk.onContextChange === "function" ? {
+              /** Native callbacks have no unregister API; retirement makes them inert. */
+              onContextChange(callback: () => void) {
+                /** Native callback retirement is local because the SDK has no unsubscribe method. */
+                let active = true;
+                sdk.onContextChange!(() => {if (active) callback();}, () => {});
+                return () => {active = false;};
               },
-              /** Provides choose context behavior. */
-              async chooseContext() {
-                if (!supportedApis.has("context.chooseAsync") || typeof sdk.context?.chooseAsync !== "function") {
-                  return {status: "unavailable" as const, message: "facebook-context-chooser-unavailable"};
+            } : {}),
+            /** Provides current context behavior. */
+            currentContext() {
+              return facebookContextResult(sdk);
+            },
+            /** Provides choose context behavior. */
+            async chooseContext() {
+              if (!supportedApis.has("context.chooseAsync") || typeof sdk.context?.chooseAsync !== "function") {
+                return {status: "unavailable" as const, message: "facebook-context-chooser-unavailable"};
+              }
+              return runFacebookSdkDialog(sdk, async () => {
+                try {
+                  if (!isActive()) return {status: "cancelled"};
+                  await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+                  if (!isActive()) return {status: "cancelled"};
+                  return facebookContextResult(sdk);
+                } catch (error) {
+                  return facebookSocialFailure(error);
+                }
+              });
+            },
+            ...(supportedApis.has("matchPlayerAsync") && typeof sdk.matchPlayerAsync === "function" ? {
+              /** Provides match player behavior. */
+              async matchPlayer(tag?: string) {
+                if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
+                  return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
+                }
+                if (!supportedApis.has("matchPlayerAsync") || typeof sdk.matchPlayerAsync !== "function") {
+                  return {status: "unavailable" as const, message: "facebook-matchmaking-unavailable"};
                 }
                 return runFacebookSdkDialog(sdk, async () => {
                   try {
                     if (!isActive()) return {status: "cancelled"};
-                    await sdk.context!.chooseAsync({minSize: 2, maxSize: 50});
+                    if (supportedApis.has("checkCanPlayerMatchAsync") &&
+                        typeof sdk.checkCanPlayerMatchAsync === "function" &&
+                        await sdk.checkCanPlayerMatchAsync() !== true) {
+                      return {status: "unavailable", message: "facebook-matchmaking-unavailable"};
+                    }
+                    if (!isActive()) return {status: "cancelled"};
+                    await sdk.matchPlayerAsync!(tag, true, true);
                     if (!isActive()) return {status: "cancelled"};
                     return facebookContextResult(sdk);
                   } catch (error) {
@@ -252,54 +326,22 @@ export class FacebookPlatformBootstrap implements PlatformBootstrap {
                   }
                 });
               },
-              ...(supportedApis.has("matchPlayerAsync") && typeof sdk.matchPlayerAsync === "function" ? {
-                /** Provides match player behavior. */
-                async matchPlayer(tag?: string) {
-                  if (tag !== undefined && !/^[A-Za-z0-9_]{1,100}$/u.test(tag)) {
-                    return {status: "terminal-failure" as const, message: "facebook-match-tag-invalid"};
-                  }
-                  if (!supportedApis.has("matchPlayerAsync") || typeof sdk.matchPlayerAsync !== "function") {
-                    return {status: "unavailable" as const, message: "facebook-matchmaking-unavailable"};
-                  }
-                  return runFacebookSdkDialog(sdk, async () => {
-                    try {
-                      if (!isActive()) return {status: "cancelled"};
-                      if (supportedApis.has("checkCanPlayerMatchAsync") &&
-                          typeof sdk.checkCanPlayerMatchAsync === "function" &&
-                          await sdk.checkCanPlayerMatchAsync() !== true) {
-                        return {status: "unavailable", message: "facebook-matchmaking-unavailable"};
-                      }
-                      if (!isActive()) return {status: "cancelled"};
-                      await sdk.matchPlayerAsync!(tag, true, true);
-                      if (!isActive()) return {status: "cancelled"};
-                      return facebookContextResult(sdk);
-                    } catch (error) {
-                      return facebookSocialFailure(error);
-                    }
-                  });
-                },
-              } : {}),
-            }
-          : undefined;
-      /** Provides overlay behavior. */
-      const overlay = this.playerAgeCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
-      return success({
-        platform: "facebook",
-        playerId,
-        storage,
-        capabilities: {
-          accountManagement: {username: true, avatar: false, deletion: true},
-          ...(nativeSocial ? {nativeSocial} : {}),
-          ...(this.playerAgeCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true, directInvites: true})} : {}),
-          ...(overlay ? {overlay} : {}),
-          lifecycle: createFacebookLifecycle(sdk),
-        },
-      });
-    } catch (error) {
-      return {
-        status: "retryable-failure",
-        message: error instanceof Error ? error.message : "facebook-startup-failed",
-      };
-    }
+            } : {}),
+          }
+        : undefined;
+    /** Provides overlay behavior. */
+    const overlay = this.playerAgeCategory === "13_plus" ? createFacebookOverlayCapability(sdk) : undefined;
+    return success({
+      platform: "facebook",
+      playerId,
+      storage,
+      capabilities: {
+        accountManagement: {username: true, avatar: false, deletion: true},
+        ...(nativeSocial ? {nativeSocial} : {}),
+        ...(this.playerAgeCategory === "13_plus" ? {matchmaking: createFirebaseRaceMatchmaking(undefined, {liveSafety: true, liveHistory: true, liveRematch: true, directInvites: true})} : {}),
+        ...(overlay ? {overlay} : {}),
+        lifecycle: createFacebookLifecycle(sdk),
+      },
+    });
   }
 }

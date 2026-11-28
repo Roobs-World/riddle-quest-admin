@@ -210,6 +210,7 @@ export function FacebookPlatformEntry() {
         const result = await bootstrap.initialize((progress) => {
           if (nativeSessionIsActive()) setStartup({status: "loading", progress});
         });
+        if (!nativeSessionIsActive()) return;
         if (result.status !== "success") {
           throw new Error(result.status === "cancelled" ? "facebook-startup-cancelled" : result.message);
         }
