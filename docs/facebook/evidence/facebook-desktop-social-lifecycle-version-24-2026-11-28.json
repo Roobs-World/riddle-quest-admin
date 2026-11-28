@@ -1,0 +1,264 @@
+{
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "version": 24,
+  "bundleId": "29078291508509160",
+  "sourceCommit": "bcb9898e85988c5dde49a1eb3e043c6403869a94",
+  "sdk": "8.0",
+  "platform": "WEB",
+  "device": "Desktop Chrome; no phone",
+  "runtimePath": "/instant-bundle/2143220529953108/29078291508509160/index.html",
+  "scope": "One account on the unchanged Facebook-hosted Testing candidate. Native social cancellation and focus/input observations, not a verified hidden-to-visible lifecycle transition.",
+  "observations": {
+    "startup": {
+      "firstObservedAt": "2026-11-28T10:07:35.494Z",
+      "firstLoadingPercent": 5,
+      "firstPlatformValue": null,
+      "followupAt": "2026-11-28T10:08:29.049Z",
+      "followupLoadingPercent": 5,
+      "visibleDuringBothReads": true,
+      "ordinaryReloadCount": 1,
+      "readyAt": "2026-11-28T10:09:16.527Z",
+      "readyCoins": 1585,
+      "readyPuzzle": "TIGER",
+      "readyNotices": [],
+      "causeEstablished": false,
+      "scope": "The first identity read was still loading, not ready gameplay. One ordinary reload preceded the successful ready observation; no permanent startup repair is established."
+    },
+    "invite": {
+      "nativeCardOpened": true,
+      "nativeCloseObservedAt": "2026-11-28T10:09:50.410Z",
+      "closedWithoutRecipientSelectionOrSend": true,
+      "returnedAt": "2026-11-28T10:10:00.920Z",
+      "coinsBeforeAndAfter": 1585,
+      "buttonEnabledAfter": true,
+      "buttonBusyAfter": "false",
+      "noticesAfter": [],
+      "pausedClassPresentAfter": false
+    },
+    "share": {
+      "ordinaryWin": {
+        "observedAt": "2026-11-28T10:10:17.504Z",
+        "puzzle": "TIGER",
+        "coinAward": 25,
+        "coins": 1610
+      },
+      "nativeHeading": "Share game",
+      "nativeSurface": "Share game destination chooser",
+      "nativeObservedAt": "2026-11-28T10:10:39.596Z",
+      "destinationSelected": false,
+      "messageSent": false,
+      "returnedAt": "2026-11-28T10:10:40.170Z",
+      "coinsBeforeAndAfterCancellation": 1610,
+      "resultControlsEnabled": true
+    },
+    "focusAndInput": {
+      "nextPuzzle": "PEACOCK",
+      "focusLossObservedAt": "2026-11-28T10:11:04.960Z",
+      "visibilityDuringFocusLoss": "visible",
+      "documentHiddenDuringFocusLoss": false,
+      "focusedDuringFocusLoss": false,
+      "pausedClassPresentDuringFocusLoss": false,
+      "hiddenToVisibleTransitionEstablished": false,
+      "inputObservedAt": "2026-11-28T10:11:32.327Z",
+      "typedLetter": "A",
+      "focusedAfterReturn": true,
+      "earlyOnscreenBackspaceAndSelectedDeleteClearedLetter": false,
+      "hitTestObservedAt": "2026-11-28T10:13:45.562Z",
+      "hitTest": "Letter cell, A key and Backspace center each hit a DIV outside the corresponding button.",
+      "overlayObservedAt": "2026-11-28T10:13:53.999Z",
+      "overlayBoundary": "igdebug_css_boundary",
+      "overlayPanelClosed": true,
+      "physicalBackspaceClearedLetter": true,
+      "clearedAt": "2026-11-28T10:14:24.168Z",
+      "emptyCurrentRowCellsAfter": 7,
+      "coinsAfter": 1610,
+      "debugPanelTextAfter": [
+        ""
+      ],
+      "backspaceCenterStillOutsideButtonAfterClose": true,
+      "remainingDivIdentityEstablished": false,
+      "panelOpeningCauseEstablished": false,
+      "igDebugConsoleOrSdkToolsSelected": false
+    },
+    "cleanup": {
+      "quitObservedAt": "2026-11-28T10:15:00.304Z",
+      "route": "/gaming/play/",
+      "totalIframeCount": 1,
+      "scope": "One total iframe remained; this is not a zero-game-iframe assertion. The initial Quit probe lost its execution context during navigation and produced no JSON receipt.",
+      "cleanupReceiptObservedAt": "2026-11-28T10:15:00Z",
+      "cleanupTimestampPrecision": "seconds",
+      "ownedGameTabClosed": true,
+      "ownedBlankTabClosed": true,
+      "preexistingTabsPreserved": true,
+      "coinsBeforeQuit": 1610,
+      "puzzleBeforeQuit": "PEACOCK",
+      "draftLettersCleared": true,
+      "relaunchAfterQuitPerformed": false,
+      "preferencesChanged": false,
+      "sound": "On",
+      "reducedMotion": "Off"
+    }
+  },
+  "limits": [
+    "No recipient, destination or opponent selected; no social message sent. Cancellation does not establish delivery or recipient entry.",
+    "The blank-tab attempt changed focus without observed hidden visibility. Hidden/resume acceptance remains unverified.",
+    "Read-only hit testing identified the IGDebug panel before closing; the remaining DIV over Backspace was not traced to an ancestor. Onscreen Backspace recovery and the panel opening cause are not established.",
+    "Receipt filenames containing hidden or cleared are not findings: their contents retain visible state and the typed A until the final confirmed physical-Backspace clear.",
+    "The startup issue cause, separate historical Android issue and full API/submission acceptance remain unresolved. No final-relaunch persistence claim is made."
+  ],
+  "changes": {
+    "sourceChanged": false,
+    "firebaseCodeOrConfigurationChanged": false,
+    "providerServerCodeOrConfigurationChanged": false,
+    "buildOrUploadRun": false,
+    "backendDeploymentRun": false,
+    "metaConfigurationChanged": false,
+    "vercelChanged": false,
+    "reviewSubmitted": false,
+    "productionPromoted": false,
+    "published": false
+  },
+  "coverage": {
+    "W": 51,
+    "C": 10,
+    "G": 6,
+    "X": 12,
+    "changed": false
+  },
+  "receipts": [
+    {
+      "name": "cleanup",
+      "observedAt": "2026-11-28T10:15:00Z",
+      "privateReceiptSha256": "efddeae1ec66044ebad27b1cc444490bc75e469fe499ec341e4a55a5476e76b3"
+    },
+    {
+      "name": "debug-closed-input-cleared",
+      "observedAt": "2026-11-28T10:14:24.168Z",
+      "privateReceiptSha256": "53348c0f50dafb62c54419bab34cc299abcd7787739099df6659f27f28326cad"
+    },
+    {
+      "name": "final-settings",
+      "observedAt": "2026-11-28T10:11:58.265Z",
+      "privateReceiptSha256": "4a0db64cf5f9edb9f66fc7bd89eb96ae07db695256024e74074129f23c4a1a89"
+    },
+    {
+      "name": "identity",
+      "observedAt": "2026-11-28T10:07:35.494Z",
+      "privateReceiptSha256": "7e8453f87b48d955df0b324bb16cf001f3b1a1499d740dfc57f6ca9c6b40d8f5"
+    },
+    {
+      "name": "input-cleared-confirmed",
+      "observedAt": "2026-11-28T10:12:18.851Z",
+      "privateReceiptSha256": "4a895220ed76e9ac29c688be01ff6afc9c059975606a5737568979ec4eadb894"
+    },
+    {
+      "name": "input-detail",
+      "observedAt": "2026-11-28T10:12:33.580Z",
+      "privateReceiptSha256": "ddebb975bc08f20ed5a2e7c76feb7c3eb0f60703c8a50ccd1788e2bc73d54215"
+    },
+    {
+      "name": "input-hit-targets",
+      "observedAt": "2026-11-28T10:13:45.562Z",
+      "privateReceiptSha256": "704aef138d3d62b8d272aebd5cc44f5d9136d27d2745595cb0badb8f20a68ca7"
+    },
+    {
+      "name": "input-overlay",
+      "observedAt": "2026-11-28T10:13:53.999Z",
+      "privateReceiptSha256": "1381350875a13516f166279fe0c581829a78fde747846ca4d4d1a37c8107b252"
+    },
+    {
+      "name": "input-selected-delete",
+      "observedAt": "2026-11-28T10:13:00.105Z",
+      "privateReceiptSha256": "855be1f251bef293997d1efb6d1709d86b74392bb79dc7f24e9c1afd092af2b2"
+    },
+    {
+      "name": "invite-before",
+      "observedAt": "2026-11-28T10:09:28.967Z",
+      "privateReceiptSha256": "d876de2201dba5fc54203f7d91b7ea406ccc41f35a2becd42e9621c04e62f8bc"
+    },
+    {
+      "name": "invite-native",
+      "observedAt": "2026-11-28T10:09:50.410Z",
+      "privateReceiptSha256": "d419476d5f0a5fb07c3f62499eb3c4997b7de624c3ad63ea55d2ff2c28c80631"
+    },
+    {
+      "name": "invite-return",
+      "observedAt": "2026-11-28T10:10:00.920Z",
+      "privateReceiptSha256": "95d489bbbcfa2d4a72d35dd379a916ee1e3d4b82620788d407d9a562e3a5d513"
+    },
+    {
+      "name": "lifecycle-before",
+      "observedAt": "2026-11-28T10:10:48.598Z",
+      "privateReceiptSha256": "7be650603ca201e8e8c8ec7f5c24332b1c8fd071f341415c063351e35f06cbbd"
+    },
+    {
+      "name": "lifecycle-cleared",
+      "observedAt": "2026-11-28T10:11:32.892Z",
+      "privateReceiptSha256": "7c54a60209f3e97df6ce80ede9848bc4b68bf89db631299a6d03cd8febff8f65"
+    },
+    {
+      "name": "lifecycle-hidden-focused",
+      "observedAt": "2026-11-28T10:11:04.960Z",
+      "privateReceiptSha256": "59d1c2e2b4a1339f28419ef1ba14cf4d4193dbeed09ae08190d689691a9bd835"
+    },
+    {
+      "name": "lifecycle-hidden",
+      "observedAt": "2026-11-28T10:10:57.071Z",
+      "privateReceiptSha256": "72c697f8faeb62bf33119f18db6afa148e03f3887a963de8037a2ce3773641e8"
+    },
+    {
+      "name": "lifecycle-input",
+      "observedAt": "2026-11-28T10:11:32.327Z",
+      "privateReceiptSha256": "157a9fe023d09c3e871a3af2a71a7600ed62cb216cf88554711e5fa5b316760f"
+    },
+    {
+      "name": "lifecycle-return",
+      "observedAt": "2026-11-28T10:11:31.642Z",
+      "privateReceiptSha256": "979d17a59a9819fa5baa7dd1e86a432f2ba22086655d178f7802c7dba6d3c6aa"
+    },
+    {
+      "name": "loading-followup",
+      "observedAt": "2026-11-28T10:08:29.049Z",
+      "privateReceiptSha256": "718c83eac8a157c2c16586148b2edb477c44338c834f6197d5d871c7e7aa3479"
+    },
+    {
+      "name": "quit-final",
+      "observedAt": "2026-11-28T10:15:00.304Z",
+      "privateReceiptSha256": "264beae51786953101de74733e9397792c9a4b76a42b65a875c3779e677d9e3d"
+    },
+    {
+      "name": "ready",
+      "observedAt": "2026-11-28T10:09:16.527Z",
+      "privateReceiptSha256": "fda04efc70f402136facfc407ce8a1af34b01c8661a481a90a1c38ee1741cb5d"
+    },
+    {
+      "name": "share-before",
+      "observedAt": "2026-11-28T10:10:17.504Z",
+      "privateReceiptSha256": "48fbaaf8a49fddb733141e9b6fada658663ee417b2e93c38179f5c6f1963adaf"
+    },
+    {
+      "name": "share-native",
+      "observedAt": "2026-11-28T10:10:39.596Z",
+      "privateReceiptSha256": "1f36c4c3f2fab52815dd93c7bae35972fc1e0b853b28ee17fedbd5eab26451db"
+    },
+    {
+      "name": "share-return",
+      "observedAt": "2026-11-28T10:10:40.170Z",
+      "privateReceiptSha256": "bf62d70ef609fef925e6c422dc91b999244fb736914c4e6308a77023cfcfafd0"
+    }
+  ],
+  "privateScreenshots": [
+    {
+      "name": "riddle-quest-chrome-v24-social-invite-native.png",
+      "sha256": "8f96046c94c6a0d5a007208206828e679df288bb7e054762d1d3271975647e28",
+      "content": "Native invitation card; private image may contain profile/account names."
+    },
+    {
+      "name": "riddle-quest-chrome-v24-social-loading.png",
+      "sha256": "fcb87d4537c93b15f92764f7c1c5b1830e0daada53b0358b39a31b3842f13ffd",
+      "content": "Welcome screen after the ordinary reload, captured around 10:09 UTC; despite its filename, this is not a 5% loading-state image."
+    }
+  ],
+  "privateEvidencePolicy": "Only private receipt/screenshot hashes are published. Native invite screenshots may contain account/profile names; raw screenshots and raw profile contents are not copied into the repository."
+}

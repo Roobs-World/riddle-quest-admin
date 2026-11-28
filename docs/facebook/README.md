@@ -1,5 +1,7 @@
 # Facebook Instant Games
 
+- [Version 24 native Invite/Share cancellation and desktop focus checks](evidence/facebook-desktop-social-lifecycle-version-24-2026-11-28.md)
+
 - [Version 24 desktop interstitial, banner, rewarded continuation and post-Terms saves](evidence/facebook-desktop-ads-save-version-24-2026-11-28.md)
 
 - [Integrated multiplayer controls and tournament removal](evidence/facebook-multiplayer-controls-2026-11-28.md)
