@@ -1,0 +1,137 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "appId": "1748953042991569",
+  "recordStatus": "Completed finite read-only dashboard follow-up.",
+  "scope": "Authenticated Firefox game-route availability and read-only hosting, product-review, cross-play and Details observations; no provider changes.",
+  "firefoxGameRoute": {
+    "observedAt": "2026-11-28T08:26:22.817Z",
+    "path": "/instantgames/1748953042991569/",
+    "loginPromptVisible": false,
+    "unsupportedGameMessage": true,
+    "loadedGameVersionEstablished": false,
+    "limit": "This is the observed signed-in Firefox route, not proof that every desktop host is unsupported."
+  },
+  "hosting": {
+    "observedAt": "2026-11-28T08:27:19.956Z",
+    "testing": {
+      "version": 23,
+      "bundleId": "40683991141214635",
+      "rowStatus": "Testing",
+      "archiveFilename": "artifact-8144475232cbb8133e2f61a8954ed6e7bd19dec11e8635d1c1862c22b1e7d163.zip",
+      "qualityReviewLabel": "Quality Review Unknown",
+      "displayedSize": "2.87 MB",
+      "displayedUploadTime": "11/28/2026, 7:18 AM"
+    },
+    "production": {
+      "version": 9,
+      "bundleId": "29168977262783270",
+      "rowStatus": "Production",
+      "archiveFilename": "artifact-11b614b7c7d483041b689c5ba9750468da37a3a6a5824b7e85f4369eca99dcca.zip",
+      "qualityReviewLabel": "Quality Review Unknown",
+      "displayedSize": "2.87 MB",
+      "displayedUploadTime": "11/26/2026, 4:17 AM"
+    },
+    "sdk8NezpLabelVisible": true,
+    "renderedSwitchCount": 1,
+    "renderedSwitchChecked": true,
+    "renderedSwitchLabel": "",
+    "switchScope": "The first receipt recorded an unlabeled checked switch; the later debugModeConfirmation binds the checked control to the Debug Mode text.",
+    "separateProcessingFieldRead": false,
+    "providerZipDownloadedOrHashed": false,
+    "archiveFilenameIsIndependentContentProof": false
+  },
+  "immutableReleaseEvidence": "facebook-testing-version-23-2026-11-28.json",
+  "limits": [
+    "Fresh dashboard labels independently confirm Testing23 and Production9 at this observation time; they do not revise historical no-fresh-read statements or replace the immutable release receipt.",
+    "A filename containing a digest is not a fresh byte comparison or provider ZIP hash.",
+    "Quality Review Unknown and a Testing/Production row do not establish product approvals, public availability or review completion.",
+    "No loaded game version or native game execution was established on the unsupported Firefox route."
+  ],
+  "providerSettingsChanged": false,
+  "testingOrProductionAssignmentChanged": false,
+  "credentialsEnteredByAgent": false,
+  "sourceChanged": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "testsRun": false,
+  "newBuildOrUpload": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "privateEvidenceSha256": {
+    "evaluate-script-2026-11-28T08-26-22-817Z.json": "f9190fb85743e5c4e4dff1576cda69623b6706cee3dd008e758d600e624f3e54",
+    "evaluate-script-2026-11-28T08-27-19-959Z.json": "65455fa4f1873dfa74be3a5084a5a36782799d92961c85e244335a6258ddd135",
+    "evaluate-script-2026-11-28T08-31-15-628Z.json": "5cdc39af537ac0b39145282daba18181e9d7539279d705d437961adac9169c29",
+    "evaluate-script-2026-11-28T08-32-52-006Z.json": "3b5cae9dcc3c17a824b5d5b1954a522644d785754fd6b779ec80596364419f11",
+    "evaluate-script-2026-11-28T08-33-38-739Z.json": "9a9f45617033d9f945ba892ee8c594516b1df4806f0b912db96fa0ed1c82e589",
+    "evaluate-script-2026-11-28T08-34-01-782Z.json": "97581d653cfd441579fde0e20946d4dec1f7f4e7c40b9ecda96fb56a70eaa690",
+    "evaluate-script-2026-11-28T08-35-01-366Z.json": "08bc2de04d42796ce955d534a15f2ff0397fa0d3af3fea23305888c3f054fcaa"
+  },
+  "debugModeConfirmation": {
+    "observedAt": "2026-11-28T08:31:15.628Z",
+    "checked": true,
+    "nearbyText": "Debug Mode\nEnable debug mode in your game",
+    "settingChanged": false
+  },
+  "productReview": {
+    "observedAt": "2026-11-28T08:32:52.006Z",
+    "businessVerification": "Verified",
+    "approvedPartnerProgramReview": "Not Submitted",
+    "approvedPartnerProgramApplication": "Not Submitted",
+    "policyReview": "Not Submitted",
+    "qualityReview": "Not Submitted",
+    "inAppPurchasesReview": "Not Submitted",
+    "inAppAdsReview": "Approved",
+    "botReview": "Not Submitted",
+    "appPropertyReview": "Not Submitted",
+    "controlObservation": {
+      "observedAt": "2026-11-28T08:33:38.738Z",
+      "controls": [
+        {
+          "text": "Create submission",
+          "disabled": null,
+          "ariaDisabled": "true"
+        },
+        {
+          "text": "Submit Review",
+          "disabled": null,
+          "ariaDisabled": "true"
+        }
+      ]
+    },
+    "submissionAttempted": false,
+    "generalReviewContradictionsResolved": false,
+    "generalReviewReceipt": "facebook-prerequisite-recheck-2026-11-28.json",
+    "scope": "Instant Game product review page; separate from the earlier general App Review connector responses."
+  },
+  "crossPlay": {
+    "observedAt": "2026-11-28T08:34:01.781Z",
+    "status": "Not Linked",
+    "distinctAppIdsRequireSameGameAttestation": true,
+    "sameAppIdNeedsNoLinkingPerPage": true,
+    "crossplayEligibleCapabilityStateEstablished": false,
+    "linkActionClicked": false,
+    "associationCreatedOrChanged": false,
+    "genuineOffPlatformAppIdEstablished": false
+  },
+  "lastObservationAt": "2026-11-28T08:35:01.365Z",
+  "details": {
+    "observedAt": "2026-11-28T08:35:01.365Z",
+    "orientation": "Portrait",
+    "appPage": "Riddle Quest",
+    "connectionExperience": "Zero permissions",
+    "flexibleAspectRatioEnabled": false,
+    "nezpTesterOverrideEnabled": true,
+    "groupAssociationSettingObserved": false,
+    "privateTournamentScoringSettingObserved": false,
+    "unobservedSettingsGloballyAbsent": false,
+    "saveConfirmOrDeleteClicked": false,
+    "scope": "Visible Details page and bound toggle labels only; tester override does not establish public migration or product approval."
+  },
+  "sessionEnd": {
+    "firefoxAuthenticated": true,
+    "firefoxPage": "Details",
+    "chromeManualSignInPending": true,
+    "chromeGameAcceptanceEstablished": false
+  }
+}

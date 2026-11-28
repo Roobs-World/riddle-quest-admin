@@ -17,6 +17,7 @@
 - [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)
 - [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
 - [Current version 23 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-23-2026-11-28.json)
+- [Fresh Testing/Production, SDK and product-prerequisite dashboard observations](evidence/facebook-dashboard-followup-2026-11-28.md)
 - [Bounded interstitial trace and local verification](evidence/facebook-interstitial-trace-2026-11-28.md)
 - [Version 23 Android interstitial, trace and progress restoration](evidence/facebook-android-interstitial-version-23-2026-11-28.md)
 - [Version 23 native diagnostic capabilities and unavailable shared-memory route](evidence/facebook-native-diagnostic-capabilities-version-23-2026-11-28.md)
