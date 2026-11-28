@@ -79,5 +79,74 @@
     "runtimePatchesOrProbes": false,
     "finalPhoneState": "Outside the game; no debug panel or diagnostic callbacks; temporary device UI XML removed.",
     "limits": "Identity, restoration and normal exit only. No native account replacement, deadline exercise or second launch after exit. Earlier candidate rewarded, social and preference results remain historical. The Terms-return failure remains unexplained."
+  },
+  "hostedMobileDiagnosticFollowup": {
+    "evidence": "facebook-android-timer-delivery-version-19-2026-11-28.md",
+    "identity": {
+      "observedAt": "2026-11-28T02:54:25.718615+00:00",
+      "version": 19,
+      "path": "/instant-bundle/2143220529953108/29691804297082520/index.html",
+      "supportedApiCount": 48,
+      "bannerLoadAdvertised": true
+    },
+    "initialPostTermsProbe": {
+      "utc": "2026-11-28T02:48:44.608Z",
+      "startedAt": "2026-11-28T02:48:22.113Z",
+      "elapsed": 22495,
+      "visible": "visible",
+      "microtask": 17,
+      "frame": 20,
+      "timer": null
+    },
+    "matchedSettingsPair": {
+      "beforeTerms": {
+        "utc": "2026-11-28T02:56:53.623Z",
+        "startedAt": "2026-11-28T02:56:23.108Z",
+        "elapsed": 30515,
+        "visible": "visible",
+        "microtask": 7,
+        "frame": 10,
+        "timer": 10002
+      },
+      "termsSelectedAt": "2026-11-28T02:57:23.384368+00:00",
+      "openLinkSelectedAt": "2026-11-28T02:57:29.240775+00:00",
+      "androidBackAt": "2026-11-28T02:57:40Z",
+      "afterTerms": {
+        "utc": "2026-11-28T02:59:15.261Z",
+        "startedAt": "2026-11-28T02:58:51.307Z",
+        "elapsed": 23954,
+        "visible": "visible",
+        "microtask": 15,
+        "frame": 17,
+        "timer": null
+      },
+      "timerRequestedMilliseconds": 10000,
+      "temporaryRecordsAndCallbacksCleaned": true,
+      "appQuitAttemptedInMatchedPair": false,
+      "banner": "Visible in Settings before navigation; absent from the visible full-height Settings view after return. No ad click."
+    },
+    "earlierQuitAttemptAt": "2026-11-28T02:49:07.583227+00:00",
+    "earlierPendingQuitObservation": {
+      "utc": "2026-11-28T02:50:57.424Z",
+      "visible": "visible",
+      "timerNative": true,
+      "frameNative": true,
+      "diagnosticRecordPresent": false,
+      "paused": false,
+      "busy": [
+        "Quit game›"
+      ],
+      "bannerPresent": true,
+      "bannerReserved": null,
+      "bannerInert": false
+    },
+    "finalExit": {
+      "method": "Facebook host Quit",
+      "hostMenuOpenedAt": "2026-11-28T02:59:30Z",
+      "quitAt": "2026-11-28T03:00:02Z",
+      "mainActivityObservedAt": "2026-11-28T03:00:07Z",
+      "temporaryDeviceUiXmlRemoved": true
+    },
+    "limits": "Diagnostic measurements, not native acceptance or a fix. The matched Settings pair narrows timer non-delivery to the Terms-open/return workflow, including banner and lifecycle transitions; it does not identify the native cause or blocked Quit phase. Microtasks and animation frames continued. No SDK wrappers or game-state changes; no new upload, Firebase change, purchase, social send or consent change."
   }
 }

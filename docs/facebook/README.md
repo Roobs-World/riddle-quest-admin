@@ -18,6 +18,7 @@
 - [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
 - [Current version 19 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-19-2026-11-28.json)
 - [Version 19 Android startup, saved progress and normal Quit](evidence/facebook-android-version-19-2026-11-28.md)
+- [Version 19 Android timer delivery and Terms-return diagnosis](evidence/facebook-android-timer-delivery-version-19-2026-11-28.md)
 - [Historical version 18 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-18-2026-11-28.json)
 - [Version 18 Android saves, social cancellation and unresolved Terms return](evidence/facebook-android-version-18-2026-11-28.md)
 - [Version 18 Android rewarded cancellation, failed retry and normal exit](evidence/facebook-android-ad-cancellation-version-18-2026-11-28.md)

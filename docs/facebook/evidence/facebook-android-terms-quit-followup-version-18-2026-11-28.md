@@ -29,3 +29,5 @@ The host top X at **02:24:00** opened its native Quit menu. Host **Quit** at **0
 ## Limits
 
 Normal Quit successes and local 15-second preparation tests remain separate. This does not establish native timeout recovery. Separately identified source defects do not establish this incident’s cause. No artifact upload, Firebase/configuration change, Production promotion, review submission or publication occurred for this diagnostic.
+
+A [later version 19 diagnostic](facebook-android-timer-delivery-version-19-2026-11-28.md) found that accessibility snapshots can omit completed callback logs. The absent visible frame/timer output recorded here therefore remains indirect evidence. That later matched Settings comparison used explicit diagnostic state: microtasks and frames ran, while the ten-second timer remained incomplete after return. It does not establish version 18 callback behavior or the native cause.
