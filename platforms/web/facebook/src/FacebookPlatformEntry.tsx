@@ -632,9 +632,13 @@ export function FacebookPlatformEntry() {
             sdk,
             isActive: isAccountSessionActive,
             messengerBotEnabled: Boolean(notificationProvider) && import.meta.env.VITE_FACEBOOK_MESSENGER_BOT_ENABLED === "true",
-            flushBeforeQuit: async () => {
+            flushBeforeQuit: async trace => {
+              trace("projection");
               await playerPersistence.flush();
-              try {await stopPresence?.();} catch (error) {
+              try {
+                if (stopPresence) trace("presence");
+                await stopPresence?.();
+              } catch (error) {
                 captureBrowserException(error, {component: "facebook_presence", operation: "quit"});
               }
             },

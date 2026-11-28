@@ -5,6 +5,7 @@ import type {
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../fbinstant";
 import {createFacebookMessengerBotConsent} from "../notifications/FacebookMessengerBotConsent";
+import {beginFacebookQuitTrace, type FacebookQuitTraceRecorder} from "./FacebookQuitTrace";
 
 /** Meta permits only one shortcut prompt attempt per game session, including dismissal. */
 const shortcutAttempted = new WeakSet<FacebookInstantSdk>();
@@ -25,7 +26,7 @@ type NativeAction = {
   id: FacebookPlayerSettingsAction;
   canRun?: (signal?: AbortSignal) => Promise<boolean>;
   repeatable?: boolean;
-  invoke: (signal?: AbortSignal) => Promise<void>;
+  invoke: (signal?: AbortSignal, trace?: FacebookQuitTraceRecorder) => Promise<void>;
   isComplete?: () => boolean;
 };
 
@@ -34,7 +35,7 @@ export type FacebookPlayerSettingsActionsOptions = {
   isActive: () => boolean;
   messengerBotEnabled?: boolean;
   /** Rejects when current progress cannot be durably saved; quitting must then stop. */
-  flushBeforeQuit: () => Promise<void>;
+  flushBeforeQuit: (trace: FacebookQuitTraceRecorder) => Promise<void>;
   reportFailure?: (failure: {action: FacebookPlayerSettingsAction; error: unknown}) => void;
 };
 
@@ -73,12 +74,17 @@ export function createFacebookPlayerSettingsActions({
       {id: "terms-of-use", repeatable: true, invoke: () => openExternalLink("https://roobsworld.com/riddle-quest/terms")},
     );
   }
-  if (supported.has("quit") && quit) nativeActions.push({id: "quit", invoke: async () => {quit();}});
+  if (supported.has("quit") && quit) nativeActions.push({id: "quit", invoke: async (_signal, trace) => {
+    trace?.("invoke");
+    quit();
+    trace?.("returned");
+  }});
   if (nativeActions.length === 0) return undefined;
 
   let retired = false;
   const actionLifetime = new AbortController();
   let quitPreparation: Promise<void> | undefined;
+  let activeQuitTrace: ReturnType<typeof beginFacebookQuitTrace> | undefined;
   let revision = 0;
   const current = () => !retired && isActive();
   const report = (action: FacebookPlayerSettingsAction, error: unknown) => {
@@ -93,6 +99,9 @@ export function createFacebookPlayerSettingsActions({
   const retire = () => {
     if (retired) return;
     retired = true;
+    activeQuitTrace?.record("retired");
+    activeQuitTrace?.close();
+    activeQuitTrace = undefined;
     actionLifetime.abort();
     botConsent?.retire();
     ++revision;
@@ -129,12 +138,15 @@ export function createFacebookPlayerSettingsActions({
       try {Promise.resolve(canRun(signal)).then(value => settle(value === true), cancel);} catch {cancel();}
     });
   };
-  const prepareForQuit = (signal?: AbortSignal): Promise<void> => new Promise((resolve, reject) => {
+  const prepareForQuit = (signal?: AbortSignal, trace?: FacebookQuitTraceRecorder): Promise<void> => new Promise((resolve, reject) => {
     let settled = false;
     const deadline = Date.now() + QUIT_PREPARATION_TIMEOUT_MS;
     let timeout: ReturnType<typeof setTimeout>;
     const expired = () => Date.now() >= deadline;
     const inactive = () => !current() || signal?.aborted || actionLifetime.signal.aborted;
+    const record: FacebookQuitTraceRecorder = phase => {
+      if (!settled && !inactive()) trace?.(phase);
+    };
     const timeoutError = () => new Error("facebook-quit-preparation-timeout");
     const settle = (result: {saved: true} | {saved: false; error: unknown}) => {
       if (settled) return;
@@ -153,7 +165,7 @@ export function createFacebookPlayerSettingsActions({
       if (inactive() || expired()) {settle({saved: false, error: timeoutError()}); return;}
       const preparation = Promise.resolve().then(() => {
         if (settled || inactive() || expired()) throw timeoutError();
-        return flushBeforeQuit();
+        return flushBeforeQuit(record);
       });
       quitPreparation = preparation;
       const clearPreparation = () => {
@@ -166,8 +178,12 @@ export function createFacebookPlayerSettingsActions({
     signal?.addEventListener("abort", cancel, {once: true});
     actionLifetime.signal.addEventListener("abort", cancel, {once: true});
     if (inactive()) {cancel(); return;}
+    record("preparation");
     // Keep the actual save alive; a retry must flush newer progress after it settles.
-    if (quitPreparation) quitPreparation.then(startFreshPreparation, startFreshPreparation);
+    if (quitPreparation) {
+      record("previous-preparation");
+      quitPreparation.then(startFreshPreparation, startFreshPreparation);
+    }
     else startFreshPreparation();
   });
 
@@ -187,11 +203,15 @@ export function createFacebookPlayerSettingsActions({
       const action = nativeActions.find(candidate => candidate.id === requestedId);
       if (!current() || snapshot.pendingAction || !action || !available.has(action.id)) return "unavailable";
       const id = action.id;
+      const quitTrace = id === "quit" ? beginFacebookQuitTrace() : undefined;
+      if (quitTrace) activeQuitTrace = quitTrace;
       ++revision;
       publish(id);
       let unsaved = false;
       try {
+        quitTrace?.record("guard");
         const result = await runFacebookSdkDialog(sdk, async (): Promise<PlatformResult<void>> => {
+          quitTrace?.record("operation");
           if (signal?.aborted || !current()) return {status: "cancelled"};
           const mayRun = await eligible(action, signal);
           if (signal?.aborted || !current()) return {status: "cancelled"};
@@ -200,7 +220,7 @@ export function createFacebookPlayerSettingsActions({
             return {status: "unavailable", message: "facebook-settings-action-ineligible"};
           }
           if (id === "quit") {
-            try {await prepareForQuit(signal);} catch (error) {
+            try {await prepareForQuit(signal, quitTrace?.record);} catch (error) {
               if (!current() || signal?.aborted) return {status: "cancelled"};
               unsaved = true;
               report(id, error);
@@ -209,7 +229,8 @@ export function createFacebookPlayerSettingsActions({
           }
           if (!current() || signal?.aborted) return {status: "cancelled"};
           try {
-            await action.invoke(signal);
+            if (quitTrace) await action.invoke(signal, quitTrace.record);
+            else await action.invoke(signal);
             if (!current()) return {status: "cancelled"};
             if (id !== "quit" && !action.repeatable) available.delete(id);
             return signal?.aborted ? {status: "cancelled"} : {status: "success", value: undefined};
@@ -231,6 +252,9 @@ export function createFacebookPlayerSettingsActions({
           ? result.status : unsaved ? "unsaved" : "error";
         return outcome;
       } finally {
+        quitTrace?.record("finished");
+        quitTrace?.close();
+        if (activeQuitTrace === quitTrace) activeQuitTrace = undefined;
         if (shortcutAttempted.has(sdk)) available.delete("create-shortcut");
         if (action.isComplete?.()) available.delete(id);
         publish(null);

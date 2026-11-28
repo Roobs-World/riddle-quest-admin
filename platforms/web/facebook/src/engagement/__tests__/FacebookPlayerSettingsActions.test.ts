@@ -2,6 +2,7 @@ import {describe, expect, it, jest} from "@jest/globals";
 import {registerFacebookSdkDialogGuard, runFacebookSdkDialog} from "../../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../../fbinstant";
 import {createFacebookPlayerSettingsActions, type FacebookPlayerSettingsActionsOptions} from "../FacebookPlayerSettingsActions";
+import type {FacebookQuitTraceRecorder} from "../FacebookQuitTrace";
 
 const SUPPORTED_APIS = ["canCreateShortcutAsync", "createShortcutAsync", "community.canFollowOfficialPageAsync",
   "community.followOfficialPageAsync", "community.canJoinOfficialGroupAsync", "community.joinOfficialGroupAsync", "quit"];
@@ -40,7 +41,7 @@ const fixture = (supported = SUPPORTED_APIS) => {
     community: {canFollowOfficialPageAsync, followOfficialPageAsync, canJoinOfficialGroupAsync, joinOfficialGroupAsync},
   };
   let active = true;
-  const flushBeforeQuit = jest.fn<() => Promise<void>>(async () => undefined);
+  const flushBeforeQuit = jest.fn<FacebookPlayerSettingsActionsOptions["flushBeforeQuit"]>(async () => undefined);
   const reportFailure = jest.fn<NonNullable<FacebookPlayerSettingsActionsOptions["reportFailure"]>>();
   const options = {sdk, isActive: () => active, flushBeforeQuit, reportFailure};
   return {sdk, options, canCreateShortcutAsync, createShortcutAsync, canFollowOfficialPageAsync,
@@ -54,7 +55,217 @@ const requireActions = (options: FacebookPlayerSettingsActionsOptions) => {
   return actions;
 };
 
+const quitTracePhases = () => performance.getEntriesByType("mark")
+  .filter(entry => entry.name.startsWith("riddle-quest:facebook:quit:"))
+  .map(entry => entry.name.slice("riddle-quest:facebook:quit:".length));
+
 describe("Facebook player Settings actions", () => {
+  it("records a held native guard without claiming Quit preparation has started", async () => {
+    const harness = fixture();
+    const hidden = deferred<void>();
+    const removeGuard = registerFacebookSdkDialogGuard(harness.sdk, {
+      beforeOpen: () => hidden.promise, afterClose: () => undefined,
+    });
+    const actions = requireActions(harness.options);
+    const quitting = actions.run("quit");
+    try {
+      expect(quitTracePhases()).toEqual(["guard"]);
+      expect(harness.flushBeforeQuit).not.toHaveBeenCalled();
+      expect(harness.quit).not.toHaveBeenCalled();
+      hidden.resolve();
+      await expect(quitting).resolves.toBe("success");
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "invoke", "returned", "finished"]);
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      hidden.resolve();
+      await quitting;
+      removeGuard();
+    }
+  });
+
+  it("records projection and presence waits before the actual Quit call", async () => {
+    const harness = fixture();
+    const projection = deferred<void>();
+    const projectionStarted = deferred<void>();
+    const presence = deferred<void>();
+    const presenceStarted = deferred<void>();
+    harness.flushBeforeQuit.mockImplementation(async trace => {
+      trace("projection");
+      projectionStarted.resolve();
+      await projection.promise;
+      trace("presence");
+      presenceStarted.resolve();
+      await presence.promise;
+    });
+    harness.quit.mockImplementation(() => {
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "presence", "invoke"]);
+    });
+    const quitting = requireActions(harness.options).run("quit");
+    try {
+      await projectionStarted.promise;
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection"]);
+      expect(harness.quit).not.toHaveBeenCalled();
+      projection.resolve();
+      await presenceStarted.promise;
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "presence"]);
+      expect(harness.quit).not.toHaveBeenCalled();
+      presence.resolve();
+      await expect(quitting).resolves.toBe("success");
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "presence", "invoke", "returned", "finished"]);
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      projection.resolve();
+      presence.resolve();
+      await quitting;
+    }
+  });
+
+  it("keeps an expired save's later presence work out of the retry trace", async () => {
+    const harness = fixture();
+    const oldSave = deferred<void>();
+    const newSave = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(async trace => {
+      trace("projection");
+      await oldSave.promise;
+      trace("presence");
+    }).mockImplementationOnce(async trace => {
+      trace("projection");
+      await newSave.promise;
+    });
+    const actions = requireActions(harness.options);
+    jest.useFakeTimers({doNotFake: ["performance"]});
+    const first = actions.run("quit");
+    let retry: ReturnType<typeof actions.run> | undefined;
+    try {
+      await jest.advanceTimersByTimeAsync(15_000);
+      await expect(first).resolves.toBe("unsaved");
+      retry = actions.run("quit");
+      await jest.advanceTimersByTimeAsync(0);
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "previous-preparation"]);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      oldSave.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(2);
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "previous-preparation", "projection"]);
+      expect(harness.quit).not.toHaveBeenCalled();
+      newSave.resolve();
+      await expect(retry).resolves.toBe("success");
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "previous-preparation", "projection", "invoke", "returned", "finished"]);
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      oldSave.resolve();
+      newSave.resolve();
+      await first;
+      await retry;
+      jest.useRealTimers();
+    }
+  });
+
+  it("records actual late presence while timeout delivery is suspended without allowing a late Quit", async () => {
+    const harness = fixture();
+    const projection = deferred<void>();
+    const projectionStarted = deferred<void>();
+    const presence = deferred<void>();
+    const presenceStarted = deferred<void>();
+    harness.flushBeforeQuit.mockImplementation(async trace => {
+      trace("projection");
+      projectionStarted.resolve();
+      await projection.promise;
+      trace("presence");
+      presenceStarted.resolve();
+      await presence.promise;
+    });
+    const actions = requireActions(harness.options);
+    jest.useFakeTimers({doNotFake: ["performance"]});
+    const quitting = actions.run("quit");
+    try {
+      await projectionStarted.promise;
+      jest.setSystemTime(Date.now() + 15_001);
+      projection.resolve();
+      await presenceStarted.promise;
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "presence"]);
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      expect(harness.quit).not.toHaveBeenCalled();
+      presence.resolve();
+      await expect(quitting).resolves.toBe("unsaved");
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "presence", "finished"]);
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      expect(harness.quit).not.toHaveBeenCalled();
+    } finally {
+      projection.resolve();
+      presence.resolve();
+      await quitting;
+      jest.useRealTimers();
+    }
+  });
+
+  it("freezes retired preparation before its late save and finally can affect a new owner's trace", async () => {
+    const old = fixture();
+    const saved = deferred<void>();
+    const saving = deferred<void>();
+    let oldRecord: FacebookQuitTraceRecorder | undefined;
+    old.flushBeforeQuit.mockImplementation(async trace => {
+      oldRecord = trace;
+      trace("projection");
+      saving.resolve();
+      await saved.promise;
+      trace("presence");
+    });
+    const oldActions = requireActions(old.options);
+    const previous = oldActions.run("quit");
+    try {
+      await saving.promise;
+      oldActions.retire();
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "projection", "retired"]);
+      oldRecord?.("presence");
+      expect(quitTracePhases()).not.toContain("presence");
+      const current = fixture();
+      await expect(requireActions(current.options).run("quit")).resolves.toBe("success");
+      expect(quitTracePhases()).toEqual(["guard", "operation", "preparation", "invoke", "returned", "finished"]);
+      const newest = performance.getEntriesByType("mark").filter(entry => entry.name.startsWith("riddle-quest:facebook:quit:"));
+      saved.resolve();
+      await expect(previous).resolves.toBe("cancelled");
+      oldRecord?.("presence");
+      oldActions.retire();
+      expect(performance.getEntriesByType("mark").filter(entry => entry.name.startsWith("riddle-quest:facebook:quit:"))).toEqual(newest);
+      expect(old.quit).not.toHaveBeenCalled();
+      expect(current.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      oldActions.retire();
+      saved.resolve();
+      await previous;
+    }
+  });
+
+  it.each(["unavailable", "cleanup throws", "mark throws"])("keeps save order and Quit outcome unchanged when Performance is %s", async failure => {
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, "performance");
+    const timeline = failure === "unavailable" ? undefined : {
+      clearMarks: () => {if (failure === "cleanup throws") throw new Error("unavailable");},
+      mark: () => {throw new Error("unavailable");},
+    };
+    Object.defineProperty(globalThis, "performance", {configurable: true, value: timeline});
+    try {
+      const order: string[] = [];
+      const harness = fixture();
+      harness.flushBeforeQuit.mockImplementation(async trace => {
+        trace("projection");
+        order.push("projection");
+        await Promise.resolve();
+        trace("presence");
+        order.push("presence");
+      });
+      harness.quit.mockImplementation(() => {order.push("quit");});
+      const actions = requireActions(harness.options);
+      await expect(actions.run("quit")).resolves.toBe("success");
+      expect(order).toEqual(["projection", "presence", "quit"]);
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      expect(harness.reportFailure).not.toHaveBeenCalled();
+    } finally {
+      if (descriptor) Object.defineProperty(globalThis, "performance", descriptor);
+      else Reflect.deleteProperty(globalThis, "performance");
+    }
+  });
+
   it.each(["unknown-action", "__proto__", "constructor"])("rejects unrecognized action ID %s without invoking the SDK", async id => {
     const setup = fixture();
     const actions = requireActions(setup.options);
