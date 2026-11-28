@@ -21,6 +21,7 @@
 - [Version 22 read-only lock query and lifecycle diagnostic](evidence/facebook-lock-lifecycle-diagnostic-version-22-2026-11-28.md)
 - [Version 22 Android save-queue observations before and after Terms/Quit](evidence/facebook-android-save-queue-diagnostic-version-22-2026-11-28.md)
 - [Version 22 Android shared-lock request and guarded-callback diagnostic](evidence/facebook-android-gate-stage-diagnostic-version-22-2026-11-28.md)
+- [Version 22 native debugging access check and desktop login prerequisite](evidence/facebook-native-debug-access-version-22-2026-11-28.md)
 - [Version 22 Android Home/Recents recovery comparison](evidence/facebook-android-home-recovery-version-22-2026-11-28.md)
 - [Version 22 Android preference persistence and normal Quit/relaunch](evidence/facebook-android-preference-version-22-2026-11-28.md)
 - [Version 22 Android rewarded ad, wins and progress restoration](evidence/facebook-android-ads-version-22-2026-11-28.md)

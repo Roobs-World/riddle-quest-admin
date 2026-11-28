@@ -39,4 +39,6 @@ Source, Testing artifact, Firebase and provider-server configuration remained un
 
 ## Next diagnostic, not yet performed
 
+The subsequent [access check](facebook-native-debug-access-version-22-2026-11-28.md) found that Facebook's original Android process and debug socket had disappeared. Its replacement ran the exact Testing candidate but exposed no debug endpoint. The worker harness was prepared and reviewed; no worker was created and no query ran. This is an access limitation, not a worker/CSP failure or a lock-inventory result.
+
 Evaluate a temporary Worker in the same storage bucket, with a successful pre-Terms query baseline and results read through its own CDP target. The specification [shares a lock manager across that bucket's pages and workers](https://www.w3.org/TR/web-locks/#lock-managers) and [adds a granted lock to the held set before queuing its callback](https://www.w3.org/TR/web-locks/#process-a-lock-request-queue). An exact-name, aggregate-only query could help distinguish contention from callback delivery without acquiring or releasing locks. Worker/CSP/CDP support and bucket identity must first be established; a worker may also be suspended, and aggregate counts cannot identify this particular request. No policy relaxation or forced resume is justified. Terminate the worker and revoke its Blob URL after any future diagnostic.
