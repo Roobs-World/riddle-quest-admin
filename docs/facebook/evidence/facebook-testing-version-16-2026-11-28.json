@@ -1,0 +1,92 @@
+{
+  "recordedAt": "2026-11-28T00:04:28.571774+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "13cfd1cb522b17be775227c07d56c209ec283ad4",
+  "archiveSha256": "ac32ec82256feea1612bb39b1cb32f249cac45a30f3f0a609d1d7be4a41a8316",
+  "archiveBytes": 2865842,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 16,
+  "bundleId": "40447241201556884",
+  "status": "Testing",
+  "uploadCount": 1,
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "40447241201556884",
+    "version": 16,
+    "observedAt": "2026-11-28T00:04:03.236Z",
+    "httpStatus": 200,
+    "responseSha256": "5df413f85cd795488ab8c2ea8c03a137ca9c26ef3e1c998fe09b601d86c64e68",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "40447241201556884",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T00:03:52.073459+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "e63a2556bfc77d41b1e03221ca320b8160970e3d3c73b0f50cc0dcf33d917762",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialCheck": "385/420 matched; 35 HTTP 200 responses had empty bodies. A later complete check matched all 420. No source change or retransmission occurred; cause was not established."
+  },
+  "processingEvidence": "All 420 runtime files served correctly and the Testing-only assignment returned HTTP 200 with the exact bundle ID. No separate dashboard processing field was read.",
+  "providerArchiveDownloaded": false,
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; the Production dashboard assignment was not freshly read."
+  },
+  "localVerification": {
+    "focusedTests": 113,
+    "focusedSuites": 7,
+    "fullBrowserTests": 1,
+    "fullBrowserSeconds": 42.245,
+    "expandedLifecycleBrowserSeconds": 13.343,
+    "sharedTypecheck": "passed",
+    "canonicalPreflight": "passed",
+    "artifactAudit": "passed; 420 files, 4.51 MB total, 0.71 MB initial; no Jest gaming SDK/native/secret leakage"
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "vercel": "Existing isolated Vercel deployment remains the v15 artifact; no v16 Vercel deployment performed.",
+  "hostedMobile": {
+    "evidence": "facebook-android-host-version-16-2026-11-28.md",
+    "startup": "Exact v16 SDK Info, SDK8.0, welcome\u2192kettle/1035coins/sixeditablecells verified.",
+    "rewarded": "Native attempt failed generically and recovered controls without ad, continuation or balance change; uninterrupted retry and v15 comparison did not establish mobile completion.",
+    "cause": "Unresolved; no SDK code/stage captured.",
+    "firebaseChanged": false,
+    "restoredCandidate": "Fresh rendered SDK Info again confirmed exact version16/bundle after comparison.",
+    "banner": "Fresh session advertised48APIs including loadBannerAdAsync; native banner appeared below welcome/loss, then disappeared on return to gameplay. No SDK-call/result or placement-ID trace; full J10 remains open.",
+    "terms": "Native external-link confirmation opened without visible banner coverage; CANCEL restored enabled Settings controls."
+  },
+  "testingAssignmentRestoredAfterComparison": {
+    "appId": "1748953042991569",
+    "bundleId": "40447241201556884",
+    "version": 16,
+    "observedAt": "2026-11-28T00:19:37.652Z",
+    "httpStatus": 200,
+    "responseSha256": "5df413f85cd795488ab8c2ea8c03a137ca9c26ef3e1c998fe09b601d86c64e68",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "40447241201556884",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "temporaryComparison": {
+    "version": 15,
+    "bundleId": "30470981679157112",
+    "assignedAt": "2026-11-28T00:17:04.823Z",
+    "purpose": "Same-phone comparison of rewarded-ad failure; exact v15 bundle confirmed in rendered IGDebug. Same generic failure reproduced without ad/reward; version16 restored afterward.",
+    "newUpload": false,
+    "productionPromotion": false
+  }
+}
