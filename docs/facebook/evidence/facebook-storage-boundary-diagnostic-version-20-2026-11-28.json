@@ -1,0 +1,211 @@
+{
+  "classification": "instrumented diagnostic only; not acceptance or a fix",
+  "version": 20,
+  "bundleId": "40287594420886203",
+  "sourceCommit": "185548c16aede8b57c1d957773631faf36b87e82",
+  "releaseReceipt": "facebook-testing-version-20-2026-11-28.json",
+  "evidence": "facebook-storage-boundary-diagnostic-version-20-2026-11-28.md",
+  "identity": {
+    "observedAt": "2026-11-28T03:32:07.701624+00:00",
+    "version": 20,
+    "path": "/instant-bundle/2143220529953108/40287594420886203/index.html",
+    "supportedApiCount": 48,
+    "bannerLoadAdvertised": true
+  },
+  "observer": {
+    "installedAt": "2026-11-28T03:33:13.768Z",
+    "methodCount": 3,
+    "exactBundle": true,
+    "methods": [
+      "getDataAsync",
+      "setDataAsync",
+      "flushDataAsync"
+    ],
+    "maximumRecords": 64,
+    "fields": [
+      "method",
+      "local sequence",
+      "phase",
+      "timestamp"
+    ],
+    "independentSdkCalls": false,
+    "timersAdded": false,
+    "payloadsErrorsOrPlayerIdentitiesCollected": false,
+    "preserved": [
+      "receiver",
+      "arguments",
+      "original returned promise",
+      "original thrown or rejected value"
+    ],
+    "interferenceLimit": "Attached promise observers add microtasks and affect rejection-observation bookkeeping; no claim of zero runtime interference.",
+    "localFixtureChecks": [
+      "receiver and arguments",
+      "promise identity",
+      "throw and rejection preservation",
+      "descriptor restoration"
+    ],
+    "fullApplicationRegressionRun": false
+  },
+  "timeline": {
+    "launchAt": "2026-11-28T03:31:13Z",
+    "letsPlayAt": "2026-11-28T03:33:31.174Z",
+    "restoredPuzzle": "GUITAR",
+    "emptyRows": 5,
+    "coins": 1180,
+    "settingsBannerObserved": true,
+    "termsSelectedAt": "2026-11-28T03:34:13.591848Z",
+    "openLinkSelectedAt": "2026-11-28T03:34:15.926890Z",
+    "legalPage": "Riddle Quest Terms on roobsworld.com",
+    "cookieChoicesChanged": false,
+    "androidBackAt": "2026-11-28T03:34:29Z",
+    "appQuitSelectedAt": "2026-11-28T03:35:58.037869Z",
+    "disabledControlsObservedAt": "2026-11-28T03:36:14Z"
+  },
+  "beforeQuit": {
+    "utc": "2026-11-28T03:35:34.725Z",
+    "exactBundle": true,
+    "visible": "visible",
+    "paused": true,
+    "busy": [],
+    "events": [
+      {
+        "sequence": 1,
+        "method": "setDataAsync",
+        "phase": "start",
+        "utc": "2026-11-28T03:34:15.786Z"
+      },
+      {
+        "sequence": 1,
+        "method": "setDataAsync",
+        "phase": "resolved",
+        "utc": "2026-11-28T03:34:15.963Z"
+      },
+      {
+        "sequence": 2,
+        "method": "flushDataAsync",
+        "phase": "start",
+        "utc": "2026-11-28T03:34:15.963Z"
+      },
+      {
+        "sequence": 2,
+        "method": "flushDataAsync",
+        "phase": "resolved",
+        "utc": "2026-11-28T03:34:16.782Z"
+      },
+      {
+        "sequence": 3,
+        "method": "flushDataAsync",
+        "phase": "start",
+        "utc": "2026-11-28T03:34:16.783Z"
+      },
+      {
+        "sequence": 3,
+        "method": "flushDataAsync",
+        "phase": "resolved",
+        "utc": "2026-11-28T03:34:16.815Z"
+      }
+    ],
+    "overflow": false,
+    "marks": []
+  },
+  "afterQuit": {
+    "utc": "2026-11-28T03:36:46.373Z",
+    "exactBundle": true,
+    "visible": "visible",
+    "paused": false,
+    "busy": [
+      "Quit game\u203a"
+    ],
+    "eventCount": 6,
+    "eventsIdenticalToBeforeQuit": true,
+    "overflow": false,
+    "marks": [
+      {
+        "phase": "guard",
+        "performanceMilliseconds": 282387.09999999404
+      },
+      {
+        "phase": "operation",
+        "performanceMilliseconds": 282399.90000000596
+      },
+      {
+        "phase": "preparation",
+        "performanceMilliseconds": 282400.09999999404
+      },
+      {
+        "phase": "projection",
+        "performanceMilliseconds": 282400.2000000179
+      }
+    ],
+    "selection": "Latest RQ20_STORAGE_READ result; earlier result retained in private log was not selected."
+  },
+  "ownership": {
+    "utc": "2026-11-28T03:37:46.162Z",
+    "installed": true,
+    "methods": [
+      {
+        "name": "getDataAsync",
+        "observerSource": true,
+        "writable": true
+      },
+      {
+        "name": "setDataAsync",
+        "observerSource": true,
+        "writable": true
+      },
+      {
+        "name": "flushDataAsync",
+        "observerSource": true,
+        "writable": true
+      }
+    ]
+  },
+  "ownershipLimit": "Method-source checks are not complete object-identity proof.",
+  "cleanup": {
+    "utc": "2026-11-28T03:38:32.717Z",
+    "absent": true,
+    "descriptorRestorationRule": "Restore original descriptor only while the installed wrapper still owns that property.",
+    "activeObserverRemaining": false
+  },
+  "operationLocks": {
+    "queryScope": "Exact operation-lock name only; held/pending modes; no lock-name collection.",
+    "requestedReceiptAt": "2026-11-28T03:39:10.877670+00:00",
+    "consoleRead": {
+      "utc": "2026-11-28T03:40:52.843Z",
+      "resultTextPresent": false,
+      "failureTextPresent": false,
+      "requestedTextPresent": true,
+      "observerAbsent": true
+    },
+    "outcome": "Neither a result nor a failure was observed; not evidence of an empty inventory."
+  },
+  "finalExit": {
+    "method": "Facebook host Quit",
+    "at": "2026-11-28T03:41:33Z",
+    "topResumedActivity": "FbMainTabActivity",
+    "deviceUiXmlRemoved": true,
+    "appQuitRecoveryEstablished": false
+  },
+  "scope": {
+    "guessesPreferencesConsentRewardsOrSocialSendsChanged": false,
+    "sourceOrArtifactChanged": false,
+    "testingAssignmentChanged": false,
+    "firebaseOrProviderConfigurationChanged": false,
+    "laterWatchdogCorrectionIncluded": false
+  },
+  "limits": [
+    "No new SDK storage call was recorded after Quit; the unresolved checkpoint/deletion queue or lock is not identified.",
+    "The native cause and app-Quit recovery remain unproven.",
+    "Earlier storage resolutions do not prove completion of later queued work."
+  ],
+  "privateReceiptNames": [
+    "riddle-quest-v20-storage-sdk-info.json",
+    "riddle-quest-v20-storage-install-result.json",
+    "riddle-quest-v20-storage-beforequit-result.json",
+    "riddle-quest-v20-storage-afterquit-result.json",
+    "riddle-quest-v20-storage-ownership-result.json",
+    "riddle-quest-v20-storage-cleanup-result.json",
+    "riddle-quest-v20-operation-locks-result.json",
+    "riddle-quest-v20-lock-console-read-result.json"
+  ]
+}

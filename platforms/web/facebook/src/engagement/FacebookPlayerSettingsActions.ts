@@ -142,6 +142,8 @@ export function createFacebookPlayerSettingsActions({
     let settled = false;
     const deadline = Date.now() + QUIT_PREPARATION_TIMEOUT_MS;
     let timeout: ReturnType<typeof setTimeout>;
+    let frame: number | undefined;
+    let cancelFrame: typeof cancelAnimationFrame | undefined;
     const expired = () => Date.now() >= deadline;
     const inactive = () => !current() || signal?.aborted || actionLifetime.signal.aborted;
     const record: FacebookQuitTraceRecorder = phase => {
@@ -152,6 +154,10 @@ export function createFacebookPlayerSettingsActions({
       if (settled) return;
       settled = true;
       clearTimeout(timeout);
+      if (frame !== undefined) {
+        try {cancelFrame?.(frame);} catch { /* Frame cleanup cannot prevent preparation settlement. */ }
+        frame = undefined;
+      }
       signal?.removeEventListener("abort", cancel);
       actionLifetime.signal.removeEventListener("abort", cancel);
       if (inactive()) reject(new Error("facebook-quit-preparation-cancelled"));
@@ -179,6 +185,20 @@ export function createFacebookPlayerSettingsActions({
     actionLifetime.signal.addEventListener("abort", cancel, {once: true});
     if (inactive()) {cancel(); return;}
     record("preparation");
+    try {
+      const requestFrame = globalThis.requestAnimationFrame;
+      const cancelAnimation = globalThis.cancelAnimationFrame;
+      if (typeof requestFrame === "function" && typeof cancelAnimation === "function") {
+        cancelFrame = cancelAnimation.bind(globalThis);
+        const checkFrame = () => {
+          frame = undefined;
+          if (settled) return;
+          if (expired()) {settle({saved: false, error: timeoutError()}); return;}
+          try {frame = requestFrame.call(globalThis, checkFrame);} catch { /* The existing timer remains the fallback. */ }
+        };
+        frame = requestFrame.call(globalThis, checkFrame);
+      }
+    } catch { /* Animation frames are optional; retain timer and event recovery. */ }
     // Keep the actual save alive; a retry must flush newer progress after it settles.
     if (quitPreparation) {
       record("previous-preparation");

@@ -18,6 +18,8 @@
 - [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
 - [Current version 20 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-20-2026-11-28.json)
 - [Version 20 Quit phase tracing and Android diagnosis](evidence/facebook-quit-phase-tracing-2026-11-28.md)
+- [Quit deadline recovery when timer delivery stalls](evidence/facebook-quit-frame-deadline-2026-11-28.md)
+- [Version 20 instrumented storage-boundary diagnosis](evidence/facebook-storage-boundary-diagnostic-version-20-2026-11-28.md)
 - [Historical version 19 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-19-2026-11-28.json)
 - [Version 19 Android startup, saved progress and normal Quit](evidence/facebook-android-version-19-2026-11-28.md)
 - [Version 19 Android timer delivery and Terms-return diagnosis](evidence/facebook-android-timer-delivery-version-19-2026-11-28.md)

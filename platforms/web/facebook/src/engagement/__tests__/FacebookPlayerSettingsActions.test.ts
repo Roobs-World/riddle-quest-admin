@@ -59,7 +59,200 @@ const quitTracePhases = () => performance.getEntriesByType("mark")
   .filter(entry => entry.name.startsWith("riddle-quest:facebook:quit:"))
   .map(entry => entry.name.slice("riddle-quest:facebook:quit:".length));
 
+const installFrameHost = () => {
+  const requestDescriptor = Object.getOwnPropertyDescriptor(globalThis, "requestAnimationFrame");
+  const cancelDescriptor = Object.getOwnPropertyDescriptor(globalThis, "cancelAnimationFrame");
+  const callbacks = new Map<number, FrameRequestCallback>();
+  let nextId = -1;
+  const request = jest.fn<typeof requestAnimationFrame>(callback => {
+    const id = ++nextId;
+    callbacks.set(id, callback);
+    return id;
+  });
+  const cancel = jest.fn<typeof cancelAnimationFrame>(id => {callbacks.delete(id);});
+  Object.defineProperty(globalThis, "requestAnimationFrame", {configurable: true, value: request});
+  Object.defineProperty(globalThis, "cancelAnimationFrame", {configurable: true, value: cancel});
+  return {
+    request, cancel, pending: () => callbacks.size,
+    frame: () => {
+      const next = callbacks.entries().next().value;
+      if (!next) return;
+      callbacks.delete(next[0]);
+      next[1](0);
+    },
+    restore: () => {
+      if (requestDescriptor) Object.defineProperty(globalThis, "requestAnimationFrame", requestDescriptor);
+      else Reflect.deleteProperty(globalThis, "requestAnimationFrame");
+      if (cancelDescriptor) Object.defineProperty(globalThis, "cancelAnimationFrame", cancelDescriptor);
+      else Reflect.deleteProperty(globalThis, "cancelAnimationFrame");
+    },
+  };
+};
+
 describe("Facebook player Settings actions", () => {
+  it("uses delivered frames to recover the Quit deadline while timers stall and keeps the original save ordered on retry", async () => {
+    jest.useFakeTimers({doNotFake: ["performance"]});
+    const frames = installFrameHost();
+    const harness = fixture();
+    const original = deferred<void>();
+    const originalStarted = deferred<void>();
+    const fresh = deferred<void>();
+    const freshStarted = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {
+      originalStarted.resolve();
+      return original.promise;
+    }).mockImplementationOnce(() => {
+      freshStarted.resolve();
+      return fresh.promise;
+    });
+    const actions = requireActions(harness.options);
+    let outcome = "pending";
+    const quitting = actions.run("quit").then(result => {outcome = result; return result;});
+    let retry: ReturnType<typeof actions.run> | undefined;
+    try {
+      await originalStarted.promise;
+      const expiredCallback = frames.request.mock.calls[0]?.[0];
+      jest.setSystemTime(Date.now() + 14_999);
+      frames.frame();
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      jest.setSystemTime(Date.now() + 1);
+      frames.frame();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(outcome).toBe("unsaved");
+      await expect(quitting).resolves.toBe("unsaved");
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      expect(frames.pending()).toBe(0);
+      expect(harness.quit).not.toHaveBeenCalled();
+      retry = actions.run("quit");
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      expect(frames.pending()).toBe(1);
+      const scheduled = frames.request.mock.calls.length;
+      expiredCallback?.(0);
+      expect(frames.request).toHaveBeenCalledTimes(scheduled);
+      expect(frames.pending()).toBe(1);
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      original.resolve();
+      await freshStarted.promise;
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(2);
+      expect(harness.quit).not.toHaveBeenCalled();
+      fresh.resolve();
+      await expect(retry).resolves.toBe("success");
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+      expect(frames.pending()).toBe(0);
+    } finally {
+      original.resolve();
+      fresh.resolve();
+      await quitting;
+      await retry;
+      frames.restore();
+      jest.useRealTimers();
+    }
+  });
+
+  it.each(["saved", "save failed", "panel closed", "retired"])("cancels frame handle zero after preparation is %s and ignores retained callbacks", async condition => {
+    const frames = installFrameHost();
+    const harness = fixture();
+    const save = deferred<void>();
+    const started = deferred<void>();
+    harness.flushBeforeQuit.mockImplementation(async () => {
+      started.resolve();
+      await save.promise;
+      if (condition === "save failed") throw new Error("save unavailable");
+    });
+    const actions = requireActions(harness.options);
+    const panel = new AbortController();
+    const quitting = actions.run("quit", panel.signal);
+    try {
+      await started.promise;
+      expect(frames.pending()).toBe(1);
+      const retained = frames.request.mock.calls[0]?.[0];
+      if (condition === "panel closed") panel.abort();
+      else if (condition === "retired") actions.retire();
+      else save.resolve();
+      await expect(quitting).resolves.toBe(condition === "saved" ? "success" : condition === "save failed" ? "unsaved" : "cancelled");
+      expect(frames.cancel).toHaveBeenCalledWith(0);
+      expect(frames.pending()).toBe(0);
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      const requested = frames.request.mock.calls.length;
+      retained?.(0);
+      expect(frames.request).toHaveBeenCalledTimes(requested);
+      expect(frames.pending()).toBe(0);
+      expect(harness.quit).toHaveBeenCalledTimes(condition === "saved" ? 1 : 0);
+    } finally {
+      save.resolve();
+      await quitting;
+      frames.restore();
+    }
+  });
+
+  it("does not start a frame deadline while the native dialog guard owns Quit admission", async () => {
+    jest.useFakeTimers({doNotFake: ["performance"]});
+    const frames = installFrameHost();
+    const harness = fixture();
+    const guard = deferred<void>();
+    const removeGuard = registerFacebookSdkDialogGuard(harness.sdk, {beforeOpen: () => guard.promise, afterClose: () => undefined});
+    const actions = requireActions(harness.options);
+    const panel = new AbortController();
+    const quitting = actions.run("quit", panel.signal);
+    try {
+      await jest.advanceTimersByTimeAsync(15_001);
+      frames.frame();
+      expect(frames.request).not.toHaveBeenCalled();
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      expect(harness.flushBeforeQuit).not.toHaveBeenCalled();
+      panel.abort();
+      guard.resolve();
+      await expect(quitting).resolves.toBe("cancelled");
+      expect(frames.request).not.toHaveBeenCalled();
+      expect(harness.quit).not.toHaveBeenCalled();
+    } finally {
+      guard.resolve();
+      await quitting;
+      removeGuard();
+      frames.restore();
+      jest.useRealTimers();
+    }
+  });
+
+  it.each(["request missing", "cancel missing", "request getter throws", "cancel getter throws", "request throws", "later request throws", "cancel throws"])("preserves timer recovery when the optional frame host has %s", async condition => {
+    jest.useFakeTimers({doNotFake: ["performance"]});
+    const frames = installFrameHost();
+    const fail = () => {throw new Error("animation frames unavailable");};
+    if (condition.endsWith("missing")) {
+      Object.defineProperty(globalThis, condition.startsWith("request") ? "requestAnimationFrame" : "cancelAnimationFrame", {configurable: true, value: undefined});
+    } else if (condition.includes("getter")) {
+      Object.defineProperty(globalThis, condition.startsWith("request") ? "requestAnimationFrame" : "cancelAnimationFrame", {configurable: true, get: fail});
+    } else if (condition === "request throws") frames.request.mockImplementation(fail);
+    else if (condition === "cancel throws") frames.cancel.mockImplementation(fail);
+    const harness = fixture();
+    const save = deferred<void>();
+    const started = deferred<void>();
+    harness.flushBeforeQuit.mockImplementation(() => {started.resolve(); return save.promise;});
+    const actions = requireActions(harness.options);
+    const quitting = actions.run("quit");
+    try {
+      await started.promise;
+      if (condition === "later request throws") {
+        frames.request.mockImplementation(fail);
+        expect(() => frames.frame()).not.toThrow();
+      }
+      await jest.advanceTimersByTimeAsync(15_000);
+      await expect(quitting).resolves.toBe("unsaved");
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+      expect(harness.quit).not.toHaveBeenCalled();
+      const requested = frames.request.mock.calls.length;
+      expect(() => frames.frame()).not.toThrow();
+      expect(frames.request).toHaveBeenCalledTimes(requested);
+      expect(frames.pending()).toBe(0);
+    } finally {
+      save.resolve();
+      await quitting;
+      frames.restore();
+      jest.useRealTimers();
+    }
+  });
+
   it("records a held native guard without claiming Quit preparation has started", async () => {
     const harness = fixture();
     const hidden = deferred<void>();
