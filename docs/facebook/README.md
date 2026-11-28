@@ -1,5 +1,7 @@
 # Facebook Instant Games
 
+- [Version 25 desktop input and Meta developer-overlay check](evidence/facebook-desktop-input-version-25-2026-11-28.md)
+
 - [Version 25 Chrome startup failures, full host reload and restored UI](evidence/facebook-chrome-startup-version-25-2026-11-28.md)
 
 - [Local startup deadline and Retry recovery](evidence/facebook-startup-recovery-2026-11-28.md)
