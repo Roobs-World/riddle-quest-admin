@@ -155,7 +155,7 @@ describe("FacebookPlatformBootstrap", () => {
     harness.sdk.getSupportedAPIs = () => ["context.chooseAsync", "matchPlayerAsync", "getInterstitialAdAsync"];
     harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD", chooseAsync: jest.fn(async () => undefined)};
     harness.sdk.matchPlayerAsync = jest.fn(async () => undefined);
-    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => {loaded(); await pending;}, showAsync: async () => undefined}));
+    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({getPlacementID: () => "result", loadAsync: async () => {loaded(); await pending;}, showAsync: async () => undefined}));
     /** Native capabilities come from the public bootstrap interface. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
@@ -182,7 +182,7 @@ describe("FacebookPlatformBootstrap", () => {
       harness.sdk.context = {getID: () => "thread-1", getType: () => "THREAD",
         chooseAsync: jest.fn(async () => {throw error;})};
       harness.sdk.matchPlayerAsync = jest.fn(async () => {throw error;});
-      harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
+      harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({getPlacementID: () => "result", loadAsync: async () => undefined, showAsync: async () => undefined}));
       /** Social adapter preserves the established provider error classification. */
       const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
       if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");
@@ -209,8 +209,8 @@ describe("FacebookPlatformBootstrap", () => {
       chooseAsync: jest.fn(async () => {if (operation === "choose") await pending;}),
     };
     harness.sdk.matchPlayerAsync = jest.fn(async () => {if (operation === "match") await pending;});
-    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
-    harness.sdk.getRewardedVideoAsync = jest.fn(async () => ({loadAsync: async () => undefined, showAsync: async () => undefined}));
+    harness.sdk.getInterstitialAdAsync = jest.fn(async () => ({getPlacementID: () => "result", loadAsync: async () => undefined, showAsync: async () => undefined}));
+    harness.sdk.getRewardedVideoAsync = jest.fn(async () => ({getPlacementID: () => "continue", loadAsync: async () => undefined, showAsync: async () => undefined}));
     /** Startup exposes the public platform social adapter. */
     const result = await new FacebookPlatformBootstrap(() => harness.sdk, "13_plus").initialize(() => undefined);
     if (result.status !== "success" || !result.value.capabilities.nativeSocial) throw new Error("social capability missing");

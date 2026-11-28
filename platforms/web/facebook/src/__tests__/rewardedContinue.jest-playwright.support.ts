@@ -225,7 +225,7 @@ export async function verifyRewardedContinue(page: Page, origin: string, subscri
 }
 
 /** Reaches the actual loss controls through onboarding and five incorrect guesses. */
-async function openRewardedLoss(page: Page, origin: string, firstVisit = false): Promise<void> {
+export async function openRewardedLoss(page: Page, origin: string, firstVisit = false): Promise<void> {
   await page.goto(`${origin}/?harness=race&rewarded=on`);
   await page.locator(".game-bottom-navigation").waitFor();
   await page.locator(".onboarding-card-welcome .play-primary").click();

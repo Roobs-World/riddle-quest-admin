@@ -2,6 +2,7 @@ import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
 import type {PlatformResult} from "../../../../../src/platform/contracts/capabilities";
 import {createFacebookBanner, type FacebookBanner} from "../ads/FacebookBanner";
 import {createFacebookAdConfiguration} from "../FacebookAdConfiguration";
+import {createFacebookLifecycle} from "../createFacebookLifecycle";
 import {runFacebookSdkDialog} from "../FacebookSdkDialogGate";
 import type {FacebookInstantSdk} from "../fbinstant";
 
@@ -17,6 +18,11 @@ const waitUntil = async (condition: () => boolean) => {
     await Promise.resolve();
   }
   throw new Error("Expected native surface transition did not complete");
+};
+
+const setVisibility = (visibilityState: "hidden" | "visible") => {
+  Object.assign(document, {visibilityState});
+  document.dispatchEvent(new Event("visibilitychange"));
 };
 
 const owners: FacebookBanner[] = [];
@@ -37,13 +43,16 @@ afterEach(async () => {
 const fixture = (allowsBanner: () => boolean = () => true) => {
   const events: string[] = [];
   let visible = false;
+  let pause: () => void = () => undefined;
+  let resume: () => void = () => undefined;
   const loadBannerAdAsync = jest.fn<NonNullable<FacebookInstantSdk["loadBannerAdAsync"]>>(async (placement, position) => {
     events.push(`load:${placement}:${position}`); visible = true;
   });
   const hideBannerAdAsync = jest.fn<NonNullable<FacebookInstantSdk["hideBannerAdAsync"]>>(async () => {events.push("hidden"); visible = false;});
   const sdk: FacebookInstantSdk = {
     initializeAsync: async () => undefined, startGameAsync: async () => undefined,
-    setLoadingProgress: () => undefined, getSupportedAPIs: () => ["loadBannerAdAsync", "hideBannerAdAsync"], onPause: () => undefined,
+    setLoadingProgress: () => undefined, getSupportedAPIs: () => ["loadBannerAdAsync", "hideBannerAdAsync"],
+    onPause: callback => {pause = callback;}, onResume: callback => {resume = callback;},
     player: {
       getID: () => "banner-player", getSignedPlayerInfoAsync: async () => {throw new Error("Unused identity exchange");},
       getDataAsync: async () => ({}), setDataAsync: async () => undefined, flushDataAsync: async () => undefined,
@@ -52,11 +61,12 @@ const fixture = (allowsBanner: () => boolean = () => true) => {
   };
   const refreshEligibility = jest.fn<() => Promise<boolean>>(async () => true);
   const owner = createFacebookBanner({sdk, enabled: true, placementId: "review-banner", isActive: () => true,
-    allowsBanner, refreshEligibility, now: () => Date.UTC(2026, 10, 27)});
+    allowsBanner, refreshEligibility, lifecycle: createFacebookLifecycle(sdk), now: () => Date.UTC(2026, 10, 27)});
   if (!owner) throw new Error("Expected supported Facebook banner controller");
   owners.push(owner);
   return {owner, sdk, events, loadBannerAdAsync, hideBannerAdAsync, refreshEligibility,
-    isVisible: () => visible, setVisible: (value: boolean) => {visible = value;}};
+    isVisible: () => visible, setVisible: (value: boolean) => {visible = value;},
+    pause: () => pause(), resume: () => resume()};
 };
 
 describe("Facebook expanded native banner lifecycle", () => {
@@ -146,6 +156,86 @@ describe("Facebook expanded native banner lifecycle", () => {
     hiding.resolve();
     expect(await dialog).toEqual({status: "success", value: "native-dialog-completed"});
     expect(harness.events.slice(0, 5)).toEqual(["loading", "loaded", "hiding", "hidden", "dialog"]);
+  });
+
+  it.each(["pause/resume", "hidden/visible"] as const)("finishes hiding a suspended load before dialog admission after %s", async transition => {
+    const harness = fixture();
+    const loading = deferred();
+    const hiding = deferred();
+    harness.loadBannerAdAsync.mockImplementationOnce(async () => {
+      harness.events.push("loading"); await loading.promise; harness.setVisible(true); harness.events.push("loaded");
+    });
+    harness.hideBannerAdAsync.mockImplementationOnce(async () => {
+      harness.events.push("hiding"); await hiding.promise; harness.setVisible(false); harness.events.push("hidden");
+    });
+    try {
+      harness.owner.setMounted(true);
+      harness.owner.setActivity("online");
+      await waitUntil(() => harness.events.includes("loading"));
+      if (transition === "pause/resume") harness.pause();
+      else setVisibility("hidden");
+      expect(harness.owner.getSnapshot()).toEqual({reserved: true, interactionBlocked: true, retryable: false});
+
+      loading.resolve();
+      await waitUntil(() => harness.events.includes("hiding"));
+      expect(harness.isVisible()).toBe(true);
+      if (transition === "pause/resume") harness.resume();
+      else setVisibility("visible");
+      const operation = jest.fn(async (): Promise<PlatformResult<string>> => {
+        harness.events.push(harness.isVisible() ? "dialog-over-banner" : "dialog");
+        return {status: "success", value: "opened"};
+      });
+      const dialog = runFacebookSdkDialog(harness.sdk, operation);
+      for (let turn = 0; turn < 10; turn++) await Promise.resolve();
+      expect(operation).not.toHaveBeenCalled();
+      expect(harness.loadBannerAdAsync).toHaveBeenCalledTimes(1);
+      expect(harness.owner.getSnapshot()).toEqual({reserved: true, interactionBlocked: true, retryable: false});
+
+      hiding.resolve();
+      expect(await dialog).toEqual({status: "success", value: "opened"});
+      expect(harness.events.slice(0, 5)).toEqual(["loading", "loaded", "hiding", "hidden", "dialog"]);
+    } finally {
+      loading.resolve(); hiding.resolve();
+    }
+  });
+
+  it.each(["pause/resume", "hidden/visible"] as const)("does not reload a retired visit when %s arrives during a late load", async transition => {
+    const harness = fixture();
+    const loading = deferred();
+    const hiding = deferred();
+    harness.loadBannerAdAsync.mockImplementationOnce(async () => {
+      harness.events.push("loading"); await loading.promise; harness.setVisible(true); harness.events.push("loaded");
+    });
+    harness.hideBannerAdAsync.mockImplementationOnce(async () => {
+      harness.events.push("hiding"); await hiding.promise; harness.setVisible(false); harness.events.push("hidden");
+    });
+    try {
+      harness.owner.setMounted(true);
+      harness.owner.setActivity("online");
+      await waitUntil(() => harness.events.includes("loading"));
+      if (transition === "pause/resume") harness.pause();
+      else setVisibility("hidden");
+      const retirement = harness.owner.retire();
+      if (transition === "pause/resume") harness.resume();
+      else setVisibility("visible");
+      loading.resolve();
+      await waitUntil(() => harness.events.includes("hiding"));
+      expect(harness.owner.getSnapshot()).toEqual({reserved: true, interactionBlocked: true, retryable: false});
+      hiding.resolve();
+      await retirement;
+
+      if (transition === "pause/resume") harness.resume();
+      else setVisibility("visible");
+      harness.owner.refresh();
+      for (let turn = 0; turn < 10; turn++) await Promise.resolve();
+      expect(harness.loadBannerAdAsync).toHaveBeenCalledTimes(1);
+      expect(harness.hideBannerAdAsync).toHaveBeenCalledTimes(1);
+      expect(harness.isVisible()).toBe(false);
+      expect(harness.owner.getSnapshot()).toEqual({reserved: false, interactionBlocked: false, retryable: false});
+      expect(harness.events).toEqual(["loading", "loaded", "hiding", "hidden"]);
+    } finally {
+      loading.resolve(); hiding.resolve();
+    }
   });
 
   it("lets account cleanup retry a rejected retirement without releasing the blocked surface early", async () => {

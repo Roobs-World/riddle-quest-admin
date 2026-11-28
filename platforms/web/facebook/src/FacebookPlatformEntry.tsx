@@ -34,6 +34,7 @@ import {gateFacebookSessionCapabilities, parseFacebookAgeCategory} from "./Faceb
 import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {createFacebookAdConfiguration} from "./FacebookAdConfiguration";
 import {createFacebookSubscriptionEntitlement} from "./ads/FacebookSubscriptionEntitlement";
+import {createFacebookAdPresentation} from "./ads/FacebookAdPresentation";
 import {createFacebookLevelInterstitial} from "./FacebookLevelInterstitial";
 import type {HostCompletionInput} from "../../../../src/progression/browser/hostCompletionEffects";
 import type {CompletionResult} from "../../../../src/platform/contracts/hostServices";
@@ -194,6 +195,7 @@ export function FacebookPlatformEntry() {
     let nativeSocial: FacebookNativeSocial | undefined;
     let banner: FacebookBanner | undefined;
     let subscriptionEntitlement: ReturnType<typeof createFacebookSubscriptionEntitlement> | undefined;
+    let adPresentation: ReturnType<typeof createFacebookAdPresentation> | undefined;
     let sessionScore: FacebookSessionScore | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
@@ -359,9 +361,11 @@ export function FacebookPlatformEntry() {
                 {component: "facebook_banner", operation}),
             });
             bannerRef.current = banner ?? null;
+            adPresentation = createFacebookAdPresentation(session.capabilities.lifecycle);
             ads = createFacebookAdsCapability({
               sdk,
               isActive: isAccountSessionActive,
+              capturePresentation: adPresentation.capture,
               placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: () => adConfiguration.allows("rewarded"),
@@ -662,6 +666,7 @@ export function FacebookPlatformEntry() {
     })();
     return () => {
       active = false;
+      adPresentation?.retire();
       subscriptionEntitlement?.retire();
       if (subscriptionEntitlementRef.current === subscriptionEntitlement) subscriptionEntitlementRef.current = null;
       removeBrowserStateGuard();

@@ -13,6 +13,7 @@ import {withProtectedFacebookFixtures} from "./protectedFixtures.jest-playwright
 import {installExpandedOptionalApis, verifyGenericProfileOverlay} from "./expandedOptionalApis.jest-playwright.support.ts";
 import {verifyCommerceOwnership} from "./commerceOwnership.jest-playwright.support.ts";
 import {verifyBannerActivation} from "./bannerActivation.jest-playwright.support.ts";
+import {verifyAdLifecycle} from "./adLifecycle.jest-playwright.support.ts";
 
 /** Documents global. */
 declare global {
@@ -590,6 +591,10 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await installRaceContextDialogs(successPage, nativeMatching, process.env.FACEBOOK_BROWSER_CONTEXT_EVENTS !== "0",
         process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1");
       await installTournamentPresentation(successPage);
+      if (process.env.FACEBOOK_BROWSER_AD_LIFECYCLE === "1") {
+        await verifyAdLifecycle(successPage, origin, subscription);
+        return;
+      }
       await successPage.goto(`${origin}/?harness=race&unsupported-create=on`);
       try {
         await successPage.waitForFunction(
@@ -937,6 +942,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       }
       await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
       await verifyBannerActivation(successPage, origin, subscription);
+      await verifyAdLifecycle(successPage, origin, subscription);
       await verifyCommerceOwnership(successPage, origin);
     } finally {
       await browser.close();

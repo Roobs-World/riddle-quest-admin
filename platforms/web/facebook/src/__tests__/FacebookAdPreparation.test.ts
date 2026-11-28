@@ -10,14 +10,14 @@ const deferred = <Value,>() => {
   const promise = new Promise<Value>((accept, fail) => {resolve = accept; reject = fail;});
   return {promise, resolve, reject};
 };
-const fixture = (format: "rewarded" | "interstitial") => {
+const fixture = (format: "rewarded" | "interstitial", capturePresentation?: () => () => boolean) => {
   const ad = {getPlacementID: () => "placement", loadAsync: jest.fn<() => Promise<void>>(async () => undefined),
     showAsync: jest.fn<() => Promise<void>>(async () => undefined)};
   const create = jest.fn<() => Promise<FacebookAdInstance>>(async () => ad);
   const sdk = {getSupportedAPIs: () => ["getRewardedVideoAsync", "getInterstitialAdAsync"],
     getRewardedVideoAsync: create, getInterstitialAdAsync: create} as unknown as FacebookInstantSdk;
   const ads = createFacebookAdsCapability({sdk, placementId: "placement", rewardedPlacementId: "placement",
-    rewardedEnabled: true, adFree: false, now: () => 1_000_000});
+    rewardedEnabled: true, adFree: false, now: () => 1_000_000, capturePresentation});
   if (!ads) throw new Error("Expected ad capability");
   return {ad, create, sdk, ads, show: () => format === "rewarded" ? ads.showRewarded("continue") : ads.showInterstitial("result")};
 };
@@ -25,6 +25,46 @@ const fixture = (format: "rewarded" | "interstitial") => {
 afterEach(() => {jest.useRealTimers();});
 
 describe.each(["rewarded", "interstitial"] as const)("Facebook %s preparation deadline", format => {
+  it.each(["create", "load"] as const)("retires interrupted %s preparation but permits a fresh foreground attempt", async phase => {
+    jest.useFakeTimers();
+    let visit = 0;
+    const harness = fixture(format, () => {
+      const owner = visit;
+      return () => owner === visit;
+    });
+    const creation = deferred<FacebookAdInstance>();
+    const loading = deferred<void>();
+    if (phase === "create") harness.create.mockReturnValueOnce(creation.promise);
+    else harness.ad.loadAsync.mockReturnValueOnce(loading.promise);
+    const pending = harness.show();
+    await jest.advanceTimersByTimeAsync(0);
+    visit++;
+    if (phase === "create") creation.resolve(harness.ad);
+    else loading.resolve();
+    await expect(pending).resolves.toMatchObject({status: "unavailable"});
+    expect(harness.ad.showAsync).not.toHaveBeenCalled();
+    expect(isFacebookSdkDialogOpen(harness.sdk)).toBe(false);
+    await expect(harness.show()).resolves.toMatchObject({status: "success"});
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps an admitted display exclusive and completes it after foreground admission is revoked", async () => {
+    jest.useFakeTimers();
+    let foreground = true;
+    const harness = fixture(format, () => () => foreground);
+    const display = deferred<void>();
+    harness.ad.showAsync.mockReturnValueOnce(display.promise);
+    const pending = harness.show();
+    await jest.advanceTimersByTimeAsync(0);
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+    foreground = false;
+    await expect(runFacebookSdkDialog(harness.sdk, async () => ({status: "success", value: undefined})))
+      .resolves.toMatchObject({status: "unavailable"});
+    display.resolve();
+    await expect(pending).resolves.toMatchObject({status: "success"});
+    expect(isFacebookSdkDialogOpen(harness.sdk)).toBe(false);
+  });
+
   it.each(["create", "load"] as const)("releases game UI after stalled %s without admitting a late ad or duplicate preparation", async phase => {
     jest.useFakeTimers();
     const harness = fixture(format);
