@@ -4,6 +4,8 @@
 
 ## Fresh connector observations
 
+The [28 November recheck at 05:06:05 UTC](facebook-prerequisite-recheck-2026-11-28.json) returned the same permission, review, requirement, history and subscription states below. It does not refresh the product-specific dashboard views. The API expansion prerequisites remain unresolved; fresh-save and ad verification on the existing single-account Testing candidate can still proceed.
+
 | Query | Returned state and limit |
 | --- | --- |
 | App | Riddle Quest `1748953042991569` is active; owner business `2198725140593714`. Active app status is not public game approval. |

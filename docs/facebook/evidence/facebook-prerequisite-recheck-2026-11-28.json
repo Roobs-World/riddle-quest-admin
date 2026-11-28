@@ -1,0 +1,109 @@
+{
+  "checkedAt": "2026-11-28 05:06:05 UTC",
+  "appId": "1748953042991569",
+  "appName": "Riddle Quest",
+  "source": "Meta Developer Tools read-only connector",
+  "queries": [
+    "privileges: Instant Games Zero Permission Access",
+    "privileges: pages_messaging",
+    "status",
+    "requirements",
+    "history",
+    "list_subscriptions"
+  ],
+  "zeroPermission": {
+    "permission": "Instant Games Zero Permission Access",
+    "standard_access": true,
+    "advanced_access": false,
+    "tier": "BASIC",
+    "in_current_submission": true,
+    "required_by_use_cases": [],
+    "optional_for_use_cases": [
+      "INSTANT_GAMES"
+    ],
+    "requirements": [],
+    "prerequisite_permissions": [],
+    "eligible_actions": []
+  },
+  "zeroPermissionAggregate": {
+    "name": "Instant Games Zero Permission Access",
+    "is_live": false,
+    "is_rejected": true,
+    "is_devops_approved": false,
+    "grant_status": "REJECTED",
+    "access_level": "none",
+    "in_current_submission": true
+  },
+  "messenger": {
+    "permission": "pages_messaging",
+    "standard_access": false,
+    "advanced_access": false,
+    "tier": "NONE",
+    "in_current_submission": false,
+    "required_by_use_cases": [],
+    "optional_for_use_cases": [],
+    "requirements": [],
+    "prerequisite_permissions": [],
+    "eligible_actions": [],
+    "api_testing": {
+      "status": "NOT_STARTED",
+      "api_calls_made": 0,
+      "api_calls_required": 1
+    },
+    "prerequisite": {
+      "reason": "use_case_required",
+      "message": "No configured main use case includes this permission, and none of the main use cases this app can add does either (it can add: none). Use the App Dashboard.",
+      "supporting_use_cases": []
+    }
+  },
+  "status": {
+    "app_id": "1748953042991569",
+    "app_name": "Riddle Quest",
+    "submission_status": "UNSUBMITTED",
+    "submission_id": "1748953122991561",
+    "is_approved": true,
+    "is_pending": false,
+    "is_canceled": false,
+    "submitted_time": null,
+    "review_completed_time": null,
+    "last_reviewed_submission_id": null,
+    "last_reviewed_is_approved": null,
+    "last_reviewed_completed_time": null
+  },
+  "requirements": {
+    "app_id": "1748953042991569",
+    "can_submit": false,
+    "cannot_submit_reason": "Cannot submit to App Review while a previous submission is in review.",
+    "app_settings_valid": {
+      "has_privacy_policy": true,
+      "business_verification_passes": true
+    },
+    "requested_privileges": [
+      {
+        "name": "Instant Games Zero Permission Access",
+        "steps": [
+          {
+            "step_name": "data_use_checkup",
+            "is_completed": true
+          }
+        ],
+        "prerequisite_privileges": [],
+        "error_message": null
+      }
+    ]
+  },
+  "history": {
+    "app_id": "1748953042991569",
+    "submissions": [],
+    "has_been_previously_reviewed": false
+  },
+  "webhooks": {
+    "subscriptions": [],
+    "total_count": 0
+  },
+  "limits": [
+    "Connector observations do not refresh product-specific IAP/Bot, payout, Cross-Play, Page/Group, or private tournament dashboard state.",
+    "Contradictory general review responses do not prove an approved or pending product review.",
+    "No configuration, permission, association, subscription, backend, upload or submission was changed."
+  ]
+}

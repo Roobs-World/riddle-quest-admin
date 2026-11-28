@@ -53,6 +53,7 @@
 - [Version 15 Vercel hosting validation and gameplay limits](evidence/facebook-vercel-host-validation-2026-11-27.md)
 - [Version 15 Vercel deployment and validation receipt](evidence/facebook-vercel-host-validation-2026-11-27.json)
 - [Current reviewer handoff for Riddle Quest Testing version 22](facebook-review-draft-2026-11-27.md)
+- [28 November permission, review and webhook prerequisite recheck](evidence/facebook-prerequisite-recheck-2026-11-28.json)
 - [Earlier version 14 upload and exact archive acceptance](evidence/facebook-testing-version-14-2026-11-27.json)
 - [Historical version 14 Settings, legal-link cancellation and quit/relaunch](evidence/facebook-native-settings-version-14-2026-11-27.md)
 - [Earlier version 13 upload and exact archive acceptance](evidence/facebook-testing-version-13-2026-11-27.json)
