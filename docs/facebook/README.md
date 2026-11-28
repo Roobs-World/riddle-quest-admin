@@ -1,5 +1,7 @@
 # Facebook Instant Games
 
+- [Version 25 desktop visibility observation and test limitation](evidence/facebook-desktop-visibility-version-25-2026-11-28.md)
+
 - [Version 25 desktop input and Meta developer-overlay check](evidence/facebook-desktop-input-version-25-2026-11-28.md)
 
 - [Version 25 Chrome startup failures, full host reload and restored UI](evidence/facebook-chrome-startup-version-25-2026-11-28.md)
