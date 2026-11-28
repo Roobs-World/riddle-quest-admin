@@ -1,0 +1,524 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "scope": "Single-account Android source-stage diagnostic around Sound preferences, Terms/Back and one Quit; temporary instrumentation, not acceptance.",
+  "artifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "receipt": "facebook-testing-version-22-2026-11-28.json",
+    "unchanged": true
+  },
+  "identity": {
+    "launchAt": "2026-11-28T06:22:55.734436+00:00",
+    "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+    "loadedScriptMatchesLocalExactSha256": true,
+    "asset": "assets/facebook-CYtZ0fO9.js",
+    "assetBytes": 396415,
+    "assetSha256": "e8dc4ce8f946e358a35bfc5931c7f90e4283de00d4f2c8480b80d460cf5acb31",
+    "harnessSha256": "517a603bb3b1898c059e88b5b374b28d17ed5f29b7552c38582ce00f53146142",
+    "inspectedAt": "2026-11-28T06:30:22.976Z",
+    "sdkVersionReadInThisPhase": false,
+    "supportedApiInventoryReadInThisPhase": false
+  },
+  "method": {
+    "installedAt": "2026-11-28T06:30:36.319Z",
+    "scope": "All instances executing the five reviewed source locations in the exact game script; events are not attributed to a particular gate or caller.",
+    "identityFiltered": false,
+    "verifiedLocations": [
+      {
+        "stage": "gate-admitted",
+        "lineNumber": 9,
+        "columnNumber": 87403,
+        "type": "statement",
+        "possibleLocationCount": 3
+      },
+      {
+        "stage": "after-previous",
+        "lineNumber": 9,
+        "columnNumber": 87558,
+        "type": "statement",
+        "possibleLocationCount": 1
+      },
+      {
+        "stage": "shared-request",
+        "lineNumber": 9,
+        "columnNumber": 86656,
+        "type": "call",
+        "possibleLocationCount": 1
+      },
+      {
+        "stage": "guarded-entry",
+        "lineNumber": 9,
+        "columnNumber": 87486,
+        "type": "statement",
+        "possibleLocationCount": 2
+      },
+      {
+        "stage": "gate-release",
+        "lineNumber": 9,
+        "columnNumber": 87646,
+        "type": "call",
+        "possibleLocationCount": 1
+      }
+    ],
+    "coordinates": "zero-based CDP line/UTF-16 column",
+    "locationVerification": "Reviewed source windows, getPossibleBreakpoints selection and exact setBreakpoint actualLocation match; loaded source SHA256 verified.",
+    "condition": "Always-false condition emits only fixed prefix, fixed stage and device Date.now(); no arguments, identities, SDK payloads or state serialization.",
+    "maxEvents": 96,
+    "stopOnOverflow": true,
+    "eventOverflow": 0,
+    "unexpectedPauses": [],
+    "pauseOverflow": 0,
+    "harnessDetectedIssues": [],
+    "observerInterferenceExcluded": false,
+    "sdkOrStorageOrLockMethodsInvokedByObserver": false,
+    "sdkPatched": false,
+    "injectedApplicationGlobalsOrTimers": false,
+    "queueReads": "Separate bounded V2 current-owner snapshots inspect existing queue promise states and safe flags. Sequential, not atomic; tail/owner/current-React comparisons all passed."
+  },
+  "clock": {
+    "controller": "observedAt and snapshot readStartAt/readEndAt are controller clock; no cross-clock subtraction is used.",
+    "device": "deviceEpochMs is Date.now() in each source logpoint; the 10/17/13ms intervals compare device timestamps only.",
+    "limitations": "These mark observed source callsites rather than native lock-grant timestamps."
+  },
+  "gameplay": {
+    "riddle": "PANDA",
+    "emptyRows": 5,
+    "coins": 1310,
+    "guessesOrRewardsPerformed": false
+  },
+  "preferenceBaseline": {
+    "initialSound": "On",
+    "initialConfirmedAt": "2026-11-28T06:31:26.616263+00:00",
+    "offTappedAt": "2026-11-28T06:31:36.763762+00:00",
+    "offConfirmedAt": "2026-11-28T06:31:39.002087+00:00",
+    "onTappedAt": "2026-11-28T06:31:51.470436+00:00",
+    "onRestoredConfirmedAt": "2026-11-28T06:31:53.705715+00:00",
+    "finalSound": "On",
+    "reducedMotion": "Off",
+    "notifications": "Off",
+    "analyticsConsentChanged": false,
+    "consentChanged": false,
+    "earlyGuardedLookupFailedWithoutInput": true,
+    "excludedMisleadingArtifact": "sound-off.png was taken after an unsuccessful label lookup and still showed Sound On; it is not evidence of the later confirmed Off state."
+  },
+  "baselineSequences": [
+    {
+      "context": "During confirmed Sound On to Off change",
+      "sequenceNumbers": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "firstObservedAt": "2026-11-28T06:31:36.806Z",
+      "releaseObservedAt": "2026-11-28T06:31:37.736Z",
+      "requestCallsiteToGuardedEntryDeviceMs": 10,
+      "identityAttributionEstablished": false
+    },
+    {
+      "context": "During confirmed Sound Off to On restoration",
+      "sequenceNumbers": [
+        6,
+        7,
+        8,
+        9,
+        10
+      ],
+      "firstObservedAt": "2026-11-28T06:31:51.487Z",
+      "releaseObservedAt": "2026-11-28T06:31:52.365Z",
+      "requestCallsiteToGuardedEntryDeviceMs": 17,
+      "identityAttributionEstablished": false
+    },
+    {
+      "context": "During OPEN LINK navigation",
+      "sequenceNumbers": [
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "firstObservedAt": "2026-11-28T06:32:25.095Z",
+      "releaseObservedAt": "2026-11-28T06:32:25.987Z",
+      "requestCallsiteToGuardedEntryDeviceMs": 13,
+      "identityAttributionEstablished": false
+    }
+  ],
+  "stageEvents": [
+    {
+      "sequence": 1,
+      "stage": "gate-admitted",
+      "deviceEpochMs": 1795847496465,
+      "observedAt": "2026-11-28T06:31:36.806Z"
+    },
+    {
+      "sequence": 2,
+      "stage": "after-previous",
+      "deviceEpochMs": 1795847496465,
+      "observedAt": "2026-11-28T06:31:36.806Z"
+    },
+    {
+      "sequence": 3,
+      "stage": "shared-request",
+      "deviceEpochMs": 1795847496466,
+      "observedAt": "2026-11-28T06:31:36.806Z"
+    },
+    {
+      "sequence": 4,
+      "stage": "guarded-entry",
+      "deviceEpochMs": 1795847496476,
+      "observedAt": "2026-11-28T06:31:36.812Z"
+    },
+    {
+      "sequence": 5,
+      "stage": "gate-release",
+      "deviceEpochMs": 1795847497397,
+      "observedAt": "2026-11-28T06:31:37.736Z"
+    },
+    {
+      "sequence": 6,
+      "stage": "gate-admitted",
+      "deviceEpochMs": 1795847511153,
+      "observedAt": "2026-11-28T06:31:51.487Z"
+    },
+    {
+      "sequence": 7,
+      "stage": "after-previous",
+      "deviceEpochMs": 1795847511154,
+      "observedAt": "2026-11-28T06:31:51.487Z"
+    },
+    {
+      "sequence": 8,
+      "stage": "shared-request",
+      "deviceEpochMs": 1795847511154,
+      "observedAt": "2026-11-28T06:31:51.487Z"
+    },
+    {
+      "sequence": 9,
+      "stage": "guarded-entry",
+      "deviceEpochMs": 1795847511171,
+      "observedAt": "2026-11-28T06:31:51.505Z"
+    },
+    {
+      "sequence": 10,
+      "stage": "gate-release",
+      "deviceEpochMs": 1795847512032,
+      "observedAt": "2026-11-28T06:31:52.365Z"
+    },
+    {
+      "sequence": 11,
+      "stage": "gate-admitted",
+      "deviceEpochMs": 1795847544755,
+      "observedAt": "2026-11-28T06:32:25.095Z"
+    },
+    {
+      "sequence": 12,
+      "stage": "after-previous",
+      "deviceEpochMs": 1795847544755,
+      "observedAt": "2026-11-28T06:32:25.095Z"
+    },
+    {
+      "sequence": 13,
+      "stage": "shared-request",
+      "deviceEpochMs": 1795847544756,
+      "observedAt": "2026-11-28T06:32:25.096Z"
+    },
+    {
+      "sequence": 14,
+      "stage": "guarded-entry",
+      "deviceEpochMs": 1795847544769,
+      "observedAt": "2026-11-28T06:32:25.103Z"
+    },
+    {
+      "sequence": 15,
+      "stage": "gate-release",
+      "deviceEpochMs": 1795847545633,
+      "observedAt": "2026-11-28T06:32:25.987Z"
+    },
+    {
+      "sequence": 16,
+      "stage": "gate-admitted",
+      "deviceEpochMs": 1795847566540,
+      "observedAt": "2026-11-28T06:32:46.873Z"
+    },
+    {
+      "sequence": 17,
+      "stage": "after-previous",
+      "deviceEpochMs": 1795847566540,
+      "observedAt": "2026-11-28T06:32:46.873Z"
+    },
+    {
+      "sequence": 18,
+      "stage": "shared-request",
+      "deviceEpochMs": 1795847566541,
+      "observedAt": "2026-11-28T06:32:46.873Z"
+    }
+  ],
+  "journey": {
+    "termsRequestedAt": "2026-11-28T06:32:06.409797+00:00",
+    "earlyTermsScreenshotAt": "2026-11-28T06:32:06.428633+00:00",
+    "earlyTermsScreenshotWasPendingSpinner": true,
+    "nativeConfirmationObservedAt": "2026-11-28T06:32:15.904058+00:00",
+    "openLinkTappedAt": "2026-11-28T06:32:24.929487+00:00",
+    "termsPageObservedAt": "2026-11-28T06:32:26.178803+00:00",
+    "androidBackAt": "2026-11-28T06:32:34.326974+00:00",
+    "settingsReturnObservedAt": "2026-11-28T06:32:35.878211+00:00",
+    "normalQuitTappedAt": "2026-11-28T06:32:46.842249+00:00",
+    "normalQuitAttemptCount": 1,
+    "warningObservedAt": "2026-11-28T06:33:07.309784+00:00",
+    "warningAndEnabledControlsConfirmedAt": "2026-11-28T06:33:19.314230+00:00",
+    "warningText": "Progress isn't saved yet. Keep the game open.",
+    "normalAppQuitSucceeded": false
+  },
+  "queueSnapshots": [
+    {
+      "schemaVersion": 2,
+      "startAt": "2026-11-28T06:31:53.752Z",
+      "endAt": "2026-11-28T06:31:53.827Z",
+      "at": "2026-11-28T06:31:53.827Z",
+      "label": "sound-restored",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "flags": {
+        "visited": 251,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "startAt": "2026-11-28T06:32:35.748Z",
+      "endAt": "2026-11-28T06:32:35.850Z",
+      "at": "2026-11-28T06:32:35.850Z",
+      "label": "after-back",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "flags": {
+        "visited": 252,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": true
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "startAt": "2026-11-28T06:32:46.894Z",
+      "endAt": "2026-11-28T06:32:47.042Z",
+      "at": "2026-11-28T06:32:47.042Z",
+      "label": "after-quit-initial",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "flags": {
+        "visited": 251,
+        "projectionCount": 1,
+        "outstanding": 2,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "pending",
+        "gateTail": "pending",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "schemaVersion": 2,
+      "startAt": "2026-11-28T06:33:19.364Z",
+      "endAt": "2026-11-28T06:33:19.472Z",
+      "at": "2026-11-28T06:33:19.472Z",
+      "label": "warning-visible",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "flags": {
+        "visited": 252,
+        "projectionCount": 1,
+        "outstanding": 3,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "pending",
+        "gateTail": "pending",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    }
+  ],
+  "finalObservedBoundary": {
+    "sequenceNumbers": [
+      16,
+      17,
+      18
+    ],
+    "stages": [
+      "gate-admitted",
+      "after-previous",
+      "shared-request"
+    ],
+    "lastStageObservedAt": "2026-11-28T06:32:46.873Z",
+    "finalSnapshotReadStartAt": "2026-11-28T06:33:33.737Z",
+    "finalSnapshotReadEndAt": "2026-11-28T06:33:33.749Z",
+    "controllerObservationWindowSeconds": 46.876,
+    "guardedEntryObservedAfterLastRequest": false,
+    "gateReleaseObservedAfterLastRequest": false,
+    "interpretation": "The source trace narrows the observed wait to the shared-request callsite through guarded-callback-entry boundary. It does not prove native invocation return, a held lock, lock grant, exact gate/caller identity or root cause."
+  },
+  "interpretation": [
+    "Three complete five-stage sequences establish that the fixed-stage logging worked before returning from Terms; they are temporally associated with UI actions, not identity-bound to a specific gate/caller.",
+    "The source after-previous marker means the recorded run reached dispatch beyond its previous-tail wait; shared-request marks the reviewed callsite, not a native grant.",
+    "After Back all three current-instance queue tails were fulfilled with outstanding zero; after Quit projection/gate tails were pending while storage remained fulfilled, outstanding 2 then 3, both dirty flags false.",
+    "Source stage events cover every instance executing those locations; their relationship to the sampled current queue instance is not identity-proven.",
+    "flush itself does not acquire the operation gate; a pending gate belongs to an accepted update or another gated operation ahead of the flush, with exact caller unproven.",
+    "Paused true after Back and false after Quit was observed but not diagnosed."
+  ],
+  "cleanup": {
+    "instrumentationCompletedAt": "2026-11-28T06:33:33.788Z",
+    "breakpointsRequested": 5,
+    "breakpointsRemoved": 5,
+    "debuggerDisabled": true,
+    "runtimeDisabled": true,
+    "socketClosed": true,
+    "hostQuitAt": "2026-11-28T06:33:48.663119+00:00",
+    "outsideGameObservedAt": "2026-11-28T06:33:59.725126+00:00",
+    "device": {
+      "at": "2026-11-28T06:34:00.362148+00:00",
+      "finalActivity": "FbMainTabActivity",
+      "temporaryUiXmlRemoved": true,
+      "ownedAdbForwardRemoved": true,
+      "liveCdpSessions": 0,
+      "breakpointsRemoved": 5,
+      "hostQuitUsed": true,
+      "normalAppQuitSucceeded": false
+    },
+    "hostExitCountsAsRecovery": false
+  },
+  "acceptance": {
+    "successfulPostTermsSaveOrNormalQuitEstablished": false,
+    "rootCauseEstablished": false,
+    "heldLockEstablished": false,
+    "nativeGrantEstablished": false,
+    "exactBlockedCallerOrGateEstablished": false,
+    "nativeStorageCallTraceCaptured": false,
+    "fixEstablished": false,
+    "coverageCountsChanged": false
+  },
+  "limits": [
+    "Always-false conditional breakpoints and CDP reads can affect scheduling even with zero detected pauses, overflow or errors.",
+    "Conditions suppress console logging failures. Working baseline sequences support the observer, but later absent markers are not categorical proof of callback nonexecution.",
+    "No identity token/caller payload was logged, so stage sequences cannot be conclusively attributed to a particular gate or current projection.",
+    "Sequential queue reads and source event observations are not an atomic snapshot.",
+    "No SDK mutation, direct SDK/storage/lock probe, raw account/epoch/promise result or payload export was used.",
+    "No successful post-Terms durability, normal app exit or subsequent relaunch acceptance was established; host exit only cleaned up.",
+    "Raw screenshots, device coordinates, target URLs and account/frame/context identifiers remain private."
+  ],
+  "sourceChanged": false,
+  "newBuildOrUpload": false,
+  "automatedTestsRun": false,
+  "socialSendsPerformed": false,
+  "purchasesPerformed": false,
+  "destructiveCleanupPerformed": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-gate-stage-trace.mjs": "517a603bb3b1898c059e88b5b374b28d17ed5f29b7552c38582ce00f53146142",
+    "riddle-quest-gate-stage-queue-snapshot.mjs": "1925d26d8d113aa692cf1b99a5f1c48f88342a64acfb8605b817c57fb35e2bb0",
+    "riddle-quest-v22-gate-stage-observations.json": "e1c09ad81439dc1d7822757500052183726733ec3a9c47edc8581c3597741d77",
+    "riddle-quest-v22-gate-stage-inspection.json": "6d03bba0cdbd10f4408df116f6c3ca3ef5007cbdc1b346c01ba021423e27cd10",
+    "riddle-quest-v22-gate-stage-final.json": "492226e86abb0ff889635586bdb240c779d4b62e274654ec7f9702bac76e0ef3",
+    "riddle-quest-v22-gate-stage-snapshot-final-observation.json": "92ed8241d06eab0f9c1e80b6c0b2c8ba14b8d23229d71e5ede42fbc5ee6a4d84",
+    "riddle-quest-v22-gate-stage-sound-off-confirmed.json": "c64cf5579f2094e3559ca6e3d885e6eae4257a1ecb57ee46154f1b4509cf9e01",
+    "riddle-quest-v22-gate-stage-sound-on-restored.json": "9ec8e8a7e1a76c778709965f1c665607d848234b664e43277b3fe644f08c7042",
+    "riddle-quest-v22-gate-stage-sound-restored-queues.json": "0e06f1e54d1d491a63e7b659c9ab0a7609d9c550a52f37fbeb7c0709d25a3a76",
+    "riddle-quest-v22-gate-stage-after-back-queues.json": "4eab53e4a0291f5ea1247eed5f2b40e5237d24b7b9384666d2706cf759e1c4e4",
+    "riddle-quest-v22-gate-stage-after-quit-initial-queues.json": "a7ca1a5c94e703d0433367c0c8103d549097473cc361d221a50334c4cb42f709",
+    "riddle-quest-v22-gate-stage-warning-visible-queues.json": "76783b597581b1a89524fed010ac71637770edb43dd487432db0570964b10e45",
+    "riddle-quest-v22-gate-stage-open-link.json": "ab2ceb620da20e84ee5e5d6baa9df8b4eba4ce07cd3307e57d90ac1c1a1b03a5",
+    "riddle-quest-v22-gate-stage-quit.json": "7489218693d8ad2f92a546362b57a9f15c02cb7d0aa5a8be10b9512ef80f89cf",
+    "riddle-quest-v22-gate-stage-warning-controls.json": "e3700c59282b528da22f3ae3b14c36e26df9645d8062e7f66280572dd23aa9b4",
+    "riddle-quest-v22-gate-stage-quit-followup.png": "94c031c52602d12d5d2f39fc0e8f094ecf802adb438df4d50f8480d10619d2fc"
+  },
+  "rawScreenshotsCommitted": false
+}
