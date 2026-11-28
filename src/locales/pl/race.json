@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Rozpocznij turniej w tej grupie",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Wybierz grupę i rozpocznij",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Rozpoczęcie publikuje tabelę wyników i Twój wynik wyścigu na czacie grupowym.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Turniej mógł już się rozpocząć. Sprawdź czat grupowy przed ponowną próbą.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Ten turniej grupowy używa innych ustawień wyścigu. Nie można tu zaktualizować Twojego wyniku.",
     "TITLE": "Wyścig do 10",
     "CLOSE": "Zamknij wyścig",
     "QUIT_TITLE": "Opuścić ten wyścig?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Zaproszenie zapisane. Pojawi się w skrzynce odbiorczej gracza w trybie wieloosobowym.",
     "LIVE_HISTORY_TITLE": "Ostatnie mecze",
     "LIVE_HISTORY_EMPTY": "Nie ma jeszcze ukończonych meczów.",
-    "FACEBOOK_SOCIAL": "Graj na Facebooku",
-    "FACEBOOK_FRIEND_COUNT": "Znajomi, którzy grają: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Gracze w tej grupie: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Wybierz znajomych",
     "FACEBOOK_LEAVE_CONTEXT": "Wróć do gry solo",
-    "FACEBOOK_TOURNAMENTS": "Turnieje na Facebooku",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Turniej {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Dołącz do turnieju",
-    "FACEBOOK_REFRESH": "Odśwież",
-    "FACEBOOK_JOIN_ROOM": "Dołącz do gry w pokoju",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Udostępnij wynik wyścigu"
+    "FACEBOOK_JOIN_ROOM": "Dołącz do gry w pokoju"
   }
 }

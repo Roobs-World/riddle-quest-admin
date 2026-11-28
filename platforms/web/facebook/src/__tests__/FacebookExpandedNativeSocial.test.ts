@@ -4,34 +4,23 @@ import {createFacebookNativeSocial, type FacebookNativeSocial} from "../social/F
 
 const deferred = <Value,>() => {
   let resolvePromise: ((value: Value) => void) | undefined;
-  let rejectPromise: ((error: unknown) => void) | undefined;
-  const promise = new Promise<Value>((resolve, reject) => {resolvePromise = resolve; rejectPromise = reject;});
+  const promise = new Promise<Value>(resolve => {resolvePromise = resolve;});
   return {promise, resolve(value: Value) {
     if (!resolvePromise) throw new Error("Deferred promise is not initialized");
     resolvePromise(value);
-  }, reject(error: unknown) {
-    if (!rejectPromise) throw new Error("Deferred promise is not initialized");
-    rejectPromise(error);
   }};
 };
 
-const NOW = Date.UTC(2026, 10, 27);
-const supported = ["player.getConnectedPlayersAsync", "context.getPlayersAsync", "context.createAsync",
-  "context.switchAsync", "tournament.getTournamentsAsync", "tournament.joinAsync", "room.getCurrentMatchAsync"];
+const supported = ["context.switchAsync", "room.getCurrentMatchAsync"];
 const owners: FacebookNativeSocial[] = [];
-afterEach(() => {owners.splice(0).forEach(owner => owner.retire());});
+afterEach(() => {owners.splice(0).forEach(owner => owner.retire()); jest.useRealTimers();});
 
-const fixture = (apis = supported, configure: (sdk: FacebookInstantSdk) => void = () => undefined) => {
-  let contextId: string | null = "original-context";
+const fixture = (apis = supported) => {
+  let contextId: string | null = "original-context", active = true;
+  let contextListener: (() => void) | undefined;
   const reconciled: Array<string | null> = [];
   const room = {getID: () => "room-match", getContextID: () => "room-context"};
-  const tournament = {getID: () => "tournament-one", getEndTime: () => NOW / 1000 + 600, getTitle: () => "Daily friends",
-    getContextID: () => "tournament-context", getPayload: () => ({})};
-  const getConnectedPlayersAsync = jest.fn<NonNullable<FacebookInstantSdk["player"]["getConnectedPlayersAsync"]>>(
-    async () => [{getID: () => "friend-one"}, {getID: () => "friend-one"}, {getID: () => "friend-two"}],
-  );
   const getCurrentMatchAsync = jest.fn<NonNullable<NonNullable<FacebookInstantSdk["room"]>["getCurrentMatchAsync"]>>(async () => room);
-  const createAsync = jest.fn<NonNullable<NonNullable<FacebookInstantSdk["context"]>["createAsync"]>>(async () => {contextId = "created-context";});
   const switchAsync = jest.fn<NonNullable<NonNullable<FacebookInstantSdk["context"]>["switchAsync"]>>(async id => {contextId = id === "SOLO" ? null : id;});
   const sdk: FacebookInstantSdk = {
     initializeAsync: async () => undefined, startGameAsync: async () => undefined,
@@ -39,91 +28,51 @@ const fixture = (apis = supported, configure: (sdk: FacebookInstantSdk) => void 
     player: {
       getID: () => "native-social-player", getSignedPlayerInfoAsync: async () => {throw new Error("Unused identity exchange");},
       getDataAsync: async () => ({}), setDataAsync: async () => undefined, flushDataAsync: async () => undefined,
-      getConnectedPlayersAsync,
     },
-    context: {
-      getID: () => contextId, getType: () => contextId ? "GROUP" : "SOLO", chooseAsync: async () => undefined,
-      getPlayersAsync: async () => [{getID: () => "context-one"}], createAsync, switchAsync,
-    },
-    tournament: {
-      getTournamentsAsync: async () => [tournament], joinAsync: async id => {contextId = id;},
-      createAsync: async () => tournament, shareAsync: async () => undefined, postScoreAsync: async () => undefined,
-    },
+    context: {getID: () => contextId, getType: () => contextId ? "GROUP" : "SOLO", chooseAsync: async () => undefined, switchAsync},
     room: {getCurrentMatchAsync},
   };
-  configure(sdk);
-  const owner = createFacebookNativeSocial({sdk, isActive: () => true,
-    synchronizeContext: async () => {reconciled.push(contextId);}, now: () => NOW});
+  const owner = createFacebookNativeSocial({sdk, isActive: () => active,
+    synchronizeContext: async () => {reconciled.push(contextId);},
+    onContextChange: listener => {contextListener = listener; return () => {contextListener = undefined;};}});
   if (!owner) throw new Error("Expected supported native social controller");
   owners.push(owner);
-  return {owner, sdk, room, createAsync, switchAsync, getConnectedPlayersAsync, getCurrentMatchAsync, reconciled,
-    getContext: () => contextId, setContext: (value: string | null) => {contextId = value;}};
+  return {owner, sdk, room, switchAsync, getCurrentMatchAsync, reconciled,
+    getContext: () => contextId, setContext: (value: string | null) => {contextId = value;},
+    deactivate: () => {active = false;}, changeContext: (value: string | null) => {contextId = value; contextListener?.();}};
 };
 
-describe("Facebook expanded native social actions", () => {
-  it("retires only the unsupported no-argument picker for this account and returns unavailable", async () => {
-    const harness = fixture();
-    harness.createAsync.mockImplementation(async suggestedPlayer => {
-      if (suggestedPlayer === undefined) throw {code: "CLIENT_UNSUPPORTED_OPERATION",
-        message: "Client does not support no player IDS or multiple player IDs yet"};
-      harness.setContext("single-friend-context");
-    });
+describe("Facebook native room and solo actions", () => {
+  it("leaves the current context through the native API and reconciles solo membership", async () => {
+    const harness = fixture(["context.switchAsync"]);
     await harness.owner.refresh();
-    expect(harness.owner.getSnapshot().canCreateContext).toBe(true);
-    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
-    expect(harness.reconciled).toEqual(["original-context"]);
-    await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toMatchObject({canCreateContext: false, canLeaveContext: true,
-      canJoinRoom: true, canJoinTournament: true, error: false, pending: null});
-    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
-    expect(harness.createAsync.mock.calls).toEqual([[]]);
+    expect(harness.owner.getSnapshot()).toMatchObject({canLeaveContext: true, canJoinRoom: false});
+    expect(await harness.owner.leaveContext()).toEqual({status: "success", value: undefined});
+    expect(harness.switchAsync.mock.calls).toEqual([["SOLO"]]);
+    expect(harness.getContext()).toBeNull();
+    expect(harness.reconciled).toEqual([null]);
+    expect(await harness.owner.leaveContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+  });
 
-    if (!harness.sdk.context?.createAsync) throw new Error("Expected native create API");
-    await harness.sdk.context.createAsync("friend-one");
-    expect(harness.getContext()).toBe("single-friend-context");
-    expect(harness.createAsync.mock.calls).toEqual([[], ["friend-one"]]);
+  it("keeps transient context-switch failures retryable", async () => {
+    const harness = fixture(["context.switchAsync"]);
+    harness.switchAsync.mockRejectedValueOnce(new Error("Network unavailable"));
+    expect(await harness.owner.leaveContext()).toEqual({status: "retryable-failure", message: "facebook-native-social-failed"});
     expect(await harness.owner.leaveContext()).toEqual({status: "success", value: undefined});
     expect(harness.getContext()).toBeNull();
+    expect(harness.reconciled).toEqual(["original-context", null]);
   });
 
-  it("keeps a transient native picker failure retryable", async () => {
-    const harness = fixture(["context.createAsync"]);
-    harness.createAsync.mockRejectedValueOnce(new Error("Network unavailable"));
-    expect(await harness.owner.createContext()).toEqual({status: "retryable-failure", message: "facebook-native-social-failed"});
-    expect(harness.owner.getSnapshot().canCreateContext).toBe(true);
-    expect(await harness.owner.createContext()).toEqual({status: "success", value: undefined});
-    expect(harness.getContext()).toBe("created-context");
-    expect(harness.reconciled).toEqual(["original-context", "created-context"]);
-  });
-
-  it("remembers an admitted unsupported picker after the panel closes while retaining reconciliation", async () => {
-    const harness = fixture(["context.createAsync"]);
-    const native = deferred<void>(), started = deferred<void>();
-    harness.createAsync.mockImplementationOnce(() => {started.resolve(); return native.promise;});
-    const panel = new AbortController();
-    const creating = harness.owner.createContext(panel.signal);
-    await started.promise;
-    panel.abort();
-    native.reject({code: "CLIENT_UNSUPPORTED_OPERATION", message: "Client does not support no player IDS or multiple player IDs yet"});
-    expect(await creating).toEqual({status: "cancelled"});
-    expect(harness.reconciled).toEqual(["original-context"]);
-    await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toMatchObject({canCreateContext: false, pending: null, error: false});
-    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
-    expect(harness.createAsync.mock.calls).toEqual([[]]);
-  });
-
-  it("never switches context when its panel aborts during the final room read", async () => {
+  it("never switches context when its view aborts during the final room read", async () => {
     const harness = fixture();
     await harness.owner.refresh();
     expect(harness.owner.getSnapshot().canJoinRoom).toBe(true);
-    const read = deferred<typeof harness.room>();
-    const started = deferred<void>();
+    const read = deferred<typeof harness.room>(), started = deferred<void>();
     harness.getCurrentMatchAsync.mockImplementationOnce(() => {started.resolve(); return read.promise;});
-    const panel = new AbortController();
-    const joining = harness.owner.joinRoom(panel.signal);
+    const view = new AbortController();
+    const joining = harness.owner.joinRoom(view.signal);
     await started.promise;
-    panel.abort();
+    view.abort();
     read.resolve(harness.room);
     expect(await joining).toEqual({status: "cancelled"});
     expect(harness.getContext()).toBe("original-context");
@@ -136,56 +85,56 @@ describe("Facebook expanded native social actions", () => {
     expect(harness.reconciled).toEqual(["room-context"]);
   });
 
-  it.each(["fulfilled", "rejected"])("reconciles an admitted context mutation after panel cancellation when the SDK %s", async outcome => {
-    const harness = fixture(["context.createAsync"]);
-    const mutation = deferred<void>();
-    const started = deferred<void>();
-    harness.createAsync.mockImplementationOnce(async () => {
+  it.each(["fulfilled", "rejected"])("reconciles an admitted context switch after view cancellation when the SDK %s", async outcome => {
+    const harness = fixture(["context.switchAsync"]);
+    const mutation = deferred<void>(), started = deferred<void>();
+    harness.switchAsync.mockImplementationOnce(async () => {
       started.resolve();
       await mutation.promise;
-      harness.setContext("created-after-cancellation");
+      harness.setContext(null);
       if (outcome === "rejected") throw new Error("Native callback rejected after changing context");
     });
-    const panel = new AbortController();
-    const creating = harness.owner.createContext(panel.signal);
+    const view = new AbortController();
+    const leaving = harness.owner.leaveContext(view.signal);
     await started.promise;
-    panel.abort();
-    expect(harness.owner.getSnapshot().pending).toBe("create-context");
+    view.abort();
+    expect(harness.owner.getSnapshot().pending).toBe("leave-context");
     mutation.resolve();
-    expect(await creating).toEqual({status: "cancelled"});
-    expect(harness.getContext()).toBe("created-after-cancellation");
-    expect(harness.reconciled).toEqual(["created-after-cancellation"]);
+    expect(await leaving).toEqual({status: "cancelled"});
+    expect(harness.getContext()).toBeNull();
+    expect(harness.reconciled).toEqual([null]);
     expect(harness.owner.getSnapshot().pending).toBeNull();
   });
 
-  it("keeps connected-player discovery available without context, room or tournament APIs", async () => {
-    const harness = fixture(["player.getConnectedPlayersAsync"], sdk => {
-      delete sdk.context; delete sdk.room; delete sdk.tournament;
-    });
-    await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toEqual({
-      loading: false, pending: null, error: false, connectedPlayers: 2, contextPlayers: null,
-      canCreateContext: false, canLeaveContext: false, canListTournaments: false, canJoinTournament: false,
-      canJoinRoom: false, tournaments: [],
-    });
-    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+  it("requires an advertised context switch before offering room or solo actions", () => {
+    const harness = fixture();
+    harness.sdk.getSupportedAPIs = () => ["room.getCurrentMatchAsync", "context.createAsync", "tournament.getTournamentsAsync"];
+    expect(createFacebookNativeSocial({sdk: harness.sdk, isActive: () => true, synchronizeContext: async () => undefined})).toBeUndefined();
   });
 
-  it("lists tournaments without join support and keeps other discovery after a connected-player failure", async () => {
-    const harness = fixture(["player.getConnectedPlayersAsync", "tournament.getTournamentsAsync"]);
-    harness.getConnectedPlayersAsync.mockRejectedValueOnce(new Error("Connections unavailable"));
+  it("treats no current room as unavailable without reporting an error", async () => {
+    const harness = fixture();
+    harness.getCurrentMatchAsync.mockRejectedValueOnce({code: "LIVE_MATCH_NOT_FOUND"});
     await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toMatchObject({error: true, connectedPlayers: null,
-      canListTournaments: true, canJoinTournament: false,
-      tournaments: [{id: "tournament-one", title: "Daily friends", endsAtMs: NOW + 600_000}]});
-    expect(await harness.owner.joinTournament("tournament-one")).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
-    await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toMatchObject({error: false, connectedPlayers: 2,
-      tournaments: [{id: "tournament-one", title: "Daily friends", endsAtMs: NOW + 600_000}]});
+    expect(harness.owner.getSnapshot()).toMatchObject({loading: false, error: false, canJoinRoom: false, canLeaveContext: true});
+    expect(await harness.owner.joinRoom()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(harness.switchAsync).not.toHaveBeenCalled();
+  });
+
+  it("bounds room discovery and preserves the independently available solo action", async () => {
+    jest.useFakeTimers();
+    const harness = fixture();
+    harness.getCurrentMatchAsync.mockReturnValueOnce(new Promise(() => undefined));
+    const reading = harness.owner.refresh();
+    await jest.advanceTimersByTimeAsync(8000);
+    await reading;
+    expect(harness.owner.getSnapshot()).toMatchObject({loading: false, error: true, canJoinRoom: false, canLeaveContext: true});
+    expect(await harness.owner.leaveContext()).toEqual({status: "success", value: undefined});
+    expect(harness.reconciled).toEqual([null]);
   });
 
   it("refuses a room destination that changed after discovery", async () => {
-    const harness = fixture(["room.getCurrentMatchAsync", "context.switchAsync"]);
+    const harness = fixture();
     await harness.owner.refresh();
     expect(harness.owner.getSnapshot().canJoinRoom).toBe(true);
     harness.getCurrentMatchAsync.mockResolvedValueOnce({getID: () => "replacement-match", getContextID: () => "replacement-context"});
@@ -194,15 +143,37 @@ describe("Facebook expanded native social actions", () => {
     expect(harness.reconciled).toEqual([]);
   });
 
-  it("clears discovered actions and denies mutations after retirement", async () => {
+  it("invalidates room discovery when the native context changes", async () => {
     const harness = fixture();
     await harness.owner.refresh();
-    expect(harness.owner.getSnapshot()).toMatchObject({connectedPlayers: 2, canCreateContext: true, canJoinRoom: true});
+    expect(harness.owner.getSnapshot().canJoinRoom).toBe(true);
+    harness.changeContext("room-context");
+    expect(harness.owner.getSnapshot().canJoinRoom).toBe(false);
+    await harness.owner.refresh();
+    expect(harness.owner.getSnapshot()).toMatchObject({canJoinRoom: false, canLeaveContext: true});
+  });
+
+  it("does not let a stale room read repopulate a retired account", async () => {
+    const harness = fixture(), read = deferred<typeof harness.room>();
+    harness.getCurrentMatchAsync.mockReturnValueOnce(read.promise);
+    const reading = harness.owner.refresh();
     harness.owner.retire();
-    expect(harness.owner.getSnapshot()).toEqual({loading: false, pending: null, error: false,
-      connectedPlayers: null, contextPlayers: null, canCreateContext: false, canLeaveContext: false,
-      canListTournaments: false, canJoinTournament: false, canJoinRoom: false, tournaments: []});
-    expect(await harness.owner.createContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
-    expect(harness.getContext()).toBe("original-context");
+    read.resolve(harness.room);
+    await reading;
+    expect(harness.owner.getSnapshot()).toEqual({loading: false, pending: null, error: false, canLeaveContext: false, canJoinRoom: false});
+    expect(await harness.owner.leaveContext()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(await harness.owner.joinRoom()).toEqual({status: "unavailable", message: "facebook-native-social-unavailable"});
+    expect(harness.switchAsync).not.toHaveBeenCalled();
+  });
+
+  it("does not reconcile a completed native action into a replacement account", async () => {
+    const harness = fixture(), mutation = deferred<void>(), started = deferred<void>();
+    harness.switchAsync.mockImplementationOnce(() => {started.resolve(); return mutation.promise;});
+    const leaving = harness.owner.leaveContext();
+    await started.promise;
+    harness.deactivate();
+    mutation.resolve();
+    expect(await leaving).toEqual({status: "cancelled"});
+    expect(harness.reconciled).toEqual([]);
   });
 });

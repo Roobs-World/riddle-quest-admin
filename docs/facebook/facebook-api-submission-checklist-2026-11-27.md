@@ -2,7 +2,9 @@
 
 **Updated 28 November 2026: version 23 is in Testing with bounded interstitial observability. Its exact assignment and all 420 runtime files are verified. Narrow Android interstitial display, diagnostic stage readback and normal Quit/relaunch restoration are recorded; broader native acceptance remains open. The earlier Android post-Terms persistence stall is unresolved. Submission completeness is unproven.** This checklist covers every one of the 79 public SDK entry points in the [current primary-source inventory](facebook-api-research-2026-11-27.md): 62 W, 11 C and 6 G entries. These are coverage classifications, not completed acceptance. The uploaded source is `579f9d5def20b5007218663702de0bd3e11da1c4` on the owner-requested `facebook` branch. All H9–H22 observations retain their original candidate scopes and do not certify version 23. Later source changes require their own artifact and host checks.
 
-The scope remains every possible applicable API integration. An absent adapter, missing configuration, missing product surface or missing partner approval is an open item, not a completed integration. Alternative APIs are tracked individually even when one real workflow deliberately selects only one of them. Removed or deprecated unavailable APIs are distinguished at the end.
+The owner’s 28 November multiplayer revision removes tournament surfaces and the redundant native-social disclosure. The current source excludes 12 entry points from that product scope: 51 W, 10 C, 6 G and 12 X; the preceding version-23 counts remain historical. X means deliberately excluded by the owner’s revised product scope, not accepted or implemented in the current game. Tournament/session-score adapters retained in source are not composed into the Facebook client.
+
+The scope remains every possible applicable API integration. Within the retained product scope, an absent adapter, missing configuration, missing product surface or missing partner approval is an open item, not a completed integration. Alternative APIs are tracked individually even when one real workflow deliberately selects only one of them. Removed or deprecated unavailable APIs are distinguished at the end.
 
 ## Authoritative evidence and status
 
@@ -112,7 +114,7 @@ All Facebook browser paths below are beneath `platforms/web/facebook/src/`:
 | Lifecycle / analytics | [createFacebookLifecycle.ts](../../platforms/web/facebook/src/createFacebookLifecycle.ts), [analytics.ts](../../platforms/web/facebook/src/analytics.ts) |
 | Host environment | [engagement/FacebookHostEnvironment.ts](../../platforms/web/facebook/src/engagement/FacebookHostEnvironment.ts) |
 | Settings actions / haptics | [engagement/FacebookPlayerSettingsActions.ts](../../platforms/web/facebook/src/engagement/FacebookPlayerSettingsActions.ts), [engagement/FacebookQuitTrace.ts](../../platforms/web/facebook/src/engagement/FacebookQuitTrace.ts), [engagement/FacebookHaptics.ts](../../platforms/web/facebook/src/engagement/FacebookHaptics.ts) |
-| Session score | [engagement/FacebookSessionScore.ts](../../platforms/web/facebook/src/engagement/FacebookSessionScore.ts), [engagement/FacebookSessionScoreActions.tsx](../../platforms/web/facebook/src/engagement/FacebookSessionScoreActions.tsx) |
+| Session score | [engagement/FacebookSessionScore.ts](../../platforms/web/facebook/src/engagement/FacebookSessionScore.ts), retained but not composed after the owner’s tournament removal |
 | Native social | [social/FacebookNativeSocial.ts](../../platforms/web/facebook/src/social/FacebookNativeSocial.ts), [social/FacebookNativeSocialPanel.tsx](../../platforms/web/facebook/src/social/FacebookNativeSocialPanel.tsx), [FacebookRaceEntry.tsx](../../platforms/web/facebook/src/FacebookRaceEntry.tsx) |
 | Contexts / matching / updates | [contexts.ts](../../platforms/web/facebook/src/contexts.ts), [liveContextMatchmaking.ts](../../platforms/web/facebook/src/liveContextMatchmaking.ts), [contextChallenges.ts](../../platforms/web/facebook/src/contextChallenges.ts) |
 | Referral / live sharing | [FacebookReferralSharing.ts](../../platforms/web/facebook/src/FacebookReferralSharing.ts), [FacebookLiveRaceSharing.ts](../../platforms/web/facebook/src/FacebookLiveRaceSharing.ts) |
@@ -184,8 +186,8 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 19 | `FBInstant.postSessionScore` | W · Session score; fallback when asynchronous variant is absent | A0; validated completed race receipt; general session or compatible private points tournament | J08 |
-| 20 | `FBInstant.postSessionScoreAsync` | W · Session score; preferred variant | A0; validated completed race receipt; native UI eligibility | J08 |
+| 19 | `FBInstant.postSessionScore` | X · Tournament-dependent session-score action removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 20 | `FBInstant.postSessionScoreAsync` | X · Tournament-dependent session-score action removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
 | 21 | `FBInstant.setSessionData` | W · Host environment | A0; bounded non-identifying activity values | J02 |
 | 22 | `FBInstant.logEvent` | W · Analytics | A0; analytics capability/consent and account lifetime | J02 |
 
@@ -214,7 +216,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | --- | --- | --- | --- | --- |
 | 32 | `FBInstant.checkCanPlayerMatchAsync` | W · Native matchmaking | A0; matchmaking rollout; eligible audience/context | J06 |
 | 33 | `FBInstant.matchPlayerAsync` | W · Native matchmaking/context coordinator | A0; positive matching eligibility; locale-safe queue | J06 |
-| 34 | `FBInstant.getTournamentAsync` | W · Tournament presentation, entry and session-score guard | A0; native tournament launch/context | J07, J08 |
+| 34 | `FBInstant.getTournamentAsync` | X · Tournament presentation removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
 
 ### Player identity
 
@@ -240,7 +242,7 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 45 | `FBInstant.player.getConnectedPlayersAsync` | W/H12/H15/H18 · v18 Android displayed Friends who play 0 after Refresh/close/reopen; no nonempty result or player match established | A0; native-social/age/context policy; recently active connections | J06 |
+| 45 | `FBInstant.player.getConnectedPlayersAsync` | X · Standalone friend-count discovery removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
 
 ### Player bot and NEZP notifications
 
@@ -259,8 +261,8 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 | 51 | `FBInstant.context.getType` | W · Contexts; includes POST | A0; supported context type and synchronized owner | J06 |
 | 52 | `FBInstant.context.chooseAsync` | W/H12/H15/H18 · v18 Android Play with friends opened native chooser; cancellation restored Play with friends/Start PvP, no selection or context message | A0; native social policy and dialog guard | J06 |
 | 53 | `FBInstant.context.switchAsync` | W · Native social: solo or actual current Room | A0; valid destination; authoritative reconciliation | J06, J07 |
-| 54 | `FBInstant.context.createAsync` | W/H12/H15 · Choose friends showed Service temporarily unavailable and retired through Refresh; failure path only, raw SDK error code not captured | A0; Meta picker and account/context policy | J06 |
-| 55 | `FBInstant.context.getPlayersAsync` | W · Native social aggregate count | A0; selected context; recent membership, not live presence | J06 |
+| 54 | `FBInstant.context.createAsync` | X · Redundant no-argument picker removed; Play with friends uses context.chooseAsync | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 55 | `FBInstant.context.getPlayersAsync` | X · Standalone context-count discovery removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
 
 ### Payments
 
@@ -276,12 +278,12 @@ All rows also inherit A0 and the final artifact/review gates below. Journey refe
 
 | # | SDK entry point | Current source inclusion / evidence | Additional prerequisite | Reviewer journey |
 | --- | --- | --- | --- | --- |
-| 61 | `FBInstant.tournament.createAsync` | W · Tournament presentation | A0; official daily window/locale/score receipt | J07 |
-| 62 | `FBInstant.tournament.createPrivateAsync` | C · Session-score group action with explicit chat disclosure and uncertain-outcome recovery | A7; positive deployment flag, eligible group and verified race receipt | J08, J13 |
-| 63 | `FBInstant.tournament.getTournamentsAsync` | W/H12/H15/H18 · v18 Android displayed an empty tournament list after Refresh/close/reopen; no populated listing or join established | A0; eligible active native tournaments; validated metadata | J07 |
-| 64 | `FBInstant.tournament.joinAsync` | W · Native social join | A0; unexpired listed tournament; Meta participant eligibility | J07 |
-| 65 | `FBInstant.tournament.postScoreAsync` | W · Tournament presentation | A0; server-derived adjusted time and daily binding | J07 |
-| 66 | `FBInstant.tournament.shareAsync` | W · Tournament presentation | A0; native tournament exists; explicit player action | J07 |
+| 61 | `FBInstant.tournament.createAsync` | X · Tournament presentation removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 62 | `FBInstant.tournament.createPrivateAsync` | X · Private tournament action removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 63 | `FBInstant.tournament.getTournamentsAsync` | X · Tournament discovery removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 64 | `FBInstant.tournament.joinAsync` | X · Tournament join action removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 65 | `FBInstant.tournament.postScoreAsync` | X · Tournament score projection removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
+| 66 | `FBInstant.tournament.shareAsync` | X · Tournament sharing removed | Owner’s 28 November product-scope revision | Removed from current acceptance scope |
 
 ### Community
 

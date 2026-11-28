@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Start tournament in this group",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Choose a group and start",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Starting posts a leaderboard and your race score to the group chat.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "The tournament may have started. Check the group chat before trying again.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "This group tournament uses different race settings. Your score cannot be updated here.",
     "TITLE": "Race to 10",
     "CLOSE": "Close Race to 10",
     "QUIT_TITLE": "Quit this race?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Invitation saved. It will appear in the player’s multiplayer inbox.",
     "LIVE_HISTORY_TITLE": "Recent matches",
     "LIVE_HISTORY_EMPTY": "No completed matches yet.",
-    "FACEBOOK_SOCIAL": "Play on Facebook",
-    "FACEBOOK_FRIEND_COUNT": "Friends who play: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Players in this group: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Choose friends",
     "FACEBOOK_LEAVE_CONTEXT": "Return to solo play",
-    "FACEBOOK_TOURNAMENTS": "Facebook tournaments",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Tournament {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Join tournament",
-    "FACEBOOK_REFRESH": "Refresh",
-    "FACEBOOK_JOIN_ROOM": "Join room game",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Share race score"
+    "FACEBOOK_JOIN_ROOM": "Join room game"
   }
 }

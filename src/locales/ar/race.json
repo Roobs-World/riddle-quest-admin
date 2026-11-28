@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "ابدأ بطولة في هذه المجموعة",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "اختر مجموعة وابدأ",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "عند البدء، تُنشر لوحة المتصدرين ونتيجتك في السباق في دردشة المجموعة.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "ربما بدأت البطولة بالفعل. تحقق من دردشة المجموعة قبل المحاولة مجددًا.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "تستخدم بطولة المجموعة هذه إعدادات سباق مختلفة. لا يمكن تحديث نتيجتك هنا.",
     "TITLE": "سباق إلى 10",
     "CLOSE": "إغلاق السباق",
     "QUIT_TITLE": "مغادرة هذا السباق؟",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "تم حفظ الدعوة. ستظهر في صندوق دعوات اللعب الجماعي لدى اللاعب.",
     "LIVE_HISTORY_TITLE": "المباريات الأخيرة",
     "LIVE_HISTORY_EMPTY": "لا توجد مباريات مكتملة بعد.",
-    "FACEBOOK_SOCIAL": "العب على Facebook",
-    "FACEBOOK_FRIEND_COUNT": "الأصدقاء الذين يلعبون: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "اللاعبون في هذه المجموعة: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "اختيار الأصدقاء",
     "FACEBOOK_LEAVE_CONTEXT": "العودة إلى اللعب الفردي",
-    "FACEBOOK_TOURNAMENTS": "بطولات Facebook",
-    "FACEBOOK_TOURNAMENT_NUMBER": "البطولة {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "الانضمام إلى البطولة",
-    "FACEBOOK_REFRESH": "تحديث",
-    "FACEBOOK_JOIN_ROOM": "الانضمام إلى لعبة الغرفة",
-    "FACEBOOK_SHARE_SESSION_SCORE": "مشاركة نتيجة السباق"
+    "FACEBOOK_JOIN_ROOM": "الانضمام إلى لعبة الغرفة"
   }
 }

@@ -33,12 +33,13 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
   await page.addInitScript(({nativeMatching, deliverContextEvents, contextChallenges}) => {
     /** Extend the existing SDK fixture while preserving identity and profile overlay contracts. */
     const sdk = window.FBInstant!;
-    const unsupportedCreate = new URL(location.href).searchParams.get("unsupported-create") === "on";
+    const roomEnabled = new URL(location.href).searchParams.get("native-room") === "on";
     /** Preserve the capability inventory before enabling controlled context selection. */
     const supported = sdk.getSupportedAPIs.bind(sdk);
     sdk.getSupportedAPIs = () => [...supported().filter(api => api !== "matchPlayerAsync"), "context.chooseAsync",
       ...(nativeMatching ? ["matchPlayerAsync"] : []), ...(deliverContextEvents ? ["onContextChange"] : []),
-      "context.getPlayersAsync", ...(unsupportedCreate ? ["context.createAsync"] : []), ...(contextChallenges ? ["updateAsync"] : [])];
+      "context.getPlayersAsync", "context.createAsync", ...(roomEnabled ? ["context.switchAsync", "room.getCurrentMatchAsync"] : []),
+      ...(contextChallenges ? ["updateAsync"] : [])];
     if (contextChallenges) {
       Reflect.set(window, "__contextUpdates", []);
       sdk.updateAsync = async payload => {Reflect.get(window, "__contextUpdates").push({payload, contextId: sdk.context.getID()});};
@@ -48,17 +49,26 @@ export async function installRaceContextDialogs(page: Page, nativeMatching = tru
       Reflect.set(window, "__matchPlayerRequest", {tag, switchContext, offlineMatch});
     };
     else delete sdk.matchPlayerAsync;
-    Object.assign(window, {__contextDialogCalls: 0, __contextCreateCalls: 0, __contextId: "context-old", __contextType: "GROUP"});
+    Object.assign(window, {__contextDialogCalls: 0, __contextCreateCalls: 0, __contextSwitchCalls: [], __contextId: "context-old", __contextType: "GROUP"});
     /** The SDK state changes even when no game callback has been registered. */
     let contextChanged: ((contextId: string | null) => void) | undefined;
     sdk.onContextChange = success => {if (deliverContextEvents) contextChanged = success;};
     Reflect.set(window, "__emitContextChange", (contextId: string | null, contextType = "GROUP") => {
       Reflect.set(window, "__contextId", contextId); Reflect.set(window, "__contextType", contextType); contextChanged?.(contextId);
     });
+    if (roomEnabled) sdk.room = {getCurrentMatchAsync: async () => ({getID: () => "fixture-room", getContextID: () => "context-room"})};
     sdk.context = {
-      ...(unsupportedCreate ? {createAsync: async () => {
+      createAsync: async () => {
         Reflect.set(window, "__contextCreateCalls", Reflect.get(window, "__contextCreateCalls") + 1);
-        throw {code: "CLIENT_UNSUPPORTED_OPERATION", message: "Client does not support no player IDS or multiple player IDs yet"};
+        throw {code: "CLIENT_UNSUPPORTED_OPERATION"};
+      },
+      ...(roomEnabled ? {switchAsync: (contextId: string) => {
+        Reflect.get(window, "__contextSwitchCalls").push(contextId);
+        return new Promise<void>((resolve, reject) => Reflect.set(window, "__finishContextSwitch", (success: boolean) => {
+          if (!success) {reject({code: "USER_INPUT"}); return;}
+          Reflect.get(window, "__emitContextChange")(contextId === "SOLO" ? null : contextId, contextId === "SOLO" ? "SOLO" : "GROUP");
+          resolve();
+        }));
       }} : {}),
       getID: () => Reflect.get(window, "__contextId"),
       getType: () => Reflect.get(window, "__contextType"),
@@ -158,6 +168,13 @@ export async function verifyRaceContextDialogs(page: Page, screenshotPath = "/tm
   await page.waitForFunction(() => Reflect.get(window, "__contextMembershipRequest")?.contextId === "context-external");
   await page.getByRole("tab").nth(1).click();
   await page.waitForFunction(() => document.querySelector(".race-context-board")?.textContent?.includes("0:04.5"));
+  expect(await page.getByRole("alert").count()).toBe(0);
+  /** Cancelling the canonical friend chooser preserves the current context and usable control. */
+  await choose.click();
+  await page.waitForFunction(() => Reflect.get(window, "__contextDialogCalls") === 3);
+  await page.evaluate(() => Reflect.get(window, "__finishContextDialog")(false, true));
+  await choose.and(page.locator(":enabled")).waitFor();
+  expect(await page.evaluate(() => Reflect.get(window, "__contextId"))).toBe("context-external");
   expect(await page.getByRole("alert").count()).toBe(0);
   await page.waitForFunction(() => [...document.querySelectorAll<HTMLImageElement>(".race-coin-balance img")]
     .every(image => image.complete && image.naturalWidth > 0));

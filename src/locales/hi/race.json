@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "इस ग्रुप में टूर्नामेंट शुरू करें",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "ग्रुप चुनें और शुरू करें",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "शुरू करने पर ग्रुप चैट में लीडरबोर्ड और आपका रेस स्कोर पोस्ट होता है।",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "टूर्नामेंट शुरू हो चुका हो सकता है। दोबारा कोशिश करने से पहले ग्रुप चैट देखें।",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "इस ग्रुप टूर्नामेंट की रेस सेटिंग अलग है। आपका स्कोर यहाँ अपडेट नहीं किया जा सकता।",
     "TITLE": "10 तक रेस",
     "CLOSE": "रेस बंद करें",
     "QUIT_TITLE": "यह रेस छोड़ें?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "निमंत्रण सहेजा गया। यह खिलाड़ी के मल्टीप्लेयर इनबॉक्स में दिखाई देगा।",
     "LIVE_HISTORY_TITLE": "हाल के मुकाबले",
     "LIVE_HISTORY_EMPTY": "अभी तक कोई मुकाबला पूरा नहीं हुआ है।",
-    "FACEBOOK_SOCIAL": "Facebook पर खेलें",
-    "FACEBOOK_FRIEND_COUNT": "खेलने वाले दोस्त: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "इस समूह में खिलाड़ी: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "दोस्त चुनें",
     "FACEBOOK_LEAVE_CONTEXT": "अकेले खेलने पर लौटें",
-    "FACEBOOK_TOURNAMENTS": "Facebook टूर्नामेंट",
-    "FACEBOOK_TOURNAMENT_NUMBER": "टूर्नामेंट {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "टूर्नामेंट में शामिल हों",
-    "FACEBOOK_REFRESH": "रीफ़्रेश करें",
-    "FACEBOOK_JOIN_ROOM": "रूम के गेम में शामिल हों",
-    "FACEBOOK_SHARE_SESSION_SCORE": "रेस का स्कोर साझा करें"
+    "FACEBOOK_JOIN_ROOM": "रूम के गेम में शामिल हों"
   }
 }

@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Toernooi in deze groep starten",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Een groep kiezen en starten",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Bij de start worden een ranglijst en je racescore in de groepschat geplaatst.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Het toernooi is mogelijk al begonnen. Controleer de groepschat voordat je het opnieuw probeert.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Dit groepstoernooi gebruikt andere race-instellingen. Je score kan hier niet worden bijgewerkt.",
     "TITLE": "Race naar 10",
     "CLOSE": "Race sluiten",
     "QUIT_TITLE": "Deze race verlaten?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Uitnodiging opgeslagen. Deze verschijnt in de multiplayer-inbox van de speler.",
     "LIVE_HISTORY_TITLE": "Recente wedstrijden",
     "LIVE_HISTORY_EMPTY": "Nog geen voltooide wedstrijden.",
-    "FACEBOOK_SOCIAL": "Spelen op Facebook",
-    "FACEBOOK_FRIEND_COUNT": "Vrienden die spelen: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Spelers in deze groep: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Vrienden kiezen",
     "FACEBOOK_LEAVE_CONTEXT": "Terug naar solospel",
-    "FACEBOOK_TOURNAMENTS": "Facebook-toernooien",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Toernooi {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Deelnemen aan toernooi",
-    "FACEBOOK_REFRESH": "Vernieuwen",
-    "FACEBOOK_JOIN_ROOM": "Deelnemen aan kamerspel",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Racescore delen"
+    "FACEBOOK_JOIN_ROOM": "Deelnemen aan kamerspel"
   }
 }

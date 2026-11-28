@@ -7,10 +7,9 @@ const start = Date.UTC(2026, 9, 1);
 const entry = {kind: "rq-race10-tournament-v1", locale: "fr", tournamentId: "facebook-race10-fr-2026-10-01",
   startsAtMs: start, endsAtMs: start + 86_400_000};
 
-it("routes a live native invitation to tournaments without forwarding provider fields or changing locale", () => {
+it("retains the legacy codec while ignoring tournament launches", () => {
   expect(facebookTournamentLocaleFromEntryData(entry, start)).toBe("fr");
-  expect(facebookLaunchFromEntryData(entry, start)).toEqual({initialGameMode: "classic", initialRaceTournamentLocale: "fr"});
-  expect(facebookLaunchFromEntryData(entry, entry.endsAtMs - 1)).toEqual({initialGameMode: "classic", initialRaceTournamentLocale: "fr"});
+  expect(facebookLaunchFromEntryData(entry)).toEqual({initialGameMode: "classic"});
 });
 
 it.each([null, [], {...entry, coins: 999}, {...entry, challengeId: "foreign"}, {...entry, startsAtMs: start + 1},
@@ -22,7 +21,7 @@ it.each([null, [], {...entry, coins: 999}, {...entry, challengeId: "foreign"}, {
 
 it("rejects expired/future hints and malformed native envelopes cannot become incoming challenges", () => {
   for (const clock of [start - 1, entry.endsAtMs, NaN, Infinity, start + 0.5]) {
-    expect(facebookLaunchFromEntryData(entry, clock)).toEqual({initialGameMode: "classic"});
+    expect(facebookTournamentLocaleFromEntryData(entry, clock)).toBeUndefined();
   }
-  expect(facebookLaunchFromEntryData({...entry, challengeId: "foreign"}, start)).toEqual({initialGameMode: "classic"});
+  expect(facebookLaunchFromEntryData({...entry, challengeId: "foreign"})).toEqual({initialGameMode: "classic"});
 });

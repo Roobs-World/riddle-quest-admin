@@ -1,6 +1,4 @@
 import type {FacebookInstantSdk} from "./fbinstant";
-import type {RaceLocale} from "../../../../src/races/contracts/index";
-import {facebookTournamentLocaleFromEntryData} from "./facebookTournamentEntry";
 
 /** Defines the token pattern value. */
 const TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}$/;
@@ -14,21 +12,18 @@ export interface FacebookReferralToken {
 }
 
 /** Reads bounded launch hints; the race server still authorizes the referenced challenge. */
-export function facebookLaunchFromEntryData(value: unknown, nowMs = Date.now()): {
+export function facebookLaunchFromEntryData(value: unknown): {
   /** Target single-player mode. */
   initialGameMode: "classic" | "challenge";
   /** Opaque published race reference, never a client-supplied score or opponent identity. */
   initialRaceChallengeId?: string;
-  /** Opens native tournament presentation without changing the selected content language. */
-  initialRaceTournamentLocale?: RaceLocale;
 } {
   if (typeof value !== "object" || value === null || Array.isArray(value)) return {initialGameMode: "classic"};
   /** Untrusted provider entry envelope. */
   const entry = value as Record<string, unknown>;
   if (entry.kind === "rq-race10-tournament-v1") {
-    /** Invalid/expired native hints cannot fall through into another incoming challenge. */
-    const locale = facebookTournamentLocaleFromEntryData(entry, nowMs);
-    return {initialGameMode: "classic", ...(locale ? {initialRaceTournamentLocale: locale} : {})};
+    // Retired tournament links cannot select a challenge or open a tournament surface.
+    return {initialGameMode: "classic"};
   }
   return {
     initialGameMode: entry.gameMode === "challenge" ? "challenge" : "classic",

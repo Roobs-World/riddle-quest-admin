@@ -22,3 +22,9 @@ it.each([null, [], {token: "short", expiresAtMs: 100}, {token: "a".repeat(43), e
   {token: "a".repeat(43), expiresAtMs: "100"}])("rejects invalid server referral responses", value => {
   expect(() => parseFacebookReferralTokenResponse(value, 1)).toThrow("facebook-referral-response-invalid");
 });
+
+
+it("ignores retired tournament launches without accepting nested challenge data", () => {
+  expect(facebookLaunchFromEntryData({kind: "rq-race10-tournament-v1", locale: "en",
+    gameMode: "challenge", challengeId: "challenge-1"})).toEqual({initialGameMode: "classic"});
+});

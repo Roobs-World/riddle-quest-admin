@@ -12,6 +12,8 @@ import {useRaceDialogFocus} from "../../hooks/useRaceDialogFocus";
 
 /** Target-specific identifiers and fixed diagnostics keep provider logic outside shared presentation. */
 export type RaceTournamentEntryProps = RaceTo10GameProps & {
+  /** Optional target-owned controls share the ordinary multiplayer action row. */
+  socialActions?: ReactNode;
   /** Stable target-owned board presentation, with no provider SDK. */
   presentation: {
     /** Accessible title identity retained by the owning target. */ titleId: string;
@@ -114,22 +116,24 @@ function RaceTournamentDestination(props: RaceTournamentEntryProps) {
     } catch {if (active.current && choiceOwner.current === owner && started === revision.current) setContextError(true);}
     finally {choosing.current = false; if (active.current) setBusy(false);}
   };
-  if (!props.tournaments && !props.contextBoard && !props.nativeSocial && !props.matchmaking?.live?.history) return <RaceTo10Game {...props} />;
+  if (!props.tournaments && !props.contextBoard && !props.nativeSocial && !props.matchmaking?.live?.history && !props.socialActions) return <RaceTo10Game {...props} />;
+  const showNativeActions = props.nativeSocial && (props.nativeSocial.matchPlayer || destination !== "play" || !props.matchmaking?.live?.chooseChallenge);
   /** Navigation and optional chooser are restricted to the race lobby and social boards. */
   const navigation = <>
     <RaceTournamentNavigation destination={destination} destinations={destinations} focusSelection={keyboardSelection.current}
       onSelect={(next, keyboard = false) => {revision.current++; setContextError(false); keyboardSelection.current = keyboard; setDestination(next);}} />
     {props.introNavigation}
-    {props.nativeSocial && (props.nativeSocial.matchPlayer || destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
+    {(showNativeActions || props.socialActions) &&
       <div className="race-hub-social-actions">
-        {props.nativeSocial.canChooseContext !== false && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
+        {showNativeActions && props.nativeSocial?.canChooseContext !== false && (destination !== "play" || !props.matchmaking?.live?.chooseChallenge) &&
           <button type="button" disabled={busy} onClick={() => void choose("chooseContext")}>
             {tr("RaceTo10.CHOOSE_CONTEXT")}
           </button>}
-        {props.nativeSocial.matchPlayer &&
+        {showNativeActions && props.nativeSocial?.matchPlayer &&
           <button type="button" disabled={busy} onClick={() => void choose("matchPlayer")}>
             {tr("RaceTo10.MATCH_PLAYER")}
           </button>}
+        {props.socialActions}
       </div>}
     {contextError && <div className="race-error" role="alert">{tr("RaceTo10.ERROR_GENERIC")}</div>}
   </>;

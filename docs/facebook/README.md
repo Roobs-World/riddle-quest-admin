@@ -1,5 +1,6 @@
 # Facebook Instant Games
 
+- [Integrated multiplayer controls and tournament removal](evidence/facebook-multiplayer-controls-2026-11-28.md)
 - [Complete current API inventory](facebook-api-research-2026-11-27.md)
 - [API submission checklist and reviewer journeys](facebook-api-submission-checklist-2026-11-27.md)
 - [Published Riddle Quest privacy, terms and audience check](evidence/facebook-published-disclosures-2026-11-27.md)

@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "このグループで大会を開始",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "グループを選んで開始",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "開始すると、ランキングとレースのスコアがグループチャットに投稿されます。",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "大会が開始された可能性があります。再試行する前にグループチャットを確認してください。",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "このグループ大会はレースの設定が異なるため、ここではスコアを更新できません。",
     "TITLE": "10問レース",
     "CLOSE": "10問レースを閉じる",
     "QUIT_TITLE": "このレースを終了しますか？",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "招待を保存しました。相手のマルチプレイヤーの受信ボックスに表示されます。",
     "LIVE_HISTORY_TITLE": "最近の対戦",
     "LIVE_HISTORY_EMPTY": "完了した対戦はまだありません。",
-    "FACEBOOK_SOCIAL": "Facebookで遊ぶ",
-    "FACEBOOK_FRIEND_COUNT": "プレイしている友達：{count}",
-    "FACEBOOK_CONTEXT_COUNT": "このグループのプレイヤー：{count}",
-    "FACEBOOK_CREATE_CONTEXT": "友達を選ぶ",
     "FACEBOOK_LEAVE_CONTEXT": "ソロプレイに戻る",
-    "FACEBOOK_TOURNAMENTS": "Facebookトーナメント",
-    "FACEBOOK_TOURNAMENT_NUMBER": "トーナメント {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "トーナメントに参加",
-    "FACEBOOK_REFRESH": "更新",
-    "FACEBOOK_JOIN_ROOM": "ルームのゲームに参加",
-    "FACEBOOK_SHARE_SESSION_SCORE": "レースのスコアをシェア"
+    "FACEBOOK_JOIN_ROOM": "ルームのゲームに参加"
   }
 }

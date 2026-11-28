@@ -20,13 +20,10 @@ import {createFacebookNativeSocial, type FacebookNativeSocial} from "./social/Fa
 import {FacebookNativeSocialProvider} from "./social/FacebookNativeSocialPanel";
 import {createFacebookBanner, type FacebookBanner} from "./ads/FacebookBanner";
 import {FacebookBannerLayout} from "./ads/FacebookBannerLayout";
-import {createFacebookSessionScore, type FacebookSessionScore} from "./engagement/FacebookSessionScore";
-import {FacebookSessionScoreProvider} from "./engagement/FacebookSessionScoreActions";
 import {PlayerSettingsActionsProvider} from "../../../../src/settings/components/PlayerSettingsActions";
 import type {PlayerSettingsActionsCapability} from "../../../../src/settings/contracts/playerSettingsActions";
 import {createFacebookLiveRaceSharing} from "./FacebookLiveRaceSharing";
 import {createFacebookContextChallenges} from "./contextChallenges";
-import {createFacebookTournamentPresentation} from "./FacebookTournamentPresentation";
 import {FacebookContextCoordinator} from "./contexts";
 import {createFacebookContextBoard} from "./contextBoard";
 import {createFacebookContextMatchmaking} from "./liveContextMatchmaking";
@@ -62,7 +59,7 @@ import {GoogleAnalyticsConsent} from "../../../../src/observability/analytics/Go
 import {firebaseEnvironment} from "../../../../src/platform/firebase/browserEnvironment";
 import {firebaseStartupOrigins, preconnectStartupOrigins} from "../../../../src/app/startup/startupWarmup";
 
-/** Native tournament presentation loads only when Facebook multiplayer opens. */
+/** Facebook multiplayer presentation loads only when the player opens it. */
 const FacebookRaceSurface = lazy(() => import("./FacebookRaceEntry").then(module => ({default: module.FacebookRaceEntry})));
 
 /** Describes startup state. */
@@ -88,7 +85,6 @@ type StartupState =
       haptics?: FacebookHaptics;
       nativeSocial?: FacebookNativeSocial;
       banner?: FacebookBanner;
-      sessionScore?: FacebookSessionScore;
       /** Settings owns the authenticated player's Facebook campaign consent. */
       notificationProvider?: NotificationProvider;
       /** Bounded launch hints; competitive authority remains on the server. */
@@ -198,7 +194,6 @@ export function FacebookPlatformEntry() {
     let banner: FacebookBanner | undefined;
     let subscriptionEntitlement: ReturnType<typeof createFacebookSubscriptionEntitlement> | undefined;
     let adPresentation: ReturnType<typeof createFacebookAdPresentation> | undefined;
-    let sessionScore: FacebookSessionScore | undefined;
     /** Provides unsubscribe preferences behavior. */
     let unsubscribePreferences: (() => void) | undefined;
     /** Native context events belong to this authenticated entry lifetime. */
@@ -236,8 +231,6 @@ export function FacebookPlatformEntry() {
         let removeInterstitialAds: boolean | undefined;
         /** Facebook-only continuation capability bound to the current authenticated session. */
         let attemptRecovery: import("../../../../src/platform/contracts/capabilities").AttemptRecoveryCapability | undefined;
-        /** Provides tournaments behavior. */
-        let tournaments = undefined;
         /** Settings is the only game surface that can grant Facebook campaign consent. */
         let notificationProvider: NotificationProvider | undefined;
         /** Provides referrals enabled behavior. */
@@ -260,15 +253,11 @@ export function FacebookPlatformEntry() {
         try {
           /** Provides {
             get facebook client configuration,
-            list facebook tournament,
-            record facebook tournament,
             list facebook context board,
             record facebook context run,
           } behavior. */
           const {
             getFacebookClientConfiguration,
-            listFacebookTournament,
-            recordFacebookTournament,
             listFacebookContextBoard,
             recordFacebookContextRun,
             grantFacebookRewardedContinue,
@@ -413,29 +402,6 @@ export function FacebookPlatformEntry() {
             window.addEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
             removeVictoryListener = () => window.removeEventListener("riddle-quest:victory-dismissed", onVictoryDismissed);
           }
-          if (ageCategory === "13_plus" && clientConfiguration.tournamentsEnabled) {
-            /** Native standings remain an optional presentation of the official server board. */
-            const presentation = createFacebookTournamentPresentation({sdk, enabled: true, ageCategory,
-              isActive: isAccountSessionActive, getLocale: getCurrentLocale,
-              list: async locale => (await listFacebookTournament({locale})).data,
-              reportFailure: error => captureBrowserException(error, {component: "facebook_tournament", operation: "native_presentation"})});
-            tournaments = {
-              list: async (locale: import("../../../../src/races/contracts/index").RaceLocale) => {
-                /** Validated official standings for the exact player locale and UTC window. */
-                const board = (await listFacebookTournament({locale})).data;
-                if (presentation) void presentation.projectBoard(board);
-                return board;
-              },
-              record: async (runId: string, locale: import("../../../../src/races/contracts/index").RaceLocale) => {
-                /** Official success is returned independently of provider score delivery. */
-                const result = (await recordFacebookTournament({runId, locale})).data;
-                sessionScore?.record(runId, result);
-                if (presentation) void presentation.projectRecord(result);
-                return result;
-              },
-              share: presentation?.share,
-            };
-          }
         } catch (configurationError) {
           if (!isAccountSessionActive()) return;
           captureBrowserException(configurationError, {
@@ -514,22 +480,6 @@ export function FacebookPlatformEntry() {
             onContextChange: listener => contextCoordinator.onContextChange(listener),
           });
         }
-        if (tournaments && configurationLoaded && ageCategory === "13_plus") {
-          sessionScore = createFacebookSessionScore({
-            sdk, isActive: isAccountSessionActive, getLocale: getCurrentLocale,
-            privateTournamentsEnabled: import.meta.env.VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED === "true",
-            ...(contextCoordinator ? {onContextChange: (listener: () => void) => contextCoordinator.onContextChange(listener)} : {}),
-            canPresent: () => document.visibilityState === "visible" && settingsActions?.getSnapshot().pendingAction !== "quit",
-            synchronizeContext: async () => {
-              const result = await contextCoordinator?.reconcileNativeContext();
-              if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
-                throw new Error("facebook-score-context-sync-failed");
-              }
-            },
-            reportFailure: operation => captureBrowserException(new Error("facebook-session-score-failed"),
-              {component: "facebook_session_score", operation}),
-          });
-        }
         /** Provides context board behavior. */
         const contextBoard =
           contextCoordinator && contextBoardApi
@@ -572,7 +522,6 @@ export function FacebookPlatformEntry() {
                 ...(ads ? {ads} : {}),
                 ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
-                ...(tournaments ? {tournaments} : {}),
                 ...(contextBoard ? {contextBoard} : {}),
               },
             }
@@ -583,7 +532,6 @@ export function FacebookPlatformEntry() {
                 ...(ads ? {ads} : {}),
                 ...(commerceSession ? {commerce: commerceSession.capability} : {}),
                 ...(attemptRecovery ? {attemptRecovery} : {}),
-                ...(tournaments ? {tournaments} : {}),
               },
             };
         if (!isAccountSessionActive()) return;
@@ -674,7 +622,7 @@ export function FacebookPlatformEntry() {
           if (ageCategory === "13_plus" && configurationLoaded) {
             stopAnalytics = installFacebookAnalytics(sdk, isAccountSessionActive);
           }
-          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, haptics, nativeSocial, banner, sessionScore, notificationProvider, launch,
+          setStartup({status: "ready", session: synchronizedSession, playerData, referralSharing, settingsActions, haptics, nativeSocial, banner, notificationProvider, launch,
             analyticsAvailable: ageCategory === "13_plus" && configurationLoaded});
         }
       } catch {
@@ -702,7 +650,6 @@ export function FacebookPlatformEntry() {
       hostEnvironment?.retire();
       haptics?.retire();
       nativeSocial?.retire();
-      sessionScore?.retire();
       void banner?.retire().catch(() => undefined);
       if (bannerRef.current === banner) bannerRef.current = null;
       if (hapticsRef.current === haptics) hapticsRef.current = null;
@@ -778,7 +725,6 @@ export function FacebookPlatformEntry() {
     hostEnvironmentRef.current?.retire();
     hapticsRef.current?.retire();
     startup.nativeSocial?.retire();
-    startup.sessionScore?.retire();
     await startup.banner?.retire();
     await startup.notificationProvider?.setEnabled(false);
     startup.notificationProvider?.retire();
@@ -792,7 +738,6 @@ export function FacebookPlatformEntry() {
     startup.settingsActions?.retire();
     startup.haptics?.retire();
     startup.nativeSocial?.retire();
-    startup.sessionScore?.retire();
     await startup.banner?.retire();
     hostEnvironmentRef.current?.retire();
     startup.notificationProvider?.retire();
@@ -848,7 +793,6 @@ export function FacebookPlatformEntry() {
     <HapticFeedbackProvider capability={startup.haptics}>
     <FacebookNativeSocialProvider capability={startup.nativeSocial}>
     <FacebookBannerLayout banner={startup.banner}>
-    <FacebookSessionScoreProvider capability={startup.sessionScore}>
     <div style={{display: "contents"}} inert={quitPending || undefined}>
       <PlayHostApp
         raceSurface={FacebookRaceSurface}
@@ -876,7 +820,6 @@ export function FacebookPlatformEntry() {
         onAuthoritativeComplete={onLevelCompleted}
       />
     </div>
-    </FacebookSessionScoreProvider>
     </FacebookBannerLayout>
     </FacebookNativeSocialProvider>
     </HapticFeedbackProvider>

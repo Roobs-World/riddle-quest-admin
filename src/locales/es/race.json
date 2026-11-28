@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Iniciar un torneo en este grupo",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Elegir un grupo y empezar",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Al empezar, se publican una clasificación y tu puntuación en el chat del grupo.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Es posible que el torneo haya empezado. Revisa el chat del grupo antes de volver a intentarlo.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Este torneo de grupo usa otras reglas de carrera. Tu puntuación no se puede actualizar aquí.",
     "TITLE": "Carrera a 10",
     "CLOSE": "Cerrar Carrera a 10",
     "QUIT_TITLE": "¿Salir de esta carrera?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Invitación guardada. Aparecerá en la bandeja de entrada multijugador del jugador.",
     "LIVE_HISTORY_TITLE": "Partidas recientes",
     "LIVE_HISTORY_EMPTY": "Aún no hay partidas completadas.",
-    "FACEBOOK_SOCIAL": "Jugar en Facebook",
-    "FACEBOOK_FRIEND_COUNT": "Amigos que juegan: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Jugadores en este grupo: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Elegir amigos",
     "FACEBOOK_LEAVE_CONTEXT": "Volver al juego en solitario",
-    "FACEBOOK_TOURNAMENTS": "Torneos de Facebook",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Torneo {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Unirse al torneo",
-    "FACEBOOK_REFRESH": "Actualizar",
-    "FACEBOOK_JOIN_ROOM": "Unirse al juego de la sala",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Compartir puntuación de la carrera"
+    "FACEBOOK_JOIN_ROOM": "Unirse al juego de la sala"
   }
 }

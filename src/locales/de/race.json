@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Turnier in dieser Gruppe starten",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Gruppe auswählen und starten",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Beim Start werden eine Rangliste und dein Rennergebnis im Gruppenchat veröffentlicht.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Das Turnier wurde möglicherweise gestartet. Prüfe den Gruppenchat, bevor du es erneut versuchst.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Dieses Gruppenturnier verwendet andere Rennregeln. Dein Ergebnis kann hier nicht aktualisiert werden.",
     "TITLE": "Rennen bis 10",
     "CLOSE": "Rennen schließen",
     "QUIT_TITLE": "Dieses Rennen beenden?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Einladung gespeichert. Sie erscheint im Mehrspieler-Posteingang des Spielers.",
     "LIVE_HISTORY_TITLE": "Letzte Spiele",
     "LIVE_HISTORY_EMPTY": "Noch keine abgeschlossenen Spiele.",
-    "FACEBOOK_SOCIAL": "Auf Facebook spielen",
-    "FACEBOOK_FRIEND_COUNT": "Freunde, die spielen: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Spieler in dieser Gruppe: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Freunde auswählen",
     "FACEBOOK_LEAVE_CONTEXT": "Zum Solospiel zurückkehren",
-    "FACEBOOK_TOURNAMENTS": "Facebook-Turniere",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Turnier {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Am Turnier teilnehmen",
-    "FACEBOOK_REFRESH": "Aktualisieren",
-    "FACEBOOK_JOIN_ROOM": "Dem Spiel im Raum beitreten",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Rennpunktzahl teilen"
+    "FACEBOOK_JOIN_ROOM": "Dem Spiel im Raum beitreten"
   }
 }

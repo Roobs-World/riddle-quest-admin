@@ -2,10 +2,12 @@
 
 As of 16 October 2026, the hourly Facebook context-retention schedule is removed. Request-time expiry, rollover deletion, account deletion and manual retention commands remain. Untouched expired records are not guaranteed automatic physical cleanup. Analytics does not delete provider data.
 
-Last updated: 2026-11-27
+Last updated: 2026-11-28
 
 This runbook describes the Facebook web target currently present in source. It is not release approval. The authoritative acceptance status is
 [`facebook-instant-games-progress.html`](facebook-instant-games-progress.html). An exact-hash, non-production role-account test draft is permitted only after the local artifact/backend preflight so P0 Meta-hosted evidence can be collected. Business/Partner approval, production promotion, public traffic, and a claim of release readiness remain forbidden until their required gates pass.
+
+The owner’s 28 November revision removes tournament UI and its client composition on Facebook, including native discovery, joins, group creation, official-board projection and tournament-dependent session-score controls. Multiplayer uses the existing Play with friends and Find opponent actions, with conditional room/solo actions in the same row. Firebase and provider-server modules remain unchanged. Earlier tournament operations below are historical and do not authorize re-enabling that product surface.
 
 ## Build and inspect
 

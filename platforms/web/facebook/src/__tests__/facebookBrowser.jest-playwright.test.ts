@@ -1,9 +1,8 @@
 import {verifyImmediateSoloFeedback} from "../../../../../src/app/testing/browser/__tests__/instantFeedback.jest-playwright.support.ts";
 import {installFacebookSubscriptionFixture, verifyRewardedContinue} from "./rewardedContinue.jest-playwright.support.ts";
-import {verifyTournamentScoreRecovery} from "./tournamentRecovery.jest-playwright.support.ts";
 import {installRaceContextDialogs, verifyRaceContextDialogs} from "./raceDialogs.jest-playwright.support.ts";
 import {verifyContextChallenges} from "./contextChallenges.jest-playwright.support.ts";
-import {installTournamentPresentation, verifyTournamentPresentation, verifyTournamentEntry, verifyTournamentLiveResult, verifyListedTournamentJoin} from "./tournaments.jest-playwright.support.ts";
+import {installRemovedTournamentFixtures, verifyIntegratedMultiplayerControls, verifyRemovedTournamentEntry, verifyLiveContextResult} from "./multiplayerControls.jest-playwright.support.ts";
 import {installLiveMultiplayerJourney} from "../../../../../src/app/testing/browser/__tests__/liveMultiplayer.jest-playwright.support.ts";
 import {describe, expect, it} from "@jest/globals";
 import {expectWebStandards} from "../../../../../src/app/testing/browser/__tests__/webStandards.jest-playwright.support.ts";
@@ -68,7 +67,6 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         FACEBOOK_BUILD_OUT_DIR: distDirectory,
         VITE_FACEBOOK_AGE_CATEGORY: "13_plus",
         VITE_FACEBOOK_MESSENGER_BOT_ENABLED: "true",
-        VITE_FACEBOOK_PRIVATE_TOURNAMENTS_ENABLED: "false",
         VITE_FACEBOOK_BANNER_ENABLED: "true",
         VITE_FACEBOOK_BANNER_PLACEMENT_ID: "browser-banner-placement",
         VITE_FACEBOOK_REWARDED_PLACEMENT_ID: "browser-rewarded-placement",
@@ -592,7 +590,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       const nativeMatching = process.env.FACEBOOK_BROWSER_CONTEXT_MATCHING !== "0";
       await installRaceContextDialogs(successPage, nativeMatching, process.env.FACEBOOK_BROWSER_CONTEXT_EVENTS !== "0",
         process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1");
-      await installTournamentPresentation(successPage);
+      await installRemovedTournamentFixtures(successPage);
       if (process.env.FACEBOOK_BROWSER_NATIVE_AD_PLACEMENT === "1") {
         await verifyNativeAdPlacement(successPage, origin, subscription);
         return;
@@ -601,7 +599,7 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
         await verifyAdLifecycle(successPage, origin, subscription);
         return;
       }
-      await successPage.goto(`${origin}/?harness=race&unsupported-create=on`);
+      await successPage.goto(`${origin}/?harness=race&native-room=on`);
       try {
         await successPage.waitForFunction(
           () => window.__facebookEvents.includes("read:riddleQuestPlayerState"),
@@ -717,38 +715,18 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await expectWebStandards(successPage, "facebook game");
       await verifyMultiplayer("fr");
       await successPage.locator(".multiplayer-navigation-action").click();
-      const socialPanel = successPage.locator(".facebook-native-social");
-      await socialPanel.locator("summary").click();
-      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
-      await socialPanel.getByText("Joueurs dans ce groupe : 3", {exact: true}).waitFor();
-      await socialPanel.locator('[aria-busy="false"]').waitFor();
-      expect(await socialPanel.innerText()).not.toContain("fixture-friend");
-      await successPage.screenshot({path: path.join(evidenceDirectory, "native-social-mobile.png")});
-      const createContext = socialPanel.getByRole("button", {name: "Choisir des amis", exact: true});
-      await createContext.click();
-      await createContext.waitFor({state: "detached"});
-      await socialPanel.getByRole("status").filter({hasText: "Service temporairement indisponible. Veuillez réessayer."}).waitFor();
-      expect(await socialPanel.getByRole("alert").count()).toBe(0);
-      expect(await socialPanel.innerText()).not.toContain("Client does not support");
-      expect(await successPage.evaluate(() => Reflect.get(window, "__contextCreateCalls"))).toBe(1);
-      await socialPanel.locator('[aria-busy="false"]').waitFor();
-      await successPage.screenshot({path: path.join(evidenceDirectory, "unsupported-friend-picker-mobile.png")});
-      await socialPanel.getByRole("button", {name: "Actualiser", exact: true}).click();
-      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
-      expect(await createContext.count()).toBe(0);
-      await socialPanel.locator("summary").click();
-      await socialPanel.locator("summary").click();
-      await socialPanel.getByText("Amis qui jouent : 2", {exact: true}).waitFor();
-      expect(await createContext.count()).toBe(0);
-      expect(await successPage.evaluate(() => Reflect.get(window, "__contextCreateCalls"))).toBe(1);
-      await socialPanel.locator("summary").click();
+      await verifyIntegratedMultiplayerControls(successPage, nativeMatching);
       await successPage.getByRole("tab", {name: "Activité", exact: true}).click();
       expect(await successPage.getByRole("button", {name: "Jouer avec des amis", exact: true}).isEnabled()).toBe(true);
       expect(await successPage.evaluate(() => Reflect.get(window, "__contextDialogCalls"))).toBe(0);
-      await verifyTournamentPresentation(successPage);
       await verifyRaceContextDialogs(successPage, process.env.FACEBOOK_CONTEXT_SCREENSHOT_PATH);
       if (process.env.FACEBOOK_BROWSER_CONTEXT_CHALLENGES === "1") await verifyContextChallenges(successPage);
       await successPage.locator(".race-close").click();
+      if (process.env.FACEBOOK_BROWSER_MULTIPLAYER === "1") {
+        await verifyRemovedTournamentEntry(successPage, origin);
+        await verifyLiveContextResult(successPage);
+        return;
+      }
       await verifyImmediateSoloFeedback(successPage, "Facebook");
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:button_press:")))).toBe(true);
       expect(await successPage.evaluate(() => window.__facebookEvents.some(event => event.startsWith("analytics:guess_submitted:")))).toBe(true);
@@ -918,34 +896,8 @@ describeBrowser("Facebook artifact with injected FBInstant SDK", () => {
       await successPage.locator('.profile-page').waitFor({state: 'detached'});
       expect(await successPage.locator('body').innerText()).not.toContain('host-account-capability-unavailable');
       await verifyRewardedContinue(successPage, origin, subscription);
-      await verifyTournamentEntry(successPage, origin);
-      await verifyListedTournamentJoin(successPage, origin);
-      await verifyTournamentScoreRecovery(successPage, origin);
-      // Both tournament flag variants preserve live results.
-      for (const tournaments of [true, false]) {
-        await installTournamentPresentation(successPage);
-        await successPage.goto(`${origin}/?harness=race&live-consent=on&tournaments=${tournaments ? "on" : "off"}`);
-        await successPage.locator(".game-bottom-navigation").waitFor();
-        /** Provides fresh onboarding behavior. */
-        const freshOnboarding = successPage.locator(".onboarding-card .play-primary");
-        if (await freshOnboarding.count()) {
-          await freshOnboarding.click();
-          await successPage.locator(".onboarding-clues").waitFor();
-          await freshOnboarding.click();
-          await freshOnboarding.waitFor({state: "detached"});
-        }
-        for (const id of ["gameHint", "submitAnswer", "gameSkip"]) {
-          /** Provides tooltip behavior. */
-          const tooltip = successPage.locator(`.tooltip-backdrop[data-tooltip-id="${id}"]`);
-          if (await tooltip.count()) await tooltip.locator("button").click();
-        }
-        if (tournaments) {
-          await successPage.locator(".multiplayer-navigation-action").click();
-          await verifyTournamentPresentation(successPage);
-          await successPage.locator(".race-close").click();
-        }
-        await verifyTournamentLiveResult(successPage, tournaments);
-      }
+      await verifyRemovedTournamentEntry(successPage, origin);
+      await verifyLiveContextResult(successPage);
       await verifyGenericProfileOverlay(successPage, origin, evidenceDirectory);
       await verifyBannerActivation(successPage, origin, subscription);
       await verifyAdLifecycle(successPage, origin, subscription);

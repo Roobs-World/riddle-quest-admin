@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Bu grupta turnuva başlat",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Bir grup seç ve başlat",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Başlatıldığında liderlik tablosu ve yarış puanın grup sohbetinde paylaşılır.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "Turnuva başlamış olabilir. Tekrar denemeden önce grup sohbetini kontrol et.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Bu grup turnuvası farklı yarış ayarları kullanıyor. Puanın burada güncellenemez.",
     "TITLE": "10’a Yarış",
     "CLOSE": "Yarışı kapat",
     "QUIT_TITLE": "Bu yarıştan çıkılsın mı?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Davet kaydedildi. Oyuncunun çok oyunculu gelen kutusunda görünecek.",
     "LIVE_HISTORY_TITLE": "Son maçlar",
     "LIVE_HISTORY_EMPTY": "Henüz tamamlanmış maç yok.",
-    "FACEBOOK_SOCIAL": "Facebook'ta oyna",
-    "FACEBOOK_FRIEND_COUNT": "Oynayan arkadaşlar: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Bu gruptaki oyuncular: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Arkadaş seç",
     "FACEBOOK_LEAVE_CONTEXT": "Tek oyunculu oyuna dön",
-    "FACEBOOK_TOURNAMENTS": "Facebook turnuvaları",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Turnuva {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Turnuvaya katıl",
-    "FACEBOOK_REFRESH": "Yenile",
-    "FACEBOOK_JOIN_ROOM": "Oda oyununa katıl",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Yarış puanını paylaş"
+    "FACEBOOK_JOIN_ROOM": "Oda oyununa katıl"
   }
 }

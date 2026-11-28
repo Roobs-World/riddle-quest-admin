@@ -1,5 +1,7 @@
 # Review Riddle Quest Testing version 23
 
+**Current source revision:** the owner has removed Facebook tournaments and the separate Play on Facebook disclosure. The revised multiplayer page uses its existing Play with friends/Find opponent controls plus available room/solo actions. Tournament/session-score journeys below describe the earlier candidate and are excluded from the revised scope. Version 23 remains the last uploaded candidate until the new Testing receipt is recorded.
+
 Updated **28 November 2026** for developer-role testing of Riddle Quest. Version 23 is in **Testing** with bounded interstitial observability. The exact upload and all 420 runtime files are verified. Narrow Android interstitial display, diagnostic trace readback and normal Quit/relaunch restoration passed; the broader native matrix remains open. Earlier version 22 results are retained below as historical evidence and do not certify this candidate. The Android post-Terms persistence stall and broader submission completeness remain unresolved. No review submission, Production promotion or publication was requested.
 
 Use the [API submission checklist](facebook-api-submission-checklist-2026-11-27.md) as the authoritative record of coverage, prerequisites, and acceptance journeys. The [September handoff](facebook-review-draft-2026-09-19.md) is historical and does not describe this candidate's current configuration.

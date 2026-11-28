@@ -1,10 +1,5 @@
 {
   "RaceTo10": {
-    "FACEBOOK_START_GROUP_TOURNAMENT": "Iniciar torneio neste grupo",
-    "FACEBOOK_CHOOSE_GROUP_TOURNAMENT": "Escolher um grupo e começar",
-    "FACEBOOK_GROUP_TOURNAMENT_NOTICE": "Ao começar, uma classificação e sua pontuação são publicadas no chat do grupo.",
-    "FACEBOOK_GROUP_TOURNAMENT_UNCERTAIN": "O torneio pode ter começado. Confira o chat do grupo antes de tentar novamente.",
-    "FACEBOOK_GROUP_TOURNAMENT_INCOMPATIBLE": "Este torneio de grupo usa outras regras de corrida. Sua pontuação não pode ser atualizada aqui.",
     "TITLE": "Corrida até 10",
     "CLOSE": "Fechar Corrida até 10",
     "QUIT_TITLE": "Sair desta corrida?",
@@ -127,16 +122,7 @@
     "INVITE_QUEUED": "Convite salvo. Ele aparecerá na caixa de entrada multijogador do jogador.",
     "LIVE_HISTORY_TITLE": "Partidas recentes",
     "LIVE_HISTORY_EMPTY": "Ainda não há partidas concluídas.",
-    "FACEBOOK_SOCIAL": "Jogar no Facebook",
-    "FACEBOOK_FRIEND_COUNT": "Amigos que jogam: {count}",
-    "FACEBOOK_CONTEXT_COUNT": "Jogadores neste grupo: {count}",
-    "FACEBOOK_CREATE_CONTEXT": "Escolher amigos",
     "FACEBOOK_LEAVE_CONTEXT": "Voltar ao jogo solo",
-    "FACEBOOK_TOURNAMENTS": "Torneios do Facebook",
-    "FACEBOOK_TOURNAMENT_NUMBER": "Torneio {number}",
-    "FACEBOOK_JOIN_TOURNAMENT": "Entrar no torneio",
-    "FACEBOOK_REFRESH": "Atualizar",
-    "FACEBOOK_JOIN_ROOM": "Entrar no jogo da sala",
-    "FACEBOOK_SHARE_SESSION_SCORE": "Partilhar pontuação da corrida"
+    "FACEBOOK_JOIN_ROOM": "Entrar no jogo da sala"
   }
 }
