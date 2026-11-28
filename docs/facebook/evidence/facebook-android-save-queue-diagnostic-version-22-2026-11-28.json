@@ -1,0 +1,370 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "scope": "Single-account Android Terms/Back/Quit diagnostic using bounded read-only CDP queue inspection; diagnostic evidence, not uninterrupted acceptance.",
+  "artifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "receipt": "facebook-testing-version-22-2026-11-28.json",
+    "unchanged": true
+  },
+  "identity": {
+    "launchAt": "2026-11-28T06:02:54.079494+00:00",
+    "observedAt": "2026-11-28T06:04:19.767Z",
+    "method": "Read existing game execution context through Android Facebook WebView CDP",
+    "origin": "https://apps-1748953042991569.apps.fbsbx.com",
+    "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+    "title": "Riddle Quest",
+    "sdkVersionReadInThisPhase": false,
+    "supportedApiInventoryReadInThisPhase": false
+  },
+  "diagnosticAccess": {
+    "androidFacebookWebViewTargetExposedAfterLaunch": true,
+    "targetsBeforeLaunch": 0,
+    "temporaryAdbForwardUsed": true,
+    "browserConnectorReachedPhone": false,
+    "rawTargetUrlsRetainedPublicly": false
+  },
+  "method": {
+    "selection": "Unique bounded structural hook-ref match from the current React tree in the exact game default execution context. No player projection, preferences, epoch, promise result or SDK payload serialized.",
+    "promiseRead": "Runtime.getProperties internal [[PromiseState]] for existing projection.pending, operationGate.tail and storage.operationTail handles.",
+    "v1": "First two snapshots retain final timestamp and captured-instance tail/owner equality only; current React owner was not reselected afterward.",
+    "v2": "Remaining snapshots record read-window start/end, require a unique default execution context, use bounded cycle-aware traversal with cap rejection, and reselect the current React owner after sequential reads. All recorded tail/owner equality checks passed.",
+    "atomic": false,
+    "observerInterferenceExcluded": false,
+    "objectGroupReleaseAttemptedInFinally": true,
+    "webSocketsClosedAfterEachSnapshot": true,
+    "sdkOrStorageOrLockMethodsInvokedByObserver": false,
+    "debuggerPauseOrBreakpointsUsed": false,
+    "injectedListenersOrTimersUsed": false,
+    "sdkPatched": false
+  },
+  "gameplay": {
+    "observedAt": "2026-11-28T06:08:08.647411+00:00",
+    "riddle": "PANDA",
+    "emptyRows": 5,
+    "coins": 1310,
+    "guessesOrRewardsPerformed": false,
+    "preferencesOrConsentChanged": false,
+    "reducedMotion": "Off"
+  },
+  "journey": {
+    "termsRequestedAt": "2026-11-28T06:08:41.240396+00:00",
+    "nativeConfirmationObservedAt": "2026-11-28T06:09:24.530119+00:00",
+    "openLinkTappedAt": "2026-11-28T06:10:57.116095+00:00",
+    "termsPageObservedAt": "2026-11-28T06:11:02.738253+00:00",
+    "androidBackAt": "2026-11-28T06:11:14.099401+00:00",
+    "settingsReturnObservedAt": "2026-11-28T06:11:21.158971+00:00",
+    "normalQuitTappedAt": "2026-11-28T06:11:33.786821+00:00",
+    "normalQuitAttemptCount": 1,
+    "warningObservedAt": "2026-11-28T06:12:55.888229+00:00",
+    "warningText": "Progress isn't saved yet. Keep the game open.",
+    "warningAndEnabledControlsConfirmedAt": "2026-11-28T06:12:58.634914+00:00",
+    "normalAppQuitSucceeded": false,
+    "hostMenuOpenedAt": "2026-11-28T06:13:27.994560+00:00",
+    "hostQuitAt": "2026-11-28T06:13:40.964570+00:00",
+    "outsideGameObservedAt": "2026-11-28T06:14:03.773473+00:00"
+  },
+  "queueSnapshots": [
+    {
+      "label": "before-terms",
+      "observerVersion": 1,
+      "at": "2026-11-28T06:07:16.145Z",
+      "flags": {
+        "visited": 192,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true
+      }
+    },
+    {
+      "label": "settings-baseline",
+      "observerVersion": 1,
+      "at": "2026-11-28T06:08:24.178Z",
+      "flags": {
+        "visited": 251,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true
+      }
+    },
+    {
+      "label": "pre-open-link",
+      "observerVersion": 2,
+      "startAt": "2026-11-28T06:10:46.594Z",
+      "endAt": "2026-11-28T06:10:46.679Z",
+      "at": "2026-11-28T06:10:46.679Z",
+      "flags": {
+        "visited": 251,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "label": "after-back-before-quit",
+      "observerVersion": 2,
+      "startAt": "2026-11-28T06:11:21.548Z",
+      "endAt": "2026-11-28T06:11:21.647Z",
+      "at": "2026-11-28T06:11:21.647Z",
+      "flags": {
+        "visited": 252,
+        "projectionCount": 1,
+        "outstanding": 0,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": true
+      },
+      "promiseStates": {
+        "projectionPending": "fulfilled",
+        "gateTail": "fulfilled",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "label": "after-quit-initial",
+      "observerVersion": 2,
+      "startAt": "2026-11-28T06:11:33.840Z",
+      "endAt": "2026-11-28T06:11:34.000Z",
+      "at": "2026-11-28T06:11:34.000Z",
+      "flags": {
+        "visited": 251,
+        "projectionCount": 1,
+        "outstanding": 2,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "pending",
+        "gateTail": "pending",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "label": "after-quit-settled-window",
+      "observerVersion": 2,
+      "startAt": "2026-11-28T06:12:05.542Z",
+      "endAt": "2026-11-28T06:12:05.613Z",
+      "at": "2026-11-28T06:12:05.613Z",
+      "flags": {
+        "visited": 252,
+        "projectionCount": 1,
+        "outstanding": 3,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "pending",
+        "gateTail": "pending",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    },
+    {
+      "label": "warning-visible",
+      "observerVersion": 2,
+      "startAt": "2026-11-28T06:13:27.863Z",
+      "endAt": "2026-11-28T06:13:27.966Z",
+      "at": "2026-11-28T06:13:27.966Z",
+      "flags": {
+        "visited": 252,
+        "projectionCount": 1,
+        "outstanding": 3,
+        "projectionDirty": false,
+        "preferencesDirty": false,
+        "projectionAccepting": true,
+        "gateAccepting": true,
+        "crossContextLockPresent": true,
+        "requireCrossContextLock": true,
+        "visibility": "visible",
+        "paused": false
+      },
+      "promiseStates": {
+        "projectionPending": "pending",
+        "gateTail": "pending",
+        "storageTail": "fulfilled"
+      },
+      "referencesStable": {
+        "projectionPending": true,
+        "gateTail": true,
+        "storageTail": true,
+        "gateOwner": true,
+        "storageOwner": true,
+        "currentReactProjectionOwner": true,
+        "currentReactGateOwner": true,
+        "currentReactStorageOwner": true
+      }
+    }
+  ],
+  "interpretation": [
+    "At the post-Back pre-Quit snapshot, all three tails were fulfilled and projection outstanding was zero. The later sampled wait therefore arose after that snapshot, without identifying which intervening caller admitted it.",
+    "After Quit, projection pending and gate tail were pending while storage tail remained fulfilled. This narrows the observed wait to work before storage or an unfinished gate lifetime; it does not establish a held Web Lock.",
+    "PlayerProjectionPersistence.flush() enqueues but does not acquire the operation gate. A pending gate can belong to an accepted update or another shared gated operation ahead of the flush.",
+    "Both dirty flags remained false. That is consistent with a wait before a guarded update merges, not proof that no write was accepted.",
+    "Outstanding increased from 2 to 3, proving another accepted queue position but not its caller.",
+    "The DOM paused observation was true after Back and false after Quit. The transition and its cause were not traced or diagnosed."
+  ],
+  "cleanup": {
+    "at": "2026-11-28T06:14:04.472154+00:00",
+    "finalActivity": "FbMainTabActivity",
+    "temporaryUiXmlRemoved": true,
+    "ownedAdbForwardRemoved": true,
+    "liveCdpSessions": 0,
+    "hostQuitUsed": true,
+    "normalAppQuitSucceeded": false
+  },
+  "acceptance": {
+    "successfulSaveOrNormalQuitEstablished": false,
+    "rootCauseEstablished": false,
+    "heldLockEstablished": false,
+    "exactBlockedCallerEstablished": false,
+    "nativeStorageCallTraceCaptured": false,
+    "hostExitCountsAsRecovery": false,
+    "coverageCountsChanged": false
+  },
+  "limits": [
+    "Reads are sequential rather than atomic; stable captured handles and current-owner comparisons do not exclude transient activity between reads.",
+    "CDP inspection may affect scheduling despite no SDK mutation or pause; this diagnostic cannot be treated as an unobserved native acceptance run.",
+    "The three promises are queue tails/barriers and do not identify the actual native lock request or guarded callback.",
+    "No cloud-versus-local restoration trace, successful post-Terms save, normal app exit or relaunch acceptance was established.",
+    "Controller timestamps bound observations, not exact callback times; raw screenshots and target query strings remain private."
+  ],
+  "sourceChanged": false,
+  "newBuildOrUpload": false,
+  "automatedTestsRun": false,
+  "socialSendsPerformed": false,
+  "purchasesPerformed": false,
+  "destructiveCleanupPerformed": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-v22-cdp-observations.json": "0d22366eacfdac7e11d878cb9d541072db9271329cd2e0adb5d3e3d5a2038409",
+    "riddle-quest-v22-cdp-target-inspection.json": "8628d049128f5043bb15ec2364b08752b6d4b9504b86b249a00fc4271914d6c4",
+    "riddle-quest-v22-cdp-before-terms-queues.json": "010d5a2edd28ce0f927dbfa21473293a0381584b6c4e17cdcf078d1b022895a5",
+    "riddle-quest-v22-cdp-settings-baseline-queues.json": "1683322d866a5338135c5b95d40b4797b8df22f23f0d1c0657b2fe0b70dc9c93",
+    "riddle-quest-v22-cdp-pre-open-link-queues.json": "1ee9746c891dcb0e3991c7b50f4ee7dd17f927cf7e18e8cce46394241f4306b8",
+    "riddle-quest-v22-cdp-after-back-before-quit-queues.json": "a2d767f18964037184c18bf8f99ff3599b26f62eb451f26e226413453dcaeb55",
+    "riddle-quest-v22-cdp-after-quit-initial-queues.json": "ba7c9121e029c073795a2e219648619ba4431f1a4a27e2d901bee71a8bca9ce6",
+    "riddle-quest-v22-cdp-after-quit-settled-window-queues.json": "1298cdeee69cb7c42e2a24f66f890714beaf2c43b1753d8eca397f130a5a8727",
+    "riddle-quest-v22-cdp-warning-visible-queues.json": "c5c0e69cff139cc3e02711f80f79290bf5ad01864af03bd1ae4c1507f964c728",
+    "riddle-quest-cdp-queue-snapshot-v1.mjs": "3131fc4f0875d0bd0cdc7832d8154067a90ac237cbdb511a4c5e7bed1a3efb1f",
+    "riddle-quest-cdp-queue-snapshot.mjs": "aa040d6f5aaeaab1f172e5d6f1f71e7f4a9d014356f66d19ac180c317a3c665e",
+    "riddle-quest-v22-cdp-open-link.json": "b6ef8ea583a41a13673c1e6b317ef83c2d183d9647743b3e09791ca5d84c0d8b",
+    "riddle-quest-v22-cdp-quit.json": "c3989c0092b9452999edbf4e6da47a16f0a4a135c6a5d8da98549cf8306bb7a6",
+    "riddle-quest-v22-cdp-warning-controls.json": "0c462d6bca1879c5ebe6284b11b9ad23338382491c60c2002654ff4dae12ec1a",
+    "riddle-quest-v22-cdp-quit-outcome.png": "e2afbc88f52405cca5a4c4ed19f80dbc1583078d5ef4f95d8c84e4f9c3c575b3",
+    "riddle-quest-v22-cdp-outside-game.png": "22c7c401dff9bdf0c412aec02feb87beb7eb24702d353abaaec11fc0db986993"
+  },
+  "rawScreenshotsCommitted": false
+}

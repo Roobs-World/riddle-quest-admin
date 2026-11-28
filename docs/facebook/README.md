@@ -19,6 +19,7 @@
 - [Current version 22 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-22-2026-11-28.json)
 - [Version 22 Android served banners, Settings close, Terms cancellation and Home return](evidence/facebook-android-banner-version-22-2026-11-28.md)
 - [Version 22 read-only lock query and lifecycle diagnostic](evidence/facebook-lock-lifecycle-diagnostic-version-22-2026-11-28.md)
+- [Version 22 Android save-queue observations before and after Terms/Quit](evidence/facebook-android-save-queue-diagnostic-version-22-2026-11-28.md)
 - [Version 22 Android Home/Recents recovery comparison](evidence/facebook-android-home-recovery-version-22-2026-11-28.md)
 - [Version 22 Android preference persistence and normal Quit/relaunch](evidence/facebook-android-preference-version-22-2026-11-28.md)
 - [Version 22 Android rewarded ad, wins and progress restoration](evidence/facebook-android-ads-version-22-2026-11-28.md)
