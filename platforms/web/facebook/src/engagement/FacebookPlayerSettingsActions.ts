@@ -8,6 +8,7 @@ import {createFacebookMessengerBotConsent} from "../notifications/FacebookMessen
 
 /** Meta permits only one shortcut prompt attempt per game session, including dismissal. */
 const shortcutAttempted = new WeakSet<FacebookInstantSdk>();
+const QUIT_PREPARATION_TIMEOUT_MS = 15_000;
 
 const ACTION_LABELS = {
   "create-shortcut": "Settings.ADD_SHORTCUT_BUTTON",
@@ -76,7 +77,8 @@ export function createFacebookPlayerSettingsActions({
   if (nativeActions.length === 0) return undefined;
 
   let retired = false;
-  const eligibilityLifetime = new AbortController();
+  const actionLifetime = new AbortController();
+  let quitPreparation: Promise<void> | undefined;
   let revision = 0;
   const current = () => !retired && isActive();
   const report = (action: FacebookPlayerSettingsAction, error: unknown) => {
@@ -106,17 +108,58 @@ export function createFacebookPlayerSettingsActions({
         settled = true;
         clearTimeout(timeout);
         signal?.removeEventListener("abort", cancel);
-        eligibilityLifetime.signal.removeEventListener("abort", cancel);
+        actionLifetime.signal.removeEventListener("abort", cancel);
         resolve(value && Date.now() < deadline && current() && !signal?.aborted);
       };
       const cancel = () => settle(false);
       timeout = setTimeout(cancel, 8_000);
       signal?.addEventListener("abort", cancel, {once: true});
-      eligibilityLifetime.signal.addEventListener("abort", cancel, {once: true});
-      if (signal?.aborted || eligibilityLifetime.signal.aborted) {cancel(); return;}
+      actionLifetime.signal.addEventListener("abort", cancel, {once: true});
+      if (signal?.aborted || actionLifetime.signal.aborted) {cancel(); return;}
       try {Promise.resolve(canRun(signal)).then(value => settle(value === true), cancel);} catch {cancel();}
     });
   };
+  const prepareForQuit = (signal?: AbortSignal): Promise<void> => new Promise((resolve, reject) => {
+    let settled = false;
+    const deadline = Date.now() + QUIT_PREPARATION_TIMEOUT_MS;
+    let timeout: ReturnType<typeof setTimeout>;
+    const expired = () => Date.now() >= deadline;
+    const inactive = () => !current() || signal?.aborted || actionLifetime.signal.aborted;
+    const timeoutError = () => new Error("facebook-quit-preparation-timeout");
+    const settle = (result: {saved: true} | {saved: false; error: unknown}) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timeout);
+      signal?.removeEventListener("abort", cancel);
+      actionLifetime.signal.removeEventListener("abort", cancel);
+      if (inactive()) reject(new Error("facebook-quit-preparation-cancelled"));
+      else if (expired()) reject(timeoutError());
+      else if (result.saved) resolve();
+      else reject(result.error);
+    };
+    const cancel = () => settle({saved: false, error: new Error("facebook-quit-preparation-cancelled")});
+    const startFreshPreparation = () => {
+      if (settled) return;
+      if (inactive() || expired()) {settle({saved: false, error: timeoutError()}); return;}
+      const preparation = Promise.resolve().then(() => {
+        if (settled || inactive() || expired()) throw timeoutError();
+        return flushBeforeQuit();
+      });
+      quitPreparation = preparation;
+      const clearPreparation = () => {
+        if (quitPreparation === preparation) quitPreparation = undefined;
+      };
+      preparation.then(clearPreparation, clearPreparation);
+      preparation.then(() => settle({saved: true}), error => settle({saved: false, error}));
+    };
+    timeout = setTimeout(() => settle({saved: false, error: timeoutError()}), QUIT_PREPARATION_TIMEOUT_MS);
+    signal?.addEventListener("abort", cancel, {once: true});
+    actionLifetime.signal.addEventListener("abort", cancel, {once: true});
+    if (inactive()) {cancel(); return;}
+    // Keep the actual save alive; a retry must flush newer progress after it settles.
+    if (quitPreparation) quitPreparation.then(startFreshPreparation, startFreshPreparation);
+    else startFreshPreparation();
+  });
 
   return {
     getSnapshot: () => snapshot,
@@ -147,7 +190,8 @@ export function createFacebookPlayerSettingsActions({
             return {status: "unavailable", message: "facebook-settings-action-ineligible"};
           }
           if (id === "quit") {
-            try {await flushBeforeQuit();} catch (error) {
+            try {await prepareForQuit(signal);} catch (error) {
+              if (!current() || signal?.aborted) return {status: "cancelled"};
               unsaved = true;
               report(id, error);
               return {status: "retryable-failure", message: "player-progress-unsaved"};
@@ -184,7 +228,7 @@ export function createFacebookPlayerSettingsActions({
     },
     retire: () => {
       retired = true;
-      eligibilityLifetime.abort();
+      actionLifetime.abort();
       botConsent?.retire();
       ++revision;
       snapshot = {actions: [], pendingAction: null};

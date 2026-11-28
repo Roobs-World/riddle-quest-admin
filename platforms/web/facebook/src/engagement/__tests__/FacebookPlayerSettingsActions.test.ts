@@ -445,6 +445,181 @@ describe("Facebook player Settings actions", () => {
     expect(harness.quit).toHaveBeenCalledTimes(1);
   });
 
+  it("restores Settings after 15 seconds of unsettled Quit preparation without quitting on late completion", async () => {
+    const harness = fixture();
+    const saving = deferred<void>();
+    const saved = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
+    const actions = requireActions(harness.options);
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const quitting = actions.run("quit").then(result => {outcome = result; return result;});
+    try {
+      await saving.promise;
+      await jest.advanceTimersByTimeAsync(14_999);
+      expect(outcome).toBe("pending");
+      expect(actions.getSnapshot().pendingAction).toBe("quit");
+      await jest.advanceTimersByTimeAsync(1);
+      expect({outcome, pendingAction: actions.getSnapshot().pendingAction}).toEqual({outcome: "unsaved", pendingAction: null});
+      expect(actions.getSnapshot().actions).toContainEqual({id: "quit", labelKey: "Settings.QUIT_GAME_BUTTON"});
+      await expect(runFacebookSdkDialog(harness.sdk, async () => ({status: "success", value: undefined})))
+        .resolves.toEqual({status: "success", value: undefined});
+      saved.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.quit).not.toHaveBeenCalled();
+    } finally {
+      saved.resolve();
+      await quitting;
+      jest.useRealTimers();
+    }
+  });
+
+  it("joins outstanding preparation on retry, then saves newer progress before quitting", async () => {
+    const harness = fixture();
+    const oldSave = deferred<void>();
+    const newerSave = deferred<void>();
+    const saving = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return oldSave.promise;})
+      .mockImplementationOnce(() => newerSave.promise);
+    const actions = requireActions(harness.options);
+    let firstOutcome = "pending";
+    jest.useFakeTimers();
+    const first = actions.run("quit").then(result => {firstOutcome = result; return result;});
+    let retry: ReturnType<typeof actions.run> | undefined;
+    try {
+      await saving.promise;
+      await jest.advanceTimersByTimeAsync(15_000);
+      expect(firstOutcome).toBe("unsaved");
+      retry = actions.run("quit");
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      oldSave.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(2);
+      expect(harness.quit).not.toHaveBeenCalled();
+      newerSave.resolve();
+      await expect(retry).resolves.toBe("success");
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      oldSave.resolve();
+      newerSave.resolve();
+      await first;
+      await retry;
+      jest.useRealTimers();
+    }
+  });
+
+  it("does not enqueue a fresh save for an expired retry and allows a later fresh Quit attempt", async () => {
+    const harness = fixture();
+    const saved = deferred<void>();
+    const saving = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
+    const actions = requireActions(harness.options);
+    let firstOutcome = "pending";
+    let retryOutcome = "pending";
+    jest.useFakeTimers();
+    const first = actions.run("quit").then(result => {firstOutcome = result; return result;});
+    let retry: ReturnType<typeof actions.run> | undefined;
+    try {
+      await saving.promise;
+      await jest.advanceTimersByTimeAsync(15_000);
+      expect(firstOutcome).toBe("unsaved");
+      retry = actions.run("quit").then(result => {retryOutcome = result; return result;});
+      await jest.advanceTimersByTimeAsync(15_000);
+      expect(retryOutcome).toBe("unsaved");
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      saved.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(1);
+      expect(harness.quit).not.toHaveBeenCalled();
+      await expect(actions.run("quit")).resolves.toBe("success");
+      expect(harness.flushBeforeQuit).toHaveBeenCalledTimes(2);
+      expect(harness.quit).toHaveBeenCalledTimes(1);
+    } finally {
+      saved.resolve();
+      await first;
+      await retry;
+      jest.useRealTimers();
+    }
+  });
+
+  it.each(["panel-closed", "retired"])("releases unsettled Quit admission when %s without cancelling the save", async condition => {
+    const harness = fixture();
+    const saving = deferred<void>();
+    const saved = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
+    const actions = requireActions(harness.options);
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const quitting = actions.run("quit", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await saving.promise;
+      if (condition === "panel-closed") panel.abort();
+      else actions.retire();
+      await jest.advanceTimersByTimeAsync(0);
+      expect({outcome, pendingAction: actions.getSnapshot().pendingAction}).toEqual({outcome: "cancelled", pendingAction: null});
+      await expect(runFacebookSdkDialog(harness.sdk, async () => ({status: "success", value: undefined})))
+        .resolves.toEqual({status: "success", value: undefined});
+      saved.resolve();
+      await jest.advanceTimersByTimeAsync(0);
+      expect(harness.quit).not.toHaveBeenCalled();
+      expect(harness.reportFailure).not.toHaveBeenCalled();
+    } finally {
+      saved.resolve();
+      await quitting;
+      jest.useRealTimers();
+    }
+  });
+
+  it("rejects a late saved result even when the timeout callback has not run", async () => {
+    const harness = fixture();
+    const saving = deferred<void>();
+    const saved = deferred<void>();
+    harness.flushBeforeQuit.mockImplementationOnce(() => {saving.resolve(); return saved.promise;});
+    const actions = requireActions(harness.options);
+    jest.useFakeTimers();
+    const quitting = actions.run("quit");
+    try {
+      await saving.promise;
+      jest.setSystemTime(Date.now() + 15_000);
+      saved.resolve();
+      await expect(quitting).resolves.toBe("unsaved");
+      expect(harness.quit).not.toHaveBeenCalled();
+      expect(actions.getSnapshot().pendingAction).toBeNull();
+    } finally {
+      saved.resolve();
+      await quitting;
+      jest.useRealTimers();
+    }
+  });
+
+  it("does not time out or bypass a pending native-dialog guard while preparing to Quit", async () => {
+    const harness = fixture();
+    const cleanup = deferred<void>();
+    const stop = registerFacebookSdkDialogGuard(harness.sdk, {beforeOpen: () => cleanup.promise, afterClose: () => undefined});
+    const actions = requireActions(harness.options);
+    const panel = new AbortController();
+    let outcome = "pending";
+    jest.useFakeTimers();
+    const quitting = actions.run("quit", panel.signal).then(result => {outcome = result; return result;});
+    try {
+      await jest.advanceTimersByTimeAsync(30_000);
+      expect(outcome).toBe("pending");
+      expect(harness.flushBeforeQuit).not.toHaveBeenCalled();
+      expect(harness.quit).not.toHaveBeenCalled();
+      panel.abort();
+      cleanup.resolve();
+      await expect(quitting).resolves.toBe("cancelled");
+    } finally {
+      panel.abort();
+      cleanup.resolve();
+      await quitting;
+      stop();
+      jest.useRealTimers();
+    }
+  });
+
   it.each(["retired", "account-replaced"])("does not quit after becoming %s while saving", async condition => {
     const harness = fixture();
     const actions = requireActions(harness.options);

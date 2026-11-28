@@ -22,6 +22,7 @@
 - [Historical version 16 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-16-2026-11-28.json)
 - [Version 16 Android startup, banner, Terms cancellation and rewarded failure](evidence/facebook-android-host-version-16-2026-11-28.md)
 - [Android ad placement diagnosis and compatibility correction](evidence/facebook-android-ad-diagnosis-2026-11-28.md)
+- [Quit preparation timeout and save-ordering recovery](evidence/facebook-quit-preparation-recovery-2026-11-28.md)
 - [Version 16 Android advertised SDK capabilities](evidence/facebook-android-sdk-capabilities-version-16-2026-11-28.json)
 - [Historical version 15 Testing upload and exact archive acceptance](evidence/facebook-testing-version-15-2026-11-27.json)
 - [Version 15 native startup and inactive-banner fallback](evidence/facebook-native-banner-version-15-2026-11-27.md)
