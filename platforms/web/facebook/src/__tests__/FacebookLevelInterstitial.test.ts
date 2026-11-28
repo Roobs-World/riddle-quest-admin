@@ -1,12 +1,49 @@
-import {describe, expect, it, jest} from "@jest/globals";
+import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
+import {performance as timeline} from "node:perf_hooks";
 import {completionPresentationKey} from "../../../../../src/gameplay/session/completion/completionPresentation";
 import type {CompletionResult} from "../../../../../src/platform/contracts/hostServices";
 import type {HostCompletionInput} from "../../../../../src/progression/browser/hostCompletionEffects";
 import {createFacebookLevelInterstitial} from "../FacebookLevelInterstitial";
+import {createFacebookInterstitialTrace} from "../ads/FacebookInterstitialTrace";
 
 /** Each issued puzzle has a stable identity across transport retries. */
 const puzzle = (index: number, gameMode: HostCompletionInput["gameMode"] = "classic"): HostCompletionInput => ({
   gameMode, riddleId: `riddle-${index}`, sessionToken: `issued-session-${index}`,
+});
+
+describe("Facebook completed-level diagnostic ownership", () => {
+  const prefix = "riddle-quest:facebook:interstitial:";
+  const original = Object.getOwnPropertyDescriptor(globalThis, "performance");
+  const marks = () => timeline.getEntriesByType("mark").filter(mark => mark.name.startsWith(prefix));
+  beforeEach(() => {Object.defineProperty(globalThis, "performance", {configurable: true, value: timeline});});
+  afterEach(() => {
+    for (const mark of marks()) timeline.clearMarks(mark.name);
+    if (original) Object.defineProperty(globalThis, "performance", original);
+    else Reflect.deleteProperty(globalThis, "performance");
+  });
+
+  it("keeps a pending opportunity across duplicate receipts and isolates a newer completion from late settlement", async () => {
+    const trace = createFacebookInterstitialTrace();
+    const held = deferred();
+    const show = jest.fn(async () => held.promise);
+    const cadence = createFacebookLevelInterstitial({show, isActive: () => true, ...{trace}});
+    await cadence.complete(puzzle(1), win);
+    expect(marks().map(mark => mark.name)).toEqual([prefix + "completion", prefix + "cadence-one"]);
+    await cadence.complete(puzzle(2), win);
+    expect(marks().map(mark => mark.name)).toEqual([prefix + "completion", prefix + "cadence-two"]);
+    const pending = cadence.complete(puzzle(3), win);
+    const opportunity = marks();
+    expect(opportunity.map(mark => mark.name)).toEqual([prefix + "completion", prefix + "opportunity"]);
+    await cadence.complete({...puzzle(3)}, {...win});
+    expect(marks()).toEqual(opportunity);
+    expect(show).toHaveBeenCalledTimes(1);
+    await cadence.complete(puzzle(4), win);
+    const successor = marks();
+    expect(successor.map(mark => mark.name)).toEqual([prefix + "completion", prefix + "cadence-one"]);
+    held.resolve();
+    await pending;
+    expect(marks()).toEqual(successor);
+  });
 });
 /** Authoritative success, independent of XP-level changes and awarded coins. */
 const win: CompletionResult = {isCorrect: true, attempts: 2, coinsEarned: 50, newlyUnlockedAchievementIds: []};

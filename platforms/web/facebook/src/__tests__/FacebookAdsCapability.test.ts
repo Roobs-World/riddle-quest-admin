@@ -1,4 +1,5 @@
-import {describe, expect, it, jest} from "@jest/globals";
+import {afterEach, beforeEach, describe, expect, it, jest} from "@jest/globals";
+import {performance as timeline} from "node:perf_hooks";
 import {createFacebookAdsCapability} from "../FacebookAdsCapability";
 import {createFacebookAdConfiguration, type FacebookAdFormat} from "../FacebookAdConfiguration";
 import {createFacebookLevelInterstitial} from "../FacebookLevelInterstitial";
@@ -6,6 +7,8 @@ import {completionPresentationKey} from "../../../../../src/gameplay/session/com
 import type {CompletionResult} from "../../../../../src/platform/contracts/hostServices";
 import type {HostCompletionInput} from "../../../../../src/progression/browser/hostCompletionEffects";
 import type {FacebookInstantSdk} from "../fbinstant";
+import {createFacebookInterstitialTrace} from "../ads/FacebookInterstitialTrace";
+import {registerFacebookSdkDialogGuard} from "../FacebookSdkDialogGate";
 
 /** Provides sdk with ad behavior. */
 const sdkWithAd = () => {
@@ -48,6 +51,205 @@ const deferred = () => {
 };
 
 const adFormats: FacebookAdFormat[] = ["interstitial", "rewarded"];
+
+describe("Facebook interstitial trace integration", () => {
+  const prefix = "riddle-quest:facebook:interstitial:";
+  const originalPerformance = Object.getOwnPropertyDescriptor(globalThis, "performance");
+  const phases = () => timeline.getEntriesByType("mark").filter(entry => entry.name.startsWith(prefix))
+    .map(entry => entry.name.slice(prefix.length));
+  beforeEach(() => {
+    Object.defineProperty(globalThis, "performance", {configurable: true, value: timeline});
+  });
+  afterEach(() => {
+    if (originalPerformance) Object.defineProperty(globalThis, "performance", originalPerformance);
+    else Reflect.deleteProperty(globalThis, "performance");
+    for (const phase of phases()) timeline.clearMarks(prefix + phase);
+  });
+
+  it("records each deferred admission boundary without changing SDK or predicate calls", async () => {
+    const harness = sdkWithAd();
+    const initialEligibility = deferred(), secondEligibility = deferred(), secondReading = deferred();
+    const guarding = deferred(), guardEntered = deferred(), creating = deferred(), createEntered = deferred();
+    const loading = deferred(), loadEntered = deferred(), showing = deferred(), showEntered = deferred();
+    const trace = createFacebookInterstitialTrace();
+    const lease = trace.begin();
+    const refreshEligibility = jest.fn<(format: FacebookAdFormat) => Promise<boolean>>()
+      .mockImplementationOnce(async () => {await initialEligibility.promise; return true;})
+      .mockImplementationOnce(async () => {secondReading.resolve(); await secondEligibility.promise; return true;});
+    const isActive = jest.fn(() => true), presentationIsCurrent = jest.fn(() => true);
+    const capturePresentation = jest.fn(() => presentationIsCurrent), isPlacementCurrent = jest.fn(() => true);
+    const adFree = jest.fn(() => false), now = jest.fn(() => 1_000_000);
+    const beforeOpen = jest.fn(async () => {guardEntered.resolve(); await guarding.promise;});
+    const afterClose = jest.fn(() => undefined);
+    const unregister = registerFacebookSdkDialogGuard(harness.sdk, {beforeOpen, afterClose});
+    harness.getInterstitialAdAsync.mockImplementation(async placement => {
+      createEntered.resolve();
+      await creating.promise;
+      harness.ad.getPlacementID.mockReturnValue(placement);
+      return harness.ad;
+    });
+    harness.ad.loadAsync.mockImplementation(async () => {loadEntered.resolve(); await loading.promise;});
+    harness.ad.showAsync.mockImplementation(async () => {showEntered.resolve(); await showing.promise;});
+    const options = {sdk: harness.sdk, placementId: "result-placement", adFree, isActive, capturePresentation,
+      refreshEligibility, captureInterstitialTrace: trace.capture, now};
+    const ads = requireAds(options);
+    const result = ads.showInterstitial("result", isPlacementCurrent);
+    try {
+      expect(phases()).toEqual(["completion", "admission", "eligibility-initial"]);
+      expect(refreshEligibility).toHaveBeenCalledTimes(1);
+      expect(harness.getInterstitialAdAsync).not.toHaveBeenCalled();
+
+      initialEligibility.resolve();
+      await guardEntered.promise;
+      expect(phases().slice(-2)).toEqual(["eligibility-initial-resolved", "dialog-guard"]);
+      expect(harness.getInterstitialAdAsync).not.toHaveBeenCalled();
+      guarding.resolve();
+      await createEntered.promise;
+      expect(phases().slice(-2)).toEqual(["dialog-operation", "create-invoked"]);
+      expect(harness.ad.loadAsync).not.toHaveBeenCalled();
+      creating.resolve();
+      await loadEntered.promise;
+      expect(phases().slice(-3)).toEqual(["create-resolved", "placement-before-load", "load-invoked"]);
+      expect(harness.ad.getPlacementID).toHaveBeenCalledTimes(1);
+      loading.resolve();
+      await secondReading.promise;
+      expect(phases().slice(-2)).toEqual(["load-resolved", "eligibility-after-load"]);
+      expect(harness.ad.showAsync).not.toHaveBeenCalled();
+      secondEligibility.resolve();
+      await showEntered.promise;
+      expect(phases().slice(-3)).toEqual(["eligibility-after-load-resolved", "placement-before-show", "show-invoked"]);
+      showing.resolve();
+      await expect(result).resolves.toEqual({status: "success", value: undefined});
+      expect(phases()).toEqual(expect.arrayContaining(["show-resolved", "success"]));
+      expect(harness.getInterstitialAdAsync).toHaveBeenCalledTimes(1);
+      expect(harness.getInterstitialAdAsync).toHaveBeenCalledWith("result-placement");
+      expect(harness.ad.loadAsync).toHaveBeenCalledTimes(1);
+      expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+      expect(harness.ad.getPlacementID).toHaveBeenCalledTimes(2);
+      expect(refreshEligibility.mock.calls).toEqual([["interstitial"], ["interstitial"]]);
+      expect(beforeOpen).toHaveBeenCalledTimes(1);
+      expect(afterClose).toHaveBeenCalledTimes(1);
+      expect(capturePresentation).toHaveBeenCalledTimes(1);
+      expect(isActive).toHaveBeenCalledTimes(8);
+      expect(presentationIsCurrent).toHaveBeenCalledTimes(7);
+      expect(isPlacementCurrent).toHaveBeenCalledTimes(7);
+      expect(adFree).toHaveBeenCalledTimes(6);
+      expect(now).toHaveBeenCalledTimes(2);
+    } finally {
+      for (const held of [initialEligibility, guarding, creating, loading, secondEligibility, showing]) held.resolve();
+      await result;
+      unregister();
+      lease.close();
+    }
+  });
+
+  it("identifies inactive-account suppression without evaluating later admission checks", async () => {
+    const harness = sdkWithAd(), trace = createFacebookInterstitialTrace();
+    trace.begin();
+    const isActive = jest.fn(() => false), presentationIsCurrent = jest.fn(() => true);
+    const isPlacementCurrent = jest.fn(() => true), refreshEligibility = jest.fn(async () => true);
+    const adFree = jest.fn(() => false), now = jest.fn(() => 1_000_000);
+    const ads = requireAds({sdk: harness.sdk, placementId: "result-placement", adFree, isActive,
+      capturePresentation: () => presentationIsCurrent, refreshEligibility,
+      captureInterstitialTrace: trace.capture, now});
+
+    await expect(ads.showInterstitial("result", isPlacementCurrent)).resolves.toMatchObject({status: "unavailable"});
+    expect(phases()).toEqual(expect.arrayContaining(["admission", "account-inactive", "unavailable"]));
+    expect(phases()).not.toContain("eligibility-initial");
+    expect(isActive).toHaveBeenCalledTimes(1);
+    expect(presentationIsCurrent).not.toHaveBeenCalled();
+    expect(isPlacementCurrent).not.toHaveBeenCalled();
+    expect(refreshEligibility).not.toHaveBeenCalled();
+    expect(harness.getInterstitialAdAsync).not.toHaveBeenCalled();
+    expect(adFree).toHaveBeenCalledTimes(1);
+    expect(now).toHaveBeenCalledTimes(1);
+    trace.retire();
+  });
+
+  it.each(["eligibility", "show"] as const)("keeps a retired visit's late %s settlement out of its successor capture", async boundary => {
+    const harness = sdkWithAd(), held = deferred(), entered = deferred();
+    const oldVisit = createFacebookInterstitialTrace();
+    oldVisit.begin();
+    let active = true, foreground = true, settled = false;
+    const refreshEligibility = jest.fn(async () => {
+      if (boundary === "eligibility") {entered.resolve(); await held.promise;}
+      return true;
+    });
+    harness.ad.showAsync.mockImplementation(async () => {entered.resolve(); await held.promise;});
+    const ads = requireAds({sdk: harness.sdk, placementId: "result-placement", adFree: false,
+      isActive: () => active, capturePresentation: () => () => foreground, refreshEligibility,
+      captureInterstitialTrace: oldVisit.capture, now: () => 1_000_000});
+    const result = ads.showInterstitial("result").then(value => {settled = true; return value;});
+    try {
+      await entered.promise;
+      oldVisit.retire();
+      active = false;
+      foreground = false;
+      const successor = createFacebookInterstitialTrace();
+      const next = successor.begin();
+      next.record("eligibility-initial");
+      const successorMarks = timeline.getEntriesByType("mark").filter(entry => entry.name.startsWith(prefix));
+      await Promise.resolve();
+      expect(settled).toBe(false);
+      expect(harness.ad.showAsync).toHaveBeenCalledTimes(boundary === "show" ? 1 : 0);
+      held.resolve();
+      await expect(result).resolves.toMatchObject({status: boundary === "show" ? "success" : "unavailable"});
+      expect(timeline.getEntriesByType("mark").filter(entry => entry.name.startsWith(prefix))).toEqual(successorMarks);
+      expect(harness.getInterstitialAdAsync).toHaveBeenCalledTimes(boundary === "show" ? 1 : 0);
+      expect(harness.ad.showAsync).toHaveBeenCalledTimes(boundary === "show" ? 1 : 0);
+      next.record("finished");
+      expect(phases()).toEqual(["completion", "eligibility-initial", "finished"]);
+      next.close();
+    } finally {
+      held.resolve();
+      await result;
+      oldVisit.retire();
+    }
+  });
+
+  it("keeps successful SDK admission unchanged when Performance is unavailable", async () => {
+    Object.defineProperty(globalThis, "performance", {configurable: true,
+      get: () => {throw new Error("User Timing unavailable");}});
+    const harness = sdkWithAd(), trace = createFacebookInterstitialTrace();
+    trace.begin();
+    const refreshEligibility = jest.fn(async () => true);
+    const ads = requireAds({sdk: harness.sdk, placementId: "result-placement", adFree: false,
+      refreshEligibility, captureInterstitialTrace: trace.capture, now: () => 1_000_000});
+    await expect(ads.showInterstitial("result")).resolves.toEqual({status: "success", value: undefined});
+    expect(refreshEligibility).toHaveBeenCalledTimes(2);
+    expect(harness.getInterstitialAdAsync).toHaveBeenCalledTimes(1);
+    expect(harness.ad.loadAsync).toHaveBeenCalledTimes(1);
+    expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+    expect(phases()).toEqual([]);
+    trace.retire();
+  });
+
+  it("keeps an admitted display bound to its captured lease when the same visit begins another completion", async () => {
+    const harness = sdkWithAd(), showing = deferred(), entered = deferred();
+    const trace = createFacebookInterstitialTrace();
+    trace.begin();
+    harness.ad.showAsync.mockImplementation(async () => {entered.resolve(); await showing.promise;});
+    const ads = requireAds({sdk: harness.sdk, placementId: "result-placement", adFree: false,
+      captureInterstitialTrace: trace.capture, now: () => 1_000_000});
+    const result = ads.showInterstitial("result");
+    try {
+      await entered.promise;
+      const next = trace.begin();
+      next.record("cadence-one");
+      const successorMarks = timeline.getEntriesByType("mark").filter(entry => entry.name.startsWith(prefix));
+      showing.resolve();
+      await expect(result).resolves.toEqual({status: "success", value: undefined});
+      expect(timeline.getEntriesByType("mark").filter(entry => entry.name.startsWith(prefix))).toEqual(successorMarks);
+      expect(harness.ad.showAsync).toHaveBeenCalledTimes(1);
+      expect(trace.capture()).toBe(next);
+      next.close();
+    } finally {
+      showing.resolve();
+      await result;
+      trace.retire();
+    }
+  });
+});
 
 describe.each(adFormats)("Facebook %s returned placement binding", format => {
   const fixture = () => {

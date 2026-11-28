@@ -35,6 +35,7 @@ import {createFacebookAdsCapability} from "./FacebookAdsCapability";
 import {createFacebookAdConfiguration} from "./FacebookAdConfiguration";
 import {createFacebookSubscriptionEntitlement} from "./ads/FacebookSubscriptionEntitlement";
 import {createFacebookAdPresentation} from "./ads/FacebookAdPresentation";
+import {createFacebookInterstitialTrace} from "./ads/FacebookInterstitialTrace";
 import {createFacebookLevelInterstitial} from "./FacebookLevelInterstitial";
 import type {HostCompletionInput} from "../../../../src/progression/browser/hostCompletionEffects";
 import type {CompletionResult} from "../../../../src/platform/contracts/hostServices";
@@ -186,6 +187,7 @@ export function FacebookPlatformEntry() {
     let unsubscribeAdsResume: (() => void) | undefined;
     let removeVictoryListener: (() => void) | undefined;
     let levelInterstitial: ReturnType<typeof createFacebookLevelInterstitial> | undefined;
+    let interstitialTrace: ReturnType<typeof createFacebookInterstitialTrace> | undefined;
     /** Payment lifecycle controller for the authenticated Facebook account. */
     let commerceSession: FacebookCommerceSession | undefined;
     let sessionNotifications: NotificationProvider | undefined;
@@ -362,10 +364,13 @@ export function FacebookPlatformEntry() {
             });
             bannerRef.current = banner ?? null;
             adPresentation = createFacebookAdPresentation(session.capabilities.lifecycle);
+            const currentInterstitialTrace = createFacebookInterstitialTrace();
+            interstitialTrace = currentInterstitialTrace;
             ads = createFacebookAdsCapability({
               sdk,
               isActive: isAccountSessionActive,
               capturePresentation: adPresentation.capture,
+              captureInterstitialTrace: currentInterstitialTrace.capture,
               placementId: import.meta.env.VITE_FACEBOOK_INTERSTITIAL_PLACEMENT_ID || "",
               rewardedPlacementId: import.meta.env.VITE_FACEBOOK_REWARDED_PLACEMENT_ID || "",
               rewardedEnabled: () => adConfiguration.allows("rewarded"),
@@ -381,8 +386,16 @@ export function FacebookPlatformEntry() {
             const sessionAds = ads;
             const currentLevelInterstitial = createFacebookLevelInterstitial({
               isActive: isAccountSessionActive,
+              trace: currentInterstitialTrace,
               show: async isCurrent => {
-                const result = await sessionAds?.showInterstitial("result", () => isCurrent() && document.visibilityState === "visible");
+                if (!sessionAds) {
+                  const trace = currentInterstitialTrace.capture();
+                  trace?.record("format-unavailable");
+                  trace?.record("unavailable");
+                  trace?.record("finished");
+                  return;
+                }
+                const result = await sessionAds.showInterstitial("result", () => isCurrent() && document.visibilityState === "visible");
                 if (result?.status === "retryable-failure" || result?.status === "terminal-failure") {
                   captureBrowserException(new Error(result.message), {component: "facebook_ads", operation: "show_level_interstitial"});
                 }
@@ -681,6 +694,7 @@ export function FacebookPlatformEntry() {
       unsubscribeAdsResume?.();
       removeVictoryListener?.();
       levelInterstitial?.retire();
+      interstitialTrace?.retire();
       if (levelInterstitialRef.current === levelInterstitial) levelInterstitialRef.current = null;
       commerceSession?.retire();
       sessionNotifications?.retire();

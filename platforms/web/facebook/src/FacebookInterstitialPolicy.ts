@@ -23,18 +23,39 @@ export const createFacebookInterstitialState = (adFree = false): FacebookInterst
   adFree,
 });
 
+/** Fixed diagnostic categories preserve the first frequency guard that rejected an impression. */
+export type FacebookInterstitialSuppressionReason =
+  | "clock-invalid"
+  | "wrong-placement"
+  | "ad-free-gate"
+  | "session-cap"
+  | "interstitial-cooldown"
+  | "rewarded-cooldown";
+
+/** Reports the first suppression reason, or permits the result-screen impression. */
+export function getFacebookInterstitialSuppressionReason(
+  state: FacebookInterstitialState,
+  placement: "startup" | "active_play" | "result",
+  nowMs: number,
+): FacebookInterstitialSuppressionReason | undefined {
+  if (!Number.isSafeInteger(nowMs) || nowMs < 0) return "clock-invalid";
+  if (placement !== "result") return "wrong-placement";
+  if (state.adFree) return "ad-free-gate";
+  if (state.shownThisSession >= SESSION_CAP) return "session-cap";
+  if (state.lastInterstitialAtMs !== undefined && nowMs - state.lastInterstitialAtMs < INTERSTITIAL_INTERVAL_MS) {
+    return "interstitial-cooldown";
+  }
+  return state.lastRewardedAtMs === undefined || nowMs - state.lastRewardedAtMs >= REWARDED_SUPPRESSION_MS
+    ? undefined : "rewarded-cooldown";
+}
+
 /** Allows Facebook interstitials only at post-game results and within every frequency guard. */
 export function canShowFacebookInterstitial(
   state: FacebookInterstitialState,
   placement: "startup" | "active_play" | "result",
   nowMs: number,
 ): boolean {
-  if (!Number.isSafeInteger(nowMs) || nowMs < 0) return false;
-  if (placement !== "result" || state.adFree || state.shownThisSession >= SESSION_CAP) return false;
-  if (state.lastInterstitialAtMs !== undefined && nowMs - state.lastInterstitialAtMs < INTERSTITIAL_INTERVAL_MS) {
-    return false;
-  }
-  return state.lastRewardedAtMs === undefined || nowMs - state.lastRewardedAtMs >= REWARDED_SUPPRESSION_MS;
+  return getFacebookInterstitialSuppressionReason(state, placement, nowMs) === undefined;
 }
 
 /** Records only a successfully displayed interstitial. */

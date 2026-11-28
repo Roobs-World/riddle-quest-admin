@@ -4,8 +4,9 @@ import {runFacebookSdkDialog} from "./FacebookSdkDialogGate";
 import {trackEvent} from "../../../../src/observability/analytics/events";
 import type {FacebookAdFormat} from "./FacebookAdConfiguration";
 import {createFacebookAdPreparation} from "./ads/FacebookAdPreparation";
+import {recordFacebookInterstitialError, type FacebookInterstitialTraceLease, type FacebookInterstitialTracePhase} from "./ads/FacebookInterstitialTrace";
 import {
-  canShowFacebookInterstitial,
+  getFacebookInterstitialSuppressionReason,
   createFacebookInterstitialState,
   recordFacebookInterstitialShown,
   recordFacebookRewardedShown,
@@ -43,6 +44,7 @@ export function createFacebookAdsCapability({
   isActive = () => true,
   capturePresentation = () => () => true,
   refreshEligibility = async () => true,
+  captureInterstitialTrace,
   now = Date.now,
 }: {
   /** Stores sdk. */
@@ -62,6 +64,8 @@ export function createFacebookAdsCapability({
   capturePresentation?: () => () => boolean;
   /** Resolves current server feature and subscription gates before requesting or displaying an ad. */
   refreshEligibility?: (format: FacebookAdFormat) => Promise<boolean>;
+  /** Captures the initiating completion before any asynchronous ad work. */
+  captureInterstitialTrace?: () => FacebookInterstitialTraceLease | undefined;
   /** Stores now. */
   now?: () => number;
 }): AdsCapability | undefined {
@@ -100,71 +104,119 @@ export function createFacebookAdsCapability({
     get rewardedAvailable() {return rewardedSupported && isActive() && (rewardedOfferAvailable?.() ?? isRewardedEnabled());},
     /** Provides show interstitial behavior. */
     async showInterstitial(placement, isPlacementCurrent = () => true) {
-      const presentationIsCurrent = capturePresentation();
-      const canPresent = () => isActive() && presentationIsCurrent();
-      /** Starts ed at ms. */
-      let startedAtMs: number;
+      const trace = captureInterstitialTrace?.();
+      const deny = (condition: boolean, reason: FacebookInterstitialTracePhase): boolean => {
+        if (condition) trace?.record(reason);
+        return condition;
+      };
+      const outcome = (result: PlatformResult<void>): PlatformResult<void> => {
+        trace?.record(result.status);
+        return result;
+      };
+      const suppressed = (): PlatformResult<void> => outcome({status: "unavailable", message: "facebook-interstitial-suppressed"});
+      trace?.record("admission");
       try {
-        startedAtMs = now();
-      } catch {
-        return {status: "unavailable", message: "facebook-interstitial-clock-invalid"};
-      }
-      if (
-        !canPresent() ||
-        interstitialsDisabled ||
-        !interstitialAvailable ||
-        showingInterstitial ||
-        showingRewarded ||
-        preparation.isPending() ||
-        placement !== "result" ||
-        !isPlacementCurrent()
-      ) {
-        return {status: "unavailable", message: "facebook-interstitial-suppressed"};
-      }
-      showingInterstitial = true;
-      let impressionDisplayed = false;
-      try {
-        if (!await refreshEligibility("interstitial") || !canPresent() || !isPlacementCurrent() ||
-          !canShowFacebookInterstitial({...state, adFree: hasAdFreeEntitlement()}, "result", startedAtMs)) {
-          return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+        const presentationIsCurrent = capturePresentation();
+        const canPresent = () => !deny(!isActive(), "account-inactive") &&
+          !deny(!presentationIsCurrent(), "foreground-invalid");
+        const resultIsCurrent = () => !deny(!isPlacementCurrent(), "result-no-longer-current");
+        const adFreeGate = () => deny(hasAdFreeEntitlement(), "ad-free-gate");
+        let startedAtMs: number;
+        try {
+          startedAtMs = now();
+        } catch {
+          trace?.record("clock-invalid");
+          return outcome({status: "unavailable", message: "facebook-interstitial-clock-invalid"});
         }
-        return await runFacebookSdkDialog(sdk, async () => {
-          if (!canPresent() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
-            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+        if (
+          !canPresent() ||
+          deny(interstitialsDisabled, "disabled-after-bookkeeping-failure") ||
+          deny(!interstitialAvailable, "format-unavailable") ||
+          deny(showingInterstitial, "interstitial-busy") ||
+          deny(showingRewarded, "rewarded-busy") ||
+          deny(preparation.isPending(), "preparation-pending") ||
+          deny(placement !== "result", "wrong-placement") ||
+          !resultIsCurrent()
+        ) return suppressed();
+        showingInterstitial = true;
+        let impressionDisplayed = false;
+        try {
+          trace?.record("eligibility-initial");
+          const eligible = await refreshEligibility("interstitial");
+          trace?.record("eligibility-initial-resolved");
+          const frequencySuppressed = () => {
+            const reason = getFacebookInterstitialSuppressionReason(
+              {...state, adFree: hasAdFreeEntitlement()}, "result", startedAtMs,
+            );
+            if (reason) trace?.record(reason);
+            return reason !== undefined;
+          };
+          if (deny(!eligible, "eligibility-denied") || !canPresent() || !resultIsCurrent() || frequencySuppressed()) {
+            return suppressed();
           }
-          trackEvent("ad_requested", {ad_format: "interstitial", placement});
-          const ad = await preparation.run("create", () => sdk.getInterstitialAdAsync!(normalizedPlacement));
-          if (!canPresent() || !isPlacementCurrent()) return {status: "unavailable", message: "facebook-interstitial-suppressed"};
-          assertPlacement(ad, normalizedPlacement);
-          if (!canPresent() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
-            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
+          trace?.record("dialog-guard");
+          const result = await runFacebookSdkDialog(sdk, async () => {
+            trace?.record("dialog-operation");
+            if (!canPresent() || !resultIsCurrent() || adFreeGate()) return suppressed();
+            trackEvent("ad_requested", {ad_format: "interstitial", placement});
+            const ad = await preparation.run("create", () => {
+              trace?.record("create-invoked");
+              return sdk.getInterstitialAdAsync!(normalizedPlacement);
+            });
+            trace?.record("create-resolved");
+            if (!canPresent() || !resultIsCurrent()) return suppressed();
+            trace?.record("placement-before-load");
+            assertPlacement(ad, normalizedPlacement);
+            if (!canPresent() || !resultIsCurrent() || adFreeGate()) return suppressed();
+            await preparation.run("load", () => {
+              trace?.record("load-invoked");
+              return ad.loadAsync();
+            });
+            trace?.record("load-resolved");
+            trace?.record("eligibility-after-load");
+            const stillEligible = await refreshEligibility("interstitial");
+            trace?.record("eligibility-after-load-resolved");
+            if (deny(!stillEligible, "eligibility-denied") || !canPresent() || !resultIsCurrent() || adFreeGate()) {
+              return suppressed();
+            }
+            trace?.record("placement-before-show");
+            assertPlacement(ad, normalizedPlacement);
+            if (!canPresent() || !resultIsCurrent() || adFreeGate()) return suppressed();
+            trace?.record("show-invoked");
+            await ad.showAsync();
+            trace?.record("show-resolved");
+            if (isActive()) trackEvent("ad_completed", {ad_format: "interstitial", placement});
+            impressionDisplayed = true;
+            let completedAtMs: number;
+            try { completedAtMs = now(); }
+            catch (error) {
+              trace?.record("clock-invalid");
+              throw error;
+            }
+            if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
+              trace?.record("clock-invalid");
+              throw new Error("facebook-interstitial-clock-invalid");
+            }
+            state = recordFacebookInterstitialShown(state, completedAtMs);
+            return {status: "success", value: undefined};
+          });
+          if (result.status === "unavailable") {
+            if (result.message === "facebook-provider-dialog-in-progress") trace?.record("dialog-busy");
+            if (result.message === "facebook-provider-surface-not-hidden") trace?.record("surface-not-hidden");
           }
-          await preparation.run("load", () => ad.loadAsync());
-          if (!await refreshEligibility("interstitial") || !canPresent() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
-            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
-          }
-          assertPlacement(ad, normalizedPlacement);
-          if (!canPresent() || !isPlacementCurrent() || hasAdFreeEntitlement()) {
-            return {status: "unavailable", message: "facebook-interstitial-suppressed"};
-          }
-          await ad.showAsync();
-          if (isActive()) trackEvent("ad_completed", {ad_format: "interstitial", placement});
-          impressionDisplayed = true;
-          /** Completes d at ms. */
-          const completedAtMs = now();
-          if (!Number.isSafeInteger(completedAtMs) || completedAtMs < startedAtMs) {
-            throw new Error("facebook-interstitial-clock-invalid");
-          }
-          state = recordFacebookInterstitialShown(state, completedAtMs);
-          return {status: "success", value: undefined};
-        });
-      } catch (error) {
-        if (isActive()) trackEvent("ad_failed", {ad_format: "interstitial", placement});
-        // A displayed impression still counts when local bookkeeping fails.
-        if (impressionDisplayed) interstitialsDisabled = true;
-        return failure(error);
+          return outcome(result);
+        } catch (error) {
+          recordFacebookInterstitialError(trace, error);
+          if (isActive()) trackEvent("ad_failed", {ad_format: "interstitial", placement});
+          // A displayed impression still counts when local bookkeeping fails.
+          if (impressionDisplayed) interstitialsDisabled = true;
+          return outcome(failure(error));
+        } finally {
+          showingInterstitial = false;
+        }
       } finally {
-        showingInterstitial = false;
+        trace?.record("finished");
+        trace?.close();
       }
     },
     /** Provides show rewarded behavior. */
