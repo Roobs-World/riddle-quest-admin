@@ -17,7 +17,7 @@
 - [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)
 - [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
 - [Current version 22 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-22-2026-11-28.json)
-- [Version 22 Android served banners, Terms cancellation and Home return](evidence/facebook-android-banner-version-22-2026-11-28.md)
+- [Version 22 Android served banners, Settings close, Terms cancellation and Home return](evidence/facebook-android-banner-version-22-2026-11-28.md)
 - [Version 22 read-only lock query and lifecycle diagnostic](evidence/facebook-lock-lifecycle-diagnostic-version-22-2026-11-28.md)
 - [Version 22 Android Home/Recents recovery comparison](evidence/facebook-android-home-recovery-version-22-2026-11-28.md)
 - [Historical version 21 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-21-2026-11-28.json)

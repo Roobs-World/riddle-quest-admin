@@ -9,7 +9,7 @@
     "receipt": "facebook-testing-version-22-2026-11-28.json",
     "newBuildOrUpload": false
   },
-  "scope": "Two unmodified single-account Android sessions using normal UI and rendered SDK Info. Narrow banner observations; full J10 remains open.",
+  "scope": "Initial two unmodified single-account Android sessions using normal UI and rendered SDK Info, plus a separately scoped Settings-close follow-up. Narrow banner observations; full J10 remains open.",
   "observedGameplay": {
     "riddle": "GUITAR",
     "emptyRows": 5,
@@ -223,13 +223,14 @@
     "exactHideCallbackTimingVerified": false,
     "placementCallsTraced": false,
     "providerImpressionReceiptRead": false,
-    "newSavePersistenceEstablished": false
+    "newSavePersistenceEstablished": false,
+    "scope": "Initial two sessions only; followupSettingsClose records the later direct-removal observation separately."
   },
   "limits": [
-    "The two session-specific API lists are observations, not acceptance of every advertised method.",
+    "Session-specific API lists are observations, not acceptance of every advertised method.",
     "Observation timestamps bound visible transitions; they do not identify exact SDK callback times.",
-    "The external Terms page was not opened; native confirmation was cancelled in both sessions.",
-    "The served banner was already absent before each observed Settings close; direct served-banner-to-gameplay removal was not established.",
+    "The external Terms page was not opened; native confirmation was cancelled in both initial sessions. The follow-up used no Terms navigation.",
+    "The initial two sessions did not establish direct served-banner-to-gameplay removal; followupSettingsClose now records that visible transition without a hide-callback trace.",
     "No banner after Home/reopen does not establish a request, failed request, no-fill, placement approval or a gate result.",
     "No gameplay progress or preference change was made; automatic storage writes are not excluded.",
     "No subscriber, durable-removal, entitlement-refresh, late-load, no-fill, hide-rejection/retry, account-replacement or deletion acceptance was established.",
@@ -252,6 +253,136 @@
     "observationsSha256": "b569e8c408c3a38c2b99d97cf884196b67dae7b365753525401cd54bc28a640b",
     "sdkInfoSha256": "18e863ff0c4e665bc1f8ffaac7baebc2568bd9c02a503c8fba019d28c8ea1205",
     "secondSdkInfoSha256": "b4e4dd8864f1dd8f8d9689fc4e361e0eef87af3bcd5286ac59d2cd8bb6f3c3e3",
+    "rawScreenshotsCommitted": false
+  },
+  "followupSettingsClose": {
+    "scope": "Separate unmodified single-account session; direct served-banner Settings close to gameplay.",
+    "launch": "2026-11-28T04:57:18.808984+00:00",
+    "initialSdkInfoExtraction": {
+      "result": "SDK Info not open",
+      "identityEstablished": false
+    },
+    "sdkInfo": {
+      "observedAt": "2026-11-28T04:58:18.233085+00:00",
+      "version": 22,
+      "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+      "sdkVersion": "8.0",
+      "supportedApiCount": 48,
+      "bannerLoadAdvertised": true,
+      "supportedApis": [
+        "canCreateShortcutAsync",
+        "changeContextAsync",
+        "checkCanPlayerMatchAsync",
+        "context.chooseAsync",
+        "context.createAsync",
+        "context.getID",
+        "context.getPlayersAsync",
+        "context.getType",
+        "context.switchAsync",
+        "createShortcutAsync",
+        "getEntryPointAsync",
+        "getEntryPointData",
+        "getInterstitialAdAsync",
+        "getLocale",
+        "getPlatform",
+        "getRewardedVideoAsync",
+        "getSDKVersion",
+        "getSupportedAPIs",
+        "hideBannerAdAsync",
+        "initializeAsync",
+        "inviteAsync",
+        "loadBannerAdAsync",
+        "matchPlayerAsync",
+        "onPause",
+        "onResume",
+        "openExternalLinkAsync",
+        "player.createNEZPNotificationContentAsync",
+        "player.flushDataAsync",
+        "player.getASIDAsync",
+        "player.getConnectedPlayersAsync",
+        "player.getDataAsync",
+        "player.getSignedASIDAsync",
+        "player.getSignedAssociatedAppsASIDAsync",
+        "player.getSignedPlayerInfoAsync",
+        "player.setDataAsync",
+        "player.subscribeBotAsync",
+        "quit",
+        "room.getCurrentMatchAsync",
+        "setLoadingProgress",
+        "shareAsync",
+        "startGameAsync",
+        "switchGameAsync",
+        "tournament.createAsync",
+        "tournament.getTournamentsAsync",
+        "tournament.joinAsync",
+        "tournament.postScoreAsync",
+        "tournament.shareAsync",
+        "updateAsync"
+      ]
+    },
+    "letsPlay": "2026-11-28T04:58:34.989899+00:00",
+    "gameplayObservedAt": "2026-11-28T04:58:42.890294+00:00",
+    "observedGameplay": {
+      "riddle": "GUITAR",
+      "emptyRows": 5,
+      "coins": 1180
+    },
+    "servedBanner": {
+      "settingsOpenedAt": "2026-11-28T04:58:51.575465+00:00",
+      "observedAt": "2026-11-28T04:58:59.424593+00:00",
+      "advertiser": "ASUS",
+      "providerBranding": "Meta",
+      "reservedBottomSpace": true
+    },
+    "settingsClose": {
+      "tapWhileBannerVisible": "2026-11-28T04:59:12.471772+00:00",
+      "transitionalBannerAbsentObservedAt": "2026-11-28T04:59:12.545875+00:00",
+      "transitionalGameplayStillCompact": true,
+      "fullHeightGameplayWithoutBannerObservedAt": "2026-11-28T04:59:19.734438+00:00",
+      "directServedBannerToGameplayRemovalObserved": true,
+      "exactHideCallbackTimingVerified": false
+    },
+    "settingsReopen": {
+      "tap": "2026-11-28T04:59:26.858774+00:00",
+      "fullHeightWithoutBannerObservedAt": [
+        "2026-11-28T04:59:40.727957+00:00",
+        "2026-11-28T04:59:54.749296+00:00"
+      ],
+      "requestOrAdmissionOutcome": "Unknown; no load, gate or no-fill result was traced."
+    },
+    "quit": {
+      "appTap": "2026-11-28T05:00:01.624057+00:00",
+      "facebookMainConfirmedAt": "2026-11-28T05:00:42.174726+00:00",
+      "activity": "FbMainTabActivity",
+      "secondsToConfirmation": 40.551,
+      "timingLimit": "Observation window, not exact internal exit duration."
+    },
+    "cleanup": {
+      "temporaryDeviceUiXmlRemovedAt": "2026-11-28T05:00:42.894290+00:00"
+    },
+    "acceptance": {
+      "visibleServedBanners": 1,
+      "directServedBannerToGameplayRemovalObserved": true,
+      "placementCallsTraced": false,
+      "providerImpressionReceiptRead": false,
+      "newSavePersistenceEstablished": false,
+      "fullJ10Complete": false,
+      "coverageCountsChanged": false
+    },
+    "termsNavigation": false,
+    "androidHomeCycle": false,
+    "consoleOrProbesUsed": false,
+    "sdkPatched": false,
+    "adCtaClicked": false,
+    "guessesMade": false,
+    "purchasesOrRewardsPerformed": false,
+    "preferencesOrConsentChanged": false,
+    "sourceChanged": false,
+    "newBuildOrUpload": false,
+    "privateEvidenceSha256": {
+      "observations": "54863c3e7e18be98f094d9f3ebc920b598789e2002ed83ad796d0d49408d1bbd",
+      "sdkInfo": "b235f651d5a665e4790c593c65ac7229ca10ed17c2fb9de15fb07e947faed5a5"
+    },
     "rawScreenshotsCommitted": false
   }
 }
