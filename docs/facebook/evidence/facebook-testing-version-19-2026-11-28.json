@@ -1,0 +1,83 @@
+{
+  "recordedAt": "2026-11-28T02:32:17.672295+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "1abd5c9fc09e59868e5651456a5fe2abaf99e048",
+  "archiveSha256": "32012f0ee1f1d4476c8182e5a1320d6b4fa49c63a79e63f65f953481a4294472",
+  "archiveBytes": 2866131,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 19,
+  "bundleId": "29691804297082520",
+  "status": "Testing",
+  "uploadCount": 1,
+  "uploadedAt": "2026-11-28T02:30:14.737Z",
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "29691804297082520",
+    "version": 19,
+    "observedAt": "2026-11-28T02:31:51.791Z",
+    "httpStatus": 200,
+    "responseSha256": "7c084050fb5975728d56104b2b87f8a8368a7da9134693bde42c6e3ab68f2c22",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "29691804297082520",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T02:31:24.281109+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "a6c2fef9607216d6b1aa551769d4d0b3e5672d8e1f566e0c24087da83027583b",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialComparison": "418/420; two HTTP 200 responses had empty bodies. A complete recheck matched 420/420 without source change or retransmission; cause unknown."
+  },
+  "processingEvidence": "All 420 runtime files served correctly and Testing-only assignment returned HTTP 200 with the exact bundle ID. No separate dashboard processing field was read.",
+  "providerArchiveDownloaded": false,
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production dashboard assignment not freshly read."
+  },
+  "localVerification": {
+    "redTestsFailed": 3,
+    "redTestsPassed": 32,
+    "focusedTests": 35,
+    "focusedSuites": 1,
+    "focusedSeconds": 0.244,
+    "fullBrowserTests": 1,
+    "fullBrowserSeconds": 42.77,
+    "sharedTypecheck": "passed",
+    "canonicalPreflight": "passed",
+    "artifactAudit": "Passed: 420 files, 4.51 MB total and 0.71 MB initial resources; no Jest gaming SDK, native-module or secret leakage.",
+    "sourceRaceReview": "no findings",
+    "independentReview": "no findings"
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "vercel": "Existing isolated deployment remains version 15; no version 19 Vercel deployment was performed.",
+  "hostedMobile": {
+    "evidence": "facebook-android-version-19-2026-11-28.md",
+    "launchAt": "2026-11-28T02:32:42Z",
+    "exactIdentityObservedAt": "2026-11-28T02:33:51.154380+00:00",
+    "sdkVersion": "8.0",
+    "version": 19,
+    "bundleId": "29691804297082520",
+    "supportedApiCount": 47,
+    "bannerLoadAdvertised": false,
+    "restoredStateAt": "2026-11-28T02:34:11Z",
+    "restoredPuzzle": "GUITAR",
+    "coins": 1180,
+    "normalQuitAt": "2026-11-28T02:34:40Z",
+    "mainActivityObservedAt": "2026-11-28T02:34:42Z",
+    "runtimePatchesOrProbes": false,
+    "finalPhoneState": "Outside the game; no debug panel or diagnostic callbacks; temporary device UI XML removed.",
+    "limits": "Identity, restoration and normal exit only. No native account replacement, deadline exercise or second launch after exit. Earlier candidate rewarded, social and preference results remain historical. The Terms-return failure remains unexplained."
+  }
+}
