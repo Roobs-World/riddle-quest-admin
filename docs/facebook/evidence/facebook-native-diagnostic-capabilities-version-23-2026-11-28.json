@@ -1,0 +1,91 @@
+{
+  "recordedAt": "2026-11-28T07:44:08.952788+00:00",
+  "game": "Riddle Quest",
+  "artifact": {
+    "version": 23,
+    "bundleId": "40683991141214635",
+    "sourceCommit": "579f9d5def20b5007218663702de0bd3e11da1c4",
+    "archiveSha256": "8144475232cbb8133e2f61a8954ed6e7bd19dec11e8635d1c1862c22b1e7d163"
+  },
+  "scope": "Read-only JavaScript feature exposure in the exact native game context; no worker, lock inventory, Terms reproduction or fix.",
+  "launchAt": "2026-11-28T07:41:13.439190+00:00",
+  "sdkInfo": {
+    "observedAt": "2026-11-28T07:41:35.956744+00:00",
+    "version": 23,
+    "path": "/instant-bundle/2143220529953108/40683991141214635/index.html",
+    "supportedApiCount": 47,
+    "bannerLoadAdvertised": false
+  },
+  "independentSdkVersionObservation": {
+    "value": "8.0",
+    "observedAt": "2026-11-28T07:41:27.969262+00:00",
+    "source": "Rendered IGDebug menu; not the helper fixed version field"
+  },
+  "capabilityRead": {
+    "observedAt": "2026-11-28T07:42:43.144627+00:00",
+    "status": "read",
+    "version": 23,
+    "secureContext": true,
+    "crossOriginIsolated": false,
+    "sharedArrayBufferExposed": false,
+    "atomicsExposed": true,
+    "workerExposed": true,
+    "blobExposed": true,
+    "blobUrlExposed": true,
+    "lockQueryExposed": true
+  },
+  "transport": {
+    "transport": "verified",
+    "characters": 896
+  },
+  "outcome": "The shared-memory worker readback route cannot run through the observed global interfaces because SharedArrayBuffer is not exposed. No worker or query was attempted.",
+  "gameplayAfterRead": {
+    "observedAt": "2026-11-28T07:43:30.655887+00:00",
+    "puzzle": "CHESS",
+    "emptyRows": 5,
+    "coins": 1415,
+    "guessesMade": 0
+  },
+  "normalQuit": {
+    "tappedAt": "2026-11-28T07:43:41.147096+00:00",
+    "exitObservedAt": "2026-11-28T07:43:54.020039+00:00",
+    "hostQuitUsed": false
+  },
+  "cleanup": {
+    "observedAt": "2026-11-28T07:44:08.952788+00:00",
+    "finalTopResumedActivity": "com.facebook.katana/.activity.FbMainTabActivity",
+    "ownedDeviceUiXmlAbsent": true,
+    "adbForwardCount": 0,
+    "activeOwnedHelperCount": 0,
+    "webViewDebugSocketCount": 0,
+    "workersCreated": 0,
+    "blobUrlsCreated": 0,
+    "lockQueriesIssued": 0,
+    "sdkCallsFromHelper": 0,
+    "installedTimersOrListeners": 0,
+    "appGlobalsInstalled": 0,
+    "hostQuitUsed": false
+  },
+  "limits": [
+    "Feature exposure is not a Worker/CSP compatibility test or proof of successful query execution.",
+    "No post-Terms navigation or lock query occurred; held and pending lock inventory remains unknown.",
+    "No root cause, repair, full acceptance or additional API coverage is established.",
+    "No SDK or storage methods were called by the helper; ordinary application startup and Quit retained their existing behavior."
+  ],
+  "sourceOrUploadedArtifactChanged": false,
+  "firebaseOrProviderServerChanged": false,
+  "preferencesOrConsentChanged": false,
+  "purchasesOrSocialSends": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-v23-debug-capabilities-observations.json": "0a92ff432d71f851cf83a7c3ebb17ada0b2beb8704ec4515a00449063bdd8956",
+    "riddle-quest-v23-debug-capabilities-sdk-info.json": "5356f550146a089ceaa1b98e2b79c9f2b78c2e76d1bdb55732bb4d05dd42afa2",
+    "riddle-quest-v23-debug-capabilities-result.json": "eb299ab39deab1a8ca92f52b49e898f8f75b744264006d8bc02678387f2e8c12",
+    "riddle-quest-v23-debug-capabilities-transport.json": "d6bcc49ead8c31756effa0db03dd1726d9726d1559caee2dae19219edde6ab4b",
+    "riddle-quest-v23-debug-capabilities-read.js": "e3e6b2cfd1960aa847fcfeeff5e429f46b0b5f2c0befcdb6b6f6e22b74c57fcc",
+    "riddle-quest-v23-debug-capabilities-debug-menu.png": "80a38b24cd4eafd3d99ffc914b7ad217c3106ec2dee42fb9eef307aba78ea95c",
+    "riddle-quest-v23-debug-capabilities-gameplay.png": "e1818c2c06f07e9c440ebee4b86b0f4bf2bf1689976599bc7036faa6ea7a9de7",
+    "riddle-quest-v23-debug-capabilities-quit.json": "0b54b7e799e97ae70242f9c1d335b703d0ba9f8ccd28e55dad7432e7f89e5d0c",
+    "riddle-quest-v23-debug-capabilities-cleanup.json": "8a009efe4c6958c4c50df33d551ddaf1437fe7b083191c1b770d15b4d1684e77"
+  },
+  "rawScreenshotsCommitted": false
+}
