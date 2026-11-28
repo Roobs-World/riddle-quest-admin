@@ -31,7 +31,7 @@ Profile **Invite a friend** opened Meta’s native invitation sheet and cancelle
 
 A fresh launch removed the diagnostic callbacks. SDK Info at **01:59:38** reconfirmed version **18** and the exact bundle path. PENCIL and **1,155 coins** restored, and Settings displayed **Reduced motion Off** at **02:00:10**, confirming the original preference had persisted. Final normal **Settings → Quit** at **02:00:39** reached Facebook main by **02:00:41**. The phone was left outside the game with no debug panel or diagnostic callback active; the temporary UI dump was removed. This later normal exit does not resolve the earlier post-Terms pending state.
 
-Testing remains single-account. Version 18 rewarded playback has not been repeated. The existing [Vercel deployment](evidence/facebook-vercel-host-validation-2026-11-27.md) remains version 15; no version 18 Vercel deployment or backend origin-policy change occurred.
+Testing remains single-account. A separate [version 18 rewarded check](evidence/facebook-android-ad-cancellation-version-18-2026-11-28.md) displayed a native video, then LOSE REWARD returned to Out of Attempts with no extra attempt and 1,155 coins unchanged. One subsequent retry failed with a generic service error and no video; no raw error code or stage was captured. Closing the loss dialog led through loading/error to the same-level empty board, without proving a reward grant. Normal Quit at 02:11:51 reached Facebook main by 02:11:53. Completed rewarded continuation on version 18 remains unverified. The existing [Vercel deployment](evidence/facebook-vercel-host-validation-2026-11-27.md) remains version 15; no version 18 Vercel deployment or backend origin-policy change occurred.
 
 ## Retained version 17 Android verification
 

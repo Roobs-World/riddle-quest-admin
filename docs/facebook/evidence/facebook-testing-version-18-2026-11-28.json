@@ -72,8 +72,20 @@
     "normalQuit": "passed initially, after preference change, and at final02:00:39UTC; main Facebook activity by02:00:41UTC",
     "afterTermsReturn": "Settings native actions greyed for at least53s; busy action/guard stage unknown; game later exited during diagnostic preparation by01:56:56UTC, exact cause unobserved",
     "timeoutRecovery": "local regressions only; native15s recovery not established",
-    "rewarded": "not repeated on18; separate17 native success retained",
+    "rewarded": "See separate v18 cancellation follow-up: real video cancelled without continuation; subsequent retry generic failure; completed v18 continuation unverified. Historical v17 success retained.",
     "diagnostic": "single one-shot scheduler probe after failure; sync and microtask responded, no rAF/10stimer output by11s; subsequent DOM probe not submitted; removed by fresh launch",
-    "finalPhoneState": "Facebook main activity; no debug panel or callbacks; temporary device UI dump removed"
+    "finalPhoneState": "Facebook main activity; no debug panel or callbacks; temporary device UI dump removed",
+    "rewardedCancellationFollowup": {
+      "evidence": "facebook-android-ad-cancellation-version-18-2026-11-28.md",
+      "exactIdentityObservedAt": "2026-11-28T02:05:31.230011+00:00",
+      "cancelReturnedAt": "2026-11-28T02:06:58Z",
+      "immediateOutcome": "Out of Attempts; no extra attempt; 1155 coins unchanged",
+      "retryAt": "2026-11-28T02:08:11Z",
+      "retryOutcome": "Generic service error; no video/continuation; raw error code and stage unknown",
+      "afterLossDismissal": "Loading/error screen, later same PENCIL with empty board/1155; recovery timing and request identity untraced, not proof of reward grant",
+      "normalQuitAt": "2026-11-28T02:11:51Z",
+      "mainActivityObservedAt": "2026-11-28T02:11:53Z",
+      "finalState": "Outside game; no debug/probes; temporary device UI dump removed"
+    }
   }
 }
