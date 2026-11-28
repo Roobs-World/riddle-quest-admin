@@ -10,6 +10,7 @@
 
 - [Integrated multiplayer controls and tournament removal](evidence/facebook-multiplayer-controls-2026-11-28.md)
 - [Remaining API contracts and safe test boundaries](evidence/facebook-remaining-api-contracts-2026-11-28.md)
+- [Stored notification content: Meta contracts and manager authority](evidence/facebook-nezp-content-boundary-2026-11-28.md)
 - [Current permission and use-case blockers](evidence/facebook-remaining-permissions-2026-11-28.json)
 - [Complete current API inventory](facebook-api-research-2026-11-27.md)
 - [API submission checklist and reviewer journeys](facebook-api-submission-checklist-2026-11-27.md)
