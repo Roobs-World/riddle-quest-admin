@@ -1,0 +1,139 @@
+{
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "version": 25,
+  "bundleId": "30120031574249440",
+  "sourceCommit": "2c909960365a658bb596dcb1ba3a3ad857a0e4cb",
+  "sdk": "8.0",
+  "platform": "WEB",
+  "device": "Desktop Chrome; no phone",
+  "runtimePath": "/instant-bundle/2143220529953108/30120031574249440/index.html",
+  "observations": {
+    "initialStartup": {
+      "observedAt": "2026-11-28T10:35:13.841Z",
+      "navigationAgeMs": 24222.40000000596,
+      "state": "Startup failed",
+      "retryEnabled": true,
+      "scope": "Failure was already visible at about 24.2 seconds of document age. This is not evidence that the 30-second bootstrap deadline fired."
+    },
+    "inGameRetry": {
+      "clicked": true,
+      "followupObservedAt": "2026-11-28T10:36:36.416Z",
+      "followupNavigationAgeMs": 74409.70000000298,
+      "followupState": "Startup failed",
+      "retryStillEnabled": true,
+      "readyGameplayEstablished": false
+    },
+    "fullHostReload": {
+      "performed": true,
+      "readyObservedAt": "2026-11-28T10:37:47.568Z",
+      "supportedApiCount": 49,
+      "coins": 1610,
+      "puzzle": "PEACOCK",
+      "letterCells": 35,
+      "emptyLetterCells": 35,
+      "enabledLetterCells": 7,
+      "notices": [],
+      "visibility": "visible",
+      "pausedClassPresent": false,
+      "scope": "Full Facebook host-page reload preceded welcome and playable restoration; not successful recovery through the in-game Retry alone."
+    },
+    "multiplayer": {
+      "observedAt": "2026-11-28T10:38:29.515Z",
+      "tabs": [
+        "Play",
+        "Activity"
+      ],
+      "separatePlayOnFacebook": false,
+      "tournamentSurface": false,
+      "controlsEnabled": true,
+      "socialOrOpponentActionInvoked": false
+    },
+    "settings": {
+      "observedAt": "2026-11-28T10:38:39.568Z",
+      "controlsEnabled": true,
+      "notices": [],
+      "sound": "On",
+      "reducedMotion": "Off",
+      "preferencesChanged": false
+    },
+    "cleanup": {
+      "quitObservedAt": "2026-11-28T10:39:21.815Z",
+      "route": "/gaming/play/",
+      "totalIframeCount": 1,
+      "ownedGameTabClosedAt": "2026-11-28T10:39:22Z",
+      "ownedGameTabClosed": true,
+      "preexistingTabsPreserved": true,
+      "relaunchAfterQuitPerformed": false
+    }
+  },
+  "limits": [
+    "Initial startup and in-game Retry failures remain unexplained; full host reload recovery does not identify or repair their cause.",
+    "No native 30-second timeout was established. Controlled-clock timeout/late-response/Retry behavior remains local test evidence.",
+    "The ready receipt records an API count, not the full advertised API list.",
+    "No new gameplay award, social/opponent action, SDK mutation or post-Quit relaunch occurred. This is not new version-25 progress-save or social-delivery acceptance.",
+    "One total iframe remained on the final Facebook Gaming route; this does not establish zero game iframes or exact exit latency.",
+    "Full submission acceptance and the separate historical Android issue remain unresolved."
+  ],
+  "changes": {
+    "sourceChanged": false,
+    "firebaseCodeOrConfigurationChanged": false,
+    "providerServerCodeOrConfigurationChanged": false,
+    "buildOrUploadRun": false,
+    "backendDeploymentRun": false,
+    "metaConfigurationChanged": false,
+    "vercelChanged": false,
+    "reviewSubmitted": false,
+    "productionPromoted": false,
+    "published": false
+  },
+  "coverage": {
+    "W": 51,
+    "C": 10,
+    "G": 6,
+    "X": 12,
+    "changed": false
+  },
+  "receipts": [
+    {
+      "name": "cleanup",
+      "observedAt": "2026-11-28T10:39:22Z",
+      "privateReceiptSha256": "56a48509bb8edf44c4ce9d656358d4820119d93d901722be4c81ce8276fcc830"
+    },
+    {
+      "name": "initial",
+      "observedAt": "2026-11-28T10:35:13.841Z",
+      "privateReceiptSha256": "16332bd1f6cfd175041cc811f6e9f2943f21d186217b2c63d2bc0c46be47f9b0"
+    },
+    {
+      "name": "multiplayer",
+      "observedAt": "2026-11-28T10:38:29.515Z",
+      "privateReceiptSha256": "38132dbaca554ef6d134299937ae015d70fb7d685a7b8b78f936078515d5a2f6"
+    },
+    {
+      "name": "quit-final",
+      "observedAt": "2026-11-28T10:39:21.815Z",
+      "privateReceiptSha256": "c0f067a3ad5ec63a517e9c8fb6ac12738acfe089d6418ebe1714ef189bf28525"
+    },
+    {
+      "name": "quit-initial",
+      "observedAt": "2026-11-28T10:38:45.306Z",
+      "privateReceiptSha256": "ecc79cd17e59aa35b64a3269e8c5860d22311fea02889a16b8340e579953c92c"
+    },
+    {
+      "name": "ready",
+      "observedAt": "2026-11-28T10:37:47.568Z",
+      "privateReceiptSha256": "d4a51676a33dca94b8b9be97d4e384a7f50f3962cf4076c0bab8fc1227824172"
+    },
+    {
+      "name": "retry",
+      "observedAt": "2026-11-28T10:36:36.416Z",
+      "privateReceiptSha256": "4db6df9239d74b87311493606e56d86f048f75d6ca6f5762ff700d65e4876328"
+    },
+    {
+      "name": "settings",
+      "observedAt": "2026-11-28T10:38:39.568Z",
+      "privateReceiptSha256": "4982436f26108acba17f4cf467a87c8d69692440e573ab6c12d6202f17c89911"
+    }
+  ]
+}

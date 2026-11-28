@@ -1,0 +1,98 @@
+{
+  "recordedAt": "2026-11-28T10:34:21.054419+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "2c909960365a658bb596dcb1ba3a3ad857a0e4cb",
+  "archiveSha256": "2ecc0bc8e99feb1a8f394aae56b55a83646baa1a1282a10aedd6805670524458",
+  "archiveBytes": 2856055,
+  "archiveEntries": 423,
+  "runtimeFiles": 421,
+  "version": 25,
+  "bundleId": "30120031574249440",
+  "status": "Testing",
+  "uploadCount": 1,
+  "uploadedAt": "2026-11-28T10:32:43.270Z",
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "30120031574249440",
+    "version": 25,
+    "observedAt": "2026-11-28T10:33:52.111Z",
+    "httpStatus": 200,
+    "responseSha256": "ee8c0a44a9b01e9850a92faac369d4906eb36d64e361d52a04d87cd94e2297c6",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "30120031574249440",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T10:33:47.210408+00:00",
+    "fileCount": 421,
+    "matchingFiles": 421,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "bc648431ef0305da70743d84949ac8dc2f414de4544c66e261cb970264557f86",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialComparison": {
+      "observedAt": "2026-11-28T10:33:20.773864+00:00",
+      "matchingFiles": 406,
+      "emptyHttp200Responses": 15,
+      "resolution": "A full recheck matched every file without source change or retransmission; initial empty-response cause unknown."
+    }
+  },
+  "providerArchiveDownloaded": false,
+  "productionAssignmentRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "firebaseBuildOrPackagingRun": false,
+  "firebaseDeployed": false,
+  "localVerification": {
+    "tests": 44,
+    "suites": 2,
+    "seconds": 4.886,
+    "unitCases": 43,
+    "browserTests": 1,
+    "browserScenarios": 4,
+    "typecheck": "passed",
+    "independentReview": "No actionable findings after late-preference and synchronous-budget corrections",
+    "browserScope": "Isolated actual built Facebook entry with injected SDK and blocked external requests: pending initialize/start, timeout recovery, late resolution/rejection, no identity admission and actual Retry reload. Controlled clock; not provider timeout acceptance. Full browser regression not rerun.",
+    "artifact": "421 files;4.47 MB total;0.58 MB initial;no Jest gaming SDK/native/secrets leakage.",
+    "canonicalPreflight": "Build and audits passed from clean uploaded source.",
+    "combinedTestLogSha256": "43d82a0a8a606375264a1064928d933d29ce77252de7b8fe572d57c82c041b27",
+    "preflightLogSha256": "db6626ecb91f49f60b3c86d961c4ec5ac31b9080eec869d087f15af5226095b1"
+  },
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint; Production not freshly read for this upload."
+  },
+  "vercel": "Existing isolated version15 deployment unchanged.",
+  "processingEvidence": "Every runtime file served correctly and Testing-only assignment returned HTTP 200 with exact bundle ID; no separate dashboard processing field read.",
+  "coverage": {
+    "totalPublicEntries": 79,
+    "W": 51,
+    "C": 10,
+    "G": 6,
+    "X": 12,
+    "scope": "Unchanged source classifications, not completed acceptance."
+  },
+  "privateAcceptanceSha256": "8f98720090f0b28bd78cb097adcf85f31d032a611c2909b0b29e2a5817ed6559",
+  "nativeVerification": "Exact version 25 Chrome showed initial Startup failed at about 24.2 seconds document age; in-game Retry did not recover. Full host-page reload restored 1,610 coins/PEACOCK and normal multiplayer/Settings controls, followed by normal Quit and tab cleanup. This does not establish native 30-second timeout recovery or identify the startup cause.",
+  "hostedDesktop": {
+    "evidence": "facebook-chrome-startup-version-25-2026-11-28.json",
+    "readyAt": "2026-11-28T10:37:47.568Z",
+    "sdk": "8.0",
+    "platform": "WEB",
+    "supportedApiCount": 49,
+    "inGameRetryRecovered": false,
+    "fullHostReloadRecovered": true,
+    "nativeTimeoutEstablished": false,
+    "finalQuitAt": "2026-11-28T10:39:21.815Z",
+    "finalRoute": "/gaming/play/",
+    "totalIframeCountAtQuit": 1,
+    "ownedTabClosed": true
+  }
+}

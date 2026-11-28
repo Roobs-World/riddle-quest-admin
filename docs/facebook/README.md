@@ -1,5 +1,7 @@
 # Facebook Instant Games
 
+- [Version 25 Chrome startup failures, full host reload and restored UI](evidence/facebook-chrome-startup-version-25-2026-11-28.md)
+
 - [Local startup deadline and Retry recovery](evidence/facebook-startup-recovery-2026-11-28.md)
 
 - [Version 24 native Invite/Share cancellation and desktop focus checks](evidence/facebook-desktop-social-lifecycle-version-24-2026-11-28.md)
@@ -25,7 +27,8 @@
 - [Combined expanded candidate verification](evidence/facebook-expanded-api-final-verification-2026-11-27.md)
 - [Facebook client testing and unchanged Firebase](evidence/facebook-client-testing-2026-11-27.md)
 - [Client integration review, tournament routing and ad preparation recovery](evidence/facebook-client-review-2026-11-27.md)
-- [Current version 24 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-24-2026-11-28.json)
+- [Current version 25 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-25-2026-11-28.json)
+- [Historical version 24 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-24-2026-11-28.json)
 - [Historical version 23 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-23-2026-11-28.json)
 - [Fresh Testing/Production, SDK and product-prerequisite dashboard observations](evidence/facebook-dashboard-followup-2026-11-28.md)
 - [Version 23 Chrome access, display modes, Terms return and Quit/relaunch](evidence/facebook-chrome-access-2026-11-28.md)
@@ -77,7 +80,7 @@
 - [Version 15 Android advertised SDK capabilities](evidence/facebook-android-sdk-capabilities-version-15-2026-11-27.json)
 - [Version 15 Vercel hosting validation and gameplay limits](evidence/facebook-vercel-host-validation-2026-11-27.md)
 - [Version 15 Vercel deployment and validation receipt](evidence/facebook-vercel-host-validation-2026-11-27.json)
-- [Current reviewer handoff for Riddle Quest Testing version 24](facebook-review-draft-2026-11-27.md)
+- [Current reviewer handoff for Riddle Quest Testing version 25](facebook-review-draft-2026-11-27.md)
 - [28 November permission, review and webhook prerequisite recheck](evidence/facebook-prerequisite-recheck-2026-11-28.json)
 - [Earlier version 14 upload and exact archive acceptance](evidence/facebook-testing-version-14-2026-11-27.json)
 - [Historical version 14 Settings, legal-link cancellation and quit/relaunch](evidence/facebook-native-settings-version-14-2026-11-27.md)
