@@ -22,6 +22,7 @@
 - [Version 22 Android Home/Recents recovery comparison](evidence/facebook-android-home-recovery-version-22-2026-11-28.md)
 - [Version 22 Android preference persistence and normal Quit/relaunch](evidence/facebook-android-preference-version-22-2026-11-28.md)
 - [Version 22 Android rewarded ad, wins and progress restoration](evidence/facebook-android-ads-version-22-2026-11-28.md)
+- [Version 22 Android result Share and Profile Invite cancellation](evidence/facebook-android-social-version-22-2026-11-28.md)
 - [Historical version 21 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-21-2026-11-28.json)
 - [Historical version 20 Testing assignment and exact runtime-file verification](evidence/facebook-testing-version-20-2026-11-28.json)
 - [Version 20 Quit phase tracing and Android diagnosis](evidence/facebook-quit-phase-tracing-2026-11-28.md)

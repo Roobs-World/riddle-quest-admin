@@ -331,6 +331,8 @@ Inspect bounded platform/SDK/entry-source diagnostic fields after startup; compa
 
 ### J03 — Invitations, result shares and entry acceptance
 
+The [unmodified version 22 Android check](evidence/facebook-android-social-version-22-2026-11-28.md) completed an ordinary PELICAN win for +35 coins, reaching 1,310 coins and 23 wins. Result Share opened the native Riddle Quest composer; cancellation restored Share and Next Level. Profile Invite opened the native Riddle Quest invitation sheet; cancellation restored Invite with 1,310 coins and 23 wins unchanged. No social message was sent. This establishes current-candidate dialog cancellation and control recovery, not delivery or recipient entry. Discovery and context participation were not exercised in this check.
+
 On [version 18 Android](evidence/facebook-android-version-18-2026-11-28.md), Profile Invite opened Meta’s native Riddle Quest invitation sheet at 01:52:10 UTC and cancelled with X at 01:52:35. No recipient was selected or Send pressed; Invite returned enabled with 1,155 coins and 18 wins unchanged. Result Share, delivery and recipient entry remain separate.
 
 Use the general Invite action, a completed-result Share action and a live-race invitation with consenting testers. Verify native dialogs use the expected card and bounded opaque data. Close each dialog without sending, then complete a separately authorized send. A resolved invite promise alone is not delivery evidence and must not grant coins. Open the recipient link and confirm referral or challenge parsing, explicit acceptance where required, correct locale/session binding and no duplicate referral reward. Exercise unsupported invite with supported share fallback, rejected images, stale account ownership and delayed dialog completion.
