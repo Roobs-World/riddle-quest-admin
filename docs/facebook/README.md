@@ -1,5 +1,7 @@
 # Facebook Instant Games
 
+- [Version 24 desktop interstitial, banner, rewarded continuation and post-Terms saves](evidence/facebook-desktop-ads-save-version-24-2026-11-28.md)
+
 - [Integrated multiplayer controls and tournament removal](evidence/facebook-multiplayer-controls-2026-11-28.md)
 - [Remaining API contracts and safe test boundaries](evidence/facebook-remaining-api-contracts-2026-11-28.md)
 - [Current permission and use-case blockers](evidence/facebook-remaining-permissions-2026-11-28.json)

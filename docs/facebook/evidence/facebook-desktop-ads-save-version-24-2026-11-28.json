@@ -1,0 +1,426 @@
+{
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "version": 24,
+  "bundleId": "29078291508509160",
+  "sourceCommit": "bcb9898e85988c5dde49a1eb3e043c6403869a94",
+  "sdk": "8.0",
+  "platform": "WEB",
+  "device": "Desktop Chrome; no phone",
+  "candidateIdentityAt": "2026-11-28T09:50:52.582Z",
+  "runtimePath": "/instant-bundle/2143220529953108/29078291508509160/index.html",
+  "supportedApiCount": 50,
+  "bannerLoadAdvertised": true,
+  "bannerHideAdvertised": true,
+  "scope": "One consenting account on the unchanged Facebook-hosted Testing candidate. Ordinary gameplay and native UI actions; read-only DOM/SDK identity and existing fixed User Timing marks.",
+  "observations": {
+    "startingCoins": 1440,
+    "ordinaryWins": [
+      {
+        "puzzle": "MITTEN",
+        "observedAt": "2026-11-28T09:51:17.561Z",
+        "coinAward": 35,
+        "coins": 1475,
+        "tracePhases": [
+          "completion",
+          "cadence-one"
+        ]
+      },
+      {
+        "puzzle": "ACORN",
+        "observedAt": "2026-11-28T09:51:39.421Z",
+        "coinAward": 25,
+        "coins": 1500,
+        "tracePhases": [
+          "completion",
+          "cadence-two"
+        ]
+      },
+      {
+        "puzzle": "FORK",
+        "observedAt": "2026-11-28T09:52:49.651Z",
+        "coinAward": 35,
+        "coins": 1535,
+        "nativeInterstitialDisplayed": true,
+        "normalCloseAdUsed": true,
+        "resultControlsEnabled": true,
+        "tracePhases": [
+          "completion",
+          "opportunity",
+          "admission",
+          "eligibility-initial",
+          "eligibility-initial-resolved",
+          "dialog-guard",
+          "dialog-operation",
+          "create-invoked",
+          "create-resolved",
+          "placement-before-load",
+          "load-invoked",
+          "load-resolved",
+          "eligibility-after-load",
+          "eligibility-after-load-resolved",
+          "placement-before-show",
+          "show-invoked",
+          "show-resolved",
+          "success",
+          "finished"
+        ]
+      },
+      {
+        "puzzle": "BANANA",
+        "afterTermsReturn": true,
+        "observedAt": "2026-11-28T09:54:58.338Z",
+        "coinAward": 25,
+        "coins": 1560,
+        "tracePhases": [
+          "completion",
+          "cadence-one"
+        ]
+      }
+    ],
+    "terms": {
+      "confirmationAt": "2026-11-28T09:53:52.307Z",
+      "externalPageAt": "2026-11-28T09:54:03.802Z",
+      "url": "https://roobsworld.com/riddle-quest/terms",
+      "ownedTermsTabClosed": true,
+      "returnedAt": "2026-11-28T09:54:24.863Z",
+      "pausedClassPresent": false,
+      "visibility": "visible",
+      "notices": [],
+      "settingsControlsEnabled": true
+    },
+    "banner": {
+      "visibleAfterTermsReturn": true,
+      "returnedAt": "2026-11-28T09:54:24.863Z",
+      "reservedAttribute": "true",
+      "contentHeightWhileReserved": 705,
+      "settingsClosedAt": "2026-11-28T09:54:36.193Z",
+      "reservedAttributeAfterClose": null,
+      "contentHeightAfterClose": 765,
+      "removedVisuallyAfterSettingsClose": true
+    },
+    "beforeQuit": {
+      "observedAt": "2026-11-28T09:55:11.251Z",
+      "coins": 1560,
+      "clue": "Which crunchy orange root vegetable is often grated into coleslaw?"
+    },
+    "firstQuit": {
+      "initialObservationAt": "2026-11-28T09:55:19.582Z",
+      "initialGameIframes": 1,
+      "exitObservedAt": "2026-11-28T09:55:46.885Z",
+      "route": "/gaming/play/",
+      "gameIframes": 0
+    },
+    "freshRelaunch": {
+      "observedAt": "2026-11-28T09:56:31.869Z",
+      "runtimePath": "/instant-bundle/2143220529953108/29078291508509160/index.html",
+      "sdk": "8.0",
+      "platform": "WEB",
+      "coins": 1560,
+      "clue": "Which crunchy orange root vegetable is often grated into coleslaw?",
+      "emptyLetterCells": 30,
+      "enabledLetterCells": 6,
+      "pausedClassPresent": false,
+      "notices": [],
+      "retryNeeded": false,
+      "newPostTermsProgressRestored": true
+    },
+    "rewardedContinuation": {
+      "baselineAt": "2026-11-28T10:00:25.103Z",
+      "puzzle": "CARROT",
+      "coinsBefore": 1560,
+      "ordinaryWrongGuesses": [
+        "PLANET",
+        "GUITAR",
+        "SILVER",
+        "PUZZLE",
+        "ORANGE"
+      ],
+      "filledLetterCellsBefore": 30,
+      "enabledLetterCellsBefore": 0,
+      "lossDialog": "Out of Attempts",
+      "nativeVideoDisplayed": true,
+      "nativeEndCardReached": true,
+      "earlySkipUsed": false,
+      "adCallToActionClicked": false,
+      "endCardCloseControl": {
+        "observedAt": "2026-11-28T10:01:42.925Z",
+        "label": "Skip ad",
+        "scope": "The native video had reached its end card before this X control was clicked."
+      },
+      "returnedAt": "2026-11-28T10:02:16.711Z",
+      "coinsAfter": 1560,
+      "sameClue": "Which crunchy orange root vegetable is often grated into coleslaw?",
+      "dialogCountAfter": 0,
+      "letterCellCountAfter": 30,
+      "emptyLetterCellsAfter": 30,
+      "enabledLetterCellsAfter": 6,
+      "noticesAfter": [],
+      "pausedClassPresentAfter": false,
+      "observedOutcome": "Playable same-puzzle continuation on a cleared board; 30 cells with six enabled. No coin award for the ad.",
+      "networkMetadata": {
+        "endpoint": "grantFacebookRewardedContinue",
+        "method": "POST",
+        "status": 200,
+        "matchingRequestsBefore": 0,
+        "matchingRequestsAfter": 1,
+        "scope": "Filtered endpoint/method/status only; no request or response bodies, headers, tokens, signed data or player identifiers read. HTTP status does not independently verify a grant."
+      },
+      "ordinaryFollowupWin": {
+        "observedAt": "2026-11-28T10:02:41.733Z",
+        "puzzle": "CARROT",
+        "coinAward": 25,
+        "coins": 1585,
+        "tracePhases": [
+          "completion",
+          "cadence-one"
+        ]
+      },
+      "sourceInterpretation": {
+        "scope": "Read-only audit of existing source, not an independent observation of server grant state.",
+        "meaning": "One extra attempt: the visible guesses are cleared while attemptsUsed is preserved; the engine allows the original five attempts plus the granted continuation. This is not a fresh five-guess round or a sixth visible row.",
+        "references": [
+          "platforms/web/facebook/src/FacebookAdsCapability.ts:253",
+          "platforms/web/facebook/src/FacebookRewardedContinue.ts:50",
+          "platforms/web/facebook/server/facebookRewardedContinueCallable.ts:20",
+          "firebase-functions/src/gameplay/sessions/singlePlayerSession.ts:377",
+          "src/gameplay/session/gameSession.ts:884",
+          "firebase-functions/src/gameplay/sessions/singlePlayerGuessTransition.ts:57"
+        ]
+      }
+    },
+    "afterRewardedWin": {
+      "nextPuzzleObservedAt": "2026-11-28T10:02:57.450Z",
+      "coins": 1585,
+      "clue": "Which big cat has black stripes on orange fur and is the largest living cat species?",
+      "quit": {
+        "observedAt": "2026-11-28T10:03:26.487Z",
+        "route": "/gaming/play/",
+        "totalIframeCount": 1,
+        "scope": "Total iframe count, not game-iframe identity."
+      },
+      "freshRelaunch": {
+        "observedAt": "2026-11-28T10:03:54.717Z",
+        "runtimePath": "/instant-bundle/2143220529953108/29078291508509160/index.html",
+        "sdk": "8.0",
+        "platform": "WEB",
+        "coins": 1585,
+        "clue": "Which big cat has black stripes on orange fur and is the largest living cat species?",
+        "letterCellCount": 25,
+        "enabledLetterCellCount": 5,
+        "notices": [],
+        "pausedClassPresent": false,
+        "visibility": "visible"
+      }
+    },
+    "cleanup": {
+      "finalQuitObservedAt": "2026-11-28T10:04:22.670Z",
+      "finalRoute": "/gaming/play/",
+      "totalIframeCount": 1,
+      "iframeLimit": "The final receipt counted one total iframe; it does not establish zero game iframes.",
+      "ownedGameTabClosedAt": "2026-11-28T10:04:23Z",
+      "ownedGameTabClosed": true,
+      "ownedTermsTabClosed": true,
+      "preexistingTabsPreserved": true,
+      "sound": "On",
+      "reducedMotion": "Off",
+      "preferencesChanged": false
+    }
+  },
+  "limits": [
+    "Native interstitial display/normal close and existing fixed trace success do not establish exact SDK invocation count, impression receipt or every cadence, cooldown, failure or subscriber variant.",
+    "Visible banner reservation/removal does not establish exact load/hide invocation count, placement receipt, entitlement variants or all J10 behavior.",
+    "No opponent interaction, social delivery, purchase or account cleanup was exercised in this sequence. Rewarded cancellation/failure and independent grant verification remain untested.",
+    "Rendered paused-class state does not establish scheduler state; no exact save-phase, lock or backend storage-mechanism trace was taken.",
+    "The separate historical Android post-Terms issue and full J09/J10/submission acceptance remain unresolved.",
+    "Normal game Quit is established by return to /gaming/play/. Later Quit receipts contain one total iframe and do not establish zero game iframes or exact exit latency."
+  ],
+  "changes": {
+    "sourceChanged": false,
+    "firebaseCodeOrConfigurationChanged": false,
+    "providerServerCodeOrConfigurationChanged": false,
+    "backendBuildOrDeploymentRun": false,
+    "metaConfigurationChanged": false,
+    "bundleUploadedOrReassigned": false,
+    "vercelChanged": false,
+    "reviewSubmitted": false,
+    "productionPromoted": false,
+    "published": false
+  },
+  "coverage": {
+    "W": 51,
+    "C": 10,
+    "G": 6,
+    "X": 12,
+    "changed": false
+  },
+  "receipts": [
+    {
+      "name": "carrot-before-quit",
+      "observedAt": "2026-11-28T09:55:11.251Z",
+      "privateReceiptSha256": "81e90c53008573dc615e4af5bc0892c28826e60bf3fb55504c91196380fffb34"
+    },
+    {
+      "name": "cleanup",
+      "observedAt": "2026-11-28T10:04:23Z",
+      "privateReceiptSha256": "c5fa7da538a91d699cd8301dd18c500cc773078c0809e9f5762f7d64f21c4d18"
+    },
+    {
+      "name": "final-quit-initial",
+      "observedAt": "2026-11-28T10:04:03.646Z",
+      "privateReceiptSha256": "e6f11a780ab6b51d972c84c0d4afdd7d62779363dd096a8fd02c4991b662d98d"
+    },
+    {
+      "name": "final-quit",
+      "observedAt": "2026-11-28T10:04:22.670Z",
+      "privateReceiptSha256": "4ac3eca8e7bf1f70f97ecca5db516e9ea23c486d10b1d14c7ab50d83aeffef6a"
+    },
+    {
+      "name": "identity",
+      "observedAt": "2026-11-28T09:50:52.582Z",
+      "privateReceiptSha256": "321aef7db5e70901dc4a238fa14137d5defd9293f3fb9fdfe6e74368c988bc27"
+    },
+    {
+      "name": "next",
+      "observedAt": "2026-11-28T09:53:17.868Z",
+      "privateReceiptSha256": "e87142d820789d4249c0b6b95515400820e5e20c55a70dc5b968f34cf129dfc2"
+    },
+    {
+      "name": "post-terms-win",
+      "observedAt": "2026-11-28T09:54:58.338Z",
+      "privateReceiptSha256": "935bd6cf871ee82951cd9ee931f634101b3b801238e2779ea454c9539e88006f"
+    },
+    {
+      "name": "quit-final",
+      "observedAt": "2026-11-28T09:55:46.885Z",
+      "privateReceiptSha256": "3f9f9ec6ae0ce62006ae45b3707bf037e4f8b32b72939e46a63bf88b172c6abe"
+    },
+    {
+      "name": "quit-initial",
+      "observedAt": "2026-11-28T09:55:19.582Z",
+      "privateReceiptSha256": "a97c710c100e9ab55b135a296f12d575df6ee50c6074ab7a368abfd5b9994460"
+    },
+    {
+      "name": "relaunch",
+      "observedAt": "2026-11-28T09:56:31.869Z",
+      "privateReceiptSha256": "d2ba8940d79638751054ff05c9ad86437eb3c1faea352efc15cb4b956a5df17b"
+    },
+    {
+      "name": "reward-baseline",
+      "observedAt": "2026-11-28T10:00:25.103Z",
+      "privateReceiptSha256": "c9cbfc7d6d8577d65cc1b3796870b6ff04400a100593621b36fb7ea4015581e1"
+    },
+    {
+      "name": "reward-close-control",
+      "observedAt": "2026-11-28T10:01:42.925Z",
+      "privateReceiptSha256": "3d25a3d69f471308740ec4cbd837fc08e62754ab4fcaaae160c051b7b78a0a2b"
+    },
+    {
+      "name": "reward-followup-win",
+      "observedAt": "2026-11-28T10:02:41.733Z",
+      "privateReceiptSha256": "6edd6eacd4809d1b0c26b8da2d5cee6dd815e3a670bf02bf8c224104b1a1ea17"
+    },
+    {
+      "name": "reward-network",
+      "observedAt": "2026-11-28 10:02:17 UTC",
+      "privateReceiptSha256": "d6d244202220bd37208b0d8e315ac3fd3d08752f36e3cc317fb7188aacb0ff88"
+    },
+    {
+      "name": "reward-next",
+      "observedAt": "2026-11-28T10:02:57.450Z",
+      "privateReceiptSha256": "6150e26a8e9b799a3e0289b7babc23f2556866cc083de77b5d1b7de763642d7e"
+    },
+    {
+      "name": "reward-quit-final",
+      "observedAt": "2026-11-28T10:03:26.487Z",
+      "privateReceiptSha256": "8a6b4b96a712bfd8ee2eee9a4268cc8f491b04272c00c098ea19da6d983d5658"
+    },
+    {
+      "name": "reward-quit-initial",
+      "observedAt": "2026-11-28T10:03:19.053Z",
+      "privateReceiptSha256": "8cd098ef79e60a6b516b4ca944afe5fd5830197e777f81249ce012033e18646d"
+    },
+    {
+      "name": "reward-relaunch",
+      "observedAt": "2026-11-28T10:03:54.717Z",
+      "privateReceiptSha256": "0817655eb4e707e23f3a62fee254a8156a5d8af297cadc0f5ed750f4a03d04cb"
+    },
+    {
+      "name": "reward-return",
+      "observedAt": "2026-11-28T10:02:16.711Z",
+      "privateReceiptSha256": "5cb67a1c2d52c372f8e1ebdf751609c6d1b9949cc818448a4ea39c2ab748e583"
+    },
+    {
+      "name": "reward-settings",
+      "observedAt": "2026-11-28T10:03:18.155Z",
+      "privateReceiptSha256": "dfff312f2b9c1457be3970426ce9d1fa8af276d39b03344ffdb86daea3e27cd9"
+    },
+    {
+      "name": "settings-before-terms",
+      "observedAt": "2026-11-28T09:53:27.508Z",
+      "privateReceiptSha256": "1098f62695041b2c1ca91b0d0dac782cc71d41eeb23151c49a9baaaaf8fd40aa"
+    },
+    {
+      "name": "settings-closed",
+      "observedAt": "2026-11-28T09:54:36.193Z",
+      "privateReceiptSha256": "b869a7b3613fb90ebfc2cb7b442d25ff5a04438ad907be9defa9fd57b26370f6"
+    },
+    {
+      "name": "terms-confirmation",
+      "observedAt": "2026-11-28T09:53:52.307Z",
+      "privateReceiptSha256": "cab82beb29cea19250970213781cfce4e9907ab056d179d88a7fce06a7fe1675"
+    },
+    {
+      "name": "terms-open",
+      "observedAt": "2026-11-28T09:54:03.802Z",
+      "privateReceiptSha256": "8584a43e7d2d3315c89dc5ffe5cb59949b370772918723fa0e88b1dfd880060c"
+    },
+    {
+      "name": "terms-return",
+      "observedAt": "2026-11-28T09:54:24.863Z",
+      "privateReceiptSha256": "d70d193560b6e9bb46006191cf0cf3d35254a6214ac8072558f0372d98986b09"
+    },
+    {
+      "name": "win1",
+      "observedAt": "2026-11-28T09:51:17.561Z",
+      "privateReceiptSha256": "982f0a78aa0e75f870e88883c7480b01ca0949a6cf3e52ceb4f70396d5e5e7af"
+    },
+    {
+      "name": "win2",
+      "observedAt": "2026-11-28T09:51:39.421Z",
+      "privateReceiptSha256": "f0f1c34a20b8ccfa5f433daf7290aa27dd47b9fa400c24b6adb603a37aff617b"
+    },
+    {
+      "name": "win3",
+      "observedAt": "2026-11-28T09:52:49.651Z",
+      "privateReceiptSha256": "2e473e9e4def7c9d29020c4553f89931e4973c479e6952e4c2a5b8557274c481"
+    }
+  ],
+  "privateScreenshots": [
+    {
+      "name": "riddle-quest-chrome-v24-ads-banner-hidden.png",
+      "sha256": "d216ffb4ccf59cd5a38632300cb44e43d045c9092891db80be6ce8908c683e27"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-ads-reward-end.png",
+      "sha256": "8ad11d9b411071ef13b049cbb93410909c6ef83bfdec96efe5939c952c4089e7"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-ads-reward-native.png",
+      "sha256": "0bbbe93f7709993a2d38c7ff2d68245f83399d577ae6ce5c5b541e99ae2e534b"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-ads-settings-banner.png",
+      "sha256": "eafca39289931e47d93245b7a1918e8b033078bc7bf2b3e173a35ade79e2b8f7"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-ads-terms-return-banner.png",
+      "sha256": "c02b88dd2b1b7d8a09929d0c95246436033d5b073279b4b98ec179df363e4f45"
+    },
+    {
+      "name": "riddle-quest-chrome-v24-ads-third-native.png",
+      "sha256": "28f5675f0e315413619906e8aeb8bb9444766d92aef1621621dd34ba66e4edcd"
+    }
+  ],
+  "privateEvidencePolicy": "Private receipts and screenshots are not copied into the repository. Screenshot content may contain host/profile UI; only hashes are published."
+}
