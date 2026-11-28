@@ -1,0 +1,79 @@
+{
+  "recordedAt": "2026-11-28T01:48:29.855942+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "543c5791aa7e76345fb1b20906700bb0a629d188",
+  "archiveSha256": "de3f0246fdf9db49412f585e192ea530965592b243690a282ec4e103ff0fb233",
+  "archiveBytes": 2866122,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 18,
+  "bundleId": "29215929211369652",
+  "status": "Testing",
+  "uploadCount": 1,
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "29215929211369652",
+    "version": 18,
+    "observedAt": "2026-11-28T01:47:26.493Z",
+    "httpStatus": 200,
+    "responseSha256": "687bbeff9c2516479d9b468db6fecf365d4b6d0170df561e1373753d87f3b04c",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "29215929211369652",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T01:48:02.948649+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "fe1a0d3115fccde88105855babea68c2e83809431e0d328bdd6e334e3e63b670",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container."
+  },
+  "processingEvidence": "All420 runtime files served correctly and the Testing-only assignment returned HTTP200 with exact bundle ID. No separate dashboard processing field read.",
+  "providerArchiveDownloaded": false,
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production dashboard assignment not freshly read."
+  },
+  "localVerification": {
+    "focusedTests": 33,
+    "focusedSuites": 1,
+    "focusedSeconds": 0.209,
+    "fullBrowserTests": 1,
+    "fullBrowserSeconds": 42.739,
+    "sharedTypecheck": "passed",
+    "canonicalPreflight": "passed",
+    "artifactAudit": "passed;420 files,4.51MB total,0.71MB initial;no Jest gaming SDK/native/secret leakage",
+    "standardsReview": "no findings",
+    "specReview": "no findings"
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "vercel": "Existing isolated Vercel deployment remains v15; no v18 Vercel deployment performed.",
+  "hostedMobile": {
+    "evidence": "facebook-android-version-18-2026-11-28.md",
+    "exactVersionAndBundleVerified": true,
+    "finalExactIdentityObservedAt": "2026-11-28T01:59:38.276189+00:00",
+    "restoredPuzzle": "PENCIL",
+    "coins": 1155,
+    "reducedMotionOnPersisted": true,
+    "reducedMotionOffRestoredAndPersisted": true,
+    "nativeInviteCancellation": "passed; no recipient chosen or send",
+    "nativeContextChooserCancellation": "passed; no player chosen or play",
+    "socialDiscovery": "zero friends who play and empty tournaments; refresh/close/reopen usable; no join or match",
+    "normalQuit": "passed initially, after preference change, and at final02:00:39UTC; main Facebook activity by02:00:41UTC",
+    "afterTermsReturn": "Settings native actions greyed for at least53s; busy action/guard stage unknown; game later exited during diagnostic preparation by01:56:56UTC, exact cause unobserved",
+    "timeoutRecovery": "local regressions only; native15s recovery not established",
+    "rewarded": "not repeated on18; separate17 native success retained",
+    "diagnostic": "single one-shot scheduler probe after failure; sync and microtask responded, no rAF/10stimer output by11s; subsequent DOM probe not submitted; removed by fresh launch",
+    "finalPhoneState": "Facebook main activity; no debug panel or callbacks; temporary device UI dump removed"
+  }
+}
