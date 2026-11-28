@@ -1,0 +1,174 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "scope": "Unmodified single-account Android Home/Recents comparison after Terms OPEN/Back; normal UI and rendered SDK Info only.",
+  "artifact": {
+    "version": 22,
+    "bundleId": "27134874202877022",
+    "sourceCommit": "3d1d2e43a8dcfec2d6cd401de4200609601e9f37",
+    "archiveSha256": "d1b55275070597cdc6478ecae7879d414bbc57eb499f5cb9f71515019a1074b6",
+    "receipt": "facebook-testing-version-22-2026-11-28.json",
+    "unchanged": true
+  },
+  "launch": "2026-11-28T04:52:09.678682+00:00",
+  "sdkInfo": {
+    "observedAt": "2026-11-28T04:52:32.415146+00:00",
+    "version": 22,
+    "path": "/instant-bundle/2143220529953108/27134874202877022/index.html",
+    "sdkVersion": "8.0",
+    "supportedApiCount": 47,
+    "bannerLoadAdvertised": false,
+    "supportedApis": [
+      "canCreateShortcutAsync",
+      "changeContextAsync",
+      "checkCanPlayerMatchAsync",
+      "context.chooseAsync",
+      "context.createAsync",
+      "context.getID",
+      "context.getPlayersAsync",
+      "context.getType",
+      "context.switchAsync",
+      "createShortcutAsync",
+      "getEntryPointAsync",
+      "getEntryPointData",
+      "getInterstitialAdAsync",
+      "getLocale",
+      "getPlatform",
+      "getRewardedVideoAsync",
+      "getSDKVersion",
+      "getSupportedAPIs",
+      "hideBannerAdAsync",
+      "initializeAsync",
+      "inviteAsync",
+      "matchPlayerAsync",
+      "onPause",
+      "onResume",
+      "openExternalLinkAsync",
+      "player.createNEZPNotificationContentAsync",
+      "player.flushDataAsync",
+      "player.getASIDAsync",
+      "player.getConnectedPlayersAsync",
+      "player.getDataAsync",
+      "player.getSignedASIDAsync",
+      "player.getSignedAssociatedAppsASIDAsync",
+      "player.getSignedPlayerInfoAsync",
+      "player.setDataAsync",
+      "player.subscribeBotAsync",
+      "quit",
+      "room.getCurrentMatchAsync",
+      "setLoadingProgress",
+      "shareAsync",
+      "startGameAsync",
+      "switchGameAsync",
+      "tournament.createAsync",
+      "tournament.getTournamentsAsync",
+      "tournament.joinAsync",
+      "tournament.postScoreAsync",
+      "tournament.shareAsync",
+      "updateAsync"
+    ]
+  },
+  "visibleBannerObserved": false,
+  "observedGameplay": {
+    "riddle": "GUITAR",
+    "emptyRows": 5,
+    "coins": 1180
+  },
+  "clock": "All timestamps are controller observations; observed recovery times are not exact internal completion times.",
+  "terms": {
+    "tap": "2026-11-28T04:53:24.397508+00:00",
+    "open": "2026-11-28T04:53:37.227229+00:00",
+    "externalPageObservedAt": "2026-11-28T04:53:43.246776+00:00",
+    "androidBack": "2026-11-28T04:53:49.088925+00:00",
+    "settingsReturnObservedAt": "2026-11-28T04:53:57.176576+00:00"
+  },
+  "beforeHomeQuit": {
+    "tap": "2026-11-28T04:54:02.804541+00:00",
+    "disabledControlsObservedAt": "2026-11-28T04:54:08.342665+00:00",
+    "enabledControlsAndWarningObservedAt": "2026-11-28T04:54:24.569037+00:00",
+    "recoveryObservationSecondsAfterTap": 21.764,
+    "fullWarningObservedAt": "2026-11-28T04:54:41.107789+00:00",
+    "warning": "Progress isn't saved yet. Keep the game open.",
+    "appExitObserved": false
+  },
+  "homeRecents": {
+    "home": "2026-11-28T04:54:47.662453+00:00",
+    "homeConfirmedAt": "2026-11-28T04:54:52.874772+00:00",
+    "recents": "2026-11-28T04:55:03.633254+00:00",
+    "recentsConfirmedAt": "2026-11-28T04:55:13.263221+00:00",
+    "existingFacebookCardSelectedAt": "2026-11-28T04:55:20.917301+00:00",
+    "returnObservedAt": "2026-11-28T04:55:28.102817+00:00",
+    "sameSettingsPositionAndWarningObserved": true,
+    "androidActivity": "QuicksilverActivity",
+    "welcomeOrReloadObserved": false,
+    "existingHomeShortcutCreatedByThisCheck": false
+  },
+  "afterHomeQuit": {
+    "tap": "2026-11-28T04:55:37.427866+00:00",
+    "disabledControlsAndClearedWarningObservedAt": "2026-11-28T04:55:37.519907+00:00",
+    "enabledControlsAndFullWarningObservedAt": "2026-11-28T04:55:56.827019+00:00",
+    "recoveryObservationSecondsAfterTap": 19.399,
+    "warning": "Progress isn't saved yet. Keep the game open.",
+    "androidActivity": "QuicksilverActivity",
+    "sameActivityRecordObserved": true,
+    "appExitObserved": false,
+    "freshUiConfirmation": {
+      "observedAt": "2026-11-28T04:56:18.107294+00:00",
+      "controls": [
+        {
+          "text": "Privacy Policy",
+          "enabled": true
+        },
+        {
+          "text": "Terms of Use",
+          "enabled": true
+        },
+        {
+          "text": "Quit game",
+          "enabled": true
+        }
+      ],
+      "warning": "Progress isn't saved yet. Keep the game open."
+    }
+  },
+  "result": "The ordinary Home/Recents cycle did not restore observable app Quit in this session. Both attempts recovered enabled Settings controls with the unsaved warning. Save completion and the cause remain unresolved.",
+  "cleanup": {
+    "hostMenuOpenedAt": "2026-11-28T04:56:18.125685+00:00",
+    "hostMenuConfirmedAt": "2026-11-28T04:56:24.872488+00:00",
+    "hostQuit": "2026-11-28T04:56:30.572466+00:00",
+    "facebookMainConfirmedAt": "2026-11-28T04:56:45.011757+00:00",
+    "activity": "FbMainTabActivity",
+    "temporaryDeviceUiXmlRemovedAt": "2026-11-28T04:56:45.610803+00:00",
+    "isAppQuitEvidence": false
+  },
+  "limits": [
+    "Single observed session; no universal claim about Home/Recents or the native host cause.",
+    "The same Settings position/warning and activity were observed; no welcome/reload was observed, without tracing internal owner lifetime.",
+    "No successful app exit, completed post-Terms save or new-save persistence was established.",
+    "No gameplay progress, preference or consent change was made; automatic storage writes are not excluded.",
+    "No JavaScript console, probe, SDK patch or synthetic lifecycle event was used.",
+    "This session is separate from instrumented diagnostics and served-banner acceptance.",
+    "Raw screenshots, input coordinates and activity identifiers remain private local evidence."
+  ],
+  "consoleOrProbesUsed": false,
+  "sdkPatched": false,
+  "syntheticLifecycleEvents": false,
+  "gameplayProgressChanged": false,
+  "preferencesOrConsentChanged": false,
+  "sourceChanged": false,
+  "newBuildOrUpload": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "completeJourneyAcceptanceEstablished": false,
+  "sdkInventoryRows": 79,
+  "coverageCountsChanged": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-v22-home-recovery-observations.json": "6b59fd625fe4f90b9f39ab6d973b2113e1d0f08680cbd41575f178eff4ff4485",
+    "riddle-quest-v22-home-recovery-sdk-info.json": "481a3f42045005467f756953aab9833cd2095102ee333ad52bda4bc3085feb4d",
+    "riddle-quest-v22-home-recovery-warning-ui.json": "2ce329225b9461d332d931617dc6886e36ff4ff859b4ec3e4e04bc8bfc3b4ca6"
+  }
+}
