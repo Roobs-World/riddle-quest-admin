@@ -1,0 +1,102 @@
+{
+  "recordedAt": "2026-11-28T07:19:28.609679+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "579f9d5def20b5007218663702de0bd3e11da1c4",
+  "archiveSha256": "8144475232cbb8133e2f61a8954ed6e7bd19dec11e8635d1c1862c22b1e7d163",
+  "archiveBytes": 2867954,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 23,
+  "bundleId": "40683991141214635",
+  "status": "Testing",
+  "uploadCount": 1,
+  "uploadedAt": "2026-11-28T07:18:03.219Z",
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "40683991141214635",
+    "version": 23,
+    "observedAt": "2026-11-28T07:19:09.476Z",
+    "httpStatus": 200,
+    "responseSha256": "70e0e48401ed39f812cea0b1c5bdd8cc51e410ba008009da78a9d4e8156d2a76",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "40683991141214635",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T07:18:58.946141+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "6993565b720e2feb5c4ef0962bf1183b1105278114d4615e728a54f9cc836532",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialComparison": {
+      "observedAt": "2026-11-28T07:18:45.110938+00:00",
+      "matchingFiles": 415,
+      "emptyHttp200Responses": 5,
+      "resolution": "A full recheck matched all 420 files without source change or retransmission; cause unknown."
+    }
+  },
+  "providerArchiveDownloaded": false,
+  "productionAssignmentRequested": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "localVerification": {
+    "focusedTests": 130,
+    "suites": 5,
+    "seconds": 0.278,
+    "typecheck": "passed",
+    "canonicalPreflight": "passed",
+    "independentReview": "No findings",
+    "artifact": "Passed: 420 files, 4.51 MB total and 0.72 MB initial resources; no Jest gaming SDK, native-module or secret leakage.",
+    "testPaths": [
+      "platforms/web/facebook/src/ads/__tests__/FacebookInterstitialTrace.test.ts",
+      "platforms/web/facebook/src/__tests__/FacebookLevelInterstitial.test.ts",
+      "platforms/web/facebook/src/__tests__/FacebookInterstitialPolicy.test.ts",
+      "platforms/web/facebook/src/__tests__/FacebookAdsCapability.test.ts",
+      "platforms/web/facebook/src/__tests__/FacebookAdPreparation.test.ts"
+    ],
+    "scope": "Bounded trace ownership/error mapping, completed-level cadence, interstitial policy, ad admission and preparation. Local tests do not establish native provider acceptance.",
+    "fullBrowserJourney": "Not rerun for this observability change.",
+    "focusedTestCommand": "pnpm exec jest --runInBand --runTestsByPath platforms/web/facebook/src/ads/__tests__/FacebookInterstitialTrace.test.ts platforms/web/facebook/src/__tests__/FacebookLevelInterstitial.test.ts platforms/web/facebook/src/__tests__/FacebookInterstitialPolicy.test.ts platforms/web/facebook/src/__tests__/FacebookAdsCapability.test.ts platforms/web/facebook/src/__tests__/FacebookAdPreparation.test.ts",
+    "focusedTestLogSha256": "eb6ee542bff4b20a052168c7e2c9815d51876bf7d97c62715b34d3dd169b3767",
+    "typecheckCommand": "pnpm exec tsc --noEmit"
+  },
+  "nativeVerification": "Exact-version Android identity, first cadence trace, third-win native interstitial display and create/load/show success, enabled result controls, normal Quit/relaunch progress restoration and final normal exit observed. Full J09 and the separate post-Terms issue remain open.",
+  "privateAcceptanceSha256": "d9c19f3f443e2cfe271fbabb14b5a6e100a435fdb5c37ff21b741149598f72b9",
+  "processingEvidence": "All 420 runtime files served correctly and Testing-only assignment returned HTTP 200 with the exact bundle ID. No separate dashboard processing field was read.",
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production assignment was not freshly read."
+  },
+  "vercel": "Existing isolated deployment remains version 15; no version 23 Vercel deployment performed.",
+  "firebaseBuildOrPackagingRun": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "coverageCountsChanged": false,
+  "hostedMobile": {
+    "evidence": "facebook-android-interstitial-version-23-2026-11-28.json",
+    "scope": "Two single-account Android sessions; fixed-mark console reader executed twice in the first session, none in the second. No SDK mutation, Worker, probe timer or CDP.",
+    "sdkInfoObservedAt": "2026-11-28T07:20:28.500951+00:00",
+    "relaunchSdkInfoObservedAt": "2026-11-28T07:30:35.278694+00:00",
+    "supportedApiCountBothSessions": 48,
+    "nativeInterstitialAndControlRecoveryObserved": true,
+    "latestTraceMarkCount": 19,
+    "traceShowSucceeded": true,
+    "exactSdkRequestCountEstablished": false,
+    "restoredPuzzle": "CHESS",
+    "restoredCoins": 1415,
+    "normalQuitCount": 2,
+    "hostQuitUsed": false,
+    "cleanupAt": "2026-11-28T07:34:23.053054+00:00",
+    "fullJ09Established": false,
+    "historicalVersion22CauseEstablished": false,
+    "postTermsSaveRecoveryEstablished": false
+  }
+}

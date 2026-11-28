@@ -1,0 +1,424 @@
+{
+  "recordedDate": "2026-11-28",
+  "game": "Riddle Quest",
+  "recordStatus": "Completed finite native observation; full J09 remains open.",
+  "scope": "Exact-version Android interstitial cadence and native diagnostics; local fixed-mark readback is separate from provider acceptance.",
+  "artifact": {
+    "version": 23,
+    "bundleId": "40683991141214635",
+    "sourceCommit": "579f9d5def20b5007218663702de0bd3e11da1c4",
+    "archiveSha256": "8144475232cbb8133e2f61a8954ed6e7bd19dec11e8635d1c1862c22b1e7d163",
+    "receipt": "facebook-testing-version-23-2026-11-28.json"
+  },
+  "launchAt": "2026-11-28T07:19:54.107363+00:00",
+  "sdkInfo": {
+    "observedAt": "2026-11-28T07:20:28.500951+00:00",
+    "version": 23,
+    "path": "/instant-bundle/2143220529953108/40683991141214635/index.html",
+    "sdkVersion": "8.0",
+    "supportedApiCount": 48,
+    "bannerLoadAdvertised": true,
+    "supportedApis": [
+      "canCreateShortcutAsync",
+      "changeContextAsync",
+      "checkCanPlayerMatchAsync",
+      "context.chooseAsync",
+      "context.createAsync",
+      "context.getID",
+      "context.getPlayersAsync",
+      "context.getType",
+      "context.switchAsync",
+      "createShortcutAsync",
+      "getEntryPointAsync",
+      "getEntryPointData",
+      "getInterstitialAdAsync",
+      "getLocale",
+      "getPlatform",
+      "getRewardedVideoAsync",
+      "getSDKVersion",
+      "getSupportedAPIs",
+      "hideBannerAdAsync",
+      "initializeAsync",
+      "inviteAsync",
+      "loadBannerAdAsync",
+      "matchPlayerAsync",
+      "onPause",
+      "onResume",
+      "openExternalLinkAsync",
+      "player.createNEZPNotificationContentAsync",
+      "player.flushDataAsync",
+      "player.getASIDAsync",
+      "player.getConnectedPlayersAsync",
+      "player.getDataAsync",
+      "player.getSignedASIDAsync",
+      "player.getSignedAssociatedAppsASIDAsync",
+      "player.getSignedPlayerInfoAsync",
+      "player.setDataAsync",
+      "player.subscribeBotAsync",
+      "quit",
+      "room.getCurrentMatchAsync",
+      "setLoadingProgress",
+      "shareAsync",
+      "startGameAsync",
+      "switchGameAsync",
+      "tournament.createAsync",
+      "tournament.getTournamentsAsync",
+      "tournament.joinAsync",
+      "tournament.postScoreAsync",
+      "tournament.shareAsync",
+      "updateAsync"
+    ]
+  },
+  "sdkVersionObservation": {
+    "value": "8.0",
+    "observedAt": "2026-11-28T07:20:14.971875+00:00",
+    "source": "Separate rendered debug menu; SDK Info helper fixed sdkVersion field is not treated as independent extraction."
+  },
+  "restoredGameplay": {
+    "observedAt": "2026-11-28T07:21:01.261338+00:00",
+    "riddle": "PANDA",
+    "emptyRows": 5,
+    "coins": 1310
+  },
+  "startupBanner": {
+    "observedAt": "2026-11-28T07:20:40.885752+00:00",
+    "advertiser": "CGMA",
+    "providerBranding": "Meta",
+    "screen": "88% Preparing",
+    "advertiserActionPerformed": false,
+    "limit": "The private gameplay-restored.png is a loading-screen banner observation, not restored gameplay."
+  },
+  "wins": [
+    {
+      "riddle": "PANDA",
+      "submittedAt": "2026-11-28T07:21:16Z",
+      "settledResultObservedAt": "2026-11-28T07:21:26.097836+00:00",
+      "ordinaryCoinsAwarded": 35,
+      "coinsAfter": 1345
+    },
+    {
+      "riddle": "LADLE",
+      "resultObservedAt": "2026-11-28T07:24:24.921294+00:00",
+      "ordinaryCoinsAwarded": 35,
+      "coinsAfter": 1380,
+      "servedBannerAdvertiser": "Rakuten",
+      "submittedAt": "2026-11-28T07:24:10Z"
+    },
+    {
+      "riddle": "RAKE",
+      "submittedAt": "2026-11-28T07:25:05Z",
+      "returnedResultObservedAt": "2026-11-28T07:26:41.525434+00:00",
+      "ordinaryCoinsAwarded": 35,
+      "coinsAfter": 1415
+    }
+  ],
+  "traceReads": [
+    {
+      "label": "one",
+      "observedAt": "2026-11-28T07:23:23.861413+00:00",
+      "transportVerifiedCharacters": 1972,
+      "marks": [
+        {
+          "stage": "completion",
+          "at": 85837.5
+        },
+        {
+          "stage": "cadence-one",
+          "at": 85837.80000001192
+        }
+      ],
+      "interpretation": "First accepted completion and first cadence position were observed; no third-win opportunity or native request is established by this read."
+    },
+    {
+      "label": "three",
+      "observedAt": "2026-11-28T07:27:58.740620+00:00",
+      "transportVerifiedCharacters": 1972,
+      "priorFirstCadenceLogStillVisible": true,
+      "marks": [
+        {
+          "stage": "completion",
+          "at": 309049.90000000596
+        },
+        {
+          "stage": "opportunity",
+          "at": 309049.90000000596
+        },
+        {
+          "stage": "admission",
+          "at": 309050.59999999404
+        },
+        {
+          "stage": "eligibility-initial",
+          "at": 309050.8000000119
+        },
+        {
+          "stage": "eligibility-initial-resolved",
+          "at": 309926.7000000179
+        },
+        {
+          "stage": "dialog-guard",
+          "at": 309926.90000000596
+        },
+        {
+          "stage": "dialog-operation",
+          "at": 311107.3000000119
+        },
+        {
+          "stage": "create-invoked",
+          "at": 311107.8000000119
+        },
+        {
+          "stage": "create-resolved",
+          "at": 311147.40000000596
+        },
+        {
+          "stage": "placement-before-load",
+          "at": 311147.5
+        },
+        {
+          "stage": "load-invoked",
+          "at": 311147.59999999404
+        },
+        {
+          "stage": "load-resolved",
+          "at": 314866.40000000596
+        },
+        {
+          "stage": "eligibility-after-load",
+          "at": 314866.40000000596
+        },
+        {
+          "stage": "eligibility-after-load-resolved",
+          "at": 315797.2000000179
+        },
+        {
+          "stage": "placement-before-show",
+          "at": 315797.3000000119
+        },
+        {
+          "stage": "show-invoked",
+          "at": 315797.3000000119
+        },
+        {
+          "stage": "show-resolved",
+          "at": 377262.90000000596
+        },
+        {
+          "stage": "success",
+          "at": 377263.09999999404
+        },
+        {
+          "stage": "finished",
+          "at": 377263.09999999404
+        }
+      ],
+      "interpretation": "Latest capture traversed opportunity, admission, eligibility, native dialog, SDK create/load/show, show resolution, success and finished. No failure category is present in this capture."
+    }
+  ],
+  "diagnosticMethod": {
+    "helperSha256": "07539f4b7c85b94b460f39033cafafed946fdf4f0944b0cd9bec21bbb054fe55",
+    "reader": "Existing User Timing entries filtered to 54 fixed names; only stage and relative startTime printed through console.log.",
+    "sdkPatched": false,
+    "sdkMethodsCalledByReader": false,
+    "applicationProbeGlobalInstalled": false,
+    "timersOrWorkersCreated": false,
+    "cdpUsed": false,
+    "observerInterferenceExcluded": false,
+    "earlyFailedConsoleTextLookups": 2,
+    "failedLookupsSentInput": false,
+    "consoleOpenedByFreshScreenshotCoordinates": true,
+    "helperInvocationCount": 2
+  },
+  "clock": "Controller observation times and Performance mark startTime use different clocks; they are not subtracted across domains. Marks retain latest occurrence per phase, not a complete event history.",
+  "cleanup": {
+    "observedAt": "2026-11-28T07:34:23.053054+00:00",
+    "version": 23,
+    "bundleId": "40683991141214635",
+    "finalQuitControl": "in-game Settings > Quit game",
+    "finalTopResumedActivity": "com.facebook.katana/.activity.FbMainTabActivity",
+    "ownedDeviceUiXmlAbsent": true,
+    "adbForwardCount": 0,
+    "activeOwnedHelperProcesses": [],
+    "consoleTransportCompleted": true,
+    "cdpConnectionsStartedThisRun": 0,
+    "workersStartedThisRun": 0,
+    "timersOrProbesInstalledThisRun": 0,
+    "sdkMutationsThisRun": 0
+  },
+  "coverageCountsChanged": false,
+  "fullAdAcceptanceEstablished": false,
+  "firebaseCodeOrConfigurationChanged": false,
+  "providerServerCodeOrConfigurationChanged": false,
+  "privateEvidenceSha256": {
+    "riddle-quest-v23-interstitial-observations.json": "bec2794b5c54d460b6fc1f38f29d3eee4c069a8b27eb3f134cc6737a330484d1",
+    "riddle-quest-v23-interstitial-sdk-info.json": "cad740b202ead6b3684e590c0493950b472876974a31b0527b0db6f984890913",
+    "riddle-quest-v23-interstitial-relaunch-sdk-info.json": "7202cea2fc5ab5919dffb822a5ef1a3ca71dcb1e2b8f6c0788b7895f1f08da52",
+    "riddle-quest-v23-interstitial-trace-one.json": "abebaacf6da5f3854b4bee582ff37e0502456dbf5709f8a1ce62af01a410478b",
+    "riddle-quest-v23-interstitial-trace-three.json": "a6fa69b47a49bd519f49d46d88b725cd56d4febae8948a448675c4175ec052a1",
+    "riddle-quest-v23-interstitial-post-ad-controls.json": "24871ecfd4747c94231bb7460e2e6a6bf575e00d296b212ac414be29bd3f49dc",
+    "riddle-quest-v23-interstitial-restored-ui.json": "b91d99a79185c0bb900fc05b3bce9799323707e4b5c4b8d513976ee969233f54",
+    "riddle-quest-v23-interstitial-cleanup.json": "fedb568cc26fd28785c9886882c8a4ac22a51832316fc04ced274ab13292dc77",
+    "riddle-quest-v23-interstitial-final-quit.json": "07ae64aec8c8c665eea95b944c289fd467ed09595545a74a49f228ad69909e66",
+    "riddle-quest-v23-interstitial-quit-one-confirmed.json": "06d13af8a788f0f0626bf7f5567226eb1d257f6a1fd264028dd36172610638cc",
+    "riddle-quest-v23-interstitial-win-one-settled.png": "4a06c9483038dda53d776f8e73313c6bcab0ba9da583df597f044965c49f8e84",
+    "riddle-quest-v23-interstitial-win-two-result.png": "f327e16ff491093c319e7181fd2f4944b0db8430ce84e3f57568da26395ff3c2",
+    "riddle-quest-v23-interstitial-win-three-held-one.png": "50aef1f0cce640003780e2b1bd15b0443483a38ce34fa7b0a8ce5396c7c57740",
+    "riddle-quest-v23-interstitial-result-after-native-close.png": "260326ed574fa8b1aea790ccadba765282ade8ef0066e85767f0f6bf9770f028",
+    "riddle-quest-v23-interstitial-restored-ui.png": "0049f338e51fa5516f54b9a13d606a35165e400443f86e35573facc9d8904cf2",
+    "riddle-quest-v23-interstitial-trace-one-transport.json": "ad8ee141c990ce885442f21d24782b16f5a282b736b9e86adba665fc54190bcb",
+    "riddle-quest-v23-interstitial-trace-three-transport.json": "ad8ee141c990ce885442f21d24782b16f5a282b736b9e86adba665fc54190bcb",
+    "riddle-quest-interstitial-read-trace.js": "07539f4b7c85b94b460f39033cafafed946fdf4f0944b0cd9bec21bbb054fe55"
+  },
+  "rawScreenshotsCommitted": false,
+  "nativeInterstitial": {
+    "initialCreative": "Ansys",
+    "firstObservedAt": "2026-11-28T07:25:29.875476+00:00",
+    "firstCloseTappedAt": "2026-11-28T07:25:40.327462+00:00",
+    "nextCreative": "Bizbazar",
+    "nextCreativeObservedAt": "2026-11-28T07:25:48.616928+00:00",
+    "skipTappedAt": "2026-11-28T07:26:00.664471+00:00",
+    "endCardObservedAt": "2026-11-28T07:26:07.870021+00:00",
+    "endCardClosedAt": "2026-11-28T07:26:14.036666+00:00",
+    "actualGameReturnObservedAt": "2026-11-28T07:26:41.525434+00:00",
+    "enabledNextLevelAndShareConfirmedAt": "2026-11-28T07:26:44.311687+00:00",
+    "advertiserCtaClicked": false,
+    "debugInteractionBetweenThirdSubmitAndFinalAdClose": false,
+    "requestCountEstablished": false,
+    "showInvocationToResolutionPerformanceMs": 61465.6,
+    "dialogGuardToOperationPerformanceMs": 1180.4,
+    "limit": "Visible creative/end-card transitions are not a count of SDK ad requests. Latest-per-phase marks do not establish an exact SDK invocation count or the historical version 22 cause.",
+    "secondCreativeIsNotIntermediateGameRecovery": true
+  },
+  "completedAt": "2026-11-28T07:34:23.053054+00:00",
+  "thirdPuzzle": {
+    "riddle": "RAKE",
+    "readyObservedAt": "2026-11-28T07:24:46.529307+00:00",
+    "earlierPuzzleThreeImageWasLoading": true
+  },
+  "preferences": {
+    "observedAt": "2026-11-28T07:28:59.446553+00:00",
+    "source": "Rendered Settings screenshot; the earlier settings-ui receipt had no matching nodes.",
+    "sound": "On",
+    "reducedMotion": "Off",
+    "notifications": "Off",
+    "analyticsChecked": false,
+    "changed": false
+  },
+  "quitAndRestoration": {
+    "nextPuzzleObservedAt": "2026-11-28T07:28:42.794422+00:00",
+    "nextPuzzle": "CHESS",
+    "coins": 1415,
+    "emptyRows": 5,
+    "firstNormalQuitAt": "2026-11-28T07:29:25.461422+00:00",
+    "firstExitObservedAt": "2026-11-28T07:29:33.848852+00:00",
+    "firstExitActivity": "FbMainTabActivity",
+    "initialQuitTextLookupFailedWithoutInput": true,
+    "relaunchAt": "2026-11-28T07:29:42.090987+00:00",
+    "relaunchSdkInfo": {
+      "observedAt": "2026-11-28T07:30:35.278694+00:00",
+      "version": 23,
+      "path": "/instant-bundle/2143220529953108/40683991141214635/index.html",
+      "sdkVersion": "8.0",
+      "supportedApiCount": 48,
+      "bannerLoadAdvertised": true,
+      "supportedApis": [
+        "canCreateShortcutAsync",
+        "changeContextAsync",
+        "checkCanPlayerMatchAsync",
+        "context.chooseAsync",
+        "context.createAsync",
+        "context.getID",
+        "context.getPlayersAsync",
+        "context.getType",
+        "context.switchAsync",
+        "createShortcutAsync",
+        "getEntryPointAsync",
+        "getEntryPointData",
+        "getInterstitialAdAsync",
+        "getLocale",
+        "getPlatform",
+        "getRewardedVideoAsync",
+        "getSDKVersion",
+        "getSupportedAPIs",
+        "hideBannerAdAsync",
+        "initializeAsync",
+        "inviteAsync",
+        "loadBannerAdAsync",
+        "matchPlayerAsync",
+        "onPause",
+        "onResume",
+        "openExternalLinkAsync",
+        "player.createNEZPNotificationContentAsync",
+        "player.flushDataAsync",
+        "player.getASIDAsync",
+        "player.getConnectedPlayersAsync",
+        "player.getDataAsync",
+        "player.getSignedASIDAsync",
+        "player.getSignedAssociatedAppsASIDAsync",
+        "player.getSignedPlayerInfoAsync",
+        "player.setDataAsync",
+        "player.subscribeBotAsync",
+        "quit",
+        "room.getCurrentMatchAsync",
+        "setLoadingProgress",
+        "shareAsync",
+        "startGameAsync",
+        "switchGameAsync",
+        "tournament.createAsync",
+        "tournament.getTournamentsAsync",
+        "tournament.joinAsync",
+        "tournament.postScoreAsync",
+        "tournament.shareAsync",
+        "updateAsync"
+      ]
+    },
+    "restoredChessObservedAt": "2026-11-28T07:30:52.875322+00:00",
+    "restoredFullHeightScreenshotAt": "2026-11-28T07:31:08.043222+00:00",
+    "balanceAndNavigationUiConfirmedAt": "2026-11-28T07:31:08.023919+00:00",
+    "settingsAndMultiplayerEnabled": true,
+    "restoredCoins": 1415,
+    "restoredEmptyRows": 5,
+    "secondSessionGuessesOrPreferencesOrConsoleInvocations": false,
+    "finalNormalQuitAt": "2026-11-28T07:33:54.898685+00:00",
+    "finalExitObservedAt": "2026-11-28T07:34:01.942318+00:00",
+    "hostQuitUsed": false,
+    "normalQuitCount": 2,
+    "storageMechanismTraced": false
+  },
+  "acceptance": {
+    "exactCandidateIdentityEstablished": true,
+    "firstCadenceMarkObserved": true,
+    "thirdWinOpportunityAndCreateLoadShowSuccessObserved": true,
+    "nativeInterstitialDisplayAndControlsRecovered": true,
+    "progressRestorationAfterNormalQuitObserved": true,
+    "historicalVersion22MissingAdCauseEstablished": false,
+    "sdkRequestCountEstablished": false,
+    "fullJ09Established": false,
+    "postTermsSaveRecoveryEstablished": false,
+    "coverageCountsChanged": false
+  },
+  "limits": [
+    "The helper read existing fixed User Timing marks twice in the first session; debug UI/readback can affect scheduling or lifecycle. No debug interaction occurred from the third submission through final ad closure.",
+    "Each phase retains only its latest mark; neither the creative sequence nor marks establish an exact SDK request count. The first-cadence console output persisted alongside the later capture and was not mistaken for its current state.",
+    "The 61,465.6ms show span and 1,180.4ms dialog span use Performance timestamps only, not controller observations or exact native presentation callbacks.",
+    "The visible Ansys, Bizbazar and end-card sequence does not establish multiple SDK ad requests or game recovery before the final RAKE result.",
+    "PANDA/LADLE/RAKE each awarded ordinary +35 coins. No extra ad reward was observed, but no independent server grant or cloud-versus-local persistence trace was captured.",
+    "No subscriber/durable-removal, no-fill, failure, interruption, cooldown/session-cap boundary, broader host or complete rewarded-ad matrix was established.",
+    "No Terms navigation occurred in this phase. Its normal exits do not resolve the earlier post-Terms save issue or explain version22 missing-ad observations.",
+    "Misleading private image labels are bounded by actual contents: gameplay-restored was88% preparing, puzzle-three wasloading, and interstitial-return images still showed native ad surfaces.",
+    "Raw screenshots, UI coordinates and unrelated Facebook feed content remain private."
+  ],
+  "termsNavigation": false,
+  "preferencesOrConsentChanged": false,
+  "socialSendsPerformed": false,
+  "purchasesPerformed": false,
+  "advertiserCtaClicks": false,
+  "destructiveAccountCleanupPerformed": false,
+  "sdkPatched": false,
+  "sourceChangedDuringNativeCheck": false,
+  "newUploadDuringNativeCheck": false,
+  "firebaseDeployed": false,
+  "productionPromotionRequested": false,
+  "reviewSubmitted": false,
+  "published": false
+}

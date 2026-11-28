@@ -1,6 +1,6 @@
 # Bounded Facebook interstitial trace — 28 November 2026
 
-Version 22's third-win Android observation showed no interstitial but captured no admission decision or SDK outcome. This change adds local diagnostics to distinguish cadence, suppression, pending preparation and provider outcomes. **It does not establish a cause, fix or new hosted acceptance.** No new upload or native trace is recorded here yet; [version 22's existing result](facebook-android-ads-version-22-2026-11-28.md) retains its original scope.
+Version 22's third-win Android observation showed no interstitial but captured no admission decision or SDK outcome. This change adds local diagnostics to distinguish cadence, suppression, pending preparation and provider outcomes. **It does not identify or fix the cause of version 22's missing-ad observation.** [Version 23 is assigned to Testing](facebook-testing-version-23-2026-11-28.json), with all 420 runtime files verified and the narrow native follow-up below. [Version 22's existing result](facebook-android-ads-version-22-2026-11-28.md) retains its original scope.
 
 ## Recorded boundaries
 
@@ -14,6 +14,8 @@ Ten documented provider codes map to fixed categories using only an error's own 
 
 The final combined run passed **130 tests across five suites in 0.278 seconds**: trace, completed-level cadence, interstitial policy, ad capability and ad preparation. Coverage includes bounded marks, stale leases/retirement, unavailable Performance APIs, accessor-safe error mapping, deferred admission boundaries and preservation of SDK/predicate calls. Shared TypeScript checking and diff checks passed; independent production review reported no findings. These are local checks, not native provider acceptance.
 
-Native proof still requires a separately identified uploaded candidate and a fresh eligible result. Hold the qualifying result, observe actual display/recovery, and read only the fixed marks before another accepted completion replaces them. The prepared read-only helper is not yet run. Marks retain only each phase's latest occurrence, not a complete event history; missing marks alone cannot prove unsupported APIs, no-fill or callback nonexecution. Instrumentation and opening debug UI may affect scheduling or lifecycle. Existing eligibility, result ownership and SDK behavior remain authoritative.
+The [exact-version-23 Android follow-up](facebook-android-interstitial-version-23-2026-11-28.md) observed first-win cadence and a native interstitial after three ordinary wins. A second read returned 19 phases through create/load/show resolution, success and finished; result controls recovered and CHESS/1,415 coins survived normal Quit/relaunch. The fixed-mark reader ran twice, with no SDK mutation or debug interaction during the third-win ad. This verifies a narrow native path, not full J09 or the historical failure cause.
+
+Marks retain only each phase's latest occurrence, not complete event history or an exact SDK request count. Missing marks alone cannot prove unsupported APIs, no-fill or callback nonexecution. Instrumentation and opening debug UI may affect scheduling or lifecycle. Existing eligibility, result ownership and SDK behavior remain authoritative.
 
 Firebase/provider-server code and configuration are unchanged. Coverage remains **62 W / 11 C / 6 G**; submission completeness and production/review approval remain unproven.
