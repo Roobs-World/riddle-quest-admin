@@ -1,0 +1,116 @@
+{
+  "recordedAt": "2026-11-28T03:20:09.546025+00:00",
+  "appId": "1748953042991569",
+  "game": "Riddle Quest",
+  "sourceCommit": "185548c16aede8b57c1d957773631faf36b87e82",
+  "archiveSha256": "b77f10250da577848bd44e151e547a0989b1a089900f22bba0e0b9014fe6d0a5",
+  "archiveBytes": 2866457,
+  "archiveEntries": 422,
+  "runtimeFiles": 420,
+  "version": 20,
+  "bundleId": "40287594420886203",
+  "status": "Testing",
+  "uploadCount": 1,
+  "uploadedAt": "2026-11-28T03:18:18.528Z",
+  "testingAssignment": {
+    "appId": "1748953042991569",
+    "bundleId": "40287594420886203",
+    "version": 20,
+    "observedAt": "2026-11-28T03:19:37.383Z",
+    "httpStatus": 200,
+    "responseSha256": "6f53c941ea1a16cd0015f5f7175961fccbf93a9e8fac1155d7e4059176fbadd1",
+    "responseKeys": [
+      "bundle_instance_id"
+    ],
+    "returnedBundleId": "40287594420886203",
+    "testingAssignmentConfirmed": true,
+    "productionAssignmentRequested": false
+  },
+  "providerRuntimeVerification": {
+    "observedAt": "2026-11-28T03:19:24.025729+00:00",
+    "fileCount": 420,
+    "matchingFiles": 420,
+    "allHttp200": true,
+    "comparisonEvidenceSha256": "cf1e83e2339fc7c8394236f3af2d2279c74bae8fec4f0558d3a26d185e2bb9dc",
+    "scope": "Independent HTTPS comparison of every uncompressed runtime file against immutable uploaded ZIP; not a download/hash of the provider ZIP container.",
+    "initialComparison": {
+      "observedAt": "2026-11-28T03:18:56.525533+00:00",
+      "matchingFiles": 388,
+      "emptyHttp200Responses": 32,
+      "resolution": "A full recheck matched all 420 files without source change or retransmission; cause unknown."
+    }
+  },
+  "processingEvidence": "All 420 runtime files served correctly and Testing-only assignment returned HTTP 200 with the exact bundle ID. No separate dashboard processing field was read.",
+  "providerArchiveDownloaded": false,
+  "production": {
+    "lastVerifiedVersion": 9,
+    "lastVerifiedBundleId": "29168977262783270",
+    "promotionRequested": false,
+    "limit": "Testing-only endpoint preserves Production by contract; Production dashboard assignment not freshly read."
+  },
+  "localVerification": {
+    "focusedTests": 58,
+    "focusedSuites": 2,
+    "focusedSeconds": 0.249,
+    "sharedTypecheck": "passed",
+    "canonicalPreflight": "passed",
+    "artifactAudit": "Passed: 420 files, 4.51 MB total and 0.71 MB initial resources; no Jest gaming SDK, native-module or secret leakage.",
+    "independentReview": "No remaining findings after correcting delayed-deadline diagnostic recording.",
+    "fullBrowserJourney": "Not rerun for this trace-only candidate; earlier candidate results remain historical."
+  },
+  "firebaseCodeOrConfigurationChanged": false,
+  "firebaseDeployed": false,
+  "reviewSubmitted": false,
+  "published": false,
+  "vercel": "Existing isolated deployment remains version 15; no version 20 Vercel deployment was performed.",
+  "hostedMobile": {
+    "scope": "Exact-version Android startup and post-Terms Quit diagnosis; not full native acceptance or a recovered Quit.",
+    "device": "Galaxy S22 SM-S901U, Android 16/API 36, Facebook 588.0.0.42.55",
+    "launchAt": "2026-11-28T03:20:48Z",
+    "sdkInfo": {
+      "observedAt": "2026-11-28T03:24:31.501982+00:00",
+      "version": 20,
+      "path": "/instant-bundle/2143220529953108/40287594420886203/index.html",
+      "supportedApiCount": 48,
+      "bannerLoadAdvertised": true
+    },
+    "startup": "Welcome dismissed at 03:24:33.951 UTC; restored GUITAR clue, five empty rows and 1180 coins. Native banner subsequently visible below Settings; no advertiser action.",
+    "termsTappedAt": "2026-11-28T03:24:52.506463Z",
+    "openLinkConfirmedAt": "2026-11-28T03:25:00.403144Z",
+    "termsPage": "Riddle Quest Terms of Service on roobsworld.com; cookie preferences untouched.",
+    "androidBackAt": "2026-11-28T03:25:16Z",
+    "appQuitTappedAt": "2026-11-28T03:25:19.305878Z",
+    "traceReadObservedAt": "2026-11-28T03:26:25.865786+00:00",
+    "trace": {
+      "utc": "2026-11-28T03:26:23.273Z",
+      "exactBundle": true,
+      "visible": "visible",
+      "paused": false,
+      "busy": [
+        "Quit game\u203a"
+      ],
+      "marks": [
+        {
+          "phase": "guard",
+          "at": 268781.90000000596
+        },
+        {
+          "phase": "operation",
+          "at": 268796.8000000119
+        },
+        {
+          "phase": "preparation",
+          "at": 268797.3000000119
+        },
+        {
+          "phase": "projection",
+          "at": 268797.5
+        }
+      ]
+    },
+    "interpretation": "Dialog guards completed in approximately 14.9 ms. Preparation entered the projection-flush boundary; approximately 64 seconds after the tap Quit remained busy with no recorded presence, native invocation, return, finalization or retirement. The internal persistence queue/SDK stage and native cause remain unknown; no recovery demonstrated.",
+    "diagnosticScope": "SDK Info only before Quit; the first console command after Quit read bounded User Timing marks and DOM state without SDK calls, wrappers, timers, persistent writes or runtime mutation. Timer-delivery tests remain historical version 19 evidence.",
+    "cleanup": "Facebook host exit menu and host Quit used at 03:27:09 UTC; FbMainTabActivity confirmed and device UI XML removed. Host exit is not app-Quit recovery.",
+    "evidence": "facebook-quit-phase-tracing-2026-11-28.md"
+  }
+}
